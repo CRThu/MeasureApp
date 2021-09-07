@@ -1,0 +1,20 @@
+﻿<Window x:Class="WpfApp1.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfApp1"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800" Closed="Window_Closed">
+    <Grid>
+        <Button Name="searchGPIBDevicesButton" Content="Search GPIB Devices" Click="SearchGPIBDevicesButton_Click" HorizontalAlignment="Left" Margin="216,10,0,0" VerticalAlignment="Top" Width="158" Height="23"/>
+        <Button Name="openGPIBDeviceButton" Content="Open GPIB Device" Click="OpenGPIBDeviceButton_Click" HorizontalAlignment="Left" Margin="216,38,0,0" VerticalAlignment="Top" Width="158" Height="23"/>
+        <ComboBox Name="deviceComboBox" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="201" Height="23"/>
+        <Button Name="writeCmdButton" Content="Write" HorizontalAlignment="Left" Margin="216,104,0,0" VerticalAlignment="Top" Width="158" Height="23" Click="WriteCmdButton_Click"/>
+        <Button Name="queryCmdButton" Content="Query" HorizontalAlignment="Left" Margin="216,132,0,0" VerticalAlignment="Top" Width="158" Height="23" Click="QueryCmdButton_Click"/>
+        <TextBox Name="writeCmdTextBox" Text="" HorizontalAlignment="Left" Height="51" Margin="10,104,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="201"/>
+        <TextBox Name="readCmdTextBox" Text="" HorizontalAlignment="Left" Height="51" Margin="10,160,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="201"/>
+        <Label Name="deviceNameLabel" Content="No Device Connected." HorizontalAlignment="Left" Margin="10,38,0,0" VerticalAlignment="Top" Height="23" Width="201"/>
+
+    </Grid>
+</Window>
