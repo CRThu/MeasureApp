@@ -30,7 +30,15 @@ namespace WpfApp1
         // INTFC: GPIB Bus Interface
         public static string[] SearchDevices(string expression = "GPIB?*INSTR")
         {
-            return ResourceManager.GetLocalManager().FindResources(expression);
+            try
+            {
+                return ResourceManager.GetLocalManager().FindResources(expression);
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
+                return new string[] { };
+            }
         }
 
         public void Open()
@@ -55,6 +63,11 @@ namespace WpfApp1
             }
         }
 
+        public string Query(string cmd)
+        {
+            return isOpen ? messageBasedSession.Query(cmd).Trim() : null;
+        }
+
         public void Write(string cmd)
         {
             if (isOpen)
@@ -63,9 +76,9 @@ namespace WpfApp1
             }
         }
 
-        public string Query(string cmd)
+        public string ReadString()
         {
-            return isOpen ? messageBasedSession.Query(cmd).Trim() : null;
+            return isOpen ? messageBasedSession.ReadString().Trim() : null;
         }
     }
 }
