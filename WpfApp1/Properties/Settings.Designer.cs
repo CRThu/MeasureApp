@@ -23,12 +23,27 @@ namespace WpfApp1.Properties {
             }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("5000")]
         public int GPIBTimeout {
             get {
                 return ((int)(this["GPIBTimeout"]));
+            }
+            set {
+                this["GPIBTimeout"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("100")]
+        public int STBInterval {
+            get {
+                return ((int)(this["STBInterval"]));
+            }
+            set {
+                this["STBInterval"] = value;
             }
         }
     }

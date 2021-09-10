@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -13,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 using NationalInstruments.VisaNS;
 
 namespace WpfApp1
@@ -24,13 +26,25 @@ namespace WpfApp1
     {
         GPIB gpib = new GPIB();
         public ObservableCollection<string> gpibDeviceNames = new ObservableCollection<string>();
+        DispatcherTimer gpibStbTimer = new DispatcherTimer();
+
         public MainWindow()
         {
             InitializeComponent();
 
             SearchGPIBDevicesButton_Click(null, null);
 
-            deviceComboBox.ItemsSource = gpibDeviceNames;
+            DeviceComboBox.ItemsSource = gpibDeviceNames;
+
+            gpibStbTimer.Tick += GpibStbTimer_Tick;
+            gpibStbTimer.Interval = TimeSpan.FromMilliseconds(Properties.Settings.Default.STBInterval);
+        }
+
+        private void GpibStbTimer_Tick(object sender, EventArgs e)
+        {
+            short stb = (short)gpib.messageBasedSession.ReadStatusByte();
+            StbStatusBar.Text = stb.ToString();
+            Console.WriteLine(stb);
         }
 
         private void SearchGPIBDevicesButton_Click(object sender, RoutedEventArgs e)
@@ -48,21 +62,23 @@ namespace WpfApp1
                 _ = MessageBox.Show(ex.ToString());
             }
 
-            if (gpibDeviceNames.Count != 0 && deviceComboBox.SelectedIndex == -1)
+            if (gpibDeviceNames.Count != 0 && DeviceComboBox.SelectedIndex == -1)
             {
-                deviceComboBox.SelectedIndex = 0;
+                DeviceComboBox.SelectedIndex = 0;
             }
         }
         private void OpenGPIBDeviceButton_Click(object sender, RoutedEventArgs e)
         {
             try
             {
+                gpibStbTimer.Stop();
                 gpib.Dispose();
-                gpib.Open((string)deviceComboBox.SelectedItem);
+                gpib.Open(DeviceComboBox.SelectedItem as string);
+                gpibStbTimer.Start();
                 gpib.messageBasedSession.Timeout = Properties.Settings.Default.GPIBTimeout;
                 gpib.Write("END");
                 string deviceName = gpib.Query("ID?");
-                deviceNameLabel.Content = deviceName;
+                DeviceNameLabel.Text = deviceName;
             }
             catch (Exception ex)
             {
@@ -76,7 +92,7 @@ namespace WpfApp1
             {
                 try
                 {
-                    readCmdTextBox.Text = gpib.Query(writeCmdTextBox.Text);
+                    ReadCmdTextBox.Text = gpib.Query(WriteCmdTextBox.Text);
                 }
                 catch (Exception ex)
                 {
@@ -95,7 +111,7 @@ namespace WpfApp1
             {
                 try
                 {
-                    gpib.Write(writeCmdTextBox.Text);
+                    gpib.Write(WriteCmdTextBox.Text);
                 }
                 catch (Exception ex)
                 {
@@ -114,7 +130,7 @@ namespace WpfApp1
             {
                 try
                 {
-                    readCmdTextBox.Text = gpib.ReadString();
+                    ReadCmdTextBox.Text = gpib.ReadString();
                 }
                 catch (Exception ex)
                 {
@@ -138,26 +154,95 @@ namespace WpfApp1
             {
                 try
                 {
-                    switch ((string)((Button)sender).Tag)
+                    switch ((sender as Button).Tag as string)
                     {
                         case "RESET":
                             gpib.Write("RESET");
                             gpib.Write("END");
+                            gpib.Write("NDIG 8");
+                            GuiConfigLogTextBox.Text = $"Write: RESET & END & NDIG 8";
                             break;
                         case "ID":
-                            GuiConfigLogTextBox.Text = gpib.Query("ID?");
+                            GuiConfigLogTextBox.Text = $"Query: ID?\nReturn: {gpib.Query("ID?")}";
                             break;
                         case "ERR":
-                            GuiConfigLogTextBox.Text = gpib.Query("ERRSTR?");
+                            GuiConfigLogTextBox.Text = $"Query: ERRSTR?\nReturn: {gpib.Query("ERRSTR?")}";
                             break;
                         case "STB":
-                            GuiConfigLogTextBox.Text = gpib.Query("STB?");
+                            GuiConfigLogTextBox.Text = $"Query: STB?\nReturn: {gpib.Query("STB?")}";
                             break;
                         case "TEMP":
-                            GuiConfigLogTextBox.Text = gpib.Query("TEMP?");
+                            GuiConfigLogTextBox.Text = $"Query: TEMP?\nReturn: {gpib.Query("TEMP?")}";
                             break;
-                        case "LFREQ":
-                            GuiConfigLogTextBox.Text = gpib.Query("LFREQ?");
+                        case "LINE":
+                            GuiConfigLogTextBox.Text = $"Query: LINE?\nReturn: {gpib.QueryDemical("LINE?")} Hz";
+                            break;
+                        case "NDIG":
+                            string setNdig = (NdigComboBox.SelectedItem as ComboBoxItem).Tag as string;
+                            gpib.Write($"NDIG {setNdig}");
+                            GuiConfigLogTextBox.Text = $"Write: NDIG {setNdig}";
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _ = MessageBox.Show(ex.ToString());
+                }
+            }
+            else
+            {
+                _ = MessageBox.Show("GPIB is not open.");
+            }
+        }
+
+
+        private void MeasureGuiConfigButtons_Click(object sender, RoutedEventArgs e)
+        {
+            if (gpib.isOpen)
+            {
+                try
+                {
+                    switch ((sender as Button).Tag as string)
+                    {
+                        case "ACAL":
+                            if (MessageBox.Show("需要较长时间，是否继续？", "自动校准确认", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
+                            {
+                                string acal_param = (AcalComboBox.SelectedItem as ComboBoxItem).Tag as string;
+                                gpib.Write("ACAL " + acal_param);
+                                GuiConfigLogTextBox.Text = $"Write: ACAL {acal_param}";
+                            }
+                            break;
+                        case "RANGE":
+                            // %_resolution = (actual resolution/maximum input) × 100
+                            string setRange = (RangeComboBox.SelectedItem as ComboBoxItem).Tag as string;
+                            string setResolution = (ResComboBox.SelectedItem as ComboBoxItem).Tag as string;
+                            string rangeCmd = $"RANGE {setRange}";
+                            if (setRange != "AUTO" && setResolution != "DEFAULT")
+                            {
+                                decimal setRangeDecimal = Convert.ToDecimal(setRange);
+                                decimal setResolutionDecimal = Convert.ToDecimal(setResolution);
+                                rangeCmd += $",{setResolutionDecimal / setRangeDecimal / 10000}";
+                            }
+                            gpib.Write(rangeCmd);
+                            GuiConfigLogTextBox.Text = $"Write: {rangeCmd}";
+                            break;
+                        case "NPLC":
+                            string nplcCmd = $"NPLC {NplcTextBox.Text}";
+                            gpib.Write(nplcCmd);
+                            GuiConfigLogTextBox.Text = $"Write: {nplcCmd}";
+                            break;
+                        case "RANGE?":
+                            bool isArange = gpib.QueryDemical("ARANGE?") != 0M;
+                            Thread.Sleep(20);
+                            decimal readRange = gpib.QueryDemical("RANGE?");
+                            Thread.Sleep(20);
+                            decimal readResolution = gpib.QueryDemical("RES?") * readRange * 10000;
+                            GuiConfigLogTextBox.Text = $"Query: ARANGE? & RANGE? & RES?\nReturn: {(isArange ? "Auto Range, " + readRange.ToString() + "V" : readRange.ToString() + "V, " + readResolution.ToString() + "uV")}";
+                            break;
+                        case "NPLC?":
+                            GuiConfigLogTextBox.Text = $"Query: NPLC?\nReturn: {gpib.QueryDemical("NPLC?")} NPLC";
                             break;
                         default:
                             break;

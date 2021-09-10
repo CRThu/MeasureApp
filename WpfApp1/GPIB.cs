@@ -68,6 +68,11 @@ namespace WpfApp1
             return isOpen ? messageBasedSession.Query(cmd).Trim() : null;
         }
 
+        public decimal QueryDemical(string cmd)
+        {
+            return ConvertNumber(Query(cmd));
+        }
+
         public void Write(string cmd)
         {
             if (isOpen)
@@ -79,6 +84,12 @@ namespace WpfApp1
         public string ReadString()
         {
             return isOpen ? messageBasedSession.ReadString().Trim() : null;
+        }
+
+        public static decimal ConvertNumber(string data)
+        {
+            Console.WriteLine(data);
+            return Convert.ToDecimal(decimal.Parse(data, System.Globalization.NumberStyles.Float));
         }
     }
 }
