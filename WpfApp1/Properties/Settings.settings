@@ -6,7 +6,7 @@
       <Value Profile="(Default)">5000</Value>
     </Setting>
     <Setting Name="STBInterval" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">100</Value>
+      <Value Profile="(Default)">50</Value>
     </Setting>
   </Settings>
 </SettingsFile>

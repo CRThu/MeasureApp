@@ -26,7 +26,7 @@ namespace WpfApp1
     {
         GPIB gpib = new GPIB();
         public ObservableCollection<string> gpibDeviceNames = new ObservableCollection<string>();
-        DispatcherTimer gpibStbTimer = new DispatcherTimer();
+        public DispatcherTimer gpibStbTimer = new DispatcherTimer();
 
         public MainWindow()
         {
@@ -42,9 +42,7 @@ namespace WpfApp1
 
         private void GpibStbTimer_Tick(object sender, EventArgs e)
         {
-            short stb = (short)gpib.messageBasedSession.ReadStatusByte();
-            StbStatusBar.Text = stb.ToString();
-            Console.WriteLine(stb);
+            StbStatusBar.Text = $"IsReadyForInstructions={gpib.IsReadyForInstructions}, IsDataAvailable={gpib.IsDataAvailable}";
         }
 
         private void SearchGPIBDevicesButton_Click(object sender, RoutedEventArgs e)
@@ -59,7 +57,7 @@ namespace WpfApp1
             }
             catch (Exception ex)
             {
-                _ = MessageBox.Show(ex.ToString());
+                // _ = MessageBox.Show(ex.ToString());
             }
 
             if (gpibDeviceNames.Count != 0 && DeviceComboBox.SelectedIndex == -1)
@@ -88,7 +86,7 @@ namespace WpfApp1
 
         private void QueryCmdButton_Click(object sender, RoutedEventArgs e)
         {
-            if (gpib.isOpen)
+            if (gpib.IsOpen)
             {
                 try
                 {
@@ -107,7 +105,7 @@ namespace WpfApp1
 
         private void WriteCmdButton_Click(object sender, RoutedEventArgs e)
         {
-            if (gpib.isOpen)
+            if (gpib.IsOpen)
             {
                 try
                 {
@@ -126,7 +124,7 @@ namespace WpfApp1
 
         private void ReadCmdButton_Click(object sender, RoutedEventArgs e)
         {
-            if (gpib.isOpen)
+            if (gpib.IsOpen)
             {
                 try
                 {
@@ -150,7 +148,7 @@ namespace WpfApp1
 
         private void BasicGuiConfigButtons_Click(object sender, RoutedEventArgs e)
         {
-            if (gpib.isOpen)
+            if (gpib.IsOpen)
             {
                 try
                 {
@@ -200,7 +198,7 @@ namespace WpfApp1
 
         private void MeasureGuiConfigButtons_Click(object sender, RoutedEventArgs e)
         {
-            if (gpib.isOpen)
+            if (gpib.IsOpen)
             {
                 try
                 {
@@ -235,9 +233,9 @@ namespace WpfApp1
                             break;
                         case "RANGE?":
                             bool isArange = gpib.QueryDemical("ARANGE?") != 0M;
-                            Thread.Sleep(20);
+                            gpib.WaitForDataAvailable();
                             decimal readRange = gpib.QueryDemical("RANGE?");
-                            Thread.Sleep(20);
+                            gpib.WaitForDataAvailable();
                             decimal readResolution = gpib.QueryDemical("RES?") * readRange * 10000;
                             GuiConfigLogTextBox.Text = $"Query: ARANGE? & RANGE? & RES?\nReturn: {(isArange ? "Auto Range, " + readRange.ToString() + "V" : readRange.ToString() + "V, " + readResolution.ToString() + "uV")}";
                             break;

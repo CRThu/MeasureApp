@@ -1,8 +1,10 @@
 ﻿using NationalInstruments.VisaNS;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -10,9 +12,29 @@ namespace WpfApp1
 {
     public class GPIB
     {
-        public bool isOpen = false;
+        public bool IsOpen = false;
+        private bool _isDataAvailable = false;
+        private bool _isReadyForInstructions = false;
         public string deviceAddr = string.Empty;
         public MessageBasedSession messageBasedSession;
+
+        public bool IsDataAvailable
+        {
+            get
+            {
+                _isDataAvailable = IsOpen && (((short)messageBasedSession.ReadStatusByte() & 128) != 0);
+                return _isDataAvailable;
+            }
+        }
+
+        public bool IsReadyForInstructions
+        {
+            get
+            {
+                _isReadyForInstructions = IsOpen && (((short)messageBasedSession.ReadStatusByte() & 16) != 0);
+                return _isReadyForInstructions;
+            }
+        }
 
         public GPIB()
         {
@@ -36,7 +58,7 @@ namespace WpfApp1
             }
             catch (Exception ex)
             {
-                _ = MessageBox.Show(ex.ToString());
+                // _ = MessageBox.Show(ex.ToString());
                 return new string[] { };
             }
         }
@@ -49,13 +71,13 @@ namespace WpfApp1
         public void Open(string deviceAddr)
         {
             messageBasedSession = (MessageBasedSession)ResourceManager.GetLocalManager().Open(deviceAddr);
-            isOpen = true;
+            IsOpen = true;
             this.deviceAddr = deviceAddr;
         }
 
         public void Dispose()
         {
-            isOpen = false;
+            IsOpen = false;
             deviceAddr = string.Empty;
             if (messageBasedSession != null)
             {
@@ -65,7 +87,7 @@ namespace WpfApp1
 
         public string Query(string cmd)
         {
-            return isOpen ? messageBasedSession.Query(cmd).Trim() : null;
+            return IsOpen ? messageBasedSession.Query(cmd).Trim() : null;
         }
 
         public decimal QueryDemical(string cmd)
@@ -75,7 +97,7 @@ namespace WpfApp1
 
         public void Write(string cmd)
         {
-            if (isOpen)
+            if (IsOpen)
             {
                 messageBasedSession.Write(cmd);
             }
@@ -83,13 +105,24 @@ namespace WpfApp1
 
         public string ReadString()
         {
-            return isOpen ? messageBasedSession.ReadString().Trim() : null;
+            return IsOpen ? messageBasedSession.ReadString().Trim() : null;
         }
 
         public static decimal ConvertNumber(string data)
         {
-            Console.WriteLine(data);
+            Debug.WriteLine(data);
             return Convert.ToDecimal(decimal.Parse(data, System.Globalization.NumberStyles.Float));
+        }
+
+        public void WaitForDataAvailable()
+        {
+            Debug.WriteLine(IsDataAvailable);
+            while (!IsDataAvailable)
+            {
+                Debug.WriteLine(IsDataAvailable);
+                Thread.Sleep(5);
+            }
+            Debug.WriteLine(IsDataAvailable);
         }
     }
 }
