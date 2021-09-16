@@ -28,8 +28,9 @@ namespace WpfApp1
     public partial class MainWindow : Window
     {
         public GPIB gpib = new GPIB();
+        public SerialPorts serialPorts = new SerialPorts();
+
         public ObservableCollection<string> gpibDeviceNames = new ObservableCollection<string>();
-        public DispatcherTimer gpibStbTimer = new DispatcherTimer();
 
         public bool IsSyncDCVDisplay = false;
         private ManualResetEvent resetEvent = new ManualResetEvent(false);
@@ -48,6 +49,11 @@ namespace WpfApp1
             ManualReadDCVTextBlock.DataContext = ManualReadDCVText;
         }
 
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            gpib.Dispose();
+            serialPorts.CloseAll();
+        }
 
         private void SearchGPIBDevicesButton_Click(object sender, RoutedEventArgs e)
         {
@@ -69,6 +75,7 @@ namespace WpfApp1
                 DeviceComboBox.SelectedIndex = 0;
             }
         }
+
         private void OpenGPIBDeviceButton_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -179,11 +186,6 @@ namespace WpfApp1
                     _ = MessageBox.Show("GPIB is not open.");
                 }
             }
-        }
-
-        private void Window_Closed(object sender, EventArgs e)
-        {
-            gpib.Dispose();
         }
 
         private void BasicGuiConfigButtons_Click(object sender, RoutedEventArgs e)
@@ -349,24 +351,41 @@ namespace WpfApp1
 
         private void OpenSerialPortButton_Click(object sender, RoutedEventArgs e)
         {
-            if (!serialPort.IsOpen)
+            try
             {
-                serialPort.PortName = (SerialPortNameComboBox.SelectedItem as ComboBoxItem).Tag as string;
-                serialPort.BaudRate = 115200;
-
-                serialPort.ReadBufferSize = 4096;
-                serialPort.ReadTimeout = 1000;
-                serialPort.WriteBufferSize = 4096;
-                serialPort.WriteTimeout = 1000;
-                serialPort.Open();
+                string selectedPortName = (SerialPortNameComboBox.SelectedItem as ComboBoxItem).Tag as string;
+                int baudRate = Convert.ToInt32(((SerialPortBaudRateComboBox.SelectedItem as ComboBoxItem).Tag as string) == "Other"
+                    ? ((SerialPortBaudRateComboBox.SelectedItem as ComboBoxItem).Content as TextBox).Text
+                    : (SerialPortBaudRateComboBox.SelectedItem as ComboBoxItem).Tag as string);
+                Debug.WriteLine(baudRate);
+                if (!serialPorts.Open(selectedPortName, baudRate))
+                {
+                    _ = MessageBox.Show("串口已被打开.");
+                }
+                SerialPortDeviceNameTextBlock.Text = string.Join(", ", serialPorts.SerialPortNames) + " Device Connected.";
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
             }
         }
 
         private void CloseSerialPortButton_Click(object sender, RoutedEventArgs e)
         {
-            if (serialPort.IsOpen)
+            try
             {
-                serialPort.Close();
+                string selectedPortName = (SerialPortNameComboBox.SelectedItem as ComboBoxItem).Tag as string;
+                if (!serialPorts.Close(selectedPortName))
+                {
+                    _ = MessageBox.Show("串口已被关闭.");
+                }
+                SerialPortDeviceNameTextBlock.Text = serialPorts.SerialPortNames.Count() == 0
+                    ? "No Device Connected."
+                    : string.Join(", ", serialPorts.SerialPortNames) + " Device Connected.";
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
             }
         }
     }

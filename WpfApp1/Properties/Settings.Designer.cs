@@ -34,5 +34,53 @@ namespace WpfApp1.Properties {
                 this["GPIBTimeout"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("4096")]
+        public int SerialPortReadBufferSize {
+            get {
+                return ((int)(this["SerialPortReadBufferSize"]));
+            }
+            set {
+                this["SerialPortReadBufferSize"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("4096")]
+        public int SerialPortWriteBufferSize {
+            get {
+                return ((int)(this["SerialPortWriteBufferSize"]));
+            }
+            set {
+                this["SerialPortWriteBufferSize"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1000")]
+        public int SerialPortReadTimeout {
+            get {
+                return ((int)(this["SerialPortReadTimeout"]));
+            }
+            set {
+                this["SerialPortReadTimeout"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1000")]
+        public int SerialPortWriteTimeout {
+            get {
+                return ((int)(this["SerialPortWriteTimeout"]));
+            }
+            set {
+                this["SerialPortWriteTimeout"] = value;
+            }
+        }
     }
 }
