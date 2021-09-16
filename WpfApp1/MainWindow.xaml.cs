@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -24,26 +27,27 @@ namespace WpfApp1
     /// </summary>
     public partial class MainWindow : Window
     {
-        GPIB gpib = new GPIB();
+        public GPIB gpib = new GPIB();
         public ObservableCollection<string> gpibDeviceNames = new ObservableCollection<string>();
         public DispatcherTimer gpibStbTimer = new DispatcherTimer();
+
+        public bool IsSyncDCVDisplay = false;
+        private ManualResetEvent resetEvent = new ManualResetEvent(false);
+        public StringDataBinding SyncDCVDisplayText = new StringDataBinding() { StringData = "<null>" };
+        public StringDataBinding ManualReadDCVText = new StringDataBinding() { StringData = "<null>" };
 
         public MainWindow()
         {
             InitializeComponent();
 
             SearchGPIBDevicesButton_Click(null, null);
+            SearchSerialPortButton_Click(null, null);
 
             DeviceComboBox.ItemsSource = gpibDeviceNames;
-
-            gpibStbTimer.Tick += GpibStbTimer_Tick;
-            gpibStbTimer.Interval = TimeSpan.FromMilliseconds(Properties.Settings.Default.STBInterval);
+            SyncDCVDisplayTextBlock.DataContext = SyncDCVDisplayText;
+            ManualReadDCVTextBlock.DataContext = ManualReadDCVText;
         }
 
-        private void GpibStbTimer_Tick(object sender, EventArgs e)
-        {
-            StbStatusBar.Text = $"IsReadyForInstructions={gpib.IsReadyForInstructions}, IsDataAvailable={gpib.IsDataAvailable}";
-        }
 
         private void SearchGPIBDevicesButton_Click(object sender, RoutedEventArgs e)
         {
@@ -69,10 +73,8 @@ namespace WpfApp1
         {
             try
             {
-                gpibStbTimer.Stop();
                 gpib.Dispose();
                 gpib.Open(DeviceComboBox.SelectedItem as string);
-                gpibStbTimer.Start();
                 gpib.messageBasedSession.Timeout = Properties.Settings.Default.GPIBTimeout;
                 gpib.Write("END");
                 string deviceName = gpib.Query("ID?");
@@ -90,7 +92,7 @@ namespace WpfApp1
             {
                 try
                 {
-                    ReadCmdTextBox.Text = gpib.Query(WriteCmdTextBox.Text);
+                    ReadCmdTextBox.Text = gpib.Query(WriteCmdTextBox.Text).ToString();
                 }
                 catch (Exception ex)
                 {
@@ -138,6 +140,44 @@ namespace WpfApp1
             else
             {
                 _ = MessageBox.Show("GPIB is not open.");
+            }
+        }
+
+        private void SyncDCVDisplayButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (IsSyncDCVDisplay)
+            {
+                IsSyncDCVDisplay = false;
+                _ = resetEvent.Reset();
+                SyncDCVDisplayButton.Content = "打开同步实时数据";
+            }
+            else
+            {
+                if (gpib.IsOpen)
+                {
+                    IsSyncDCVDisplay = true;
+                    resetEvent.Set();
+                    SyncDCVDisplayButton.Content = "关闭同步实时数据";
+                    _ = Task.Run(() =>
+                    {
+                        try
+                        {
+                            while (true)
+                            {
+                                _ = resetEvent.WaitOne();
+                                SyncDCVDisplayText.StringData = $"{gpib.ReadDemical()}";
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            _ = MessageBox.Show(ex.ToString());
+                        }
+                    });
+                }
+                else
+                {
+                    _ = MessageBox.Show("GPIB is not open.");
+                }
             }
         }
 
@@ -254,6 +294,79 @@ namespace WpfApp1
             else
             {
                 _ = MessageBox.Show("GPIB is not open.");
+            }
+        }
+
+        private void ManualReadDCVButton_Click(object sender, RoutedEventArgs e)
+        {
+            // %_resolution = (actual resolution/maximum input) × 100
+            string setRange = (ManualReadDCVRangeComboBox.SelectedItem as ComboBoxItem).Tag as string;
+            string setResolution = (ManualReadDCVResComboBox.SelectedItem as ComboBoxItem).Tag as string;
+            string rangeCmd = $"DCV {setRange}";
+            if (setRange != "AUTO" && setResolution != "DEFAULT")
+            {
+                decimal setRangeDecimal = Convert.ToDecimal(setRange);
+                decimal setResolutionDecimal = Convert.ToDecimal(setResolution);
+                rangeCmd += $",{setResolutionDecimal / setRangeDecimal / 10000}";
+            }
+            ManualReadDCVCommandTextBlock.Text = rangeCmd;
+            ManualReadDCVText.StringData = "Measuring...";
+            _ = Task.Run(() =>
+                {
+                    ManualReadDCVText.StringData = gpib.QueryDemical(rangeCmd).ToString();
+                });
+        }
+
+        private void SetMinNPLCButton_Click(object sender, RoutedEventArgs e)
+        {
+            gpib.Write("NPLC 0");
+        }
+
+        private void SetMaxNPLCButton_Click(object sender, RoutedEventArgs e)
+        {
+            gpib.Write("NPLC 1000");
+        }
+
+        private void SearchSerialPortButton_Click(object sender, RoutedEventArgs e)
+        {
+            SerialPortNameComboBox.Items.Clear();
+            string[] portList = SerialPort.GetPortNames();
+            string[] portDescriptionList = HardwareInfoUtil.GetSerialPortFullName();
+            for (int i = 0; i < portList.Length; ++i)
+            {
+                ComboBoxItem comboBoxItem = new ComboBoxItem
+                {
+                    Content = portList[i] + "|" + portDescriptionList.Where(str => str.Contains(portList[i])).First(),
+                    Tag = portList[i]
+                };
+                _ = SerialPortNameComboBox.Items.Add(comboBoxItem);
+            }
+            if (portList.Length > 0)
+            {
+                SerialPortNameComboBox.SelectedIndex = 0;
+            }
+        }
+
+        private void OpenSerialPortButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!serialPort.IsOpen)
+            {
+                serialPort.PortName = (SerialPortNameComboBox.SelectedItem as ComboBoxItem).Tag as string;
+                serialPort.BaudRate = 115200;
+
+                serialPort.ReadBufferSize = 4096;
+                serialPort.ReadTimeout = 1000;
+                serialPort.WriteBufferSize = 4096;
+                serialPort.WriteTimeout = 1000;
+                serialPort.Open();
+            }
+        }
+
+        private void CloseSerialPortButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (serialPort.IsOpen)
+            {
+                serialPort.Close();
             }
         }
     }

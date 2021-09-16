@@ -108,21 +108,22 @@ namespace WpfApp1
             return IsOpen ? messageBasedSession.ReadString().Trim() : null;
         }
 
+        public decimal ReadDemical()
+        {
+            return ConvertNumber(ReadString());
+        }
+
         public static decimal ConvertNumber(string data)
         {
-            Debug.WriteLine(data);
             return Convert.ToDecimal(decimal.Parse(data, System.Globalization.NumberStyles.Float));
         }
 
         public void WaitForDataAvailable()
         {
-            Debug.WriteLine(IsDataAvailable);
             while (!IsDataAvailable)
             {
-                Debug.WriteLine(IsDataAvailable);
-                Thread.Sleep(5);
+                Thread.Sleep(50);
             }
-            Debug.WriteLine(IsDataAvailable);
         }
     }
 }
