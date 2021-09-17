@@ -5,123 +5,24 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApp1" d:DataContext="{d:DesignInstance Type=local:StringDataBinding}"
         mc:Ignorable="d"
-        Title="MainWindow" Height="504.4" Width="1220.2" Closed="Window_Closed">
+        Title="MainWindow" Height="504.4" Width="866.4" Closed="Window_Closed">
     <DockPanel>
         <Grid>
             <StatusBar DockPanel.Dock="Bottom" MaxHeight="20" VerticalAlignment="Bottom">
                 <TextBlock Name="StbStatusBar" Text="StatusBar"></TextBlock>
             </StatusBar>
             <TabControl Margin="10,10,9.6,24.8">
-                <TabItem Header="3458A控制">
+                <TabItem Header="设备连接调试">
                     <Grid>
-                        <GroupBox Header="GPIB设备发现" HorizontalAlignment="Left" Height="100" Margin="10,10,0,0" VerticalAlignment="Top" Width="407">
+                        <GroupBox Header="GPIB设备发现" HorizontalAlignment="Left" Height="166" Margin="10,10,0,0" VerticalAlignment="Top" Width="407">
                             <Grid>
-                                <Button Name="SearchGPIBDevicesButton" Content="搜索GPIB设备" Click="SearchGPIBDevicesButton_Click" HorizontalAlignment="Left" Margin="227,10,0,0" VerticalAlignment="Top" Width="158" Height="23"/>
-                                <Button Name="OpenGPIBDeviceButton" Content="打开GPIB设备" Click="OpenGPIBDeviceButton_Click" HorizontalAlignment="Left" Margin="227,38,0,0" VerticalAlignment="Top" Width="158" Height="23"/>
-                                <ComboBox Name="DeviceComboBox" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="201" Height="23"/>
-                                <TextBlock Name="DeviceNameLabel" Text="No Device Connected." HorizontalAlignment="Left" Margin="10,46,0,16.6" VerticalAlignment="Center" Width="201"/>
+                                <Button x:Name="SearchGPIBDevicesButton" Content="搜索GPIB设备" Click="SearchGPIBDevicesButton_Click" HorizontalAlignment="Left" Margin="227,10,0,0" VerticalAlignment="Top" Width="158" Height="23"/>
+                                <Button x:Name="OpenGPIBDeviceButton" Content="打开GPIB设备" Click="OpenGPIBDeviceButton_Click" HorizontalAlignment="Left" Margin="227,38,0,0" VerticalAlignment="Top" Width="158" Height="23"/>
+                                <ComboBox x:Name="DeviceComboBox" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="201" Height="23"/>
+                                <TextBlock x:Name="DeviceNameLabel" Text="No Device Connected." HorizontalAlignment="Left" Margin="10,42,0,86" VerticalAlignment="Center" Width="201"/>
                             </Grid>
                         </GroupBox>
-                        <GroupBox Header="调试" HorizontalAlignment="Left" Margin="10,127,0,10.6" Width="407">
-                            <Grid>
-                                <Button Name="QueryCmdButton" Content="Query" HorizontalAlignment="Left" Margin="227,32,0,0" VerticalAlignment="Top" Width="158" Height="55" Click="QueryCmdButton_Click"/>
-                                <Button Name="WriteCmdButton" Content="Write" HorizontalAlignment="Left" Margin="227,118,0,0" VerticalAlignment="Top" Width="158" Height="23" Click="WriteCmdButton_Click"/>
-                                <Button Name="ReadCmdButton" Content="Read" HorizontalAlignment="Left" Margin="227,146,0,0" VerticalAlignment="Top" Width="158" Height="23" Click="ReadCmdButton_Click"/>
-                                <TextBox Name="WriteCmdTextBox" Text="" HorizontalAlignment="Left" Height="51" Margin="10,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="201"/>
-                                <TextBox Name="ReadCmdTextBox" Text="" HorizontalAlignment="Left" Height="51" Margin="10,118,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="201"/>
-                                <TextBlock Text="Write Command" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="201"/>
-                                <TextBlock Text="Read Command" HorizontalAlignment="Left" Margin="10,92,0,0" VerticalAlignment="Top" Width="201"/>
-                            </Grid>
-                        </GroupBox>
-                        <GroupBox Header="3458A设置" Margin="422,10,10.2,10">
-                            <Grid>
-                                <GroupBox Header="基本" Height="350" Margin="10,10,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="329">
-                                    <Grid>
-                                        <Button Tag="RESET" Content="复位" Click="BasicGuiConfigButtons_Click" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="80"/>
-                                        <Button Tag="ID" Content="ID" Click="BasicGuiConfigButtons_Click" HorizontalAlignment="Left" Margin="10,33,0,0" VerticalAlignment="Top" Width="80"/>
-                                        <Button Tag="ERR" Content="错误信息" Click="BasicGuiConfigButtons_Click" HorizontalAlignment="Left" Margin="107,10,0,0" VerticalAlignment="Top" Width="80"/>
-                                        <Button Tag="STB" Content="状态位" Click="BasicGuiConfigButtons_Click" HorizontalAlignment="Left" Margin="107,33,0,0" VerticalAlignment="Top" Width="80"/>
-                                        <Button Tag="TEMP" Content="机器温度" Click="BasicGuiConfigButtons_Click" HorizontalAlignment="Left" Margin="207,10,0,0" VerticalAlignment="Top" Width="80"/>
-                                        <Button Tag="LINE" Content="工频频率" Click="BasicGuiConfigButtons_Click" HorizontalAlignment="Left" Margin="207,33,0,0" VerticalAlignment="Top" Width="80"/>
-                                        <ComboBox Name="NdigComboBox" SelectedIndex="0" Margin="111,64,0,0" Width="76" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" >
-                                            <ComboBoxItem Content="3" Tag="3"/>
-                                            <ComboBoxItem Content="4" Tag="4"/>
-                                            <ComboBoxItem Content="5" Tag="5"/>
-                                            <ComboBoxItem Content="6" Tag="6"/>
-                                            <ComboBoxItem Content="7" Tag="7"/>
-                                            <ComboBoxItem Content="8" Tag="8"/>
-                                        </ComboBox>
-                                        <Button Tag="NDIG" Content="显示位数" Click="BasicGuiConfigButtons_Click" HorizontalAlignment="Left" Margin="207,66,0,0" VerticalAlignment="Top" Width="80"/>
-
-                                        <ComboBox Name="AcalComboBox" SelectedIndex="0" HorizontalAlignment="Left" Margin="10,110,0,0" VerticalAlignment="Top" Width="163" Height="22">
-                                            <ComboBoxItem Content="ALL (11 minutes)" Tag="ALL"/>
-                                            <ComboBoxItem Content="DCV (1 minute)" Tag="DCV"/>
-                                            <ComboBoxItem Content="AC (1 minute)" Tag="AC"/>
-                                            <ComboBoxItem Content="OHMS (10 minutes)" Tag="OHMS"/>
-                                        </ComboBox>
-                                        <Button Tag="ACAL" Content="执行自动校准" Click="MeasureGuiConfigButtons_Click" HorizontalAlignment="Left" Margin="178,110,0,0" VerticalAlignment="Top" Width="130" Height="22"/>
-                                        <ComboBox Name="RangeComboBox" SelectedIndex="0" HorizontalAlignment="Left" Margin="10,146,0,0" VerticalAlignment="Top" Width="79" Height="22">
-                                            <ComboBoxItem Content="Auto" Tag="AUTO"/>
-                                            <ComboBoxItem Content="100mV" Tag="0.1"/>
-                                            <ComboBoxItem Content="1V" Tag="1"/>
-                                            <ComboBoxItem Content="10V" Tag="10"/>
-                                            <ComboBoxItem Content="100V" Tag="100"/>
-                                            <ComboBoxItem Content="1kV" Tag="1000"/>
-                                        </ComboBox>
-                                        <ComboBox Name="ResComboBox" SelectedIndex="0" HorizontalAlignment="Left" Margin="94,146,0,0" VerticalAlignment="Top" Width="79" Height="22">
-                                            <ComboBoxItem Content="Default" Tag="DEFAULT"/>
-                                            <ComboBoxItem Content="1nV" Tag="0.001"/>
-                                            <ComboBoxItem Content="10nV" Tag="0.01"/>
-                                            <ComboBoxItem Content="100nV" Tag="0.1"/>
-                                            <ComboBoxItem Content="1uV" Tag="1"/>
-                                            <ComboBoxItem Content="10uV" Tag="10"/>
-                                            <ComboBoxItem Content="100uV" Tag="100"/>
-                                            <ComboBoxItem Content="1mV" Tag="1000"/>
-                                        </ComboBox>
-                                        <Button Tag="RANGE" Content="设置量程/精度" Click="MeasureGuiConfigButtons_Click" HorizontalAlignment="Left" Margin="178,146,0,0" VerticalAlignment="Top" Width="130" Height="22"/>
-                                        <TextBox Name="NplcTextBox" Text="10" HorizontalAlignment="Left" Height="23" Margin="10,183,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="163"/>
-                                        <Button Tag="NPLC" Content="设置速率(NPLC)" Click="MeasureGuiConfigButtons_Click" HorizontalAlignment="Left" Margin="178,183,0,0" VerticalAlignment="Top" Width="130" Height="22"/>
-                                        <Button Tag="RANGE?" Content="读量程/精度" Click="MeasureGuiConfigButtons_Click" HorizontalAlignment="Left" Margin="16,220,0,0" VerticalAlignment="Top" Width="130" Height="22"/>
-                                        <Button Tag="NPLC?" Content="读输出速率(NPLC)" Click="MeasureGuiConfigButtons_Click" HorizontalAlignment="Left" Margin="170,220,0,0" VerticalAlignment="Top" Width="130" Height="22"/>
-                                        <TextBox Name="GuiConfigLogTextBox" Margin="10,257,9.8,10" TextWrapping="Wrap" Text=""/>
-                                    </Grid>
-                                </GroupBox>
-                                <GroupBox Header="测量" HorizontalAlignment="Left" Margin="344,10,0,119.6" Width="383">
-                                    <Grid>
-                                        <Button x:Name="SetMinNPLCButton" Content="最高速度(0 NPLC)" Height="22" Margin="10,107,0,0" Click="SetMinNPLCButton_Click" HorizontalAlignment="Left" Width="130" VerticalAlignment="Top"/>
-                                        <Button x:Name="SetMaxNPLCButton" Content="最高精度(1000 NPLC)" Height="22" Margin="185,107,0,0" Click="SetMaxNPLCButton_Click" HorizontalAlignment="Left" Width="130" VerticalAlignment="Top"/>
-                                        <ComboBox x:Name="ManualReadDCVRangeComboBox" SelectedIndex="0" HorizontalAlignment="Left" Margin="10,154,0,0" VerticalAlignment="Top" Width="79" Height="22">
-                                            <ComboBoxItem Content="Auto" Tag="AUTO"/>
-                                            <ComboBoxItem Content="100mV" Tag="0.1"/>
-                                            <ComboBoxItem Content="1V" Tag="1"/>
-                                            <ComboBoxItem Content="10V" Tag="10"/>
-                                            <ComboBoxItem Content="100V" Tag="100"/>
-                                            <ComboBoxItem Content="1kV" Tag="1000"/>
-                                        </ComboBox>
-                                        <ComboBox x:Name="ManualReadDCVResComboBox" SelectedIndex="0" HorizontalAlignment="Left" Margin="94,154,0,0" VerticalAlignment="Top" Width="79" Height="22">
-                                            <ComboBoxItem Content="Default" Tag="DEFAULT"/>
-                                            <ComboBoxItem Content="1nV" Tag="0.001"/>
-                                            <ComboBoxItem Content="10nV" Tag="0.01"/>
-                                            <ComboBoxItem Content="100nV" Tag="0.1"/>
-                                            <ComboBoxItem Content="1uV" Tag="1"/>
-                                            <ComboBoxItem Content="10uV" Tag="10"/>
-                                            <ComboBoxItem Content="100uV" Tag="100"/>
-                                            <ComboBoxItem Content="1mV" Tag="1000"/>
-                                        </ComboBox>
-                                        <TextBlock x:Name="ManualReadDCVCommandTextBlock" Text="Command Here" TextWrapping="Wrap" Margin="185,158,10.2,0" VerticalAlignment="Top"/>
-                                        <Button x:Name="ManualReadDCVButton" Content="手动读取电压" Click="ManualReadDCVButton_Click" HorizontalAlignment="Left" Margin="10,188,0,0" VerticalAlignment="Top" Width="130" Height="22"/>
-                                        <TextBlock x:Name="ManualReadDCVTextBlock" Text="{Binding StringData}" TextWrapping="Wrap" Margin="185,192,10.2,0" VerticalAlignment="Top"/>
-                                        <Button x:Name="SyncDCVDisplayButton" Content="打开同步实时数据" HorizontalAlignment="Left" Margin="216,10,0,0" VerticalAlignment="Top" Width="145" Height="64" Click="SyncDCVDisplayButton_Click"/>
-                                        <TextBlock x:Name="SyncDCVDisplayTextBlock" Text="{Binding StringData}" TextWrapping="Wrap" Margin="10,10,160.2,143.6" Width="201" TextAlignment="Center" FontSize="24"/>
-                                    </Grid>
-                                </GroupBox>
-                            </Grid>
-                        </GroupBox>
-                    </Grid>
-                </TabItem>
-                <TabItem Header="多设备控制">
-                    <Grid>
-                        <GroupBox Header="串口设备" HorizontalAlignment="Left" Height="232" Margin="10,10,0,0" VerticalAlignment="Top" Width="383">
+                        <GroupBox Header="串口设备" HorizontalAlignment="Left" Height="166" Margin="422,10,0,0" VerticalAlignment="Top" Width="407">
                             <Grid>
                                 <Button x:Name="SearchSerialPortButton" Content="搜索串口设备" Click="SearchSerialPortButton_Click" Margin="231,47,10.2,0" VerticalAlignment="Top" Height="23"/>
                                 <Button x:Name="OpenSerialPortButton" Content="打开串口设备" Click="OpenSerialPortButton_Click" Margin="231,75,10.2,0" VerticalAlignment="Top" Height="23"/>
@@ -142,7 +43,7 @@
                                                 </VisualBrush>
                                             </TextBox.Resources>
                                             <TextBox.Style>
-                                                <Style TargetType="TextBox">
+                                                <Style TargetType="{x:Type TextBox}">
                                                     <Style.Triggers>
                                                         <Trigger Property="Text" Value="{x:Null}">
                                                             <Setter Property="Background" Value="{StaticResource HintText}"/>
@@ -156,7 +57,182 @@
                                         </TextBox>
                                     </ComboBoxItem>
                                 </ComboBox>
-                                <TextBlock x:Name="SerialPortDeviceNameTextBlock" Text="No Device Connected." HorizontalAlignment="Left" Margin="10,41,0,0" Width="201" TextWrapping="Wrap" Height="85" VerticalAlignment="Top"/>
+                                <TextBlock x:Name="SerialPortDeviceNameTextBlock" Text="No Device Connected." HorizontalAlignment="Left" Margin="10,47,0,0" Width="201" TextWrapping="Wrap" Height="79" VerticalAlignment="Top"/>
+                            </Grid>
+                        </GroupBox>
+                        <GroupBox Header="GPIB调试" HorizontalAlignment="Left" Margin="10,181,0,10" Width="407">
+                            <Grid>
+                                <Button x:Name="QueryCmdButton" Content="Query" HorizontalAlignment="Left" Margin="227,61,0,0" VerticalAlignment="Top" Width="158" Height="51" Click="QueryCmdButton_Click"/>
+                                <Button x:Name="WriteCmdButton" Content="Write" HorizontalAlignment="Left" Margin="227,137,0,0" VerticalAlignment="Top" Width="158" Height="23" Click="WriteCmdButton_Click"/>
+                                <Button x:Name="ReadCmdButton" Content="Read" HorizontalAlignment="Left" Margin="227,165,0,0" VerticalAlignment="Top" Width="158" Height="23" Click="ReadCmdButton_Click"/>
+                                <TextBox x:Name="WriteCmdTextBox" Text="" HorizontalAlignment="Left" Height="51" Margin="10,61,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="201"/>
+                                <TextBox x:Name="ReadCmdTextBox" Text="" HorizontalAlignment="Left" Height="51" Margin="10,138,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="201"/>
+                                <TextBlock Text="Write Command" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top" Width="201"/>
+                                <TextBlock Text="Read Data" HorizontalAlignment="Left" Margin="10,117,0,0" VerticalAlignment="Top" Width="201"/>
+                            </Grid>
+                        </GroupBox>
+                        <GroupBox Header="串口调试" HorizontalAlignment="Left" Margin="422,181,0,10" Width="407">
+                            <Grid>
+                                <ComboBox x:Name="SerialPortDebugSelectComboBox" SelectedIndex="0" HorizontalAlignment="Left" Margin="288,16,0,0" VerticalAlignment="Top" Width="97" Height="23"/>
+                                <Button x:Name="SerialPortWriteCmdButton" Content="Write" HorizontalAlignment="Left" Margin="227,61,0,0" VerticalAlignment="Top" Width="158" Height="51" Click="SerialPortWriteCmdButton_Click"/>
+                                <Button x:Name="SerialPortReadCmdButton" Content="Read" HorizontalAlignment="Left" Margin="227,137,0,0" VerticalAlignment="Top" Width="158" Height="51" Click="SerialPortReadCmdButton_Click"/>
+                                <TextBox x:Name="SerialPortWriteCmdTextBox" HorizontalAlignment="Left" Height="51" Margin="10,61,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="201"/>
+                                <TextBox x:Name="SerialPortReadCmdTextBox" HorizontalAlignment="Left" Height="51" Margin="10,138,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="201"/>
+                                <TextBlock Text="Write Command" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top" Width="201"/>
+                                <TextBlock Text="Read Data" HorizontalAlignment="Left" Margin="10,117,0,0" VerticalAlignment="Top" Width="201"/>
+                                <TextBlock Text="串口选择" HorizontalAlignment="Left" Margin="227,21,0,0" VerticalAlignment="Top" Width="56"/>
+                            </Grid>
+                        </GroupBox>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="3458A万用表控制">
+                    <Grid>
+                        <GroupBox Header="基本" Height="350" Margin="10,10,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="329">
+                            <Grid>
+                                <Button Tag="RESET" Content="复位" Click="BasicGuiConfigButtons_Click" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="80"/>
+                                <Button Tag="ID" Content="ID" Click="BasicGuiConfigButtons_Click" HorizontalAlignment="Left" Margin="10,33,0,0" VerticalAlignment="Top" Width="80"/>
+                                <Button Tag="ERR" Content="错误信息" Click="BasicGuiConfigButtons_Click" HorizontalAlignment="Left" Margin="107,10,0,0" VerticalAlignment="Top" Width="80"/>
+                                <Button Tag="STB" Content="状态位" Click="BasicGuiConfigButtons_Click" HorizontalAlignment="Left" Margin="107,33,0,0" VerticalAlignment="Top" Width="80"/>
+                                <Button Tag="TEMP" Content="机器温度" Click="BasicGuiConfigButtons_Click" HorizontalAlignment="Left" Margin="207,10,0,0" VerticalAlignment="Top" Width="80"/>
+                                <Button Tag="LINE" Content="工频频率" Click="BasicGuiConfigButtons_Click" HorizontalAlignment="Left" Margin="207,33,0,0" VerticalAlignment="Top" Width="80"/>
+                                <ComboBox Name="NdigComboBox" SelectedIndex="0" Margin="111,64,0,0" Width="76" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" >
+                                    <ComboBoxItem Content="3" Tag="3"/>
+                                    <ComboBoxItem Content="4" Tag="4"/>
+                                    <ComboBoxItem Content="5" Tag="5"/>
+                                    <ComboBoxItem Content="6" Tag="6"/>
+                                    <ComboBoxItem Content="7" Tag="7"/>
+                                    <ComboBoxItem Content="8" Tag="8"/>
+                                </ComboBox>
+                                <Button Tag="NDIG" Content="显示位数" Click="BasicGuiConfigButtons_Click" HorizontalAlignment="Left" Margin="207,66,0,0" VerticalAlignment="Top" Width="80"/>
+
+                                <ComboBox Name="AcalComboBox" SelectedIndex="0" HorizontalAlignment="Left" Margin="10,110,0,0" VerticalAlignment="Top" Width="163" Height="22">
+                                    <ComboBoxItem Content="ALL (11 minutes)" Tag="ALL"/>
+                                    <ComboBoxItem Content="DCV (1 minute)" Tag="DCV"/>
+                                    <ComboBoxItem Content="AC (1 minute)" Tag="AC"/>
+                                    <ComboBoxItem Content="OHMS (10 minutes)" Tag="OHMS"/>
+                                </ComboBox>
+                                <Button Tag="ACAL" Content="执行自动校准" Click="MeasureGuiConfigButtons_Click" HorizontalAlignment="Left" Margin="178,110,0,0" VerticalAlignment="Top" Width="130" Height="22"/>
+                                <ComboBox Name="RangeComboBox" SelectedIndex="0" HorizontalAlignment="Left" Margin="10,146,0,0" VerticalAlignment="Top" Width="79" Height="22">
+                                    <ComboBoxItem Content="Auto" Tag="AUTO"/>
+                                    <ComboBoxItem Content="100mV" Tag="0.1"/>
+                                    <ComboBoxItem Content="1V" Tag="1"/>
+                                    <ComboBoxItem Content="10V" Tag="10"/>
+                                    <ComboBoxItem Content="100V" Tag="100"/>
+                                    <ComboBoxItem Content="1kV" Tag="1000"/>
+                                </ComboBox>
+                                <ComboBox Name="ResComboBox" SelectedIndex="0" HorizontalAlignment="Left" Margin="94,146,0,0" VerticalAlignment="Top" Width="79" Height="22">
+                                    <ComboBoxItem Content="Default" Tag="DEFAULT"/>
+                                    <ComboBoxItem Content="1nV" Tag="0.001"/>
+                                    <ComboBoxItem Content="10nV" Tag="0.01"/>
+                                    <ComboBoxItem Content="100nV" Tag="0.1"/>
+                                    <ComboBoxItem Content="1uV" Tag="1"/>
+                                    <ComboBoxItem Content="10uV" Tag="10"/>
+                                    <ComboBoxItem Content="100uV" Tag="100"/>
+                                    <ComboBoxItem Content="1mV" Tag="1000"/>
+                                </ComboBox>
+                                <Button Tag="RANGE" Content="设置量程/精度" Click="MeasureGuiConfigButtons_Click" HorizontalAlignment="Left" Margin="178,146,0,0" VerticalAlignment="Top" Width="130" Height="22"/>
+                                <TextBox Name="NplcTextBox" Text="10" HorizontalAlignment="Left" Height="23" Margin="10,183,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="163"/>
+                                <Button Tag="NPLC" Content="设置速率(NPLC)" Click="MeasureGuiConfigButtons_Click" HorizontalAlignment="Left" Margin="178,183,0,0" VerticalAlignment="Top" Width="130" Height="22"/>
+                                <Button Tag="RANGE?" Content="读量程/精度" Click="MeasureGuiConfigButtons_Click" HorizontalAlignment="Left" Margin="16,220,0,0" VerticalAlignment="Top" Width="130" Height="22"/>
+                                <Button Tag="NPLC?" Content="读输出速率(NPLC)" Click="MeasureGuiConfigButtons_Click" HorizontalAlignment="Left" Margin="170,220,0,0" VerticalAlignment="Top" Width="130" Height="22"/>
+                                <TextBox Name="GuiConfigLogTextBox" Margin="10,257,9.8,10" TextWrapping="Wrap" Text=""/>
+                            </Grid>
+                        </GroupBox>
+                        <GroupBox Header="测量" HorizontalAlignment="Left" Margin="344,10,0,0" Width="383" Height="350" VerticalAlignment="Top">
+                            <Grid>
+                                <Button x:Name="SetMinNPLCButton" Content="最高速度(0 NPLC)" Height="22" Margin="10,184,0,0" Click="SetMinNPLCButton_Click" HorizontalAlignment="Left" Width="130" VerticalAlignment="Top"/>
+                                <Button x:Name="SetMaxNPLCButton" Content="最高精度(1000 NPLC)" Height="22" Margin="185,184,0,0" Click="SetMaxNPLCButton_Click" HorizontalAlignment="Left" Width="130" VerticalAlignment="Top"/>
+                                <ComboBox x:Name="ManualReadDCVRangeComboBox" SelectedIndex="0" HorizontalAlignment="Left" Margin="10,221,0,0" VerticalAlignment="Top" Width="79" Height="22">
+                                    <ComboBoxItem Content="Auto" Tag="AUTO"/>
+                                    <ComboBoxItem Content="100mV" Tag="0.1"/>
+                                    <ComboBoxItem Content="1V" Tag="1"/>
+                                    <ComboBoxItem Content="10V" Tag="10"/>
+                                    <ComboBoxItem Content="100V" Tag="100"/>
+                                    <ComboBoxItem Content="1kV" Tag="1000"/>
+                                </ComboBox>
+                                <ComboBox x:Name="ManualReadDCVResComboBox" SelectedIndex="0" HorizontalAlignment="Left" Margin="94,221,0,0" VerticalAlignment="Top" Width="79" Height="22">
+                                    <ComboBoxItem Content="Default" Tag="DEFAULT"/>
+                                    <ComboBoxItem Content="1nV" Tag="0.001"/>
+                                    <ComboBoxItem Content="10nV" Tag="0.01"/>
+                                    <ComboBoxItem Content="100nV" Tag="0.1"/>
+                                    <ComboBoxItem Content="1uV" Tag="1"/>
+                                    <ComboBoxItem Content="10uV" Tag="10"/>
+                                    <ComboBoxItem Content="100uV" Tag="100"/>
+                                    <ComboBoxItem Content="1mV" Tag="1000"/>
+                                </ComboBox>
+                                <TextBlock x:Name="ManualReadDCVCommandTextBlock" Text="Command Here" TextWrapping="Wrap" Margin="185,226,10.2,0" VerticalAlignment="Top"/>
+                                <Button x:Name="ManualReadDCVButton" Content="手动读取电压" Click="ManualReadDCVButton_Click" HorizontalAlignment="Left" Margin="10,255,0,0" VerticalAlignment="Top" Width="130" Height="22"/>
+                                <TextBlock x:Name="ManualReadDCVTextBlock" Text="{Binding StringData}" TextWrapping="Wrap" Margin="185,259,10.2,0" VerticalAlignment="Top"/>
+                                <Button x:Name="SyncDCVDisplayButton" Content="打开同步实时数据" HorizontalAlignment="Left" Margin="216,36,0,0" VerticalAlignment="Top" Width="145" Height="64" Click="SyncDCVDisplayButton_Click"/>
+                                <TextBlock x:Name="SyncDCVDisplayTextBlock" Text="{Binding StringData}" TextWrapping="Wrap" Margin="10,49,160.2,0" Width="201" TextAlignment="Center" FontSize="24" VerticalAlignment="Top"/>
+                                <TextBlock Text="自动测量电压" HorizontalAlignment="Left" Margin="10,16,0,0" VerticalAlignment="Top" Width="201"/>
+                                <TextBlock Text="手动测量电压" HorizontalAlignment="Left" Margin="10,164,0,0" VerticalAlignment="Top" Width="201"/>
+                            </Grid>
+                        </GroupBox>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="串口下位机控制">
+                    <Grid>
+                        <GroupBox Header="传输" HorizontalAlignment="Left" Margin="10,10,0,0" Width="460" Height="392" VerticalAlignment="Top">
+                            <Grid>
+                                <TextBlock Text="命令:" HorizontalAlignment="Left" Margin="10,23,0,0" VerticalAlignment="Top" Width="33"/>
+                                <ComboBox x:Name="SerialPortSendCmdSelectSerialPortComboBox" SelectedIndex="0" HorizontalAlignment="Left" Margin="48,19,0,0" VerticalAlignment="Top" Width="120" Height="23"/>
+                                <TextBlock Text="::" HorizontalAlignment="Left" Margin="173,23,0,0" VerticalAlignment="Top" Width="7"/>
+                                <ComboBox x:Name="SerialPortSendCmdSelectCmdComboBox" SelectedIndex="0" HorizontalAlignment="Left" Margin="185,19,0,0" VerticalAlignment="Top" Width="120" Height="23">
+                                    <ComboBoxItem Content="Set" Tag="SET"/>
+                                    <ComboBoxItem Content="Get" Tag="GET"/>
+                                    <ComboBoxItem Content="Start" Tag="START"/>
+                                    <ComboBoxItem Content="End" Tag="END"/>
+                                    <ComboBoxItem Tag="Other" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+                                        <TextBox Margin="0,0,20,0">
+                                            <TextBox.Resources>
+                                                <VisualBrush x:Key="HintText"  TileMode="None" Opacity="0.5" Stretch="None" AlignmentX="Left">
+                                                    <VisualBrush.Visual>
+                                                        <TextBlock FontStyle="Italic" Text="自定义命令"/>
+                                                    </VisualBrush.Visual>
+                                                </VisualBrush>
+                                            </TextBox.Resources>
+                                            <TextBox.Style>
+                                                <Style TargetType="{x:Type TextBox}">
+                                                    <Style.Triggers>
+                                                        <Trigger Property="Text" Value="{x:Null}">
+                                                            <Setter Property="Background" Value="{StaticResource HintText}"/>
+                                                        </Trigger>
+                                                        <Trigger Property="Text" Value="">
+                                                            <Setter Property="Background" Value="{StaticResource HintText}"/>
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBox.Style>
+                                        </TextBox>
+                                    </ComboBoxItem>
+                                </ComboBox>
+                                <TextBlock Text=";" HorizontalAlignment="Left" Margin="310,23,0,0" VerticalAlignment="Top" Width="7"/>
+                                <TextBox Name="TextBox" Margin="48,47,0,0" TextWrapping="Wrap" Text="" Height="22" VerticalAlignment="Top" HorizontalAlignment="Left" Width="257">
+                                    <TextBox.Resources>
+                                        <VisualBrush x:Key="HintText"  TileMode="None" Opacity="0.5" Stretch="None" AlignmentX="Left">
+                                            <VisualBrush.Visual>
+                                                <TextBlock FontStyle="Italic" Text="自定义参数，可用&quot; ,.;:|&amp;&quot;分隔多个参数"/>
+                                            </VisualBrush.Visual>
+                                        </VisualBrush>
+                                    </TextBox.Resources>
+                                    <TextBox.Style>
+                                        <Style TargetType="{x:Type TextBox}">
+                                            <Style.Triggers>
+                                                <Trigger Property="Text" Value="{x:Null}">
+                                                    <Setter Property="Background" Value="{StaticResource HintText}"/>
+                                                </Trigger>
+                                                <Trigger Property="Text" Value="">
+                                                    <Setter Property="Background" Value="{StaticResource HintText}"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBox.Style>
+                                </TextBox>
+                                <TextBlock Text=";" HorizontalAlignment="Left" Margin="310,51,0,0" VerticalAlignment="Top" Width="7"/>
+                                <TextBlock Text="预览:" HorizontalAlignment="Left" Margin="10,79,0,0" VerticalAlignment="Top" Width="33"/>
+                                <TextBlock Name="SerialPortSendCmdPreviewTextBlock" Text="{Binding StringData}" HorizontalAlignment="Left" Margin="48,79,0,0" VerticalAlignment="Top" Width="269"/>
+                                <Button Content="发送命令" HorizontalAlignment="Left" Margin="328,19,0,0" VerticalAlignment="Top" Width="110" Height="75"/>
                             </Grid>
                         </GroupBox>
                     </Grid>

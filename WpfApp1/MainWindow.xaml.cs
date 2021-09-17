@@ -357,12 +357,19 @@ namespace WpfApp1
                 int baudRate = Convert.ToInt32(((SerialPortBaudRateComboBox.SelectedItem as ComboBoxItem).Tag as string) == "Other"
                     ? ((SerialPortBaudRateComboBox.SelectedItem as ComboBoxItem).Content as TextBox).Text
                     : (SerialPortBaudRateComboBox.SelectedItem as ComboBoxItem).Tag as string);
-                Debug.WriteLine(baudRate);
                 if (!serialPorts.Open(selectedPortName, baudRate))
                 {
                     _ = MessageBox.Show("串口已被打开.");
                 }
-                SerialPortDeviceNameTextBlock.Text = string.Join(", ", serialPorts.SerialPortNames) + " Device Connected.";
+                SerialPortDeviceNameTextBlock.Text = serialPorts.SerialPortNames.Count() == 0
+                    ? "No Device Connected."
+                    : string.Join(",\n", serialPorts.SerialPortInstances.Select(serialPort => $"{serialPort.PortName}({serialPort.BaudRate}bps)").ToArray()) + "\nDevice Connected.";
+                SerialPortDebugSelectComboBox.ItemsSource = serialPorts.SerialPortNames;
+
+                if (SerialPortDebugSelectComboBox.Items.Count != 0 && SerialPortDebugSelectComboBox.SelectedIndex == -1)
+                {
+                    SerialPortDebugSelectComboBox.SelectedIndex = 0;
+                }
             }
             catch (Exception ex)
             {
@@ -381,7 +388,32 @@ namespace WpfApp1
                 }
                 SerialPortDeviceNameTextBlock.Text = serialPorts.SerialPortNames.Count() == 0
                     ? "No Device Connected."
-                    : string.Join(", ", serialPorts.SerialPortNames) + " Device Connected.";
+                    : string.Join(",\n", serialPorts.SerialPortInstances.Select(serialPort => $"{serialPort.PortName}({serialPort.BaudRate}bps)").ToArray()) + "\nDevice Connected.";
+                SerialPortDebugSelectComboBox.ItemsSource = serialPorts.SerialPortNames;
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void SerialPortWriteCmdButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                serialPorts.WriteString(SerialPortDebugSelectComboBox.SelectedItem as string, SerialPortWriteCmdTextBox.Text);
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void SerialPortReadCmdButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                SerialPortReadCmdTextBox.Text = serialPorts.ReadExistingString(SerialPortDebugSelectComboBox.SelectedItem as string);
             }
             catch (Exception ex)
             {
