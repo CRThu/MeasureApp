@@ -175,16 +175,16 @@
                     <Grid>
                         <GroupBox Header="传输" HorizontalAlignment="Left" Margin="10,10,0,0" Width="460" Height="392" VerticalAlignment="Top">
                             <Grid>
-                                <TextBlock Text="命令:" HorizontalAlignment="Left" Margin="10,23,0,0" VerticalAlignment="Top" Width="33"/>
-                                <ComboBox x:Name="SerialPortSendCmdSelectSerialPortComboBox" SelectedIndex="0" HorizontalAlignment="Left" Margin="48,19,0,0" VerticalAlignment="Top" Width="120" Height="23"/>
+                                <TextBlock Text="发送:" HorizontalAlignment="Left" Margin="10,23,0,0" VerticalAlignment="Top" Width="33"/>
+                                <ComboBox x:Name="SerialPortSendCmdSerialPortNameComboBox" HorizontalAlignment="Left" Margin="48,19,0,0" VerticalAlignment="Top" Width="120" Height="23" SelectionChanged="SerialPortSendCmd_Changed"/>
                                 <TextBlock Text="::" HorizontalAlignment="Left" Margin="173,23,0,0" VerticalAlignment="Top" Width="7"/>
-                                <ComboBox x:Name="SerialPortSendCmdSelectCmdComboBox" SelectedIndex="0" HorizontalAlignment="Left" Margin="185,19,0,0" VerticalAlignment="Top" Width="120" Height="23">
-                                    <ComboBoxItem Content="Set" Tag="SET"/>
-                                    <ComboBoxItem Content="Get" Tag="GET"/>
-                                    <ComboBoxItem Content="Start" Tag="START"/>
-                                    <ComboBoxItem Content="End" Tag="END"/>
+                                <ComboBox x:Name="SerialPortSendCmdCommandNameComboBox" SelectedIndex="0" HorizontalAlignment="Left" Margin="185,19,0,0" VerticalAlignment="Top" Width="120" Height="23" SelectionChanged="SerialPortSendCmd_Changed">
+                                    <ComboBoxItem Content="SET" Tag="SET"/>
+                                    <ComboBoxItem Content="GET" Tag="GET"/>
+                                    <ComboBoxItem Content="START" Tag="START"/>
+                                    <ComboBoxItem Content="END" Tag="END"/>
                                     <ComboBoxItem Tag="Other" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
-                                        <TextBox Margin="0,0,20,0">
+                                        <TextBox Margin="0,0,20,0" TextChanged="SerialPortSendCmd_Changed">
                                             <TextBox.Resources>
                                                 <VisualBrush x:Key="HintText"  TileMode="None" Opacity="0.5" Stretch="None" AlignmentX="Left">
                                                     <VisualBrush.Visual>
@@ -208,11 +208,11 @@
                                     </ComboBoxItem>
                                 </ComboBox>
                                 <TextBlock Text=";" HorizontalAlignment="Left" Margin="310,23,0,0" VerticalAlignment="Top" Width="7"/>
-                                <TextBox Name="TextBox" Margin="48,47,0,0" TextWrapping="Wrap" Text="" Height="22" VerticalAlignment="Top" HorizontalAlignment="Left" Width="257">
+                                <TextBox Name="SerialPortSendCmdParamsTextBox" Margin="48,47,0,0" TextWrapping="Wrap" Text="" Height="22" VerticalAlignment="Top" HorizontalAlignment="Left" Width="257" TextChanged="SerialPortSendCmd_Changed">
                                     <TextBox.Resources>
                                         <VisualBrush x:Key="HintText"  TileMode="None" Opacity="0.5" Stretch="None" AlignmentX="Left">
                                             <VisualBrush.Visual>
-                                                <TextBlock FontStyle="Italic" Text="自定义参数，可用&quot; ,.;:|&amp;&quot;分隔多个参数"/>
+                                                <TextBlock FontStyle="Italic" Text="自定义参数，可用&quot; ,.;|&amp;&quot;分隔多个参数"/>
                                             </VisualBrush.Visual>
                                         </VisualBrush>
                                     </TextBox.Resources>
@@ -232,7 +232,25 @@
                                 <TextBlock Text=";" HorizontalAlignment="Left" Margin="310,51,0,0" VerticalAlignment="Top" Width="7"/>
                                 <TextBlock Text="预览:" HorizontalAlignment="Left" Margin="10,79,0,0" VerticalAlignment="Top" Width="33"/>
                                 <TextBlock Name="SerialPortSendCmdPreviewTextBlock" Text="{Binding StringData}" HorizontalAlignment="Left" Margin="48,79,0,0" VerticalAlignment="Top" Width="269"/>
-                                <Button Content="发送命令" HorizontalAlignment="Left" Margin="328,19,0,0" VerticalAlignment="Top" Width="110" Height="75"/>
+                                <Button Name="SerialPortSendCmdButton" Content="发送命令" HorizontalAlignment="Left" Margin="328,19,0,0" VerticalAlignment="Top" Width="110" Height="75" Click="SerialPortSendCmdButton_Click"/>
+                                <TextBlock Text="接收:" HorizontalAlignment="Left" Margin="10,120,0,0" VerticalAlignment="Top" Width="33"/>
+                                <GroupBox Header="编码" HorizontalAlignment="Left" Height="81" Margin="48,122,0,0" VerticalAlignment="Top" Width="92">
+                                    <Grid>
+                                        <RadioButton Content="Ascii" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" IsChecked="True"/>
+                                        <RadioButton Content="Bytes" HorizontalAlignment="Left" Margin="10,34,0,0" VerticalAlignment="Top"/>
+                                    </Grid>
+                                </GroupBox>
+                                <GroupBox Header="数据类型" HorizontalAlignment="Left" Height="81" Margin="145,122,0,0" VerticalAlignment="Top" Width="293">
+                                    <Grid>
+                                        <RadioButton Content="Char" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" IsChecked="True"/>
+                                        <RadioButton Content="Int8" HorizontalAlignment="Left" Margin="83,10,0,0" VerticalAlignment="Top" IsChecked="True"/>
+                                        <RadioButton Content="Int16" HorizontalAlignment="Left" Margin="150,10,0,0" VerticalAlignment="Top"/>
+                                        <RadioButton Content="Int32" HorizontalAlignment="Left" Margin="223,10,0,0" VerticalAlignment="Top"/>
+                                        <CheckBox Content="Array&lt;T&gt;.Count:" HorizontalAlignment="Left" Margin="10,34,0,0" VerticalAlignment="Top"/>
+                                        <TextBox HorizontalAlignment="Left" Height="19" Margin="129,32,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="142"/>
+                                    </Grid>
+                                </GroupBox>
+                                <Button Content="Button" HorizontalAlignment="Left" Margin="48,208,0,0" VerticalAlignment="Top" Width="75"/>
                             </Grid>
                         </GroupBox>
                     </Grid>

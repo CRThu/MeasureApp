@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO.Ports;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -36,6 +37,7 @@ namespace WpfApp1
         private ManualResetEvent resetEvent = new ManualResetEvent(false);
         public StringDataBinding SyncDCVDisplayText = new StringDataBinding() { StringData = "<null>" };
         public StringDataBinding ManualReadDCVText = new StringDataBinding() { StringData = "<null>" };
+        public StringDataBinding SerialPortSendCmdString = new StringDataBinding() { StringData = "<null>::<null>;" };
 
         public MainWindow()
         {
@@ -47,6 +49,7 @@ namespace WpfApp1
             DeviceComboBox.ItemsSource = gpibDeviceNames;
             SyncDCVDisplayTextBlock.DataContext = SyncDCVDisplayText;
             ManualReadDCVTextBlock.DataContext = ManualReadDCVText;
+            SerialPortSendCmdPreviewTextBlock.DataContext = SerialPortSendCmdString;
         }
 
         private void Window_Closed(object sender, EventArgs e)
@@ -365,10 +368,16 @@ namespace WpfApp1
                     ? "No Device Connected."
                     : string.Join(",\n", serialPorts.SerialPortInstances.Select(serialPort => $"{serialPort.PortName}({serialPort.BaudRate}bps)").ToArray()) + "\nDevice Connected.";
                 SerialPortDebugSelectComboBox.ItemsSource = serialPorts.SerialPortNames;
+                SerialPortSendCmdSerialPortNameComboBox.ItemsSource = serialPorts.SerialPortNames;
+
 
                 if (SerialPortDebugSelectComboBox.Items.Count != 0 && SerialPortDebugSelectComboBox.SelectedIndex == -1)
                 {
                     SerialPortDebugSelectComboBox.SelectedIndex = 0;
+                }
+                if (SerialPortSendCmdSerialPortNameComboBox.Items.Count != 0 && SerialPortSendCmdSerialPortNameComboBox.SelectedIndex == -1)
+                {
+                    SerialPortSendCmdSerialPortNameComboBox.SelectedIndex = 0;
                 }
             }
             catch (Exception ex)
@@ -390,6 +399,7 @@ namespace WpfApp1
                     ? "No Device Connected."
                     : string.Join(",\n", serialPorts.SerialPortInstances.Select(serialPort => $"{serialPort.PortName}({serialPort.BaudRate}bps)").ToArray()) + "\nDevice Connected.";
                 SerialPortDebugSelectComboBox.ItemsSource = serialPorts.SerialPortNames;
+                SerialPortSendCmdSerialPortNameComboBox.ItemsSource = serialPorts.SerialPortNames;
             }
             catch (Exception ex)
             {
@@ -419,6 +429,31 @@ namespace WpfApp1
             {
                 _ = MessageBox.Show(ex.ToString());
             }
+        }
+
+        private void SerialPortSendCmd_Changed(object sender, object e)
+        {
+            if (SerialPortSendCmdSerialPortNameComboBox != null
+                && SerialPortSendCmdCommandNameComboBox != null
+                && SerialPortSendCmdParamsTextBox != null)
+            {
+                string serialPortName = SerialPortSendCmdSerialPortNameComboBox.SelectedItem as string;
+                string commandName = ((SerialPortSendCmdCommandNameComboBox.SelectedItem as ComboBoxItem).Tag as string) == "Other"
+                        ? ((SerialPortSendCmdCommandNameComboBox.SelectedItem as ComboBoxItem).Content as TextBox).Text
+                        : (SerialPortSendCmdCommandNameComboBox.SelectedItem as ComboBoxItem).Tag as string;
+                string[] CommandElements = (commandName + ";" + SerialPortSendCmdParamsTextBox.Text).Split(" ,.;|&".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+
+                if (((SerialPortSendCmdCommandNameComboBox.SelectedItem as ComboBoxItem).Tag as string) == "Other")
+                    ((SerialPortSendCmdCommandNameComboBox.SelectedItem as ComboBoxItem).Content as TextBox).Foreground = new SolidColorBrush(Regex.IsMatch(((SerialPortSendCmdCommandNameComboBox.SelectedItem as ComboBoxItem).Content as TextBox).Text, @"[^a-zA-Z0-9]") ? Colors.Red : Colors.Black);
+                SerialPortSendCmdParamsTextBox.Foreground = new SolidColorBrush(Regex.IsMatch(SerialPortSendCmdParamsTextBox.Text, @"[^x00-xff\s,.;|&]") ? Colors.Red : Colors.Black);
+                SerialPortSendCmdString.StringData = $"{serialPortName}::{string.Join(";", CommandElements)};";
+            }
+        }
+
+        private void SerialPortSendCmdButton_Click(object sender, RoutedEventArgs e)
+        {
+            string[] splitCmds = SerialPortSendCmdString.StringData.Split(new string[] { "::" }, StringSplitOptions.RemoveEmptyEntries);
+            serialPorts.WriteString(splitCmds[0], splitCmds[1]);
         }
     }
 }
