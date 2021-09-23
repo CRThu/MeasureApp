@@ -7,23 +7,16 @@ using System.Threading.Tasks;
 
 namespace WpfApp1
 {
-    public class StringDataBinding : INotifyPropertyChanged
+    public class StringDataBinding : ViewModelBase
     {
         private string _stringData;
-        public event PropertyChangedEventHandler PropertyChanged;
         public string StringData
         {
             get => _stringData;
             set
             {
-                //if (value != _stringData)
-                //{
                 _stringData = value;
-                if (PropertyChanged != null)
-                {
-                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs("StringData"));
-                }
-                //}
+                RaisePropertyChanged(() => StringData);
             }
         }
     }

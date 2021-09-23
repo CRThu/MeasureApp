@@ -39,17 +39,28 @@ namespace WpfApp1
         public StringDataBinding ManualReadDCVText = new StringDataBinding() { StringData = "<null>" };
         public StringDataBinding SerialPortSendCmdString = new StringDataBinding() { StringData = "<null>::<null>;" };
 
+        public SerialPortRecvDataType serialPortRecvDataType = new SerialPortRecvDataType();
+        private dynamic RecvDataPraseTemp;
+        //public List<dynamic> serialPortRecvDataStorage = new List<dynamic>();
+        public ObservableCollection<StringDataBinding> SerialPortRecvDataStorage = new ObservableCollection<StringDataBinding>();
+
         public MainWindow()
         {
             InitializeComponent();
 
             SearchGPIBDevicesButton_Click(null, null);
             SearchSerialPortButton_Click(null, null);
+            SerialPortSendCmd_Changed(null, null);
 
             DeviceComboBox.ItemsSource = gpibDeviceNames;
             SyncDCVDisplayTextBlock.DataContext = SyncDCVDisplayText;
             ManualReadDCVTextBlock.DataContext = ManualReadDCVText;
             SerialPortSendCmdPreviewTextBlock.DataContext = SerialPortSendCmdString;
+            SerialPortRecvDataStorageDataGrid.ItemsSource = SerialPortRecvDataStorage;
+
+            SerialPortRecvDataTypesGrid.DataContext = serialPortRecvDataType;
+            serialPortRecvDataType.SerialPortRecvDataTypeEnum = SerialPortRecvDataTypeEnum.Char;
+            serialPortRecvDataType.SerialPortRecvDataEncodeEnum = SerialPortRecvDataEncodeEnum.Bytes;
         }
 
         private void Window_Closed(object sender, EventArgs e)
@@ -304,51 +315,79 @@ namespace WpfApp1
 
         private void ManualReadDCVButton_Click(object sender, RoutedEventArgs e)
         {
-            // %_resolution = (actual resolution/maximum input) × 100
-            string setRange = (ManualReadDCVRangeComboBox.SelectedItem as ComboBoxItem).Tag as string;
-            string setResolution = (ManualReadDCVResComboBox.SelectedItem as ComboBoxItem).Tag as string;
-            string rangeCmd = $"DCV {setRange}";
-            if (setRange != "AUTO" && setResolution != "DEFAULT")
+            try
             {
-                decimal setRangeDecimal = Convert.ToDecimal(setRange);
-                decimal setResolutionDecimal = Convert.ToDecimal(setResolution);
-                rangeCmd += $",{setResolutionDecimal / setRangeDecimal / 10000}";
-            }
-            ManualReadDCVCommandTextBlock.Text = rangeCmd;
-            ManualReadDCVText.StringData = "Measuring...";
-            _ = Task.Run(() =>
+                // %_resolution = (actual resolution/maximum input) × 100
+                string setRange = (ManualReadDCVRangeComboBox.SelectedItem as ComboBoxItem).Tag as string;
+                string setResolution = (ManualReadDCVResComboBox.SelectedItem as ComboBoxItem).Tag as string;
+                string rangeCmd = $"DCV {setRange}";
+                if (setRange != "AUTO" && setResolution != "DEFAULT")
                 {
-                    ManualReadDCVText.StringData = gpib.QueryDemical(rangeCmd).ToString();
-                });
+                    decimal setRangeDecimal = Convert.ToDecimal(setRange);
+                    decimal setResolutionDecimal = Convert.ToDecimal(setResolution);
+                    rangeCmd += $",{setResolutionDecimal / setRangeDecimal / 10000}";
+                }
+                ManualReadDCVCommandTextBlock.Text = rangeCmd;
+                ManualReadDCVText.StringData = "Measuring...";
+                _ = Task.Run(() =>
+                    {
+                        ManualReadDCVText.StringData = gpib.QueryDemical(rangeCmd).ToString();
+                    });
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
+            }
         }
 
         private void SetMinNPLCButton_Click(object sender, RoutedEventArgs e)
         {
-            gpib.Write("NPLC 0");
+            try
+            {
+                gpib.Write("NPLC 0");
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
+            }
         }
 
         private void SetMaxNPLCButton_Click(object sender, RoutedEventArgs e)
         {
-            gpib.Write("NPLC 1000");
+            try
+            {
+                gpib.Write("NPLC 1000");
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
+            }
         }
 
         private void SearchSerialPortButton_Click(object sender, RoutedEventArgs e)
         {
-            SerialPortNameComboBox.Items.Clear();
-            string[] portList = SerialPort.GetPortNames();
-            string[] portDescriptionList = HardwareInfoUtil.GetSerialPortFullName();
-            for (int i = 0; i < portList.Length; ++i)
+            try
             {
-                ComboBoxItem comboBoxItem = new ComboBoxItem
+                SerialPortNameComboBox.Items.Clear();
+                string[] portList = SerialPort.GetPortNames();
+                string[] portDescriptionList = HardwareInfoUtil.GetSerialPortFullName();
+                for (int i = 0; i < portList.Length; ++i)
                 {
-                    Content = portList[i] + "|" + portDescriptionList.Where(str => str.Contains(portList[i])).First(),
-                    Tag = portList[i]
-                };
-                _ = SerialPortNameComboBox.Items.Add(comboBoxItem);
+                    ComboBoxItem comboBoxItem = new ComboBoxItem
+                    {
+                        Content = portList[i] + "|" + portDescriptionList.Where(str => str.Contains(portList[i])).First(),
+                        Tag = portList[i]
+                    };
+                    _ = SerialPortNameComboBox.Items.Add(comboBoxItem);
+                }
+                if (portList.Length > 0)
+                {
+                    SerialPortNameComboBox.SelectedIndex = 0;
+                }
             }
-            if (portList.Length > 0)
+            catch (Exception ex)
             {
-                SerialPortNameComboBox.SelectedIndex = 0;
+                _ = MessageBox.Show(ex.ToString());
             }
         }
 
@@ -369,7 +408,7 @@ namespace WpfApp1
                     : string.Join(",\n", serialPorts.SerialPortInstances.Select(serialPort => $"{serialPort.PortName}({serialPort.BaudRate}bps)").ToArray()) + "\nDevice Connected.";
                 SerialPortDebugSelectComboBox.ItemsSource = serialPorts.SerialPortNames;
                 SerialPortSendCmdSerialPortNameComboBox.ItemsSource = serialPorts.SerialPortNames;
-
+                SerialPortRecvDataSerialPortNameComboBox.ItemsSource = serialPorts.SerialPortNames;
 
                 if (SerialPortDebugSelectComboBox.Items.Count != 0 && SerialPortDebugSelectComboBox.SelectedIndex == -1)
                 {
@@ -378,6 +417,10 @@ namespace WpfApp1
                 if (SerialPortSendCmdSerialPortNameComboBox.Items.Count != 0 && SerialPortSendCmdSerialPortNameComboBox.SelectedIndex == -1)
                 {
                     SerialPortSendCmdSerialPortNameComboBox.SelectedIndex = 0;
+                }
+                if (SerialPortRecvDataSerialPortNameComboBox.Items.Count != 0 && SerialPortRecvDataSerialPortNameComboBox.SelectedIndex == -1)
+                {
+                    SerialPortRecvDataSerialPortNameComboBox.SelectedIndex = 0;
                 }
             }
             catch (Exception ex)
@@ -433,27 +476,133 @@ namespace WpfApp1
 
         private void SerialPortSendCmd_Changed(object sender, object e)
         {
-            if (SerialPortSendCmdSerialPortNameComboBox != null
+            try
+            {
+                if (SerialPortSendCmdSerialPortNameComboBox != null
                 && SerialPortSendCmdCommandNameComboBox != null
                 && SerialPortSendCmdParamsTextBox != null)
-            {
-                string serialPortName = SerialPortSendCmdSerialPortNameComboBox.SelectedItem as string;
-                string commandName = ((SerialPortSendCmdCommandNameComboBox.SelectedItem as ComboBoxItem).Tag as string) == "Other"
-                        ? ((SerialPortSendCmdCommandNameComboBox.SelectedItem as ComboBoxItem).Content as TextBox).Text
-                        : (SerialPortSendCmdCommandNameComboBox.SelectedItem as ComboBoxItem).Tag as string;
-                string[] CommandElements = (commandName + ";" + SerialPortSendCmdParamsTextBox.Text).Split(" ,.;|&".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                {
+                    string serialPortName = SerialPortSendCmdSerialPortNameComboBox.SelectedItem as string;
+                    string commandName = ((SerialPortSendCmdCommandNameComboBox.SelectedItem as ComboBoxItem).Tag as string) == "Other"
+                            ? ((SerialPortSendCmdCommandNameComboBox.SelectedItem as ComboBoxItem).Content as TextBox).Text
+                            : (SerialPortSendCmdCommandNameComboBox.SelectedItem as ComboBoxItem).Tag as string;
+                    string[] CommandElements = (commandName + ";" + SerialPortSendCmdParamsTextBox.Text).Split(" ,.;|&".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
 
-                if (((SerialPortSendCmdCommandNameComboBox.SelectedItem as ComboBoxItem).Tag as string) == "Other")
-                    ((SerialPortSendCmdCommandNameComboBox.SelectedItem as ComboBoxItem).Content as TextBox).Foreground = new SolidColorBrush(Regex.IsMatch(((SerialPortSendCmdCommandNameComboBox.SelectedItem as ComboBoxItem).Content as TextBox).Text, @"[^a-zA-Z0-9]") ? Colors.Red : Colors.Black);
-                SerialPortSendCmdParamsTextBox.Foreground = new SolidColorBrush(Regex.IsMatch(SerialPortSendCmdParamsTextBox.Text, @"[^x00-xff\s,.;|&]") ? Colors.Red : Colors.Black);
-                SerialPortSendCmdString.StringData = $"{serialPortName}::{string.Join(";", CommandElements)};";
+                    if (((SerialPortSendCmdCommandNameComboBox.SelectedItem as ComboBoxItem).Tag as string) == "Other")
+                        ((SerialPortSendCmdCommandNameComboBox.SelectedItem as ComboBoxItem).Content as TextBox).Foreground = new SolidColorBrush(Regex.IsMatch(((SerialPortSendCmdCommandNameComboBox.SelectedItem as ComboBoxItem).Content as TextBox).Text, @"[^a-zA-Z0-9]") ? Colors.Red : Colors.Black);
+                    SerialPortSendCmdParamsTextBox.Foreground = new SolidColorBrush(Regex.IsMatch(SerialPortSendCmdParamsTextBox.Text, @"[^x00-xff\s,.;|&]") ? Colors.Red : Colors.Black);
+                    SerialPortSendCmdString.StringData = $"{serialPortName}::{string.Join(";", CommandElements)};";
+                }
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
             }
         }
 
         private void SerialPortSendCmdButton_Click(object sender, RoutedEventArgs e)
         {
-            string[] splitCmds = SerialPortSendCmdString.StringData.Split(new string[] { "::" }, StringSplitOptions.RemoveEmptyEntries);
-            serialPorts.WriteString(splitCmds[0], splitCmds[1]);
+            try
+            {
+                string[] splitCmds = SerialPortSendCmdString.StringData.Split(new string[] { "::" }, StringSplitOptions.RemoveEmptyEntries);
+                serialPorts.WriteString(splitCmds[0], splitCmds[1]);
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void SerialPortRecvDataButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string serialPortName = SerialPortRecvDataSerialPortNameComboBox.SelectedItem as string;
+                switch (serialPortRecvDataType.SerialPortRecvDataEncodeEnum)
+                {
+                    case SerialPortRecvDataEncodeEnum.Ascii:
+                        string recvString = serialPorts.ReadExistingString(serialPortName);
+                        switch (serialPortRecvDataType.SerialPortRecvDataTypeEnum)
+                        {
+                            case SerialPortRecvDataTypeEnum.Char:
+                                RecvDataPraseTemp = recvString;
+                                break;
+                            case SerialPortRecvDataTypeEnum.UInt8:
+                                RecvDataPraseTemp = recvString.Split(" ,.;|&".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Select(data => Convert.ToByte(data)).ToArray();
+                                break;
+                            case SerialPortRecvDataTypeEnum.UInt16:
+                                RecvDataPraseTemp = recvString.Split(" ,.;|&".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Select(data => Convert.ToUInt16(data)).ToArray();
+                                break;
+                            case SerialPortRecvDataTypeEnum.UInt32:
+                                RecvDataPraseTemp = recvString.Split(" ,.;|&".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Select(data => Convert.ToInt32(data)).ToArray();
+                                break;
+                            default:
+                                throw new NotImplementedException();
+                        }
+                        break;
+                    case SerialPortRecvDataEncodeEnum.Bytes:
+                        int bytesLength = serialPortRecvDataType.RequiredBytesLength;
+                        byte[] recvBytes = new byte[bytesLength];
+                        int recvBytesLen = serialPorts.Read(serialPortName, recvBytes, bytesLength);
+                        if (recvBytesLen != recvBytes.Length)
+                        {
+                            _ = MessageBox.Show($"读取超时, RecvLength = {recvBytesLen}/{recvBytes.Length}!");
+                            SerialPortRecvDataDisplayTextBox.Text = BitConverter.ToString(recvBytes);
+                            return;
+                        }
+                        switch (serialPortRecvDataType.SerialPortRecvDataTypeEnum)
+                        {
+                            case SerialPortRecvDataTypeEnum.Char:
+                                RecvDataPraseTemp = Encoding.ASCII.GetString(recvBytes);
+                                break;
+                            case SerialPortRecvDataTypeEnum.UInt8:
+                                RecvDataPraseTemp = recvBytes;
+                                break;
+                            case SerialPortRecvDataTypeEnum.UInt16:
+                                RecvDataPraseTemp = SerialPortRecvDataType.FromBytes<UInt16>(recvBytes);
+                                break;
+                            case SerialPortRecvDataTypeEnum.UInt32:
+                                RecvDataPraseTemp = SerialPortRecvDataType.FromBytes<UInt32>(recvBytes);
+                                break;
+                            default:
+                                throw new NotImplementedException();
+                        }
+                        break;
+                    default:
+                        throw new NotImplementedException();
+                }
+                SerialPortRecvDataDisplayTextBox.Text = RecvDataPraseTemp is Array ? string.Join(", ", RecvDataPraseTemp) : RecvDataPraseTemp.ToString();
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void SerialPortRecvDataStorageButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (RecvDataPraseTemp is Array)
+                {
+                    object[] objArray = new object[RecvDataPraseTemp.Length];
+                    RecvDataPraseTemp.CopyTo(objArray, 0);
+                    //serialPortRecvDataStorage.AddRange(objArray);
+                    foreach (object obj in objArray)
+                    {
+                        SerialPortRecvDataStorage.Add(new StringDataBinding { StringData = obj.ToString() });
+                    }
+                }
+                else
+                {
+                    //serialPortRecvDataStorage.Add(RecvDataPraseTemp);
+                    SerialPortRecvDataStorage.Add(new StringDataBinding { StringData = RecvDataPraseTemp.ToString() });
+                }
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
+            }
         }
     }
 }
