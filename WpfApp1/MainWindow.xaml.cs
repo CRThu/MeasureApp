@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
+using System.IO;
 using System.IO.Ports;
 using System.Linq;
 using System.Text;
@@ -19,6 +21,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using Microsoft.Win32;
 using NationalInstruments.VisaNS;
 
 namespace WpfApp1
@@ -36,12 +39,14 @@ namespace WpfApp1
         public bool IsSyncDCVDisplay = false;
         private ManualResetEvent resetEvent = new ManualResetEvent(false);
         public StringDataBinding SyncDCVDisplayText = new StringDataBinding() { StringData = "<null>" };
+        public BoolDataBinding SyncDCVIsAutoStorage = new BoolDataBinding() { BoolData = false };
         public StringDataBinding ManualReadDCVText = new StringDataBinding() { StringData = "<null>" };
         public StringDataBinding SerialPortSendCmdString = new StringDataBinding() { StringData = "<null>::<null>;" };
 
         public SerialPortRecvDataType serialPortRecvDataType = new SerialPortRecvDataType();
         private dynamic RecvDataPraseTemp;
         //public List<dynamic> serialPortRecvDataStorage = new List<dynamic>();
+        public ObservableCollection<StringDataBinding> MultimeterDataStorage = new ObservableCollection<StringDataBinding>();
         public ObservableCollection<StringDataBinding> SerialPortRecvDataStorage = new ObservableCollection<StringDataBinding>();
 
         public MainWindow()
@@ -56,6 +61,7 @@ namespace WpfApp1
             SyncDCVDisplayTextBlock.DataContext = SyncDCVDisplayText;
             ManualReadDCVTextBlock.DataContext = ManualReadDCVText;
             SerialPortSendCmdPreviewTextBlock.DataContext = SerialPortSendCmdString;
+            SyncDCVDisplayStorageCheckBox.DataContext = SyncDCVIsAutoStorage;
             SerialPortRecvDataStorageDataGrid.ItemsSource = SerialPortRecvDataStorage;
 
             SerialPortRecvDataTypesGrid.DataContext = serialPortRecvDataType;
@@ -67,6 +73,11 @@ namespace WpfApp1
         {
             gpib.Dispose();
             serialPorts.CloseAll();
+        }
+
+        private void GeneralDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
+        {
+            e.Row.Header = (e.Row.GetIndex() + 1).ToString();
         }
 
         private void SearchGPIBDevicesButton_Click(object sender, RoutedEventArgs e)
@@ -152,6 +163,7 @@ namespace WpfApp1
                 try
                 {
                     ReadCmdTextBox.Text = gpib.ReadString();
+
                 }
                 catch (Exception ex)
                 {
@@ -186,7 +198,17 @@ namespace WpfApp1
                             while (true)
                             {
                                 _ = resetEvent.WaitOne();
-                                SyncDCVDisplayText.StringData = $"{gpib.ReadDemical()}";
+                                decimal DCVDisplay = gpib.ReadDemical();
+                                SyncDCVDisplayText.StringData = $"{DCVDisplay}";
+                                if (SyncDCVIsAutoStorage.BoolData)
+                                {
+                                    // CollectionView不支持从调度程序以外的线程对其SourceCollection进行的更改
+                                    SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext(Application.Current.Dispatcher));
+                                    SynchronizationContext.Current.Post(p1 =>
+                                    {
+                                        MultimeterDataStorage.Add(new StringDataBinding() { StringData = DCVDisplay.ToString() });
+                                    }, null);
+                                }
                             }
                         }
                         catch (Exception ex)
@@ -579,6 +601,23 @@ namespace WpfApp1
             }
         }
 
+        private void MultimeterStorageButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                // CollectionView不支持从调度程序以外的线程对其SourceCollection进行的更改
+                SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext(Application.Current.Dispatcher));
+                SynchronizationContext.Current.Post(p1 =>
+                {
+                    MultimeterDataStorage.Add(ManualReadDCVText.Clone());
+                }, null);
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
+            }
+        }
+
         private void SerialPortRecvDataStorageButton_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -597,6 +636,89 @@ namespace WpfApp1
                 {
                     //serialPortRecvDataStorage.Add(RecvDataPraseTemp);
                     SerialPortRecvDataStorage.Add(new StringDataBinding { StringData = RecvDataPraseTemp.ToString() });
+                }
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void DataStorageSelectListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            try
+            {
+                if (DataStorageDataGrid != null)
+                {
+                    switch ((DataStorageSelectListBox.SelectedItem as ListBoxItem).Tag)
+                    {
+                        case "Multimeter":
+                            DataStorageDataGrid.ItemsSource = MultimeterDataStorage;
+                            break;
+                        case "SerialPort":
+                            DataStorageDataGrid.ItemsSource = SerialPortRecvDataStorage;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void DataStorageExportListDataButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string dataStorageTag = (DataStorageSelectListBox.SelectedItem as ListBoxItem).Tag as string;
+                SaveFileDialog saveFileDialog = new SaveFileDialog
+                {
+                    Title = "存储数据",
+                    FileName = $"{dataStorageTag}DataStorage_{DateTime.Now.ToString().Replace('/', '-').Replace(':', '-').Replace(' ', '-')}.txt",
+                    DefaultExt = ".txt",
+                    Filter = "CSV File|*.txt"
+                };
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    switch (dataStorageTag)
+                    {
+                        case "Multimeter":
+                            File.WriteAllLines(saveFileDialog.FileName, MultimeterDataStorage.Select(strcls => strcls.StringData));
+                            break;
+                        case "SerialPort":
+                            File.WriteAllLines(saveFileDialog.FileName, SerialPortRecvDataStorage.Select(strcls => strcls.StringData));
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void DataStorageClearListDataButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (MessageBox.Show("清理本次通信数据，是否继续？", "清理数据确认", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
+                {
+                    switch ((DataStorageSelectListBox.SelectedItem as ListBoxItem).Tag)
+                    {
+                        case "Multimeter":
+                            MultimeterDataStorage.Clear();
+                            break;
+                        case "SerialPort":
+                            SerialPortRecvDataStorage.Clear();
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
             catch (Exception ex)

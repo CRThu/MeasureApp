@@ -66,6 +66,7 @@
     <Compile Include="ViewModel\SerialPortRecvDataType.cs" />
     <Compile Include="SerialPorts.cs" />
     <Compile Include="Settings.cs" />
+    <Compile Include="ViewModel\BoolDataBinding.cs" />
     <Compile Include="ViewModel\StringDataBinding.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
     <Page Include="MainWindow.xaml">

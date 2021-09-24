@@ -19,5 +19,13 @@ namespace WpfApp1
                 RaisePropertyChanged(() => StringData);
             }
         }
+
+        public StringDataBinding Clone()
+        {
+            return new StringDataBinding
+            {
+                StringData = StringData
+            };
+        }
     }
 }
