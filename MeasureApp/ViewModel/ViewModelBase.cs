@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WpfApp1
+namespace MeasureApp
 {
     public class ViewModelBase : INotifyPropertyChanged
     {

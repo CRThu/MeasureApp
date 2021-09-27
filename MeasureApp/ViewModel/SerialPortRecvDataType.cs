@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 using System.Windows.Data;
 using System.ComponentModel;
 using System.Windows;
-using System.Web.Script.Serialization;
+using Newtonsoft.Json;
 
-namespace WpfApp1
+namespace MeasureApp
 {
     public enum SerialPortRecvDataTypeEnum
     {
@@ -153,9 +153,8 @@ namespace WpfApp1
 
         public static T ConvertObject<T>(object asObject) where T:new()
         {
-            JavaScriptSerializer serializer = new JavaScriptSerializer();
-            string json = serializer.Serialize(asObject);
-            T t = serializer.Deserialize<T>(json);
+            string json = JsonConvert.SerializeObject(asObject);
+            T t = JsonConvert.DeserializeObject<T>(json);
             return t;
         }
     }
