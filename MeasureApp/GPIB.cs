@@ -18,6 +18,12 @@ namespace MeasureApp
         public string deviceAddr = string.Empty;
         public MessageBasedSession messageBasedSession;
 
+        public int Timeout
+        {
+            get => messageBasedSession.Timeout;
+            set => messageBasedSession.Timeout = value;
+        }
+
         public bool IsDataAvailable
         {
             get

@@ -19,6 +19,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using MeasureApp.ViewModel;
 
 namespace MeasureApp
 {
@@ -27,7 +28,12 @@ namespace MeasureApp
     /// </summary>
     public partial class MainWindow : Window
     {
-        public GPIB gpib = new GPIB();
+        MainWindowDataContext mainWindowDataContext = new MainWindowDataContext();
+
+        // TODO
+        GPIB3458AMeasure measure3458A = new GPIB3458AMeasure();
+        //public GPIB gpib = new GPIB();
+
         public SerialPorts serialPorts = new SerialPorts();
 
         public ObservableCollection<string> gpibDeviceNames = new ObservableCollection<string>();
@@ -49,6 +55,9 @@ namespace MeasureApp
         {
             InitializeComponent();
 
+            //DataContext = new MainWindowDataContext();
+            DataContext = mainWindowDataContext;
+
             SearchGPIBDevicesButton_Click(null, null);
             SearchSerialPortButton_Click(null, null);
             SerialPortSendCmd_Changed(null, null);
@@ -67,7 +76,7 @@ namespace MeasureApp
 
         private void Window_Closed(object sender, EventArgs e)
         {
-            gpib.Dispose();
+            measure3458A.Dispose();
             serialPorts.CloseAll();
         }
 
@@ -86,7 +95,7 @@ namespace MeasureApp
                     gpibDeviceNames.Add(resource);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // _ = MessageBox.Show(ex.ToString());
             }
@@ -101,11 +110,9 @@ namespace MeasureApp
         {
             try
             {
-                gpib.Dispose();
-                gpib.Open(DeviceComboBox.SelectedItem as string);
-                gpib.messageBasedSession.Timeout = Properties.Settings.Default.GPIBTimeout;
-                gpib.Write("END");
-                string deviceName = gpib.Query("ID?");
+                measure3458A.Dispose();
+                measure3458A.Timeout = Properties.Settings.Default.GPIBTimeout;
+                string deviceName = measure3458A.Open(DeviceComboBox.SelectedItem as string);
                 DeviceNameLabel.Text = deviceName;
             }
             catch (Exception ex)
@@ -116,11 +123,11 @@ namespace MeasureApp
 
         private void QueryCmdButton_Click(object sender, RoutedEventArgs e)
         {
-            if (gpib.IsOpen)
+            if (measure3458A.IsOpen)
             {
                 try
                 {
-                    ReadCmdTextBox.Text = gpib.Query(WriteCmdTextBox.Text).ToString();
+                    ReadCmdTextBox.Text = measure3458A.QueryCommand(WriteCmdTextBox.Text).ToString();
                 }
                 catch (Exception ex)
                 {
@@ -135,11 +142,11 @@ namespace MeasureApp
 
         private void WriteCmdButton_Click(object sender, RoutedEventArgs e)
         {
-            if (gpib.IsOpen)
+            if (measure3458A.IsOpen)
             {
                 try
                 {
-                    gpib.Write(WriteCmdTextBox.Text);
+                    measure3458A.WriteCommand(WriteCmdTextBox.Text);
                 }
                 catch (Exception ex)
                 {
@@ -154,12 +161,11 @@ namespace MeasureApp
 
         private void ReadCmdButton_Click(object sender, RoutedEventArgs e)
         {
-            if (gpib.IsOpen)
+            if (measure3458A.IsOpen)
             {
                 try
                 {
-                    ReadCmdTextBox.Text = gpib.ReadString();
-
+                    ReadCmdTextBox.Text = measure3458A.ReadString();
                 }
                 catch (Exception ex)
                 {
@@ -182,7 +188,7 @@ namespace MeasureApp
             }
             else
             {
-                if (gpib.IsOpen)
+                if (measure3458A.IsOpen)
                 {
                     IsSyncDCVDisplay = true;
                     resetEvent.Set();
