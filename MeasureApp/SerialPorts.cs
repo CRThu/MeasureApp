@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO.Ports;
 using System.Linq;
 using System.Text;
@@ -90,29 +91,34 @@ namespace MeasureApp
             }
         }
 
-        // SOLUTION:https://stackoverflow.com/questions/16439897/serialport-readbyte-int32-int32-is-not-blocking-but-i-want-it-to-how-do
-        // return Success or Receive whole packet timeout
         public int Read(string serialPort, byte[] responseBytes, int bytesExpected)
         {
-            int offset = 0, bytesRead;
-            Thread t = new Thread(o => Thread.Sleep(SerialPortsDict[serialPort].ReadTimeout));
-            t.Start(this);
-            while (t.IsAlive)
-            {
-                if (bytesExpected > 0 && SerialPortsDict[serialPort].BytesToRead > 0)
-                {
-                    bytesRead = SerialPortsDict[serialPort].Read(responseBytes, offset, bytesExpected);
-                    offset += bytesRead;
-                    bytesExpected -= bytesRead;
-                }
-                else if (bytesExpected == 0)
-                {
-                    // TODO
-                    t.Abort();
-                }
-            }
-            return offset;
+            return Read(serialPort, responseBytes, bytesExpected, SerialPortsDict[serialPort].ReadTimeout);
         }
 
+        public int Read(string serialPort, byte[] responseBytes, int bytesExpected, int millisecondsTimeout)
+        {
+            int offset = 0, bytesRead;
+            bool result = TaskUtility.TimeoutCheck(millisecondsTimeout, () =>
+             {
+                 while (bytesExpected > 0)
+                 {
+                     if (SerialPortsDict[serialPort].BytesToRead > 0)
+                     {
+                         try
+                         {
+                             bytesRead = SerialPortsDict[serialPort].Read(responseBytes, offset, bytesExpected);
+                             offset += bytesRead;
+                             bytesExpected -= bytesRead;
+                         }
+                         catch (Exception)
+                         {
+                         }
+                     }
+                 }
+                 return true;
+             });
+            return offset;
+        }
     }
 }

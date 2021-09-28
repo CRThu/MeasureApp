@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MeasureApp
 {
-    public class TaskUtility
+    public static class TaskUtility
     {
         public static T TimeoutCheck<T>(int millisecondsTimeout, Func<T> func)
         {
@@ -17,6 +17,7 @@ namespace MeasureApp
             {
                 T result = func.Invoke();
                 isCompleted = true;
+                resetEvent.Set();
                 return result;
             });
             _ = resetEvent.WaitOne(millisecondsTimeout);
