@@ -20,6 +20,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using MeasureApp.ViewModel;
+using System.Reflection;
+using System.Diagnostics;
 
 namespace MeasureApp
 {
@@ -30,9 +32,10 @@ namespace MeasureApp
     {
         MainWindowDataContext mainWindowDataContext = new MainWindowDataContext();
 
-        // TODO
         GPIB3458AMeasure measure3458A = new GPIB3458AMeasure();
-        //public GPIB gpib = new GPIB();
+
+        DataStorage dataStorage = new DataStorage();
+        string Key3458AString = "3458A Data Storage";
 
         public SerialPorts serialPorts = new SerialPorts();
 
@@ -40,16 +43,15 @@ namespace MeasureApp
 
         public bool IsSyncDCVDisplay = false;
         private ManualResetEvent resetEvent = new ManualResetEvent(false);
-        public StringDataBinding SyncDCVDisplayText = new StringDataBinding() { StringData = "<null>" };
+        public StringDataClass SyncDCVDisplayText = new StringDataClass() { StringData = "<null>" };
         public BoolDataBinding SyncDCVIsAutoStorage = new BoolDataBinding() { BoolData = false };
-        public StringDataBinding ManualReadDCVText = new StringDataBinding() { StringData = "<null>" };
-        public StringDataBinding SerialPortSendCmdString = new StringDataBinding() { StringData = "<null>::<null>;" };
+        public StringDataClass ManualReadDCVText = new StringDataClass() { StringData = "<null>" };
+        public StringDataClass SerialPortSendCmdString = new StringDataClass() { StringData = "<null>::<null>;" };
 
         public SerialPortRecvDataType serialPortRecvDataType = new SerialPortRecvDataType();
         private dynamic RecvDataPraseTemp;
-        //public List<dynamic> serialPortRecvDataStorage = new List<dynamic>();
-        public ObservableCollection<StringDataBinding> MultimeterDataStorage = new ObservableCollection<StringDataBinding>();
-        public ObservableCollection<StringDataBinding> SerialPortRecvDataStorage = new ObservableCollection<StringDataBinding>();
+        //public ObservableCollection<StringDataClass> MultimeterDataStorage = new ObservableCollection<StringDataClass>();
+        public ObservableCollection<StringDataClass> SerialPortRecvDataStorage = new ObservableCollection<StringDataClass>();
 
         public MainWindow()
         {
@@ -111,8 +113,8 @@ namespace MeasureApp
             try
             {
                 measure3458A.Dispose();
-                measure3458A.Timeout = Properties.Settings.Default.GPIBTimeout;
                 string deviceName = measure3458A.Open(DeviceComboBox.SelectedItem as string);
+                measure3458A.Timeout = Properties.Settings.Default.GPIBTimeout;
                 DeviceNameLabel.Text = deviceName;
             }
             catch (Exception ex)
@@ -200,7 +202,8 @@ namespace MeasureApp
                             while (true)
                             {
                                 _ = resetEvent.WaitOne();
-                                decimal DCVDisplay = gpib.ReadDemical();
+                                // 3458A Multimeter User's Guide Page 149
+                                decimal DCVDisplay = measure3458A.ReadDecimal();
                                 SyncDCVDisplayText.StringData = $"{DCVDisplay}";
                                 if (SyncDCVIsAutoStorage.BoolData)
                                 {
@@ -208,7 +211,8 @@ namespace MeasureApp
                                     SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext(Application.Current.Dispatcher));
                                     SynchronizationContext.Current.Post(p1 =>
                                     {
-                                        MultimeterDataStorage.Add(new StringDataBinding() { StringData = DCVDisplay.ToString() });
+                                        dataStorage.AddData(Key3458AString, DCVDisplay);
+                                        // MultimeterDataStorage.Add(new StringDataClass() { StringData = DCVDisplay.ToString() });
                                     }, null);
                                 }
                             }
@@ -228,36 +232,34 @@ namespace MeasureApp
 
         private void BasicGuiConfigButtons_Click(object sender, RoutedEventArgs e)
         {
-            if (gpib.IsOpen)
+            if (measure3458A.IsOpen)
             {
                 try
                 {
                     switch ((sender as Button).Tag as string)
                     {
                         case "RESET":
-                            gpib.Write("RESET");
-                            gpib.Write("END");
-                            gpib.Write("NDIG 8");
-                            GuiConfigLogTextBox.Text = $"Write: RESET & END & NDIG 8";
+                            measure3458A.Reset();
+                            GuiConfigLogTextBox.Text = $"Write: RESET & END";
                             break;
                         case "ID":
-                            GuiConfigLogTextBox.Text = $"Query: ID?\nReturn: {gpib.Query("ID?")}";
+                            GuiConfigLogTextBox.Text = $"Query: ID?\nReturn: {measure3458A.GetID()}";
                             break;
                         case "ERR":
-                            GuiConfigLogTextBox.Text = $"Query: ERRSTR?\nReturn: {gpib.Query("ERRSTR?")}";
+                            GuiConfigLogTextBox.Text = $"Query: ERRSTR?\nReturn: {measure3458A.GetErrorString()}";
                             break;
                         case "STB":
-                            GuiConfigLogTextBox.Text = $"Query: STB?\nReturn: {gpib.Query("STB?")}";
+                            GuiConfigLogTextBox.Text = $"Query: STB?\nReturn: {measure3458A.ReadStatusByte()}";
                             break;
                         case "TEMP":
-                            GuiConfigLogTextBox.Text = $"Query: TEMP?\nReturn: {gpib.Query("TEMP?")}";
+                            GuiConfigLogTextBox.Text = $"Query: TEMP?\nReturn: {measure3458A.GetTemp()}";
                             break;
                         case "LINE":
-                            GuiConfigLogTextBox.Text = $"Query: LINE?\nReturn: {gpib.QueryDemical("LINE?")} Hz";
+                            GuiConfigLogTextBox.Text = $"Query: LINE?\nReturn: {measure3458A.GetLineFreq()} Hz";
                             break;
                         case "NDIG":
                             string setNdig = (NdigComboBox.SelectedItem as ComboBoxItem).Tag as string;
-                            gpib.Write($"NDIG {setNdig}");
+                            measure3458A.WriteCommand($"NDIG {setNdig}");
                             GuiConfigLogTextBox.Text = $"Write: NDIG {setNdig}";
                             break;
                         default:
@@ -278,7 +280,7 @@ namespace MeasureApp
 
         private void MeasureGuiConfigButtons_Click(object sender, RoutedEventArgs e)
         {
-            if (gpib.IsOpen)
+            if (measure3458A.IsOpen)
             {
                 try
                 {
@@ -288,7 +290,7 @@ namespace MeasureApp
                             if (MessageBox.Show("需要较长时间，是否继续？", "自动校准确认", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
                             {
                                 string acal_param = (AcalComboBox.SelectedItem as ComboBoxItem).Tag as string;
-                                gpib.Write("ACAL " + acal_param);
+                                measure3458A.WriteCommand("ACAL " + acal_param);
                                 GuiConfigLogTextBox.Text = $"Write: ACAL {acal_param}";
                             }
                             break;
@@ -303,24 +305,24 @@ namespace MeasureApp
                                 decimal setResolutionDecimal = Convert.ToDecimal(setResolution);
                                 rangeCmd += $",{setResolutionDecimal / setRangeDecimal / 10000}";
                             }
-                            gpib.Write(rangeCmd);
+                            measure3458A.WriteCommand(rangeCmd);
                             GuiConfigLogTextBox.Text = $"Write: {rangeCmd}";
                             break;
                         case "NPLC":
                             string nplcCmd = $"NPLC {NplcTextBox.Text}";
-                            gpib.Write(nplcCmd);
+                            measure3458A.WriteCommand(nplcCmd);
                             GuiConfigLogTextBox.Text = $"Write: {nplcCmd}";
                             break;
                         case "RANGE?":
-                            bool isArange = gpib.QueryDemical("ARANGE?") != 0M;
-                            gpib.WaitForDataAvailable();
-                            decimal readRange = gpib.QueryDemical("RANGE?");
-                            gpib.WaitForDataAvailable();
-                            decimal readResolution = gpib.QueryDemical("RES?") * readRange * 10000;
+                            bool isArange = measure3458A.QueryDecimal("ARANGE?") != 0M;
+                            measure3458A.WaitForDataAvailable();
+                            decimal readRange = measure3458A.QueryDecimal("RANGE?");
+                            measure3458A.WaitForDataAvailable();
+                            decimal readResolution = measure3458A.QueryDecimal("RES?") * readRange * 10000;
                             GuiConfigLogTextBox.Text = $"Query: ARANGE? & RANGE? & RES?\nReturn: {(isArange ? "Auto Range, " + readRange.ToString() + "V" : readRange.ToString() + "V, " + readResolution.ToString() + "uV")}";
                             break;
                         case "NPLC?":
-                            GuiConfigLogTextBox.Text = $"Query: NPLC?\nReturn: {gpib.QueryDemical("NPLC?")} NPLC";
+                            GuiConfigLogTextBox.Text = $"Query: NPLC?\nReturn: {measure3458A.GetNPLC()} NPLC";
                             break;
                         default:
                             break;
@@ -341,21 +343,15 @@ namespace MeasureApp
         {
             try
             {
-                // %_resolution = (actual resolution/maximum input) × 100
                 string setRange = (ManualReadDCVRangeComboBox.SelectedItem as ComboBoxItem).Tag as string;
                 string setResolution = (ManualReadDCVResComboBox.SelectedItem as ComboBoxItem).Tag as string;
-                string rangeCmd = $"DCV {setRange}";
-                if (setRange != "AUTO" && setResolution != "DEFAULT")
-                {
-                    decimal setRangeDecimal = Convert.ToDecimal(setRange);
-                    decimal setResolutionDecimal = Convert.ToDecimal(setResolution);
-                    rangeCmd += $",{setResolutionDecimal / setRangeDecimal / 10000}";
-                }
-                ManualReadDCVCommandTextBlock.Text = rangeCmd;
+                decimal setRangeDecimal = Convert.ToDecimal(setRange);
+                decimal setResolutionDecimal = Convert.ToDecimal(setResolution) / 1000000;
+
                 ManualReadDCVText.StringData = "Measuring...";
                 _ = Task.Run(() =>
                 {
-                    ManualReadDCVText.StringData = gpib.QueryDemical(rangeCmd).ToString();
+                    ManualReadDCVText.StringData = measure3458A.MeasureDCV(setRangeDecimal, setResolutionDecimal).ToString();
                 });
             }
             catch (Exception ex)
@@ -368,7 +364,7 @@ namespace MeasureApp
         {
             try
             {
-                gpib.Write("NPLC 0");
+                measure3458A.SetNPLC(0);
             }
             catch (Exception ex)
             {
@@ -380,7 +376,7 @@ namespace MeasureApp
         {
             try
             {
-                gpib.Write("NPLC 1000");
+                measure3458A.SetNPLC(1000);
             }
             catch (Exception ex)
             {
@@ -611,7 +607,8 @@ namespace MeasureApp
                 SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext(Application.Current.Dispatcher));
                 SynchronizationContext.Current.Post(p1 =>
                 {
-                    MultimeterDataStorage.Add(ManualReadDCVText.Clone());
+                    dataStorage.AddData(Key3458AString, Convert.ToDecimal(ManualReadDCVText));
+                    // MultimeterDataStorage.Add(ManualReadDCVText.Clone());
                 }, null);
             }
             catch (Exception ex)
@@ -628,16 +625,14 @@ namespace MeasureApp
                 {
                     object[] objArray = new object[RecvDataPraseTemp.Length];
                     RecvDataPraseTemp.CopyTo(objArray, 0);
-                    //serialPortRecvDataStorage.AddRange(objArray);
                     foreach (object obj in objArray)
                     {
-                        SerialPortRecvDataStorage.Add(new StringDataBinding { StringData = obj.ToString() });
+                        SerialPortRecvDataStorage.Add(new StringDataClass { StringData = obj.ToString() });
                     }
                 }
                 else
                 {
-                    //serialPortRecvDataStorage.Add(RecvDataPraseTemp);
-                    SerialPortRecvDataStorage.Add(new StringDataBinding { StringData = RecvDataPraseTemp.ToString() });
+                    SerialPortRecvDataStorage.Add(new StringDataClass { StringData = RecvDataPraseTemp.ToString() });
                 }
             }
             catch (Exception ex)
@@ -655,7 +650,8 @@ namespace MeasureApp
                     switch ((DataStorageSelectListBox.SelectedItem as ListBoxItem).Tag)
                     {
                         case "Multimeter":
-                            DataStorageDataGrid.ItemsSource = MultimeterDataStorage;
+                            //BUG
+                            DataStorageDataGrid.ItemsSource = dataStorage.DataStorageDictionary[Key3458AString];
                             break;
                         case "SerialPort":
                             DataStorageDataGrid.ItemsSource = SerialPortRecvDataStorage;
@@ -688,7 +684,7 @@ namespace MeasureApp
                     switch (dataStorageTag)
                     {
                         case "Multimeter":
-                            File.WriteAllLines(saveFileDialog.FileName, MultimeterDataStorage.Select(strcls => strcls.StringData));
+                            File.WriteAllLines(saveFileDialog.FileName, dataStorage.DataStorageDictionary[Key3458AString].Select<dynamic, string>(i => i?.ToString()).ToList());
                             break;
                         case "SerialPort":
                             File.WriteAllLines(saveFileDialog.FileName, SerialPortRecvDataStorage.Select(strcls => strcls.StringData));
@@ -713,7 +709,7 @@ namespace MeasureApp
                     switch ((DataStorageSelectListBox.SelectedItem as ListBoxItem).Tag)
                     {
                         case "Multimeter":
-                            MultimeterDataStorage.Clear();
+                            dataStorage.DataStorageDictionary[Key3458AString].Clear();
                             break;
                         case "SerialPort":
                             SerialPortRecvDataStorage.Clear();
@@ -726,6 +722,25 @@ namespace MeasureApp
             catch (Exception ex)
             {
                 _ = MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                mainWindowDataContext.AutoTextBox = "dcv = MeasureDCV(10, 0.0001); nplc = GetNPLC();";
+
+                CodeParse codeParse = new(mainWindowDataContext.AutoTextBox);
+                codeParse.ExecuteAllCodes(measure3458A);
+                foreach (KeyValuePair<string, dynamic> keyValuePair in codeParse.ProcessVariables)
+                {
+                    Debug.WriteLine($"'{keyValuePair.Key}': {keyValuePair.Value.ToString()}");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
             }
         }
     }

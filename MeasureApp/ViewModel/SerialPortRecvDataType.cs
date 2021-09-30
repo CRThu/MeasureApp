@@ -55,7 +55,7 @@ namespace MeasureApp
         }
     }
 
-    public class SerialPortRecvDataType : ViewModelBase
+    public class SerialPortRecvDataType : NotificationObjectBase
     {
         // Ascii, Bytes RadioButton Binding
         private SerialPortRecvDataEncodeEnum serialPortRecvDataEncodeEnum;

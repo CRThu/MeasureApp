@@ -6,7 +6,17 @@ using System.Threading.Tasks;
 
 namespace MeasureApp.ViewModel
 {
-    public class MainWindowDataContext : ViewModelBase
+    public class MainWindowDataContext : NotificationObjectBase
     {
+        private string _autoTextBox;
+        public string AutoTextBox
+        {
+            get => _autoTextBox;
+            set
+            {
+                _autoTextBox = value;
+                RaisePropertyChanged(() => AutoTextBox);
+            }
+        }
     }
 }

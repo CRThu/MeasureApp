@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MeasureApp
 {
-    public class ViewModelBase : INotifyPropertyChanged
+    public class NotificationObjectBase : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
         public void RaisePropertyChanged(string propertyName)

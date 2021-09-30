@@ -13,8 +13,6 @@ namespace MeasureApp
     public class GPIB
     {
         public bool IsOpen = false;
-        private bool _isDataAvailable = false;
-        private bool _isReadyForInstructions = false;
         public string deviceAddr = string.Empty;
         public MessageBasedSession messageBasedSession;
 
@@ -22,24 +20,6 @@ namespace MeasureApp
         {
             get => messageBasedSession.Timeout;
             set => messageBasedSession.Timeout = value;
-        }
-
-        public bool IsDataAvailable
-        {
-            get
-            {
-                _isDataAvailable = IsOpen && (((short)messageBasedSession.ReadStatusByte() & 128) != 0);
-                return _isDataAvailable;
-            }
-        }
-
-        public bool IsReadyForInstructions
-        {
-            get
-            {
-                _isReadyForInstructions = IsOpen && (((short)messageBasedSession.ReadStatusByte() & 16) != 0);
-                return _isReadyForInstructions;
-            }
         }
 
         public GPIB()
@@ -96,10 +76,6 @@ namespace MeasureApp
             return IsOpen ? messageBasedSession.Query(cmd).Trim() : null;
         }
 
-        public decimal QueryDemical(string cmd)
-        {
-            return ConvertNumber(Query(cmd));
-        }
 
         public void Write(string cmd)
         {
@@ -114,22 +90,9 @@ namespace MeasureApp
             return IsOpen ? messageBasedSession.ReadString().Trim() : null;
         }
 
-        public decimal ReadDemical()
+        public byte ReadStatusByte()
         {
-            return ConvertNumber(ReadString());
-        }
-
-        public static decimal ConvertNumber(string data)
-        {
-            return Convert.ToDecimal(decimal.Parse(data, System.Globalization.NumberStyles.Float));
-        }
-
-        public void WaitForDataAvailable()
-        {
-            while (!IsDataAvailable)
-            {
-                Thread.Sleep(50);
-            }
+            return (byte)messageBasedSession.ReadStatusByte();
         }
     }
 }

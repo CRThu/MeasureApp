@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:MeasureApp"
+        xmlns:local="clr-namespace:MeasureApp" xmlns:viewmodel="clr-namespace:MeasureApp.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodel:MainWindowDataContext}"
         mc:Ignorable="d"
         Title="MainWindow" Height="504.4" Width="866.4" Closed="Window_Closed">
     <Window.Resources>
@@ -148,7 +148,7 @@
                                 <Button x:Name="SetMinNPLCButton" Content="最高速度(0 NPLC)" Height="22" Margin="10,184,0,0" Click="SetMinNPLCButton_Click" HorizontalAlignment="Left" Width="130" VerticalAlignment="Top"/>
                                 <Button x:Name="SetMaxNPLCButton" Content="最高精度(1000 NPLC)" Height="22" Margin="185,184,0,0" Click="SetMaxNPLCButton_Click" HorizontalAlignment="Left" Width="130" VerticalAlignment="Top"/>
                                 <ComboBox x:Name="ManualReadDCVRangeComboBox" SelectedIndex="0" HorizontalAlignment="Left" Margin="10,221,0,0" VerticalAlignment="Top" Width="79" Height="22">
-                                    <ComboBoxItem Content="Auto" Tag="AUTO"/>
+                                    <ComboBoxItem Content="Auto" Tag="-1"/>
                                     <ComboBoxItem Content="100mV" Tag="0.1"/>
                                     <ComboBoxItem Content="1V" Tag="1"/>
                                     <ComboBoxItem Content="10V" Tag="10"/>
@@ -156,7 +156,7 @@
                                     <ComboBoxItem Content="1kV" Tag="1000"/>
                                 </ComboBox>
                                 <ComboBox x:Name="ManualReadDCVResComboBox" SelectedIndex="0" HorizontalAlignment="Left" Margin="94,221,0,0" VerticalAlignment="Top" Width="79" Height="22">
-                                    <ComboBoxItem Content="Default" Tag="DEFAULT"/>
+                                    <ComboBoxItem Content="Default" Tag="-1"/>
                                     <ComboBoxItem Content="1nV" Tag="0.001"/>
                                     <ComboBoxItem Content="10nV" Tag="0.01"/>
                                     <ComboBoxItem Content="100nV" Tag="0.1"/>
@@ -165,7 +165,6 @@
                                     <ComboBoxItem Content="100uV" Tag="100"/>
                                     <ComboBoxItem Content="1mV" Tag="1000"/>
                                 </ComboBox>
-                                <TextBlock x:Name="ManualReadDCVCommandTextBlock" Text="Command Here" TextWrapping="Wrap" Margin="185,226,10.2,0" VerticalAlignment="Top"/>
                                 <TextBlock x:Name="ManualReadDCVTextBlock" Text="{Binding StringData}" TextWrapping="Wrap" Margin="185,259,10.2,0" VerticalAlignment="Top"/>
                                 <TextBlock x:Name="SyncDCVDisplayTextBlock" Text="{Binding StringData}" TextWrapping="Wrap" Margin="10,49,160.2,0" Width="201" TextAlignment="Center" FontSize="24" VerticalAlignment="Top"/>
                                 <TextBlock Text="自动测量电压" HorizontalAlignment="Left" Margin="10,16,0,0" VerticalAlignment="Top" Width="201"/>
@@ -294,7 +293,8 @@
                     <Grid>
                         <GroupBox Header="自动化脚本" Margin="10,10,10.2,10">
                             <Grid>
-                                <TextBox HorizontalAlignment="Left" Height="350" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="783"/>
+                                <TextBox AcceptsReturn="True" Height="291" Margin="156,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Left" Width="613"/>
+                                <Button Click="Button_Click" Content="Button" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="30" Width="141"/>
                             </Grid>
                         </GroupBox>
                     </Grid>

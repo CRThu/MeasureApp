@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MeasureApp
 {
-    public class BoolDataBinding : ViewModelBase
+    public class BoolDataBinding : NotificationObjectBase
     {
         private bool _boolData;
         public bool BoolData

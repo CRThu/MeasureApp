@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MeasureApp
 {
-    public class StringDataBinding : ViewModelBase
+    public class StringDataClass : NotificationObjectBase
     {
         private string _stringData;
         public string StringData
@@ -20,9 +20,9 @@ namespace MeasureApp
             }
         }
 
-        public StringDataBinding Clone()
+        public StringDataClass Clone()
         {
-            return new StringDataBinding
+            return new StringDataClass
             {
                 StringData = StringData
             };
