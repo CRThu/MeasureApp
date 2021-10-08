@@ -14,7 +14,7 @@
     <DockPanel>
         <Grid>
             <StatusBar DockPanel.Dock="Bottom" MaxHeight="20" VerticalAlignment="Bottom">
-                <TextBlock Name="StbStatusBar" Text="StatusBar"></TextBlock>
+                <TextBlock Text="{Binding StatusBarText}"></TextBlock>
             </StatusBar>
             <TabControl Margin="10,10,9.6,24.8">
                 <TabItem Header="设备连接调试">
@@ -278,7 +278,7 @@
                                     <ListBoxItem Content="万用表数据" Tag="Multimeter"/>
                                     <ListBoxItem Content="串口数据" Tag="SerialPort"/>
                                 </ListBox>
-                                <DataGrid Name="DataStorageDataGrid" AutoGenerateColumns="False" IsReadOnly="True" Height="355" Margin="245,0,5.2,4.6" VerticalAlignment="Bottom" LoadingRow="GeneralDataGrid_LoadingRow">
+                                <DataGrid Name="DataStorageDataGrid" AutoGenerateColumns="False" IsReadOnly="True" Margin="245,25,6,5" LoadingRow="GeneralDataGrid_LoadingRow">
                                     <DataGrid.Columns>
                                         <DataGridTextColumn CanUserSort="False" Width="1*" Header="数据" Binding="{Binding StringData}"/>
                                     </DataGrid.Columns>
@@ -295,6 +295,7 @@
                             <Grid>
                                 <TextBox AcceptsReturn="True" Height="291" Margin="156,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Left" Width="613"/>
                                 <Button Click="Button_Click" Content="Button" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="30" Width="141"/>
+                                <Button Content="DAC测试" Click="DacTestButton_Click" HorizontalAlignment="Left" Margin="10,45,0,0" VerticalAlignment="Top" Height="30" Width="141"/>
                             </Grid>
                         </GroupBox>
                     </Grid>

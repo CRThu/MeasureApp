@@ -8,6 +8,7 @@ using System.Windows.Data;
 using System.ComponentModel;
 using System.Windows;
 using Newtonsoft.Json;
+using MeasureApp.ViewModel;
 
 namespace MeasureApp
 {

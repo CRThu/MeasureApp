@@ -22,6 +22,7 @@ using System.Windows.Threading;
 using MeasureApp.ViewModel;
 using System.Reflection;
 using System.Diagnostics;
+using MeasureApp.Model;
 
 namespace MeasureApp
 {
@@ -32,12 +33,12 @@ namespace MeasureApp
     {
         MainWindowDataContext mainWindowDataContext = new MainWindowDataContext();
 
-        GPIB3458AMeasure measure3458A = new GPIB3458AMeasure();
-
-        DataStorage dataStorage = new DataStorage();
-        string Key3458AString = "3458A Data Storage";
-
-        public SerialPorts serialPorts = new SerialPorts();
+        // 重构临时变量
+        dynamic measure3458A;
+        dynamic dataStorage;
+        dynamic serialPorts;
+        readonly string Key3458AString = "3458A Data Storage";
+        readonly string KeySerialPortString = "Serial Port Data Storage";
 
         public ObservableCollection<string> gpibDeviceNames = new ObservableCollection<string>();
 
@@ -50,12 +51,18 @@ namespace MeasureApp
 
         public SerialPortRecvDataType serialPortRecvDataType = new SerialPortRecvDataType();
         private dynamic RecvDataPraseTemp;
-        //public ObservableCollection<StringDataClass> MultimeterDataStorage = new ObservableCollection<StringDataClass>();
-        public ObservableCollection<StringDataClass> SerialPortRecvDataStorage = new ObservableCollection<StringDataClass>();
 
         public MainWindow()
         {
+            // 重构临时变量
+            measure3458A = mainWindowDataContext.measure3458A;
+            dataStorage = mainWindowDataContext.dataStorage;
+            serialPorts = mainWindowDataContext.serialPorts;
+
             InitializeComponent();
+
+            dataStorage.AddKey(Key3458AString);
+            dataStorage.AddKey(KeySerialPortString);
 
             //DataContext = new MainWindowDataContext();
             DataContext = mainWindowDataContext;
@@ -69,7 +76,7 @@ namespace MeasureApp
             ManualReadDCVTextBlock.DataContext = ManualReadDCVText;
             SerialPortSendCmdPreviewTextBlock.DataContext = SerialPortSendCmdString;
             SyncDCVDisplayStorageCheckBox.DataContext = SyncDCVIsAutoStorage;
-            SerialPortRecvDataStorageDataGrid.ItemsSource = SerialPortRecvDataStorage;
+            SerialPortRecvDataStorageDataGrid.ItemsSource = dataStorage.DataStorageDictionary[KeySerialPortString];
 
             SerialPortRecvDataTypesGrid.DataContext = serialPortRecvDataType;
             serialPortRecvDataType.SerialPortRecvDataTypeEnum = SerialPortRecvDataTypeEnum.Char;
@@ -85,7 +92,11 @@ namespace MeasureApp
         private void GeneralDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
         {
             e.Row.Header = (e.Row.GetIndex() + 1).ToString();
+            var dataGrid = (sender as DataGrid);
+            // TODO 暂时使用：自动滚动
+            dataGrid.ScrollIntoView(dataGrid.Items[^1]);
         }
+
 
         private void SearchGPIBDevicesButton_Click(object sender, RoutedEventArgs e)
         {
@@ -212,7 +223,6 @@ namespace MeasureApp
                                     SynchronizationContext.Current.Post(p1 =>
                                     {
                                         dataStorage.AddData(Key3458AString, DCVDisplay);
-                                        // MultimeterDataStorage.Add(new StringDataClass() { StringData = DCVDisplay.ToString() });
                                     }, null);
                                 }
                             }
@@ -425,7 +435,7 @@ namespace MeasureApp
                 }
                 SerialPortDeviceNameTextBlock.Text = serialPorts.SerialPortNames.Count() == 0
                     ? "No Device Connected."
-                    : string.Join(",\n", serialPorts.SerialPortInstances.Select(serialPort => $"{serialPort.PortName}({serialPort.BaudRate}bps)").ToArray()) + "\nDevice Connected.";
+                    : string.Join(",\n", ((SerialPorts)serialPorts).SerialPortInstances.Select(serialPort => $"{serialPort.PortName}({serialPort.BaudRate}bps)").ToArray()) + "\nDevice Connected.";
                 SerialPortDebugSelectComboBox.ItemsSource = serialPorts.SerialPortNames;
                 SerialPortSendCmdSerialPortNameComboBox.ItemsSource = serialPorts.SerialPortNames;
                 SerialPortRecvDataSerialPortNameComboBox.ItemsSource = serialPorts.SerialPortNames;
@@ -460,7 +470,7 @@ namespace MeasureApp
                 }
                 SerialPortDeviceNameTextBlock.Text = serialPorts.SerialPortNames.Count() == 0
                     ? "No Device Connected."
-                    : string.Join(",\n", serialPorts.SerialPortInstances.Select(serialPort => $"{serialPort.PortName}({serialPort.BaudRate}bps)").ToArray()) + "\nDevice Connected.";
+                    : string.Join(",\n", ((SerialPorts)serialPorts).SerialPortInstances.Select(serialPort => $"{serialPort.PortName}({serialPort.BaudRate}bps)").ToArray()) + "\nDevice Connected.";
                 SerialPortDebugSelectComboBox.ItemsSource = serialPorts.SerialPortNames;
                 SerialPortSendCmdSerialPortNameComboBox.ItemsSource = serialPorts.SerialPortNames;
             }
@@ -627,12 +637,12 @@ namespace MeasureApp
                     RecvDataPraseTemp.CopyTo(objArray, 0);
                     foreach (object obj in objArray)
                     {
-                        SerialPortRecvDataStorage.Add(new StringDataClass { StringData = obj.ToString() });
+                        dataStorage.DataStorageDictionary[KeySerialPortString].Add(new StringDataClass { StringData = obj.ToString() });
                     }
                 }
                 else
                 {
-                    SerialPortRecvDataStorage.Add(new StringDataClass { StringData = RecvDataPraseTemp.ToString() });
+                    dataStorage.DataStorageDictionary[KeySerialPortString].Add(new StringDataClass { StringData = RecvDataPraseTemp.ToString() });
                 }
             }
             catch (Exception ex)
@@ -653,7 +663,7 @@ namespace MeasureApp
                             DataStorageDataGrid.ItemsSource = dataStorage.DataStorageDictionary[Key3458AString];
                             break;
                         case "SerialPort":
-                            DataStorageDataGrid.ItemsSource = SerialPortRecvDataStorage;
+                            DataStorageDataGrid.ItemsSource = dataStorage.DataStorageDictionary[KeySerialPortString];
                             break;
                         default:
                             break;
@@ -676,17 +686,17 @@ namespace MeasureApp
                     Title = "存储数据",
                     FileName = $"{dataStorageTag}DataStorage_{DateTime.Now.ToString().Replace('/', '-').Replace(':', '-').Replace(' ', '-')}.txt",
                     DefaultExt = ".txt",
-                    Filter = "CSV File|*.txt"
+                    Filter = "Text File|*.txt"
                 };
                 if (saveFileDialog.ShowDialog() == true)
                 {
                     switch (dataStorageTag)
                     {
                         case "Multimeter":
-                            File.WriteAllLines(saveFileDialog.FileName, dataStorage.DataStorageDictionary[Key3458AString].Select<dynamic, string>(i => i?.ToString()).ToList());
+                            File.WriteAllLines(saveFileDialog.FileName, ((DataStorage)dataStorage).DataStorageDictionary[Key3458AString].Select(strcls => strcls.StringData));
                             break;
                         case "SerialPort":
-                            File.WriteAllLines(saveFileDialog.FileName, SerialPortRecvDataStorage.Select(strcls => strcls.StringData));
+                            File.WriteAllLines(saveFileDialog.FileName, ((DataStorage)dataStorage).DataStorageDictionary[KeySerialPortString].Select(strcls => strcls.StringData));
                             break;
                         default:
                             break;
@@ -711,7 +721,7 @@ namespace MeasureApp
                             dataStorage.DataStorageDictionary[Key3458AString].Clear();
                             break;
                         case "SerialPort":
-                            SerialPortRecvDataStorage.Clear();
+                            dataStorage.DataStorageDictionary[KeySerialPortString].Clear();
                             break;
                         default:
                             break;
@@ -728,14 +738,56 @@ namespace MeasureApp
         {
             try
             {
-                mainWindowDataContext.AutoTextBox = "dcv = MeasureDCV(10, 0.0001); nplc = GetNPLC();";
+                // TODO
+                //mainWindowDataContext.AutoTextBox = "dcv = MeasureDCV(10, 0.0001); nplc = GetNPLC();";
 
-                CodeParse codeParse = new(mainWindowDataContext.AutoTextBox);
-                codeParse.ExecuteAllCodes(measure3458A);
-                foreach (KeyValuePair<string, dynamic> keyValuePair in codeParse.ProcessVariables)
+                //CodeParse codeParse = new(mainWindowDataContext.AutoTextBox);
+                //codeParse.ExecuteAllCodes(measure3458A);
+                //foreach (KeyValuePair<string, dynamic> keyValuePair in codeParse.ProcessVariables)
+                //{
+                //    Debug.WriteLine($"'{keyValuePair.Key}': {keyValuePair.Value.ToString()}");
+                //}
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void DacTestButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                int loopMin = 0;
+                int loopMax = 32;
+                int loopStep = 1;
+                decimal M3458ARange = 10M;
+                decimal M3458AResolution = 0.000001M;
+                decimal voltage;
+
+                _ = Task.Run(() =>
                 {
-                    Debug.WriteLine($"'{keyValuePair.Key}': {keyValuePair.Value.ToString()}");
-                }
+                    for (int i = loopMin; i <= loopMax; i += loopStep)
+                    {
+                        // 向DAC下位机发送电压命令
+                        string DacWriteVoltageCommand = $"{serialPorts.SerialPortNames.First()}::SET;{i};";
+                        string[] splitCmds = DacWriteVoltageCommand.Split(new string[] { "::" }, StringSplitOptions.RemoveEmptyEntries);
+                        serialPorts.WriteString(splitCmds[0], splitCmds[1]);
+                        // 等待100毫秒
+                        Thread.Sleep(100);
+                        // 向3458A发送采集电压命令
+                        voltage = measure3458A.MeasureDCV(M3458ARange, M3458AResolution);
+                        // 存储电压
+                        // CollectionView不支持从调度程序以外的线程对其SourceCollection进行的更改
+                        SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext(Application.Current.Dispatcher));
+                        SynchronizationContext.Current.Post(p1 =>
+                        {
+                            dataStorage.AddData(Key3458AString, voltage);
+                        }, null);
+                        // 进度输出
+                        mainWindowDataContext.StatusBarText = $"{(i - loopMin) / loopStep + 1}/{(loopMax - loopMin) / loopStep + 1}";
+                    }
+                });
             }
             catch (Exception ex)
             {

@@ -1,11 +1,12 @@
-﻿using System;
+﻿using MeasureApp.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MeasureApp
+namespace MeasureApp.Model
 {
     public class DataStorage : NotificationObjectBase
     {
@@ -20,15 +21,18 @@ namespace MeasureApp
             }
         }
 
+        public void AddKey(string key)
+        {
+            DataStorageDictionary.Add(key, new ObservableCollection<StringDataClass>());
+        }
+
         public void AddData(string key, dynamic value)
         {
             if (!DataStorageDictionary.ContainsKey(key))
             {
-                DataStorageDictionary.Add(key, new ObservableCollection<StringDataClass>());
+                AddKey(key);
             }
             DataStorageDictionary[key].Add(new StringDataClass() { StringData = value.ToString() });
         }
-
-
     }
 }
