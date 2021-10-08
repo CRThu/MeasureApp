@@ -607,7 +607,7 @@ namespace MeasureApp
                 SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext(Application.Current.Dispatcher));
                 SynchronizationContext.Current.Post(p1 =>
                 {
-                    dataStorage.AddData(Key3458AString, Convert.ToDecimal(ManualReadDCVText));
+                    dataStorage.AddData(Key3458AString, Convert.ToDecimal(ManualReadDCVText.StringData));
                     // MultimeterDataStorage.Add(ManualReadDCVText.Clone());
                 }, null);
             }
@@ -650,7 +650,6 @@ namespace MeasureApp
                     switch ((DataStorageSelectListBox.SelectedItem as ListBoxItem).Tag)
                     {
                         case "Multimeter":
-                            //BUG
                             DataStorageDataGrid.ItemsSource = dataStorage.DataStorageDictionary[Key3458AString];
                             break;
                         case "SerialPort":

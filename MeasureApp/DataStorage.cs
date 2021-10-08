@@ -9,8 +9,8 @@ namespace MeasureApp
 {
     public class DataStorage : NotificationObjectBase
     {
-        private Dictionary<string, ObservableCollection<dynamic>> _dataStorageDictionary = new();
-        public Dictionary<string, ObservableCollection<dynamic>> DataStorageDictionary
+        private Dictionary<string, ObservableCollection<StringDataClass>> _dataStorageDictionary = new();
+        public Dictionary<string, ObservableCollection<StringDataClass>> DataStorageDictionary
         {
             get => _dataStorageDictionary;
             set
@@ -24,9 +24,9 @@ namespace MeasureApp
         {
             if (!DataStorageDictionary.ContainsKey(key))
             {
-                DataStorageDictionary.Add(key, new ObservableCollection<dynamic>());
+                DataStorageDictionary.Add(key, new ObservableCollection<StringDataClass>());
             }
-            DataStorageDictionary[key].Add(value);
+            DataStorageDictionary[key].Add(new StringDataClass() { StringData = value.ToString() });
         }
 
 
