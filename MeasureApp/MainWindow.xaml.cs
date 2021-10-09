@@ -37,8 +37,8 @@ namespace MeasureApp
         dynamic measure3458A;
         dynamic dataStorage;
         dynamic serialPorts;
-        readonly string Key3458AString = "3458A Data Storage";
-        readonly string KeySerialPortString = "Serial Port Data Storage";
+        string Key3458AString = "3458A Data Storage";
+        string KeySerialPortString = "Serial Port Data Storage";
 
         public ObservableCollection<string> gpibDeviceNames = new ObservableCollection<string>();
 
@@ -93,8 +93,6 @@ namespace MeasureApp
         {
             e.Row.Header = (e.Row.GetIndex() + 1).ToString();
             var dataGrid = (sender as DataGrid);
-            // TODO 暂时使用：自动滚动
-            dataGrid.ScrollIntoView(dataGrid.Items[^1]);
         }
 
 
@@ -664,64 +662,6 @@ namespace MeasureApp
                             break;
                         case "SerialPort":
                             DataStorageDataGrid.ItemsSource = dataStorage.DataStorageDictionary[KeySerialPortString];
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                _ = MessageBox.Show(ex.ToString());
-            }
-        }
-
-        private void DataStorageExportListDataButton_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                string dataStorageTag = (DataStorageSelectListBox.SelectedItem as ListBoxItem).Tag as string;
-                SaveFileDialog saveFileDialog = new SaveFileDialog
-                {
-                    Title = "存储数据",
-                    FileName = $"{dataStorageTag}DataStorage_{DateTime.Now.ToString().Replace('/', '-').Replace(':', '-').Replace(' ', '-')}.txt",
-                    DefaultExt = ".txt",
-                    Filter = "Text File|*.txt"
-                };
-                if (saveFileDialog.ShowDialog() == true)
-                {
-                    switch (dataStorageTag)
-                    {
-                        case "Multimeter":
-                            File.WriteAllLines(saveFileDialog.FileName, ((DataStorage)dataStorage).DataStorageDictionary[Key3458AString].Select(strcls => strcls.StringData));
-                            break;
-                        case "SerialPort":
-                            File.WriteAllLines(saveFileDialog.FileName, ((DataStorage)dataStorage).DataStorageDictionary[KeySerialPortString].Select(strcls => strcls.StringData));
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                _ = MessageBox.Show(ex.ToString());
-            }
-        }
-
-        private void DataStorageClearListDataButton_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                if (MessageBox.Show("清理本次通信数据，是否继续？", "清理数据确认", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
-                {
-                    switch ((DataStorageSelectListBox.SelectedItem as ListBoxItem).Tag)
-                    {
-                        case "Multimeter":
-                            dataStorage.DataStorageDictionary[Key3458AString].Clear();
-                            break;
-                        case "SerialPort":
-                            dataStorage.DataStorageDictionary[KeySerialPortString].Clear();
                             break;
                         default:
                             break;

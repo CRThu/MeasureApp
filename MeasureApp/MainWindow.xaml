@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:local="clr-namespace:MeasureApp" xmlns:viewmodel="clr-namespace:MeasureApp.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodel:MainWindowDataContext}"
         mc:Ignorable="d"
         Title="MainWindow" Height="504.4" Width="866.4" Closed="Window_Closed">
@@ -283,8 +284,20 @@
                                         <DataGridTextColumn CanUserSort="False" Width="1*" Header="数据" Binding="{Binding StringData}"/>
                                     </DataGrid.Columns>
                                 </DataGrid>
-                                <Button Name="DataStorageExportListDataButton" Content="导出该数据" Click="DataStorageExportListDataButton_Click"  HorizontalAlignment="Left" Margin="10,141,0,0" VerticalAlignment="Top" Width="107" Height="32"/>
-                                <Button Name="DataStorageClearListDataButton" Content="清空该数据" Click="DataStorageClearListDataButton_Click" HorizontalAlignment="Left" Margin="133,141,0,0" VerticalAlignment="Top" Width="107" Height="32"/>
+                                <Button Name="DataStorageExportListDataButton" Content="导出该数据" HorizontalAlignment="Left" Margin="10,141,0,0" VerticalAlignment="Top" Width="107" Height="32">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <viewmodel:EventCommandBase Command="{Binding DataStorageStoreEvent}" CommandParameter="{Binding ElementName=DataStorageSelectListBox, Path=SelectedItem.Tag}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Button>
+                                <Button Name="DataStorageClearListDataButton" Content="清空该数据" HorizontalAlignment="Left" Margin="133,141,0,0" VerticalAlignment="Top" Width="107" Height="32">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <viewmodel:EventCommandBase Command="{Binding DataStorageDeleteEvent}" CommandParameter="{Binding ElementName=DataStorageSelectListBox, Path=SelectedItem.Tag}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Button>
                             </Grid>
                         </GroupBox>
                     </Grid>
