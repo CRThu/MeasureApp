@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace MeasureApp.ViewModel
 {
@@ -25,6 +26,18 @@ namespace MeasureApp.ViewModel
 
         // 数据存储
         public DataStorage dataStorage = new();
+
+        // 数据存储页数据绑定
+        private dynamic dataStorageDataGridBinding;
+        public dynamic DataStorageDataGridBinding
+        {
+            get => dataStorageDataGridBinding;
+            set
+            {
+                dataStorageDataGridBinding = value;
+                RaisePropertyChanged(() => DataStorageDataGridBinding);
+            }
+        }
 
         // 状态栏
         private string _statusBarText = "statusBar";
@@ -62,17 +75,7 @@ namespace MeasureApp.ViewModel
                                   };
                                   if (saveFileDialog.ShowDialog() == true)
                                   {
-                                      switch (dataStorageTag)
-                                      {
-                                          case "Multimeter":
-                                              dataStorage.Save(Key3458AString, saveFileDialog.FileName);
-                                              break;
-                                          case "SerialPort":
-                                              dataStorage.Save(KeySerialPortString, saveFileDialog.FileName);
-                                              break;
-                                          default:
-                                              break;
-                                      }
+                                      dataStorage.Save(dataStorageTag, saveFileDialog.FileName);
                                   }
                               }
                           }
@@ -102,17 +105,7 @@ namespace MeasureApp.ViewModel
                             {
                                 if (MessageBox.Show("清理本次通信数据，是否继续？", "清理数据确认", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
                                 {
-                                    switch (param as string)
-                                    {
-                                        case "Multimeter":
-                                            dataStorage.ClearAllData(Key3458AString);
-                                            break;
-                                        case "SerialPort":
-                                            dataStorage.ClearAllData(KeySerialPortString);
-                                            break;
-                                        default:
-                                            break;
-                                    }
+                                    dataStorage.ClearAllData(param as string);
                                 }
                             }
                         }
@@ -123,6 +116,88 @@ namespace MeasureApp.ViewModel
                     }));
                 }
                 return dataStorageDeleteEvent;
+            }
+        }
+
+        // 数据显示触发事件
+        private CommandBase dataStorageSelectionChangedEvent;
+        public CommandBase DataStorageSelectionChangedEvent
+        {
+            get
+            {
+                if (dataStorageSelectionChangedEvent == null)
+                {
+                    dataStorageSelectionChangedEvent = new CommandBase(new Action<object>(param =>
+                    {
+                        try
+                        {
+                            // TODO BIND变量替代路由args
+                            string key = ((param as SelectionChangedEventArgs).AddedItems[0] as ListBoxItem).Tag as string;
+                            DataStorageDataGridBinding = dataStorage.DataStorageDictionary[key];
+                        }
+                        catch (Exception ex)
+                        {
+                            _ = MessageBox.Show(ex.ToString());
+                        }
+                    }));
+                }
+                return dataStorageSelectionChangedEvent;
+            }
+        }
+
+        // 临时发送DAC命令数据绑定
+        private int loopTimesText = 262144;
+        public int LoopTimesText
+        {
+            get => loopTimesText;
+            set
+            {
+                loopTimesText = value;
+                RaisePropertyChanged(() => LoopTimesText);
+            }
+        }
+
+        private string sendCommandByteText = "A0";
+        public string SendCommandByteText
+        {
+            get => sendCommandByteText;
+            set
+            {
+                sendCommandByteText = value;
+                RaisePropertyChanged(() => SendCommandByteText);
+            }
+        }
+
+        private decimal multiMeterSetRangeText = 10M;
+        public decimal MultiMeterSetRangeText
+        {
+            get => multiMeterSetRangeText;
+            set
+            {
+                multiMeterSetRangeText = value;
+                RaisePropertyChanged(() => MultiMeterSetRangeText);
+            }
+        }
+
+        private decimal multiMeterSetResolutionText = 1M;
+        public decimal MultiMeterSetResolutionText
+        {
+            get => multiMeterSetResolutionText;
+            set
+            {
+                multiMeterSetResolutionText = value;
+                RaisePropertyChanged(() => MultiMeterSetResolutionText);
+            }
+        }
+
+        private int delayText = 100;
+        public int DelayText
+        {
+            get => delayText;
+            set
+            {
+                delayText = value;
+                RaisePropertyChanged(() => DelayText);
             }
         }
     }

@@ -276,10 +276,15 @@
                             <Grid>
                                 <TextBlock Text="选择数据源：" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="230"/>
                                 <ListBox Name="DataStorageSelectListBox"  HorizontalAlignment="Left" Height="106" Margin="10,30,0,0" VerticalAlignment="Top" Width="230" SelectionChanged="DataStorageSelectListBox_SelectionChanged">
-                                    <ListBoxItem Content="万用表数据" Tag="Multimeter"/>
-                                    <ListBoxItem Content="串口数据" Tag="SerialPort"/>
+                                    <ListBoxItem Content="万用表数据" Tag="3458A Data Storage"/>
+                                    <ListBoxItem Content="串口数据" Tag="Serial Port Data Storage"/>
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="SelectionChanged">
+                                            <viewmodel:EventCommandBase Command="{Binding DataStorageSelectionChangedEvent}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
                                 </ListBox>
-                                <DataGrid Name="DataStorageDataGrid" AutoGenerateColumns="False" IsReadOnly="True" Margin="245,25,6,5" LoadingRow="GeneralDataGrid_LoadingRow">
+                                <DataGrid Name="DataStorageDataGrid" ItemsSource="{Binding DataStorageDataGridBinding}" AutoGenerateColumns="False" IsReadOnly="True" Margin="245,25,6,5" LoadingRow="GeneralDataGrid_LoadingRow">
                                     <DataGrid.Columns>
                                         <DataGridTextColumn CanUserSort="False" Width="1*" Header="数据" Binding="{Binding StringData}"/>
                                     </DataGrid.Columns>
@@ -309,6 +314,18 @@
                                 <TextBox AcceptsReturn="True" Height="291" Margin="156,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Left" Width="613"/>
                                 <Button Click="Button_Click" Content="Button" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="30" Width="141"/>
                                 <Button Content="DAC测试" Click="DacTestButton_Click" HorizontalAlignment="Left" Margin="10,45,0,0" VerticalAlignment="Top" Height="30" Width="141"/>
+                                <Button Content="DAC命令" Click="DacCommandTestButton_Click" HorizontalAlignment="Left" Margin="10,80,0,0" VerticalAlignment="Top" Height="30" Width="141"/>
+
+                                <Label Content="循环次数" HorizontalAlignment="Left" Margin="2,125,0,0" VerticalAlignment="Top"/>
+                                <TextBox HorizontalAlignment="Left" Margin="65,129,0,0" Text="{Binding LoopTimesText}" TextWrapping="Wrap" VerticalAlignment="Top" Width="86"/>
+                                <Label Content="发送命令" HorizontalAlignment="Left" Margin="2,155,0,0" VerticalAlignment="Top"/>
+                                <TextBox HorizontalAlignment="Left" Margin="65,159,0,0" Text="{Binding SendCommandByteText}" TextWrapping="Wrap" VerticalAlignment="Top" Width="86"/>
+                                <Label Content="万用表量程(V)" HorizontalAlignment="Left" Margin="2,181,0,0" VerticalAlignment="Top"/>
+                                <TextBox HorizontalAlignment="Left" Margin="98,185,0,0" Text="{Binding MultiMeterSetRangeText}" TextWrapping="Wrap" VerticalAlignment="Top" Width="53"/>
+                                <Label Content="万用表精度(uV)" HorizontalAlignment="Left" Margin="2,207,0,0" VerticalAlignment="Top"/>
+                                <TextBox HorizontalAlignment="Left" Margin="101,211,0,0" Text="{Binding MultiMeterSetResolutionText}" TextWrapping="Wrap" VerticalAlignment="Top" Width="50"/>
+                                <Label Content="延时(ms)" HorizontalAlignment="Left" Margin="2,229,0,0" VerticalAlignment="Top"/>
+                                <TextBox HorizontalAlignment="Left" Margin="101,233,0,0" Text="{Binding DelayText}" TextWrapping="Wrap" VerticalAlignment="Top" Width="50"/>
                             </Grid>
                         </GroupBox>
                     </Grid>

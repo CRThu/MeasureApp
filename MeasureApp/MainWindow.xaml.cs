@@ -76,7 +76,7 @@ namespace MeasureApp
             ManualReadDCVTextBlock.DataContext = ManualReadDCVText;
             SerialPortSendCmdPreviewTextBlock.DataContext = SerialPortSendCmdString;
             SyncDCVDisplayStorageCheckBox.DataContext = SyncDCVIsAutoStorage;
-            SerialPortRecvDataStorageDataGrid.ItemsSource = dataStorage.DataStorageDictionary[KeySerialPortString];
+            //SerialPortRecvDataStorageDataGrid.ItemsSource = dataStorage.DataStorageDictionary[KeySerialPortString];
 
             SerialPortRecvDataTypesGrid.DataContext = serialPortRecvDataType;
             serialPortRecvDataType.SerialPortRecvDataTypeEnum = SerialPortRecvDataTypeEnum.Char;
@@ -431,7 +431,7 @@ namespace MeasureApp
                 {
                     _ = MessageBox.Show("串口已被打开.");
                 }
-                SerialPortDeviceNameTextBlock.Text = serialPorts.SerialPortNames.Count() == 0
+                SerialPortDeviceNameTextBlock.Text = ((SerialPorts)serialPorts).SerialPortNames.Count() == 0
                     ? "No Device Connected."
                     : string.Join(",\n", ((SerialPorts)serialPorts).SerialPortInstances.Select(serialPort => $"{serialPort.PortName}({serialPort.BaudRate}bps)").ToArray()) + "\nDevice Connected.";
                 SerialPortDebugSelectComboBox.ItemsSource = serialPorts.SerialPortNames;
@@ -466,7 +466,7 @@ namespace MeasureApp
                 {
                     _ = MessageBox.Show("串口已被关闭.");
                 }
-                SerialPortDeviceNameTextBlock.Text = serialPorts.SerialPortNames.Count() == 0
+                SerialPortDeviceNameTextBlock.Text = ((SerialPorts)serialPorts).SerialPortNames.Count() == 0
                     ? "No Device Connected."
                     : string.Join(",\n", ((SerialPorts)serialPorts).SerialPortInstances.Select(serialPort => $"{serialPort.PortName}({serialPort.BaudRate}bps)").ToArray()) + "\nDevice Connected.";
                 SerialPortDebugSelectComboBox.ItemsSource = serialPorts.SerialPortNames;
@@ -726,6 +726,45 @@ namespace MeasureApp
                         }, null);
                         // 进度输出
                         mainWindowDataContext.StatusBarText = $"{(i - loopMin) / loopStep + 1}/{(loopMax - loopMin) / loopStep + 1}";
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+        private void DacCommandTestButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string com = ((SerialPorts)serialPorts).SerialPortNames.First();
+                int delay = mainWindowDataContext.DelayText;
+                int LoopTimes = mainWindowDataContext.LoopTimesText;
+                decimal M3458ARange = mainWindowDataContext.MultiMeterSetRangeText;
+                decimal M3458AResolution = mainWindowDataContext.MultiMeterSetResolutionText / 1e6M;
+                byte[] SendCommandByteText = new[] { Convert.ToByte(mainWindowDataContext.SendCommandByteText, 16) };
+                decimal voltage;
+
+                _ = Task.Run(() =>
+                {
+                    for (int i = 0; i < LoopTimes; i++)
+                    {
+                        // 向DAC下位机发送电压命令
+                        ((SerialPorts)serialPorts).WriteBytes(com, SendCommandByteText, 1);
+                        // 等待100毫秒
+                        Thread.Sleep(delay);
+                        // 向3458A发送采集电压命令
+                        voltage = measure3458A.MeasureDCV(M3458ARange, M3458AResolution);
+                        // 存储电压
+                        // CollectionView不支持从调度程序以外的线程对其SourceCollection进行的更改
+                        SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext(Application.Current.Dispatcher));
+                        SynchronizationContext.Current.Post(p1 =>
+                        {
+                            dataStorage.AddData(Key3458AString, voltage);
+                        }, null);
+                        // 进度输出
+                        mainWindowDataContext.StatusBarText = $"{i + 1}/{LoopTimes}";
                     }
                 });
             }
