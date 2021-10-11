@@ -56,13 +56,10 @@ namespace MeasureApp
         {
             // 重构临时变量
             measure3458A = mainWindowDataContext.measure3458A;
-            dataStorage = mainWindowDataContext.dataStorage;
+            dataStorage = mainWindowDataContext.DataStorageInstance;
             serialPorts = mainWindowDataContext.serialPorts;
 
             InitializeComponent();
-
-            dataStorage.AddKey(Key3458AString);
-            dataStorage.AddKey(KeySerialPortString);
 
             //DataContext = new MainWindowDataContext();
             DataContext = mainWindowDataContext;
@@ -88,13 +85,6 @@ namespace MeasureApp
             measure3458A.Dispose();
             serialPorts.CloseAll();
         }
-
-        private void GeneralDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
-        {
-            e.Row.Header = (e.Row.GetIndex() + 1).ToString();
-            var dataGrid = (sender as DataGrid);
-        }
-
 
         private void SearchGPIBDevicesButton_Click(object sender, RoutedEventArgs e)
         {
@@ -641,31 +631,6 @@ namespace MeasureApp
                 else
                 {
                     dataStorage.DataStorageDictionary[KeySerialPortString].Add(new StringDataClass { StringData = RecvDataPraseTemp.ToString() });
-                }
-            }
-            catch (Exception ex)
-            {
-                _ = MessageBox.Show(ex.ToString());
-            }
-        }
-
-        private void DataStorageSelectListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            try
-            {
-                if (DataStorageDataGrid != null)
-                {
-                    switch ((DataStorageSelectListBox.SelectedItem as ListBoxItem).Tag)
-                    {
-                        case "Multimeter":
-                            DataStorageDataGrid.ItemsSource = dataStorage.DataStorageDictionary[Key3458AString];
-                            break;
-                        case "SerialPort":
-                            DataStorageDataGrid.ItemsSource = dataStorage.DataStorageDictionary[KeySerialPortString];
-                            break;
-                        default:
-                            break;
-                    }
                 }
             }
             catch (Exception ex)

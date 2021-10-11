@@ -262,10 +262,15 @@
                             </Grid>
                         </GroupBox>
                         <GroupBox Header="存储" HorizontalAlignment="Left" Height="392" Margin="475,10,0,0" VerticalAlignment="Top" Width="350">
-                            <DataGrid Name="SerialPortRecvDataStorageDataGrid" AutoGenerateColumns="False" IsReadOnly="True" Height="355" Margin="5,0,5.4,4.6" VerticalAlignment="Bottom" LoadingRow="GeneralDataGrid_LoadingRow">
+                            <DataGrid Name="SerialPortRecvDataStorageDataGrid" ItemsSource="{Binding SerialPortStorageDataGridBinding}" AutoGenerateColumns="False" IsReadOnly="True" Height="355" Margin="5,0,5.4,4.6" VerticalAlignment="Bottom">
                                 <DataGrid.Columns>
                                     <DataGridTextColumn CanUserSort="False" Width="1*" Header="数据" Binding="{Binding StringData}"/>
                                 </DataGrid.Columns>
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="LoadingRow">
+                                        <viewmodel:EventCommandBase Command="{Binding DataGridLoadingRowAddRowIndexEvent}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
                             </DataGrid>
                         </GroupBox>
                     </Grid>
@@ -275,31 +280,34 @@
                         <GroupBox Header="存储" Margin="10,10,10.2,10">
                             <Grid>
                                 <TextBlock Text="选择数据源：" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="230"/>
-                                <ListBox Name="DataStorageSelectListBox"  HorizontalAlignment="Left" Height="106" Margin="10,30,0,0" VerticalAlignment="Top" Width="230" SelectionChanged="DataStorageSelectListBox_SelectionChanged">
-                                    <ListBoxItem Content="万用表数据" Tag="3458A Data Storage"/>
-                                    <ListBoxItem Content="串口数据" Tag="Serial Port Data Storage"/>
+                                <ListBox Name="DataStorageSelectListBox" ItemsSource="{Binding DataStorageInstance.DataStorageDictionary.Keys}" HorizontalAlignment="Left" Height="106" Margin="10,30,0,0" VerticalAlignment="Top" Width="230">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="SelectionChanged">
-                                            <viewmodel:EventCommandBase Command="{Binding DataStorageSelectionChangedEvent}"/>
+                                            <viewmodel:EventCommandBase Command="{Binding DataStorageSelectionChangedEvent}" CommandParameter="{Binding ElementName=DataStorageSelectListBox, Path=SelectedItem}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </ListBox>
-                                <DataGrid Name="DataStorageDataGrid" ItemsSource="{Binding DataStorageDataGridBinding}" AutoGenerateColumns="False" IsReadOnly="True" Margin="245,25,6,5" LoadingRow="GeneralDataGrid_LoadingRow">
+                                <DataGrid Name="DataStorageDataGrid" ItemsSource="{Binding DataStorageDataGridBinding}" AutoGenerateColumns="False" IsReadOnly="True" Margin="245,25,6,5">
                                     <DataGrid.Columns>
                                         <DataGridTextColumn CanUserSort="False" Width="1*" Header="数据" Binding="{Binding StringData}"/>
                                     </DataGrid.Columns>
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="LoadingRow">
+                                            <viewmodel:EventCommandBase Command="{Binding DataGridLoadingRowAddRowIndexEvent}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
                                 </DataGrid>
                                 <Button Name="DataStorageExportListDataButton" Content="导出该数据" HorizontalAlignment="Left" Margin="10,141,0,0" VerticalAlignment="Top" Width="107" Height="32">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
-                                            <viewmodel:EventCommandBase Command="{Binding DataStorageStoreEvent}" CommandParameter="{Binding ElementName=DataStorageSelectListBox, Path=SelectedItem.Tag}"/>
+                                            <viewmodel:EventCommandBase Command="{Binding DataStorageStoreEvent}" CommandParameter="{Binding ElementName=DataStorageSelectListBox, Path=SelectedItem}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
                                 <Button Name="DataStorageClearListDataButton" Content="清空该数据" HorizontalAlignment="Left" Margin="133,141,0,0" VerticalAlignment="Top" Width="107" Height="32">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
-                                            <viewmodel:EventCommandBase Command="{Binding DataStorageDeleteEvent}" CommandParameter="{Binding ElementName=DataStorageSelectListBox, Path=SelectedItem.Tag}"/>
+                                            <viewmodel:EventCommandBase Command="{Binding DataStorageDeleteEvent}" CommandParameter="{Binding ElementName=DataStorageSelectListBox, Path=SelectedItem}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>

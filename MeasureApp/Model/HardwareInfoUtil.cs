@@ -4,6 +4,7 @@ using System.Linq;
 using System.Management;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace MeasureApp.Model
 {
@@ -87,8 +88,9 @@ namespace MeasureApp.Model
 
                 return strs.ToArray();
             }
-            catch
+            catch (Exception ex)
             {
+                _ = MessageBox.Show(ex.ToString());
                 return strs.ToArray();
             }
         }

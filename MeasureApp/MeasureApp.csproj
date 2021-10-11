@@ -1,41 +1,44 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net5.0-windows</TargetFramework>
-    <UseWPF>true</UseWPF>
-    <StartupObject>MeasureApp.App</StartupObject>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net5.0-windows</TargetFramework>
+		<UseWPF>true</UseWPF>
+		<StartupObject>MeasureApp.App</StartupObject>
+		<Deterministic>false</Deterministic>
+		<AssemblyVersion>1.0.*</AssemblyVersion>
+		<FileVersion>1.0.*</FileVersion>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.37" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="System.IO.Ports" Version="5.0.1" />
-    <PackageReference Include="System.Management" Version="5.0.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.37" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+		<PackageReference Include="System.IO.Ports" Version="5.0.1" />
+		<PackageReference Include="System.Management" Version="5.0.0" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Compile Update="Properties\Settings.Designer.cs">
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-    </Compile>
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Update="Properties\Settings.Designer.cs">
+			<DesignTimeSharedInput>True</DesignTimeSharedInput>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Settings.settings</DependentUpon>
+		</Compile>
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Update="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<None Update="Properties\Settings.settings">
+			<Generator>SettingsSingleFileGenerator</Generator>
+			<LastGenOutput>Settings.Designer.cs</LastGenOutput>
+		</None>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="NationalInstruments.Common">
-      <HintPath>C:\Users\Public\Documents\National Instruments\NI-VISA\Examples\.NET Nonstandard\4.5.1\SimpleAsynchronousReadWrite\cs\bin\Debug\NationalInstruments.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="NationalInstruments.VisaNS">
-      <HintPath>C:\Users\Public\Documents\National Instruments\NI-VISA\Examples\.NET Nonstandard\4.5.1\SimpleAsynchronousReadWrite\cs\bin\Debug\NationalInstruments.VisaNS.dll</HintPath>
-    </Reference>
-  </ItemGroup>
+	<ItemGroup>
+		<Reference Include="NationalInstruments.Common">
+			<HintPath>C:\Users\Public\Documents\National Instruments\NI-VISA\Examples\.NET Nonstandard\4.5.1\SimpleAsynchronousReadWrite\cs\bin\Debug\NationalInstruments.Common.dll</HintPath>
+		</Reference>
+		<Reference Include="NationalInstruments.VisaNS">
+			<HintPath>C:\Users\Public\Documents\National Instruments\NI-VISA\Examples\.NET Nonstandard\4.5.1\SimpleAsynchronousReadWrite\cs\bin\Debug\NationalInstruments.VisaNS.dll</HintPath>
+		</Reference>
+	</ItemGroup>
 
 </Project>

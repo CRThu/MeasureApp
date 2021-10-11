@@ -12,32 +12,48 @@ using System.Windows.Controls;
 
 namespace MeasureApp.ViewModel
 {
-    public class MainWindowDataContext : NotificationObjectBase
+    public partial class MainWindowDataContext : NotificationObjectBase
     {
-        // 重构临时变量
         string Key3458AString = "3458A Data Storage";
         string KeySerialPortString = "Serial Port Data Storage";
 
         // 3458A 通信类
-        public GPIB3458AMeasure measure3458A = new();
+        public GPIB3458AMeasure measure3458A
+        {
+            get;
+            set;
+        }
 
         // 多串口通信类
-        public SerialPorts serialPorts = new();
-
-        // 数据存储
-        public DataStorage dataStorage = new();
-
-        // 数据存储页数据绑定
-        private dynamic dataStorageDataGridBinding;
-        public dynamic DataStorageDataGridBinding
+        public SerialPorts serialPorts
         {
-            get => dataStorageDataGridBinding;
+            get;
+            set;
+        }
+
+        // 数据存储类
+        private DataStorage dataStorageInstance;
+        public DataStorage DataStorageInstance
+        {
+            get => dataStorageInstance;
             set
             {
-                dataStorageDataGridBinding = value;
-                RaisePropertyChanged(() => DataStorageDataGridBinding);
+                dataStorageInstance = value;
+                RaisePropertyChanged(() => DataStorageInstance);
             }
         }
+
+        public MainWindowDataContext()
+        {
+            measure3458A = new();
+            serialPorts = new();
+            dataStorageInstance = new();
+
+            // 添加默认Key
+            dataStorageInstance.AddKey(Key3458AString);
+            dataStorageInstance.AddKey(KeySerialPortString);
+        }
+
 
         // 状态栏
         private string _statusBarText = "statusBar";
@@ -51,62 +67,22 @@ namespace MeasureApp.ViewModel
             }
         }
 
-        // 数据存储事件
-        private CommandBase dataStorageStoreEvent;
-        public CommandBase DataStorageStoreEvent
+        // 通用DataGrid自动添加行号
+        private CommandBase dataGridLoadingRowAddRowIndexEvent;
+        public CommandBase DataGridLoadingRowAddRowIndexEvent
         {
             get
             {
-                if (dataStorageStoreEvent == null)
+                if (dataGridLoadingRowAddRowIndexEvent == null)
                 {
-                    dataStorageStoreEvent = new CommandBase(new Action<object>(param =>
-                      {
-                          try
-                          {
-                              if (param is string)
-                              {
-                                  string dataStorageTag = param as string;
-                                  SaveFileDialog saveFileDialog = new()
-                                  {
-                                      Title = "存储数据",
-                                      FileName = DataStorage.GenerateFileName(dataStorageTag),
-                                      DefaultExt = ".txt",
-                                      Filter = "Text File|*.txt"
-                                  };
-                                  if (saveFileDialog.ShowDialog() == true)
-                                  {
-                                      dataStorage.Save(dataStorageTag, saveFileDialog.FileName);
-                                  }
-                              }
-                          }
-                          catch (Exception ex)
-                          {
-                              _ = MessageBox.Show(ex.ToString());
-                          }
-                      }));
-                }
-                return dataStorageStoreEvent;
-            }
-        }
-
-        // 数据删除事件
-        private CommandBase dataStorageDeleteEvent;
-        public CommandBase DataStorageDeleteEvent
-        {
-            get
-            {
-                if (dataStorageDeleteEvent == null)
-                {
-                    dataStorageDeleteEvent = new CommandBase(new Action<object>(param =>
+                    dataGridLoadingRowAddRowIndexEvent = new CommandBase(new Action<object>(param =>
                     {
                         try
                         {
-                            if (param is string)
+                            if (param is DataGridRowEventArgs)
                             {
-                                if (MessageBox.Show("清理本次通信数据，是否继续？", "清理数据确认", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
-                                {
-                                    dataStorage.ClearAllData(param as string);
-                                }
+                                var row = (param as DataGridRowEventArgs).Row;
+                                row.Header = (row.GetIndex() + 1).ToString();
                             }
                         }
                         catch (Exception ex)
@@ -115,89 +91,7 @@ namespace MeasureApp.ViewModel
                         }
                     }));
                 }
-                return dataStorageDeleteEvent;
-            }
-        }
-
-        // 数据显示触发事件
-        private CommandBase dataStorageSelectionChangedEvent;
-        public CommandBase DataStorageSelectionChangedEvent
-        {
-            get
-            {
-                if (dataStorageSelectionChangedEvent == null)
-                {
-                    dataStorageSelectionChangedEvent = new CommandBase(new Action<object>(param =>
-                    {
-                        try
-                        {
-                            // TODO BIND变量替代路由args
-                            string key = ((param as SelectionChangedEventArgs).AddedItems[0] as ListBoxItem).Tag as string;
-                            DataStorageDataGridBinding = dataStorage.DataStorageDictionary[key];
-                        }
-                        catch (Exception ex)
-                        {
-                            _ = MessageBox.Show(ex.ToString());
-                        }
-                    }));
-                }
-                return dataStorageSelectionChangedEvent;
-            }
-        }
-
-        // 临时发送DAC命令数据绑定
-        private int loopTimesText = 262144;
-        public int LoopTimesText
-        {
-            get => loopTimesText;
-            set
-            {
-                loopTimesText = value;
-                RaisePropertyChanged(() => LoopTimesText);
-            }
-        }
-
-        private string sendCommandByteText = "A0";
-        public string SendCommandByteText
-        {
-            get => sendCommandByteText;
-            set
-            {
-                sendCommandByteText = value;
-                RaisePropertyChanged(() => SendCommandByteText);
-            }
-        }
-
-        private decimal multiMeterSetRangeText = 10M;
-        public decimal MultiMeterSetRangeText
-        {
-            get => multiMeterSetRangeText;
-            set
-            {
-                multiMeterSetRangeText = value;
-                RaisePropertyChanged(() => MultiMeterSetRangeText);
-            }
-        }
-
-        private decimal multiMeterSetResolutionText = 1M;
-        public decimal MultiMeterSetResolutionText
-        {
-            get => multiMeterSetResolutionText;
-            set
-            {
-                multiMeterSetResolutionText = value;
-                RaisePropertyChanged(() => MultiMeterSetResolutionText);
-            }
-        }
-
-        private int delayText = 100;
-        public int DelayText
-        {
-            get => delayText;
-            set
-            {
-                delayText = value;
-                RaisePropertyChanged(() => DelayText);
+                return dataGridLoadingRowAddRowIndexEvent;
             }
         }
     }
