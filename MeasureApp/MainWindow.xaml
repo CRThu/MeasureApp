@@ -22,13 +22,25 @@
                     <Grid>
                         <GroupBox Header="GPIB设备发现" HorizontalAlignment="Left" Height="166" Margin="10,10,0,0" VerticalAlignment="Top" Width="407">
                             <Grid>
-                                <Button x:Name="SearchGPIBDevicesButton" Content="搜索GPIB设备" Click="SearchGPIBDevicesButton_Click" HorizontalAlignment="Left" Margin="227,10,0,0" VerticalAlignment="Top" Width="158" Height="23"/>
-                                <Button x:Name="OpenGPIBDeviceButton" Content="打开GPIB设备" Click="OpenGPIBDeviceButton_Click" HorizontalAlignment="Left" Margin="227,38,0,0" VerticalAlignment="Top" Width="158" Height="23"/>
-                                <ComboBox x:Name="DeviceComboBox" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="201" Height="23"/>
-                                <TextBlock x:Name="DeviceNameLabel" Text="No Device Connected." HorizontalAlignment="Left" Margin="10,42,0,86" VerticalAlignment="Center" Width="201"/>
+                                <Button x:Name="SearchGPIBDevicesButton" Content="搜索GPIB设备" HorizontalAlignment="Left" Margin="227,10,0,0" VerticalAlignment="Top" Width="158" Height="23">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <viewmodel:EventCommandBase Command="{Binding GpibDeviceSearchEvent}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Button>
+                                <Button x:Name="OpenGPIBDeviceButton" Content="打开GPIB设备" HorizontalAlignment="Left" Margin="227,38,0,0" VerticalAlignment="Top" Width="158" Height="23">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <viewmodel:EventCommandBase Command="{Binding GpibDeviceOpenEvent}" CommandParameter="{Binding ElementName=GpibDeviceComboBox, Path=SelectedItem}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Button>
+                                <ComboBox x:Name="GpibDeviceComboBox" ItemsSource="{Binding GpibDevicesName}" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="201" Height="23"/>
+                                <TextBlock x:Name="DeviceNameLabel" Text="{Binding GpibDeviceConnectStatusText}" HorizontalAlignment="Left" Margin="10,42,0,86" VerticalAlignment="Center" Width="201"/>
                             </Grid>
                         </GroupBox>
-                        <GroupBox Header="串口设备" HorizontalAlignment="Left" Height="166" Margin="422,10,0,0" VerticalAlignment="Top" Width="407">
+                        <GroupBox Header="串口设备发现" HorizontalAlignment="Left" Height="166" Margin="422,10,0,0" VerticalAlignment="Top" Width="407">
                             <Grid>
                                 <Button x:Name="SearchSerialPortButton" Content="搜索串口设备" Click="SearchSerialPortButton_Click" Margin="231,47,10.2,0" VerticalAlignment="Top" Height="23"/>
                                 <Button x:Name="OpenSerialPortButton" Content="打开串口设备" Click="OpenSerialPortButton_Click" Margin="231,75,10.2,0" VerticalAlignment="Top" Height="23"/>
@@ -332,7 +344,7 @@
                                 <TextBox HorizontalAlignment="Left" Margin="98,185,0,0" Text="{Binding MultiMeterSetRangeText}" TextWrapping="Wrap" VerticalAlignment="Top" Width="53"/>
                                 <Label Content="万用表精度(uV)" HorizontalAlignment="Left" Margin="2,207,0,0" VerticalAlignment="Top"/>
                                 <TextBox HorizontalAlignment="Left" Margin="101,211,0,0" Text="{Binding MultiMeterSetResolutionText}" TextWrapping="Wrap" VerticalAlignment="Top" Width="50"/>
-                                <Label Content="延时(ms)" HorizontalAlignment="Left" Margin="2,229,0,0" VerticalAlignment="Top"/>
+                                <Label Content="延时(时钟拍数)" HorizontalAlignment="Left" Margin="2,229,0,0" VerticalAlignment="Top"/>
                                 <TextBox HorizontalAlignment="Left" Margin="101,233,0,0" Text="{Binding DelayText}" TextWrapping="Wrap" VerticalAlignment="Top" Width="50"/>
                             </Grid>
                         </GroupBox>

@@ -18,21 +18,31 @@ namespace MeasureApp.ViewModel
         string KeySerialPortString = "Serial Port Data Storage";
 
         // 3458A 通信类
-        public GPIB3458AMeasure measure3458A
+        private GPIB3458AMeasure measure3458AInstance = new();
+        public GPIB3458AMeasure Measure3458AInstance
         {
-            get;
-            set;
+            get => measure3458AInstance;
+            set
+            {
+                measure3458AInstance = value;
+                RaisePropertyChanged(() => Measure3458AInstance);
+            }
         }
 
         // 多串口通信类
-        public SerialPorts serialPorts
+        private SerialPorts serialPortsInstance=new();
+        public SerialPorts SerialPortsInstance
         {
-            get;
-            set;
+            get => serialPortsInstance;
+            set
+            {
+                serialPortsInstance = value;
+                RaisePropertyChanged(() => SerialPortsInstance);
+            }
         }
 
         // 数据存储类
-        private DataStorage dataStorageInstance;
+        private DataStorage dataStorageInstance=new();
         public DataStorage DataStorageInstance
         {
             get => dataStorageInstance;
@@ -45,10 +55,6 @@ namespace MeasureApp.ViewModel
 
         public MainWindowDataContext()
         {
-            measure3458A = new();
-            serialPorts = new();
-            dataStorageInstance = new();
-
             // 添加默认Key
             dataStorageInstance.AddKey(Key3458AString);
             dataStorageInstance.AddKey(KeySerialPortString);

@@ -26,7 +26,7 @@ namespace MeasureApp.ViewModel
             }
         }
 
-        private string sendCommandByteText = "A0";
+        private string sendCommandByteText = "02A600";
         public string SendCommandByteText
         {
             get => sendCommandByteText;
@@ -59,7 +59,7 @@ namespace MeasureApp.ViewModel
             }
         }
 
-        private int delayText = 100;
+        private int delayText = 2;
         public int DelayText
         {
             get => delayText;

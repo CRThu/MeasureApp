@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MeasureApp.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO.Ports;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace MeasureApp.Model
 {
-    public class SerialPorts
+    public class SerialPorts : NotificationObjectBase
     {
         public Dictionary<string, SerialPort> SerialPortsDict = new Dictionary<string, SerialPort>();
 
@@ -27,6 +28,10 @@ namespace MeasureApp.Model
                 SerialPort serialPort = new SerialPort(portName)
                 {
                     BaudRate = baudRate,
+                    // TODO
+                    StopBits = StopBits.One,
+                    DataBits = 8,
+                    Parity = Parity.Odd,
                     ReadBufferSize = Properties.Settings.Default.SerialPortReadBufferSize,
                     WriteBufferSize = Properties.Settings.Default.SerialPortWriteBufferSize,
                     ReadTimeout = Properties.Settings.Default.SerialPortReadTimeout,
@@ -99,7 +104,7 @@ namespace MeasureApp.Model
         public int Read(string serialPort, byte[] responseBytes, int bytesExpected, int millisecondsTimeout)
         {
             int offset = 0, bytesRead;
-            bool result = TaskUtility.TimeoutCheck(millisecondsTimeout, () =>
+            bool result = Utility.TimeoutCheck(millisecondsTimeout, () =>
              {
                  while (bytesExpected > 0)
                  {

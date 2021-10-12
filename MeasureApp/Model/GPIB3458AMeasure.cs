@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MeasureApp.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace MeasureApp.Model
 {
-    public class GPIB3458AMeasure
+    public class GPIB3458AMeasure : NotificationObjectBase
     {
         private GPIB gpib = new();
         public bool IsOpen => gpib.IsOpen;

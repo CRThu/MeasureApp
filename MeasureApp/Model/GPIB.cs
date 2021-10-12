@@ -1,4 +1,5 @@
-﻿using NationalInstruments.VisaNS;
+﻿using MeasureApp.ViewModel;
+using NationalInstruments.VisaNS;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,7 +11,7 @@ using System.Windows;
 
 namespace MeasureApp.Model
 {
-    public class GPIB
+    public class GPIB : NotificationObjectBase
     {
         public bool IsOpen = false;
         public string deviceAddr = string.Empty;

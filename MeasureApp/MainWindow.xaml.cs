@@ -34,13 +34,11 @@ namespace MeasureApp
         MainWindowDataContext mainWindowDataContext = new MainWindowDataContext();
 
         // 重构临时变量
-        dynamic measure3458A;
-        dynamic dataStorage;
-        dynamic serialPorts;
+        GPIB3458AMeasure measure3458A;
+        DataStorage dataStorage;
+        SerialPorts serialPorts;
         string Key3458AString = "3458A Data Storage";
         string KeySerialPortString = "Serial Port Data Storage";
-
-        public ObservableCollection<string> gpibDeviceNames = new ObservableCollection<string>();
 
         public bool IsSyncDCVDisplay = false;
         private ManualResetEvent resetEvent = new ManualResetEvent(false);
@@ -55,9 +53,9 @@ namespace MeasureApp
         public MainWindow()
         {
             // 重构临时变量
-            measure3458A = mainWindowDataContext.measure3458A;
+            measure3458A = mainWindowDataContext.Measure3458AInstance;
             dataStorage = mainWindowDataContext.DataStorageInstance;
-            serialPorts = mainWindowDataContext.serialPorts;
+            serialPorts = mainWindowDataContext.SerialPortsInstance;
 
             InitializeComponent();
 
@@ -68,7 +66,6 @@ namespace MeasureApp
             SearchSerialPortButton_Click(null, null);
             SerialPortSendCmd_Changed(null, null);
 
-            DeviceComboBox.ItemsSource = gpibDeviceNames;
             SyncDCVDisplayTextBlock.DataContext = SyncDCVDisplayText;
             ManualReadDCVTextBlock.DataContext = ManualReadDCVText;
             SerialPortSendCmdPreviewTextBlock.DataContext = SerialPortSendCmdString;
@@ -84,42 +81,6 @@ namespace MeasureApp
         {
             measure3458A.Dispose();
             serialPorts.CloseAll();
-        }
-
-        private void SearchGPIBDevicesButton_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                gpibDeviceNames.Clear();
-                foreach (string resource in GPIB.SearchDevices("GPIB?*INSTR"))
-                {
-                    gpibDeviceNames.Add(resource);
-                }
-            }
-            catch (Exception)
-            {
-                // _ = MessageBox.Show(ex.ToString());
-            }
-
-            if (gpibDeviceNames.Count != 0 && DeviceComboBox.SelectedIndex == -1)
-            {
-                DeviceComboBox.SelectedIndex = 0;
-            }
-        }
-
-        private void OpenGPIBDeviceButton_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                measure3458A.Dispose();
-                string deviceName = measure3458A.Open(DeviceComboBox.SelectedItem as string);
-                measure3458A.Timeout = Properties.Settings.Default.GPIBTimeout;
-                DeviceNameLabel.Text = deviceName;
-            }
-            catch (Exception ex)
-            {
-                _ = MessageBox.Show(ex.ToString());
-            }
         }
 
         private void QueryCmdButton_Click(object sender, RoutedEventArgs e)
@@ -393,7 +354,7 @@ namespace MeasureApp
                 {
                     ComboBoxItem comboBoxItem = new ComboBoxItem
                     {
-                        Content = portList[i] + "|" + portDescriptionList.Where(str => str.Contains(portList[i])).First(),
+                        Content = $"{portList[i]}|{portDescriptionList.Where(str => str.Contains(portList[i])).FirstOrDefault() ?? ""}",
                         Tag = portList[i]
                     };
                     _ = SerialPortNameComboBox.Items.Add(comboBoxItem);
@@ -708,28 +669,38 @@ namespace MeasureApp
                 int LoopTimes = mainWindowDataContext.LoopTimesText;
                 decimal M3458ARange = mainWindowDataContext.MultiMeterSetRangeText;
                 decimal M3458AResolution = mainWindowDataContext.MultiMeterSetResolutionText / 1e6M;
-                byte[] SendCommandByteText = new[] { Convert.ToByte(mainWindowDataContext.SendCommandByteText, 16) };
+                byte[] SendCommandByteText = Utility.ToBytesFromHexString(mainWindowDataContext.SendCommandByteText);
                 decimal voltage;
-
+                // TODO运行标志位
                 _ = Task.Run(() =>
                 {
+                    if (!measure3458A.IsOpen)
+                    {
+                        throw new NullReferenceException("3458A未打开");
+                    }
+
                     for (int i = 0; i < LoopTimes; i++)
                     {
                         // 向DAC下位机发送电压命令
-                        ((SerialPorts)serialPorts).WriteBytes(com, SendCommandByteText, 1);
-                        // 等待100毫秒
-                        Thread.Sleep(delay);
-                        // 向3458A发送采集电压命令
-                        voltage = measure3458A.MeasureDCV(M3458ARange, M3458AResolution);
+                        mainWindowDataContext.StatusBarText = $"{i + 1}A/{LoopTimes}";
+                        serialPorts.WriteBytes(com, SendCommandByteText, SendCommandByteText.Length);
+                        // 等待delay拍数，期间采集的数据丢弃
+                        mainWindowDataContext.StatusBarText = $"{i + 1}B/{LoopTimes}";
+                        for (int j = 0; j < delay; j++)
+                        {
+                            _ = measure3458A.ReadDecimal();
+                        }
+                        // 从3458A接收自动采集的电压命令
+                        mainWindowDataContext.StatusBarText = $"{i + 1}C/{LoopTimes}";
+                        voltage = measure3458A.ReadDecimal();
                         // 存储电压
+                        mainWindowDataContext.StatusBarText = $"{i + 1}D/{LoopTimes}";
                         // CollectionView不支持从调度程序以外的线程对其SourceCollection进行的更改
                         SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext(Application.Current.Dispatcher));
                         SynchronizationContext.Current.Post(p1 =>
                         {
                             dataStorage.AddData(Key3458AString, voltage);
                         }, null);
-                        // 进度输出
-                        mainWindowDataContext.StatusBarText = $"{i + 1}/{LoopTimes}";
                     }
                 });
             }
