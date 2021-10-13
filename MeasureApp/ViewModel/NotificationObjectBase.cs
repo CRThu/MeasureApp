@@ -11,10 +11,12 @@ namespace MeasureApp.ViewModel
     public class NotificationObjectBase : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
+
         public void RaisePropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
         protected void RaisePropertyChanged<T>(Expression<Func<T>> action)
         {
             object propertyName = GetPropertyName(action);

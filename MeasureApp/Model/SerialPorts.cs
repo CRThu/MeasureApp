@@ -12,10 +12,19 @@ namespace MeasureApp.Model
 {
     public class SerialPorts : NotificationObjectBase
     {
-        public Dictionary<string, SerialPort> SerialPortsDict = new Dictionary<string, SerialPort>();
+        private ObservableDictionary<string, SerialPort> serialPortsDict = new();
+        public ObservableDictionary<string, SerialPort> SerialPortsDict
+        {
+            get => serialPortsDict;
+            set
+            {
+                serialPortsDict = value;
+                RaisePropertyChanged(() => SerialPortsDict);
+            }
+        }
 
-        public IEnumerable<string> SerialPortNames => SerialPortsDict.Select(SerialPortList => SerialPortList.Key);
-        public IEnumerable<SerialPort> SerialPortInstances => SerialPortsDict.Select(SerialPortList => SerialPortList.Value);
+        public IEnumerable<string> SerialPortNames => SerialPortsDict.Keys;
+        public IEnumerable<SerialPort> SerialPortInstances => SerialPortsDict.Values;
 
         public SerialPorts()
         {

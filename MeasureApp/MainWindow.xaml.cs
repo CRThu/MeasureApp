@@ -62,8 +62,7 @@ namespace MeasureApp
             //DataContext = new MainWindowDataContext();
             DataContext = mainWindowDataContext;
 
-            SearchGPIBDevicesButton_Click(null, null);
-            SearchSerialPortButton_Click(null, null);
+            mainWindowDataContext.GpibDeviceSearchEvent.Execute(null);
             SerialPortSendCmd_Changed(null, null);
 
             SyncDCVDisplayTextBlock.DataContext = SyncDCVDisplayText;
@@ -343,92 +342,6 @@ namespace MeasureApp
             }
         }
 
-        private void SearchSerialPortButton_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                SerialPortNameComboBox.Items.Clear();
-                string[] portList = SerialPort.GetPortNames();
-                string[] portDescriptionList = HardwareInfoUtil.GetSerialPortFullName();
-                for (int i = 0; i < portList.Length; ++i)
-                {
-                    ComboBoxItem comboBoxItem = new ComboBoxItem
-                    {
-                        Content = $"{portList[i]}|{portDescriptionList.Where(str => str.Contains(portList[i])).FirstOrDefault() ?? ""}",
-                        Tag = portList[i]
-                    };
-                    _ = SerialPortNameComboBox.Items.Add(comboBoxItem);
-                }
-                if (portList.Length > 0)
-                {
-                    SerialPortNameComboBox.SelectedIndex = 0;
-                }
-            }
-            catch (Exception ex)
-            {
-                _ = MessageBox.Show(ex.ToString());
-            }
-        }
-
-        private void OpenSerialPortButton_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                string selectedPortName = (SerialPortNameComboBox.SelectedItem as ComboBoxItem).Tag as string;
-                int baudRate = Convert.ToInt32(((SerialPortBaudRateComboBox.SelectedItem as ComboBoxItem).Tag as string) == "Other"
-                    ? ((SerialPortBaudRateComboBox.SelectedItem as ComboBoxItem).Content as TextBox).Text
-                    : (SerialPortBaudRateComboBox.SelectedItem as ComboBoxItem).Tag as string);
-                if (!serialPorts.Open(selectedPortName, baudRate))
-                {
-                    _ = MessageBox.Show("串口已被打开.");
-                }
-                SerialPortDeviceNameTextBlock.Text = ((SerialPorts)serialPorts).SerialPortNames.Count() == 0
-                    ? "No Device Connected."
-                    : string.Join(",\n", ((SerialPorts)serialPorts).SerialPortInstances.Select(serialPort => $"{serialPort.PortName}({serialPort.BaudRate}bps)").ToArray()) + "\nDevice Connected.";
-                SerialPortDebugSelectComboBox.ItemsSource = serialPorts.SerialPortNames;
-                SerialPortSendCmdSerialPortNameComboBox.ItemsSource = serialPorts.SerialPortNames;
-                SerialPortRecvDataSerialPortNameComboBox.ItemsSource = serialPorts.SerialPortNames;
-
-                if (SerialPortDebugSelectComboBox.Items.Count != 0 && SerialPortDebugSelectComboBox.SelectedIndex == -1)
-                {
-                    SerialPortDebugSelectComboBox.SelectedIndex = 0;
-                }
-                if (SerialPortSendCmdSerialPortNameComboBox.Items.Count != 0 && SerialPortSendCmdSerialPortNameComboBox.SelectedIndex == -1)
-                {
-                    SerialPortSendCmdSerialPortNameComboBox.SelectedIndex = 0;
-                }
-                if (SerialPortRecvDataSerialPortNameComboBox.Items.Count != 0 && SerialPortRecvDataSerialPortNameComboBox.SelectedIndex == -1)
-                {
-                    SerialPortRecvDataSerialPortNameComboBox.SelectedIndex = 0;
-                }
-            }
-            catch (Exception ex)
-            {
-                _ = MessageBox.Show(ex.ToString());
-            }
-        }
-
-        private void CloseSerialPortButton_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                string selectedPortName = (SerialPortNameComboBox.SelectedItem as ComboBoxItem).Tag as string;
-                if (!serialPorts.Close(selectedPortName))
-                {
-                    _ = MessageBox.Show("串口已被关闭.");
-                }
-                SerialPortDeviceNameTextBlock.Text = ((SerialPorts)serialPorts).SerialPortNames.Count() == 0
-                    ? "No Device Connected."
-                    : string.Join(",\n", ((SerialPorts)serialPorts).SerialPortInstances.Select(serialPort => $"{serialPort.PortName}({serialPort.BaudRate}bps)").ToArray()) + "\nDevice Connected.";
-                SerialPortDebugSelectComboBox.ItemsSource = serialPorts.SerialPortNames;
-                SerialPortSendCmdSerialPortNameComboBox.ItemsSource = serialPorts.SerialPortNames;
-            }
-            catch (Exception ex)
-            {
-                _ = MessageBox.Show(ex.ToString());
-            }
-        }
-
         private void SerialPortWriteCmdButton_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -679,6 +592,8 @@ namespace MeasureApp
                         throw new NullReferenceException("3458A未打开");
                     }
 
+                    // 丢弃现有缓存
+                    _ = measure3458A.ReadDecimal();
                     for (int i = 0; i < LoopTimes; i++)
                     {
                         // 向DAC下位机发送电压命令

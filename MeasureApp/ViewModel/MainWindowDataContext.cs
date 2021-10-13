@@ -30,7 +30,7 @@ namespace MeasureApp.ViewModel
         }
 
         // 多串口通信类
-        private SerialPorts serialPortsInstance=new();
+        private SerialPorts serialPortsInstance = new();
         public SerialPorts SerialPortsInstance
         {
             get => serialPortsInstance;
@@ -42,7 +42,7 @@ namespace MeasureApp.ViewModel
         }
 
         // 数据存储类
-        private DataStorage dataStorageInstance=new();
+        private DataStorage dataStorageInstance = new();
         public DataStorage DataStorageInstance
         {
             get => dataStorageInstance;

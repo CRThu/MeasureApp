@@ -2,17 +2,19 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace MeasureApp.ViewModel
 {
     public partial class MainWindowDataContext : NotificationObjectBase
     {
-        // 搜索到的GPIB设备地址
-        private ObservableCollection<string> gpibDevicesName = new ObservableCollection<string>();
+        // 可用GPIB设备地址
+        private ObservableCollection<string> gpibDevicesName = new();
         public ObservableCollection<string> GpibDevicesName
         {
             get => gpibDevicesName;
@@ -89,6 +91,121 @@ namespace MeasureApp.ViewModel
                     }));
                 }
                 return gpibDeviceOpenEvent;
+            }
+        }
+
+        // 可用串口设备
+        private ObservableCollection<ComboBoxItem> serialportDevicesNameComboBoxItems = new();
+        public ObservableCollection<ComboBoxItem> SerialportDevicesNameComboBoxItems
+        {
+            get => serialportDevicesNameComboBoxItems;
+            set
+            {
+                serialportDevicesNameComboBoxItems = value;
+                RaisePropertyChanged(() => SerialportDevicesNameComboBoxItems);
+            }
+        }
+
+        // 选中串口设备
+        private ComboBoxItem serialportDevicesNameSelectItem = new();
+        public ComboBoxItem SerialportDevicesNameSelectItem
+        {
+            get => serialportDevicesNameSelectItem;
+            set
+            {
+                serialportDevicesNameSelectItem = value;
+                RaisePropertyChanged(() => SerialportDevicesNameSelectItem);
+            }
+        }
+
+        // 搜索串口设备事件
+        private CommandBase serialPortDeviceSearchEvent;
+        public CommandBase SerialPortDeviceSearchEvent
+        {
+            get
+            {
+                if (serialPortDeviceSearchEvent == null)
+                {
+                    serialPortDeviceSearchEvent = new CommandBase(new Action<object>(param =>
+                    {
+                        try
+                        {
+                            serialportDevicesNameComboBoxItems.Clear();
+                            string[] portList = SerialPort.GetPortNames();
+                            string[] portDescriptionList = HardwareInfoUtil.GetSerialPortFullName();
+                            for (int i = 0; i < portList.Length; ++i)
+                            {
+                                serialportDevicesNameComboBoxItems.Add(new()
+                                {
+                                    Content = $"{portList[i]}|{portDescriptionList.Where(str => str.Contains(portList[i])).FirstOrDefault() ?? ""}",
+                                    Tag = portList[i]
+                                });
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            _ = MessageBox.Show(ex.ToString());
+                        }
+                    }));
+                }
+                return serialPortDeviceSearchEvent;
+            }
+        }
+
+        // 打开串口设备事件
+        private CommandBase serialPortDeviceOpenEvent;
+        public CommandBase SerialPortDeviceOpenEvent
+        {
+            get
+            {
+                if (serialPortDeviceOpenEvent == null)
+                {
+                    serialPortDeviceOpenEvent = new CommandBase(new Action<object>(param =>
+                    {
+                        try
+                        {
+                            string portName = SerialportDevicesNameSelectItem.Tag as string;
+                            // TODO 115200
+                            if (!SerialPortsInstance.Open(portName, 115200))
+                            {
+                                _ = MessageBox.Show("串口已被打开.");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            _ = MessageBox.Show(ex.ToString());
+                        }
+                    }));
+                }
+                return serialPortDeviceOpenEvent;
+            }
+        }
+
+        // 关闭串口设备事件
+        private CommandBase serialPortDeviceCloseEvent;
+        public CommandBase SerialPortDeviceCloseEvent
+        {
+            get
+            {
+                if (serialPortDeviceCloseEvent == null)
+                {
+                    serialPortDeviceCloseEvent = new CommandBase(new Action<object>(param =>
+                    {
+                        try
+                        {
+                            string portName = SerialportDevicesNameSelectItem.Tag as string;
+                            if (!SerialPortsInstance.Close(portName))
+                            {
+                                _ = MessageBox.Show("串口已被关闭.");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            _ = MessageBox.Show(ex.ToString());
+                        }
+                    }));
+                }
+                return serialPortDeviceCloseEvent;
             }
         }
     }

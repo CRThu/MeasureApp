@@ -11,8 +11,8 @@ namespace MeasureApp.Model
 {
     public class DataStorage : NotificationObjectBase
     {
-        private Dictionary<string, ObservableCollection<StringDataClass>> _dataStorageDictionary = new();
-        public Dictionary<string, ObservableCollection<StringDataClass>> DataStorageDictionary
+        private ObservableDictionary<string, ObservableCollection<StringDataClass>> _dataStorageDictionary = new();
+        public ObservableDictionary<string, ObservableCollection<StringDataClass>> DataStorageDictionary
         {
             get => _dataStorageDictionary;
             set

@@ -11,6 +11,7 @@
         <local:SerialPortRecvDataTypeToBoolConverter x:Key="SerialPortRecvDataTypeToBoolConverter"/>
         <local:SerialPortRecvDataEncodeToBoolConverter x:Key="SerialPortRecvDataEncodeToBoolConverter"/>
         <local:SerialPortRecvDataType x:Key="SerialPortRecvDataType"/>
+        <local:SerialPortsStatusTextConverter x:Key="SerialPortsStatusTextConverter"/>
     </Window.Resources>
     <DockPanel>
         <Grid>
@@ -42,10 +43,28 @@
                         </GroupBox>
                         <GroupBox Header="串口设备发现" HorizontalAlignment="Left" Height="166" Margin="422,10,0,0" VerticalAlignment="Top" Width="407">
                             <Grid>
-                                <Button x:Name="SearchSerialPortButton" Content="搜索串口设备" Click="SearchSerialPortButton_Click" Margin="231,47,10.2,0" VerticalAlignment="Top" Height="23"/>
-                                <Button x:Name="OpenSerialPortButton" Content="打开串口设备" Click="OpenSerialPortButton_Click" Margin="231,75,10.2,0" VerticalAlignment="Top" Height="23"/>
-                                <Button x:Name="CloseSerialPortButton" Content="关闭串口设备" Click="CloseSerialPortButton_Click" Margin="231,103,10.2,0" VerticalAlignment="Top" Height="23"/>
-                                <ComboBox x:Name="SerialPortNameComboBox" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="201" Height="23"/>
+                                <Button x:Name="SearchSerialPortButton" Content="搜索串口设备" Margin="231,47,10.2,0" VerticalAlignment="Top" Height="23">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <viewmodel:EventCommandBase Command="{Binding SerialPortDeviceSearchEvent}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Button>
+                                <Button x:Name="OpenSerialPortButton" Content="打开串口设备" Margin="231,75,10.2,0" VerticalAlignment="Top" Height="23">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <viewmodel:EventCommandBase Command="{Binding SerialPortDeviceOpenEvent}" CommandParameter="{Binding ElementName=SerialPortNameComboBox, Path=Tag}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Button>
+                                <Button x:Name="CloseSerialPortButton" Content="关闭串口设备" Margin="231,103,10.2,0" VerticalAlignment="Top" Height="23">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <viewmodel:EventCommandBase Command="{Binding SerialPortDeviceCloseEvent}" CommandParameter="{Binding ElementName=SerialPortNameComboBox, Path=Tag}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Button>
+                                <ComboBox x:Name="SerialPortNameComboBox" ItemsSource="{Binding SerialportDevicesNameComboBoxItems}" SelectedItem="{Binding SerialportDevicesNameSelectItem}" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="201" Height="23"/>
                                 <ComboBox x:Name="SerialPortBaudRateComboBox" SelectedIndex="0" HorizontalAlignment="Left" Margin="231,10,0,0" VerticalAlignment="Top" Width="130" Height="23">
                                     <ComboBoxItem Content="9600" Tag="9600"/>
                                     <ComboBoxItem Content="38400" Tag="38400"/>
@@ -75,7 +94,7 @@
                                         </TextBox>
                                     </ComboBoxItem>
                                 </ComboBox>
-                                <TextBlock x:Name="SerialPortDeviceNameTextBlock" Text="No Device Connected." HorizontalAlignment="Left" Margin="10,47,0,0" Width="201" TextWrapping="Wrap" Height="79" VerticalAlignment="Top"/>
+                                <TextBlock x:Name="SerialPortDeviceNameTextBlock" Text="{Binding SerialPortsInstance.SerialPortsDict}" HorizontalAlignment="Left" Margin="10,47,0,0" Width="201" TextWrapping="Wrap" Height="79" VerticalAlignment="Top"/>
                             </Grid>
                         </GroupBox>
                         <GroupBox Header="GPIB调试" HorizontalAlignment="Left" Margin="10,181,0,10" Width="407">
@@ -91,7 +110,7 @@
                         </GroupBox>
                         <GroupBox Header="串口调试" HorizontalAlignment="Left" Margin="422,181,0,10" Width="407">
                             <Grid>
-                                <ComboBox x:Name="SerialPortDebugSelectComboBox" SelectedIndex="0" HorizontalAlignment="Left" Margin="288,16,0,0" VerticalAlignment="Top" Width="97" Height="23"/>
+                                <ComboBox x:Name="SerialPortDebugSelectComboBox" ItemsSource="{Binding SerialPortsInstance.SerialPortsDict.Keys}" HorizontalAlignment="Left" Margin="288,16,0,0" VerticalAlignment="Top" Width="97" Height="23"/>
                                 <Button x:Name="SerialPortWriteCmdButton" Content="Write" HorizontalAlignment="Left" Margin="227,61,0,0" VerticalAlignment="Top" Width="158" Height="51" Click="SerialPortWriteCmdButton_Click"/>
                                 <Button x:Name="SerialPortReadCmdButton" Content="Read" HorizontalAlignment="Left" Margin="227,137,0,0" VerticalAlignment="Top" Width="158" Height="51" Click="SerialPortReadCmdButton_Click"/>
                                 <TextBox x:Name="SerialPortWriteCmdTextBox" HorizontalAlignment="Left" Height="51" Margin="10,61,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="201"/>
@@ -195,7 +214,7 @@
                         <GroupBox Header="传输" HorizontalAlignment="Left" Margin="10,10,0,0" Width="460" Height="392" VerticalAlignment="Top">
                             <Grid>
                                 <TextBlock Text="发送:" HorizontalAlignment="Left" Margin="10,23,0,0" VerticalAlignment="Top" Width="33"/>
-                                <ComboBox x:Name="SerialPortSendCmdSerialPortNameComboBox" HorizontalAlignment="Left" Margin="48,19,0,0" VerticalAlignment="Top" Width="120" Height="23" SelectionChanged="SerialPortSendCmd_Changed"/>
+                                <ComboBox x:Name="SerialPortSendCmdSerialPortNameComboBox" ItemsSource="{Binding SerialPortsInstance.SerialPortsDict.Keys}" HorizontalAlignment="Left" Margin="48,19,0,0" VerticalAlignment="Top" Width="120" Height="23" SelectionChanged="SerialPortSendCmd_Changed"/>
                                 <TextBlock Text="::" HorizontalAlignment="Left" Margin="173,23,0,0" VerticalAlignment="Top" Width="7"/>
                                 <ComboBox x:Name="SerialPortSendCmdCommandNameComboBox" SelectedIndex="0" HorizontalAlignment="Left" Margin="185,19,0,0" VerticalAlignment="Top" Width="120" Height="23" SelectionChanged="SerialPortSendCmd_Changed">
                                     <ComboBoxItem Content="SET" Tag="SET"/>
@@ -270,7 +289,7 @@
                                 <Button Name="SerialPortRecvDataButton" Content="接收数据" HorizontalAlignment="Left" Margin="195,208,0,0" VerticalAlignment="Top" Width="110" Height="32" Click="SerialPortRecvDataButton_Click"/>
                                 <Button Name="SerialPortRecvDataStorageButton" Content="存储数据" HorizontalAlignment="Left" Margin="328,208,0,0" VerticalAlignment="Top" Width="110" Height="32" Click="SerialPortRecvDataStorageButton_Click"/>
                                 <TextBox Name="SerialPortRecvDataDisplayTextBox" HorizontalAlignment="Left" Height="115" Margin="48,245,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="390"/>
-                                <ComboBox x:Name="SerialPortRecvDataSerialPortNameComboBox" HorizontalAlignment="Left" Margin="48,212,0,0" VerticalAlignment="Top" Width="120" Height="23"/>
+                                <ComboBox x:Name="SerialPortRecvDataSerialPortNameComboBox" ItemsSource="{Binding SerialPortsInstance.SerialPortsDict.Keys}" HorizontalAlignment="Left" Margin="48,212,0,0" VerticalAlignment="Top" Width="120" Height="23"/>
                             </Grid>
                         </GroupBox>
                         <GroupBox Header="存储" HorizontalAlignment="Left" Height="392" Margin="475,10,0,0" VerticalAlignment="Top" Width="350">
