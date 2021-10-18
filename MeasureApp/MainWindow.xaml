@@ -94,7 +94,7 @@
                                         </TextBox>
                                     </ComboBoxItem>
                                 </ComboBox>
-                                <TextBlock x:Name="SerialPortDeviceNameTextBlock" Text="{Binding SerialPortsInstance.SerialPortsDict}" HorizontalAlignment="Left" Margin="10,47,0,0" Width="201" TextWrapping="Wrap" Height="79" VerticalAlignment="Top"/>
+                                <TextBlock x:Name="SerialPortDeviceNameTextBlock" Text="{Binding SerialPortsInstance.SerialPortsDict.Keys, Converter={StaticResource SerialPortsStatusTextConverter}}" HorizontalAlignment="Left" Margin="10,47,0,0" Width="201" TextWrapping="Wrap" Height="79" VerticalAlignment="Top"/>
                             </Grid>
                         </GroupBox>
                         <GroupBox Header="GPIB调试" HorizontalAlignment="Left" Margin="10,181,0,10" Width="407">
