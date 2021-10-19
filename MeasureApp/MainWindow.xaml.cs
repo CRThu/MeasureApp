@@ -461,6 +461,21 @@ namespace MeasureApp
             try
             {
                 // TODO
+                if (RunCodeTextBox.Text == "")
+                    RunCodeTextBox.Text = @"
+public class Test
+{
+    public static int Main()
+    {
+        MessageBox.Show(""Hello World!"");
+        return 0;
+    }
+}";
+                var type = CodeCompiler.Run(RunCodeTextBox.Text, "Test");
+
+                var transformer = Activator.CreateInstance(type);
+                var newContent = type.GetMethod("Main").Invoke(null, null);
+                MessageBox.Show($"result={newContent}");
             }
             catch (Exception ex)
             {

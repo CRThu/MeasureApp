@@ -381,7 +381,7 @@
                     <Grid>
                         <GroupBox Header="自动化脚本" Margin="10,10,10.2,10">
                             <Grid>
-                                <TextBox AcceptsReturn="True" Height="291" Margin="156,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Left" Width="613"/>
+                                <TextBox Name="RunCodeTextBox" AcceptsReturn="True" Height="291" Margin="156,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Left" Width="613"/>
                                 <Button Content="运行" Click="Button_Click" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="30" Width="141"/>
                                 <Button Content="DAC测试" Click="DacTestButton_Click" HorizontalAlignment="Left" Margin="10,45,0,0" VerticalAlignment="Top" Height="30" Width="141"/>
                                 <Button Content="DAC命令" Click="DacCommandTestButton_Click" HorizontalAlignment="Left" Margin="10,80,0,0" VerticalAlignment="Top" Height="30" Width="141"/>
