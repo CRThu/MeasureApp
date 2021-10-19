@@ -14,7 +14,7 @@ namespace MeasureApp
             // TODO MultiBinding
             //Select(serialPort => $"{serialPort.PortName}({serialPort.BaudRate}bps)").ToArray()) + "\nDevice Connected.";
             return value is Dictionary<string, SerialPort>.KeyCollection && (value as Dictionary<string, SerialPort>.KeyCollection).Count != 0
-                ? string.Join(",\n", value as Dictionary<string, SerialPort>.KeyCollection) + "\nDevice Connected."
+                ? string.Join(", ", value as Dictionary<string, SerialPort>.KeyCollection) + " Device Connected."
                 : "No Device Connected.";
         }
 

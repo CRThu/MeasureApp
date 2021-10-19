@@ -58,6 +58,7 @@ namespace MeasureApp.ViewModel
             // 添加默认Key
             dataStorageInstance.AddKey(Key3458AString);
             dataStorageInstance.AddKey(KeySerialPortString);
+
         }
 
 

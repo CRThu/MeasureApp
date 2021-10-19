@@ -30,17 +30,16 @@ namespace MeasureApp.Model
         {
         }
 
-        public bool Open(string portName, int baudRate = 115200)
+        public bool Open(string portName, int baudRate = 115200, Parity parity = Parity.None, int dataBits = 8, StopBits stopBits = StopBits.One)
         {
             if (!SerialPortsDict.ContainsKey(portName))
             {
-                SerialPort serialPort = new SerialPort(portName)
+                SerialPort serialPort = new(portName)
                 {
                     BaudRate = baudRate,
-                    // TODO
-                    StopBits = StopBits.One,
-                    DataBits = 8,
-                    Parity = Parity.Odd,
+                    Parity = parity,
+                    DataBits = dataBits,
+                    StopBits = stopBits,
                     ReadBufferSize = Properties.Settings.Default.SerialPortReadBufferSize,
                     WriteBufferSize = Properties.Settings.Default.SerialPortWriteBufferSize,
                     ReadTimeout = Properties.Settings.Default.SerialPortReadTimeout,

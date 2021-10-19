@@ -1,11 +1,8 @@
 ﻿using MeasureApp.Model;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO.Ports;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -13,6 +10,32 @@ namespace MeasureApp.ViewModel
 {
     public partial class MainWindowDataContext : NotificationObjectBase
     {
+
+        // 未成功实现
+        // ComboBox数据源更新事件
+        private CommandBase comboBoxSourceUpdatedEvent;
+        public CommandBase ComboBoxSourceUpdatedEvent
+        {
+            get
+            {
+                if (comboBoxSourceUpdatedEvent == null)
+                {
+                    comboBoxSourceUpdatedEvent = new CommandBase(new Action<object>(param =>
+                    {
+                        try
+                        {
+                            MessageBox.Show("UPDATED");
+                        }
+                        catch (Exception ex)
+                        {
+                            _ = MessageBox.Show(ex.ToString());
+                        }
+                    }));
+                }
+                return comboBoxSourceUpdatedEvent;
+            }
+        }
+
         // 可用GPIB设备地址
         private ObservableCollection<string> gpibDevicesName = new();
         public ObservableCollection<string> GpibDevicesName
@@ -118,6 +141,88 @@ namespace MeasureApp.ViewModel
             }
         }
 
+        // 串口波特率
+        private ComboBoxItem serialportDeviceBaudRateSelectedItem;
+        public ComboBoxItem SerialportDeviceBaudRateSelectedItem
+        {
+            get => serialportDeviceBaudRateSelectedItem;
+            set
+            {
+                serialportDeviceBaudRateSelectedItem = value;
+                RaisePropertyChanged(() => SerialportDeviceBaudRateSelectedItem);
+            }
+        }
+
+
+        // 串口校验
+        private string[] serialportDeviceParityList = Enum.GetNames(typeof(Parity));
+        public string[] SerialportDeviceParityList
+        {
+            get => serialportDeviceParityList;
+            set
+            {
+                serialportDeviceParityList = value;
+                RaisePropertyChanged(() => SerialportDeviceParityList);
+            }
+        }
+
+        private string serialportDeviceParitySelectItem;
+        public string SerialportDeviceParitySelectItem
+        {
+            get => serialportDeviceParitySelectItem;
+            set
+            {
+                serialportDeviceParitySelectItem = value;
+                RaisePropertyChanged(() => SerialportDeviceParitySelectItem);
+            }
+        }
+
+        // 串口数据位
+        private int[] serialportDeviceDataBitsList = new[] { 5, 6, 7, 8 };
+        public int[] SerialportDeviceDataBitsList
+        {
+            get => serialportDeviceDataBitsList;
+            set
+            {
+                serialportDeviceDataBitsList = value;
+                RaisePropertyChanged(() => SerialportDeviceDataBitsList);
+            }
+        }
+
+        private int serialportDeviceDataBitsSelectItem = 8;
+        public int SerialportDeviceDataBitsSelectItem
+        {
+            get => serialportDeviceDataBitsSelectItem;
+            set
+            {
+                serialportDeviceDataBitsSelectItem = value;
+                RaisePropertyChanged(() => SerialportDeviceDataBitsSelectItem);
+            }
+        }
+
+        // 串口停止位
+        private float[] serialportDeviceStopBitsList = new[] { 1.0F, 1.5F, 2.0F };
+        public float[] SerialportDeviceStopBitsList
+        {
+            get => serialportDeviceStopBitsList;
+            set
+            {
+                serialportDeviceStopBitsList = value;
+                RaisePropertyChanged(() => SerialportDeviceStopBitsList);
+            }
+        }
+
+        private float serialportDeviceStopBitsSelectItem = 1.0F;
+        public float SerialportDeviceStopBitsSelectItem
+        {
+            get => serialportDeviceStopBitsSelectItem;
+            set
+            {
+                serialportDeviceStopBitsSelectItem = value;
+                RaisePropertyChanged(() => SerialportDeviceStopBitsSelectItem);
+            }
+        }
+
         // 搜索串口设备事件
         private CommandBase serialPortDeviceSearchEvent;
         public CommandBase SerialPortDeviceSearchEvent
@@ -165,8 +270,17 @@ namespace MeasureApp.ViewModel
                         try
                         {
                             string portName = SerialportDevicesNameSelectItem.Tag as string;
-                            // TODO 115200
-                            if (!SerialPortsInstance.Open(portName, 115200))
+                            int baudRate = Convert.ToInt32(SerialportDeviceBaudRateSelectedItem.Tag);
+                            Parity parity = (Parity)Enum.Parse(typeof(Parity), SerialportDeviceParitySelectItem);
+                            int dataBits = serialportDeviceDataBitsSelectItem;
+                            StopBits stopBits = serialportDeviceStopBitsSelectItem switch
+                            {
+                                1.0F => StopBits.One,
+                                1.5F => StopBits.OnePointFive,
+                                2.0F => StopBits.Two,
+                                _ => throw new NotImplementedException(),
+                            };
+                            if (!SerialPortsInstance.Open(portName, baudRate, parity, dataBits, stopBits))
                             {
                                 _ = MessageBox.Show("串口已被打开.");
                             }
@@ -206,6 +320,74 @@ namespace MeasureApp.ViewModel
                     }));
                 }
                 return serialPortDeviceCloseEvent;
+            }
+        }
+
+        // GPIB调试写指令TextBox
+        private string gPIBDebugWriteCommandText = $"";
+        public string GPIBDebugWriteCommandText
+        {
+            get => gPIBDebugWriteCommandText;
+            set
+            {
+                gPIBDebugWriteCommandText = value;
+                RaisePropertyChanged(() => GPIBDebugWriteCommandText);
+            }
+        }
+
+        // GPIB调试读指令TextBox
+        private string gPIBDebugReadCommandText = $"";
+        public string GPIBDebugReadCommandText
+        {
+            get => gPIBDebugReadCommandText;
+            set
+            {
+                gPIBDebugReadCommandText = value;
+                RaisePropertyChanged(() => GPIBDebugReadCommandText);
+            }
+        }
+
+        // GPIB调试查询事件
+        private CommandBase gPIBDebugCommandEvent;
+        public CommandBase GPIBDebugCommandEvent
+        {
+            get
+            {
+                if (gPIBDebugCommandEvent == null)
+                {
+                    gPIBDebugCommandEvent = new CommandBase(new Action<object>(param =>
+                    {
+                        if (Measure3458AInstance.IsOpen)
+                        {
+                            try
+                            {
+                                switch (param as string)
+                                {
+                                    case "Query":
+                                        GPIBDebugReadCommandText = Measure3458AInstance.QueryCommand(GPIBDebugWriteCommandText);
+                                        break;
+                                    case "Write":
+                                        Measure3458AInstance.WriteCommand(GPIBDebugWriteCommandText);
+                                        break;
+                                    case "Read":
+                                        GPIBDebugReadCommandText = Measure3458AInstance.ReadString();
+                                        break;
+                                    default:
+                                        throw new NotImplementedException();
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                _ = MessageBox.Show(ex.ToString());
+                            }
+                        }
+                        else
+                        {
+                            _ = MessageBox.Show("GPIB is not open.");
+                        }
+                    }));
+                }
+                return gPIBDebugCommandEvent;
             }
         }
     }

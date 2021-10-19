@@ -82,63 +82,6 @@ namespace MeasureApp
             serialPorts.CloseAll();
         }
 
-        private void QueryCmdButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (measure3458A.IsOpen)
-            {
-                try
-                {
-                    ReadCmdTextBox.Text = measure3458A.QueryCommand(WriteCmdTextBox.Text).ToString();
-                }
-                catch (Exception ex)
-                {
-                    _ = MessageBox.Show(ex.ToString());
-                }
-            }
-            else
-            {
-                _ = MessageBox.Show("GPIB is not open.");
-            }
-        }
-
-        private void WriteCmdButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (measure3458A.IsOpen)
-            {
-                try
-                {
-                    measure3458A.WriteCommand(WriteCmdTextBox.Text);
-                }
-                catch (Exception ex)
-                {
-                    _ = MessageBox.Show(ex.ToString());
-                }
-            }
-            else
-            {
-                _ = MessageBox.Show("GPIB is not open.");
-            }
-        }
-
-        private void ReadCmdButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (measure3458A.IsOpen)
-            {
-                try
-                {
-                    ReadCmdTextBox.Text = measure3458A.ReadString();
-                }
-                catch (Exception ex)
-                {
-                    _ = MessageBox.Show(ex.ToString());
-                }
-            }
-            else
-            {
-                _ = MessageBox.Show("GPIB is not open.");
-            }
-        }
-
         private void SyncDCVDisplayButton_Click(object sender, RoutedEventArgs e)
         {
             if (IsSyncDCVDisplay)
@@ -518,14 +461,6 @@ namespace MeasureApp
             try
             {
                 // TODO
-                //mainWindowDataContext.AutoTextBox = "dcv = MeasureDCV(10, 0.0001); nplc = GetNPLC();";
-
-                //CodeParse codeParse = new(mainWindowDataContext.AutoTextBox);
-                //codeParse.ExecuteAllCodes(measure3458A);
-                //foreach (KeyValuePair<string, dynamic> keyValuePair in codeParse.ProcessVariables)
-                //{
-                //    Debug.WriteLine($"'{keyValuePair.Key}': {keyValuePair.Value.ToString()}");
-                //}
             }
             catch (Exception ex)
             {
