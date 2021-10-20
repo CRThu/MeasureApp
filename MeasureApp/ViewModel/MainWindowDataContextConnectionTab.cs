@@ -103,7 +103,7 @@ namespace MeasureApp.ViewModel
                             {
                                 gpibDeviceConnectStatusText = $"No Device Connected.";
                                 Measure3458AInstance.Dispose();
-                                gpibDeviceConnectStatusText = $"{Measure3458AInstance.Open(param as string)} Connected.";
+                                GpibDeviceConnectStatusText = $"{Measure3458AInstance.Open(param as string)} Connected.";
                                 Measure3458AInstance.Timeout = Properties.Settings.Default.GPIBTimeout;
                             }
                         }

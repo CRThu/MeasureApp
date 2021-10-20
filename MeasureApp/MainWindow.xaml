@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:local="clr-namespace:MeasureApp" xmlns:viewmodel="clr-namespace:MeasureApp.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodel:MainWindowDataContext}"
+        xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
         mc:Ignorable="d"
         Title="MainWindow" Height="504.4" Width="866.4" Closed="Window_Closed" DataContext="">
     <Window.Resources>
@@ -381,7 +382,8 @@
                     <Grid>
                         <GroupBox Header="自动化脚本" Margin="10,10,10.2,10">
                             <Grid>
-                                <TextBox Name="RunCodeTextBox" AcceptsReturn="True" Height="291" Margin="156,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Left" Width="613"/>
+                                <avalonEdit:TextEditor Name="RunCodeTextEditor" SyntaxHighlighting="C#" ShowLineNumbers="True" FontFamily="Consolas" FontSize="10pt" Margin="156,10,10,10"/>
+                                <!--<TextBox Name="RunCodeTextBox" AcceptsReturn="True" Height="127" Margin="156,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Left" Width="613" Text="using System.Windows;&#xD;&#xA;using MeasureApp;&#xA;public class Test&#xA;{&#xA;    public static int Main()&#xA;    {&#xA;        MessageBox.Show($&quot;Func Return Data = { CodeCompiler.SayHello() }&quot;);&#xA;        return 0;&#xA;    }&#xA;}"/>-->
                                 <Button Content="运行" Click="Button_Click" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="30" Width="141"/>
                                 <Button Content="DAC测试" Click="DacTestButton_Click" HorizontalAlignment="Left" Margin="10,45,0,0" VerticalAlignment="Top" Height="30" Width="141"/>
                                 <Button Content="DAC命令" Click="DacCommandTestButton_Click" HorizontalAlignment="Left" Margin="10,80,0,0" VerticalAlignment="Top" Height="30" Width="141"/>

@@ -74,6 +74,26 @@ namespace MeasureApp
             SerialPortRecvDataTypesGrid.DataContext = serialPortRecvDataType;
             serialPortRecvDataType.SerialPortRecvDataTypeEnum = SerialPortRecvDataTypeEnum.Char;
             serialPortRecvDataType.SerialPortRecvDataEncodeEnum = SerialPortRecvDataEncodeEnum.Bytes;
+
+
+            RunCodeTextEditor.Text = @"/// lang=C#
+using System.Windows;
+using MeasureApp;
+using MeasureApp.ViewModel;
+using MeasureApp.Model;
+
+public class Test
+{
+    public int Main(object dataContext)
+    {
+        GPIB3458AMeasure m3458A = (dataContext as MainWindowDataContext).Measure3458AInstance;
+        SerialPorts serialPorts = (dataContext as MainWindowDataContext).SerialPortsInstance;
+        DataStorage dataStorage = (dataContext as MainWindowDataContext).DataStorageInstance;
+        
+        MessageBox.Show($""Func Return 3458A Line Frequency = { m3458A.GetLineFreq() }"");
+        return 0;
+    }
+}";
         }
 
         private void Window_Closed(object sender, EventArgs e)
@@ -461,20 +481,10 @@ namespace MeasureApp
             try
             {
                 // TODO
-                if (RunCodeTextBox.Text == "")
-                    RunCodeTextBox.Text = @"
-public class Test
-{
-    public static int Main()
-    {
-        MessageBox.Show(""Hello World!"");
-        return 0;
-    }
-}";
-                var type = CodeCompiler.Run(RunCodeTextBox.Text, "Test");
+                var type = CodeCompiler.Run(RunCodeTextEditor.Text, "Test");
 
                 var transformer = Activator.CreateInstance(type);
-                var newContent = type.GetMethod("Main").Invoke(null, null);
+                var newContent = type.GetMethod("Main").Invoke(transformer, new object[] { mainWindowDataContext });
                 MessageBox.Show($"result={newContent}");
             }
             catch (Exception ex)
