@@ -6,11 +6,14 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Data;
 
 namespace MeasureApp.Model
 {
     public class DataStorage : NotificationObjectBase
     {
+        private Dictionary<string, object> lockers = new();
         private ObservableDictionary<string, ObservableCollection<StringDataClass>> _dataStorageDictionary = new();
         public ObservableDictionary<string, ObservableCollection<StringDataClass>> DataStorageDictionary
         {
@@ -22,9 +25,20 @@ namespace MeasureApp.Model
             }
         }
 
+        public DataStorage()
+        {
+        }
+
         public void AddKey(string key)
         {
             DataStorageDictionary.Add(key, new ObservableCollection<StringDataClass>());
+
+            // async
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                lockers.Add(key, new object());
+                BindingOperations.EnableCollectionSynchronization(DataStorageDictionary[key], lockers[key]);
+            });
         }
 
         public void AddData(string key, dynamic value)
@@ -43,7 +57,10 @@ namespace MeasureApp.Model
 
         public void ClearAllData(string key)
         {
-            DataStorageDictionary[key].Clear();
+            lock (lockers[key])
+            {
+                DataStorageDictionary[key].Clear();
+            }
         }
 
         public static string GenerateDateTimeNow()

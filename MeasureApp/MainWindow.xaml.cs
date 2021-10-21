@@ -130,11 +130,12 @@ public class Test
                                 if (SyncDCVIsAutoStorage.BoolData)
                                 {
                                     // CollectionView不支持从调度程序以外的线程对其SourceCollection进行的更改
-                                    SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext(Application.Current.Dispatcher));
-                                    SynchronizationContext.Current.Post(p1 =>
-                                    {
-                                        dataStorage.AddData(Key3458AString, DCVDisplay);
-                                    }, null);
+                                    //SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext(Application.Current.Dispatcher));
+                                    //SynchronizationContext.Current.Post(p1 =>
+                                    //{
+                                    //    dataStorage.AddData(Key3458AString, DCVDisplay);
+                                    //}, null);
+                                    dataStorage.AddData(Key3458AString, DCVDisplay);
                                 }
                             }
                         }
@@ -439,12 +440,14 @@ public class Test
             try
             {
                 // CollectionView不支持从调度程序以外的线程对其SourceCollection进行的更改
-                SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext(Application.Current.Dispatcher));
-                SynchronizationContext.Current.Post(p1 =>
-                {
-                    dataStorage.AddData(Key3458AString, Convert.ToDecimal(ManualReadDCVText.StringData));
-                    // MultimeterDataStorage.Add(ManualReadDCVText.Clone());
-                }, null);
+                //SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext(Application.Current.Dispatcher));
+                //SynchronizationContext.Current.Post(p1 =>
+                //{
+                //    dataStorage.AddData(Key3458AString, Convert.ToDecimal(ManualReadDCVText.StringData));
+                //    // MultimeterDataStorage.Add(ManualReadDCVText.Clone());
+                //}, null);
+                dataStorage.AddData(Key3458AString, Convert.ToDecimal(ManualReadDCVText.StringData));
+                // MultimeterDataStorage.Add(ManualReadDCVText.Clone());
             }
             catch (Exception ex)
             {
@@ -518,11 +521,12 @@ public class Test
                         voltage = measure3458A.MeasureDCV(M3458ARange, M3458AResolution);
                         // 存储电压
                         // CollectionView不支持从调度程序以外的线程对其SourceCollection进行的更改
-                        SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext(Application.Current.Dispatcher));
-                        SynchronizationContext.Current.Post(p1 =>
-                        {
-                            dataStorage.AddData(Key3458AString, voltage);
-                        }, null);
+                        //SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext(Application.Current.Dispatcher));
+                        //SynchronizationContext.Current.Post(p1 =>
+                        //{
+                        //    dataStorage.AddData(Key3458AString, voltage);
+                        //}, null);
+                        dataStorage.AddData(Key3458AString, voltage);
                         // 进度输出
                         mainWindowDataContext.StatusBarText = $"{(i - loopMin) / loopStep + 1}/{(loopMax - loopMin) / loopStep + 1}";
                     }
@@ -537,7 +541,7 @@ public class Test
         {
             try
             {
-                string com = ((SerialPorts)serialPorts).SerialPortNames.First();
+                string com = serialPorts.SerialPortNames.First();
                 int delay = mainWindowDataContext.DelayText;
                 int LoopTimes = mainWindowDataContext.LoopTimesText;
                 decimal M3458ARange = mainWindowDataContext.MultiMeterSetRangeText;
@@ -571,11 +575,12 @@ public class Test
                         // 存储电压
                         mainWindowDataContext.StatusBarText = $"{i + 1}D/{LoopTimes}";
                         // CollectionView不支持从调度程序以外的线程对其SourceCollection进行的更改
-                        SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext(Application.Current.Dispatcher));
-                        SynchronizationContext.Current.Post(p1 =>
-                        {
-                            dataStorage.AddData(Key3458AString, voltage);
-                        }, null);
+                        //SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext(Application.Current.Dispatcher));
+                        //SynchronizationContext.Current.Post(p1 =>
+                        //{
+                        //    dataStorage.AddData(Key3458AString, voltage);
+                        //}, null);
+                        dataStorage.AddData(Key3458AString, voltage);
                     }
                 });
             }
