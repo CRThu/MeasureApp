@@ -24,14 +24,14 @@
                     <Grid>
                         <GroupBox Header="GPIB设备发现" HorizontalAlignment="Left" Height="166" Margin="10,10,0,0" VerticalAlignment="Top" Width="407">
                             <Grid>
-                                <Button x:Name="SearchGPIBDevicesButton" Content="搜索GPIB设备" HorizontalAlignment="Left" Margin="227,10,0,0" VerticalAlignment="Top" Width="158" Height="23">
+                                <Button x:Name="SearchGPIBDevicesButton" Content="搜索GPIB设备" HorizontalAlignment="Left" Margin="227,83,0,0" VerticalAlignment="Top" Width="158" Height="23">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
                                             <viewmodel:EventCommandBase Command="{Binding GpibDeviceSearchEvent}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
-                                <Button x:Name="OpenGPIBDeviceButton" Content="打开GPIB设备" HorizontalAlignment="Left" Margin="227,38,0,0" VerticalAlignment="Top" Width="158" Height="23">
+                                <Button x:Name="OpenGPIBDeviceButton" Content="打开GPIB设备" HorizontalAlignment="Left" Margin="227,111,0,0" VerticalAlignment="Top" Width="158" Height="23">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
                                             <viewmodel:EventCommandBase Command="{Binding GpibDeviceOpenEvent}" CommandParameter="{Binding ElementName=GpibDeviceComboBox, Path=SelectedItem}"/>
@@ -39,7 +39,7 @@
                                     </i:Interaction.Triggers>
                                 </Button>
                                 <ComboBox x:Name="GpibDeviceComboBox" ItemsSource="{Binding GpibDevicesName}" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="201" Height="23"/>
-                                <TextBlock x:Name="DeviceNameLabel" Text="{Binding GpibDeviceConnectStatusText}" HorizontalAlignment="Left" Margin="10,42,0,86" VerticalAlignment="Center" Width="201"/>
+                                <TextBlock x:Name="DeviceNameLabel" Text="{Binding GpibDeviceConnectStatusText}" HorizontalAlignment="Left" Margin="227,10,0,0" VerticalAlignment="Top" Width="158" Height="68"/>
                             </Grid>
                         </GroupBox>
                         <GroupBox Header="串口设备发现" HorizontalAlignment="Left" Height="166" Margin="422,10,0,0" VerticalAlignment="Top" Width="407">
@@ -158,13 +158,49 @@
                     <Grid>
                         <GroupBox Header="基本" Height="350" Margin="10,10,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="329">
                             <Grid>
-                                <Button Tag="RESET" Content="复位" Click="BasicGuiConfigButtons_Click" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="80"/>
-                                <Button Tag="ID" Content="ID" Click="BasicGuiConfigButtons_Click" HorizontalAlignment="Left" Margin="10,33,0,0" VerticalAlignment="Top" Width="80"/>
-                                <Button Tag="ERR" Content="错误信息" Click="BasicGuiConfigButtons_Click" HorizontalAlignment="Left" Margin="107,10,0,0" VerticalAlignment="Top" Width="80"/>
-                                <Button Tag="STB" Content="状态位" Click="BasicGuiConfigButtons_Click" HorizontalAlignment="Left" Margin="107,33,0,0" VerticalAlignment="Top" Width="80"/>
-                                <Button Tag="TEMP" Content="机器温度" Click="BasicGuiConfigButtons_Click" HorizontalAlignment="Left" Margin="207,10,0,0" VerticalAlignment="Top" Width="80"/>
-                                <Button Tag="LINE" Content="工频频率" Click="BasicGuiConfigButtons_Click" HorizontalAlignment="Left" Margin="207,33,0,0" VerticalAlignment="Top" Width="80"/>
-                                <ComboBox Name="NdigComboBox" SelectedIndex="0" Margin="111,64,0,0" Width="76" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" >
+                                <Button Tag="RESET" Content="复位" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="80">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <viewmodel:EventCommandBase Command="{Binding M3458ABasicConfigEvent}" CommandParameter="RESET"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Button>
+                                <Button Tag="ID" Content="ID" HorizontalAlignment="Left" Margin="10,33,0,0" VerticalAlignment="Top" Width="80">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <viewmodel:EventCommandBase Command="{Binding M3458ABasicConfigEvent}" CommandParameter="ID"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Button>
+                                <Button Tag="ERR" Content="错误信息" HorizontalAlignment="Left" Margin="107,10,0,0" VerticalAlignment="Top" Width="80">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <viewmodel:EventCommandBase Command="{Binding M3458ABasicConfigEvent}" CommandParameter="ERR"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Button>
+                                <Button Tag="STB" Content="状态位" HorizontalAlignment="Left" Margin="107,33,0,0" VerticalAlignment="Top" Width="80">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <viewmodel:EventCommandBase Command="{Binding M3458ABasicConfigEvent}" CommandParameter="STB"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Button>
+                                <Button Tag="TEMP" Content="机器温度" HorizontalAlignment="Left" Margin="207,10,0,0" VerticalAlignment="Top" Width="80">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <viewmodel:EventCommandBase Command="{Binding M3458ABasicConfigEvent}" CommandParameter="TEMP"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Button>
+                                <Button Tag="LINE" Content="工频频率" HorizontalAlignment="Left" Margin="207,33,0,0" VerticalAlignment="Top" Width="80">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <viewmodel:EventCommandBase Command="{Binding M3458ABasicConfigEvent}" CommandParameter="LINE"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Button>
+                                <ComboBox Name="NdigComboBox" SelectedIndex="0" Margin="111,64,0,0" Width="76" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top">
                                     <ComboBoxItem Content="3" Tag="3"/>
                                     <ComboBoxItem Content="4" Tag="4"/>
                                     <ComboBoxItem Content="5" Tag="5"/>
@@ -172,7 +208,13 @@
                                     <ComboBoxItem Content="7" Tag="7"/>
                                     <ComboBoxItem Content="8" Tag="8"/>
                                 </ComboBox>
-                                <Button Tag="NDIG" Content="显示位数" Click="BasicGuiConfigButtons_Click" HorizontalAlignment="Left" Margin="207,66,0,0" VerticalAlignment="Top" Width="80"/>
+                                <Button Tag="NDIG" Content="显示位数" HorizontalAlignment="Left" Margin="207,66,0,0" VerticalAlignment="Top" Width="80">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <viewmodel:EventCommandBase Command="{Binding M3458ABasicConfigEvent}" CommandParameter="NDIG"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Button>
 
                                 <ComboBox Name="AcalComboBox" SelectedIndex="0" HorizontalAlignment="Left" Margin="10,110,0,0" VerticalAlignment="Top" Width="163" Height="22">
                                     <ComboBoxItem Content="ALL (11 minutes)" Tag="ALL"/>
@@ -204,7 +246,7 @@
                                 <Button Tag="NPLC" Content="设置速率(NPLC)" Click="MeasureGuiConfigButtons_Click" HorizontalAlignment="Left" Margin="178,183,0,0" VerticalAlignment="Top" Width="130" Height="22"/>
                                 <Button Tag="RANGE?" Content="读量程/精度" Click="MeasureGuiConfigButtons_Click" HorizontalAlignment="Left" Margin="16,220,0,0" VerticalAlignment="Top" Width="130" Height="22"/>
                                 <Button Tag="NPLC?" Content="读输出速率(NPLC)" Click="MeasureGuiConfigButtons_Click" HorizontalAlignment="Left" Margin="170,220,0,0" VerticalAlignment="Top" Width="130" Height="22"/>
-                                <TextBox Name="GuiConfigLogTextBox" Margin="10,257,9.8,10" TextWrapping="Wrap" Text=""/>
+                                <TextBox Name="GuiConfigLogTextBox" Margin="10,257,9.8,10" TextWrapping="Wrap" Text="{Binding M3458ABasicConfigCommandLogText}"/>
                             </Grid>
                         </GroupBox>
                         <GroupBox Header="测量" HorizontalAlignment="Left" Margin="344,10,0,0" Width="383" Height="350" VerticalAlignment="Top">

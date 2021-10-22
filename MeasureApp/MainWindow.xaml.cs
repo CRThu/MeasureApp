@@ -126,54 +126,6 @@ namespace MeasureApp
             }
         }
 
-        private void BasicGuiConfigButtons_Click(object sender, RoutedEventArgs e)
-        {
-            if (measure3458A.IsOpen)
-            {
-                try
-                {
-                    switch ((sender as Button).Tag as string)
-                    {
-                        case "RESET":
-                            measure3458A.Reset();
-                            GuiConfigLogTextBox.Text = $"Write: RESET & END";
-                            break;
-                        case "ID":
-                            GuiConfigLogTextBox.Text = $"Query: ID?\nReturn: {measure3458A.GetID()}";
-                            break;
-                        case "ERR":
-                            GuiConfigLogTextBox.Text = $"Query: ERRSTR?\nReturn: {measure3458A.GetErrorString()}";
-                            break;
-                        case "STB":
-                            GuiConfigLogTextBox.Text = $"Query: STB?\nReturn: {measure3458A.ReadStatusByte()}";
-                            break;
-                        case "TEMP":
-                            GuiConfigLogTextBox.Text = $"Query: TEMP?\nReturn: {measure3458A.GetTemp()}";
-                            break;
-                        case "LINE":
-                            GuiConfigLogTextBox.Text = $"Query: LINE?\nReturn: {measure3458A.GetLineFreq()} Hz";
-                            break;
-                        case "NDIG":
-                            string setNdig = (NdigComboBox.SelectedItem as ComboBoxItem).Tag as string;
-                            measure3458A.WriteCommand($"NDIG {setNdig}");
-                            GuiConfigLogTextBox.Text = $"Write: NDIG {setNdig}";
-                            break;
-                        default:
-                            break;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    _ = MessageBox.Show(ex.ToString());
-                }
-            }
-            else
-            {
-                _ = MessageBox.Show("GPIB is not open.");
-            }
-        }
-
-
         private void MeasureGuiConfigButtons_Click(object sender, RoutedEventArgs e)
         {
             if (measure3458A.IsOpen)
