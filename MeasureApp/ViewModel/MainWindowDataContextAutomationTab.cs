@@ -1,4 +1,5 @@
-﻿using MeasureApp.Model;
+﻿using ICSharpCode.AvalonEdit.Document;
+using MeasureApp.Model;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,79 @@ namespace MeasureApp.ViewModel
 {
     public partial class MainWindowDataContext : NotificationObjectBase
     {
+        private static string automationCodeEditorDefaultText = @"/// lang=C#
+using System;
+using System.Windows;
+using System.Linq;
+using MeasureApp;
+using MeasureApp.ViewModel;
+using MeasureApp.Model;
+
+public class Test
+{
+    public int Main(MainWindowDataContext dataContext)
+    {
+    	string Key3458AString = ""3458A Data Storage"";
+
+        GPIB3458AMeasure m3458A = (dataContext as MainWindowDataContext).Measure3458AInstance;
+        SerialPorts serialPorts = (dataContext as MainWindowDataContext).SerialPortsInstance;
+        DataStorage dataStorage = (dataContext as MainWindowDataContext).DataStorageInstance;
+        
+        
+       	string com = serialPorts.SerialPortNames.First();
+		int delay = dataContext.DelayText;
+		int LoopTimes = dataContext.LoopTimesText;
+		decimal M3458ARange = dataContext.MultiMeterSetRangeText;
+		decimal M3458AResolution = dataContext.MultiMeterSetResolutionText / 1e6M;
+		byte[] SendCommandByteText = Utility.ToBytesFromHexString(dataContext.SendCommandByteText);
+		decimal voltage;
+        
+       	if (!m3458A.IsOpen)
+		{
+			throw new NullReferenceException(""3458A未打开"");
+		}
+
+		// 丢弃现有缓存
+		_ = m3458A.ReadDecimal();
+		
+		// 采集过程
+		for (int i = 0; i < LoopTimes; i++)
+		{
+			// 向DAC下位机发送电压命令
+			dataContext.StatusBarText = $""{i + 1}A/{LoopTimes}"";
+			serialPorts.WriteBytes(com, SendCommandByteText, SendCommandByteText.Length);
+			
+			// 等待delay拍数，期间采集的数据丢弃
+			dataContext.StatusBarText = $""{i + 1}B/{LoopTimes}"";
+			for (int j = 0; j < delay; j++)
+			{
+				_ = m3458A.ReadDecimal();
+			}
+			
+			// 从3458A接收自动采集的电压命令
+			dataContext.StatusBarText = $""{i + 1}C/{LoopTimes}"";
+			voltage = m3458A.ReadDecimal();
+			
+			// 存储电压
+			dataContext.StatusBarText = $""{i + 1}D/{LoopTimes}"";
+			dataStorage.AddData(Key3458AString, voltage);
+		}
+        return 0;
+    }
+}";
+
+        // 自动化程序编辑器
+        private string automationCodeEditorText = automationCodeEditorDefaultText;
+        public string AutomationCodeEditorText
+        {
+            get => automationCodeEditorText;
+            set
+            {
+                automationCodeEditorText = value;
+                RaisePropertyChanged(() => AutomationCodeEditorText);
+            }
+        }
+
         // 临时发送DAC命令数据绑定
         private int loopTimesText = 262144;
         public int LoopTimesText

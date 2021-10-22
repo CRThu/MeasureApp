@@ -17,6 +17,13 @@ namespace MeasureApp.ViewModel
         string Key3458AString = "3458A Data Storage";
         string KeySerialPortString = "Serial Port Data Storage";
 
+        public MainWindowDataContext()
+        {
+            // 添加默认Key
+            dataStorageInstance.AddKey(Key3458AString);
+            dataStorageInstance.AddKey(KeySerialPortString);
+        }
+
         // 3458A 通信类
         private GPIB3458AMeasure measure3458AInstance = new();
         public GPIB3458AMeasure Measure3458AInstance
@@ -52,15 +59,6 @@ namespace MeasureApp.ViewModel
                 RaisePropertyChanged(() => DataStorageInstance);
             }
         }
-
-        public MainWindowDataContext()
-        {
-            // 添加默认Key
-            dataStorageInstance.AddKey(Key3458AString);
-            dataStorageInstance.AddKey(KeySerialPortString);
-
-        }
-
 
         // 状态栏
         private string _statusBarText = "statusBar";

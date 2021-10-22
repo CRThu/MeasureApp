@@ -63,37 +63,17 @@ namespace MeasureApp
             DataContext = mainWindowDataContext;
 
             mainWindowDataContext.GpibDeviceSearchEvent.Execute(null);
+            mainWindowDataContext.SerialPortDeviceSearchEvent.Execute(null);
             SerialPortSendCmd_Changed(null, null);
 
             SyncDCVDisplayTextBlock.DataContext = SyncDCVDisplayText;
             ManualReadDCVTextBlock.DataContext = ManualReadDCVText;
             SerialPortSendCmdPreviewTextBlock.DataContext = SerialPortSendCmdString;
             SyncDCVDisplayStorageCheckBox.DataContext = SyncDCVIsAutoStorage;
-            //SerialPortRecvDataStorageDataGrid.ItemsSource = dataStorage.DataStorageDictionary[KeySerialPortString];
 
             SerialPortRecvDataTypesGrid.DataContext = serialPortRecvDataType;
             serialPortRecvDataType.SerialPortRecvDataTypeEnum = SerialPortRecvDataTypeEnum.Char;
             serialPortRecvDataType.SerialPortRecvDataEncodeEnum = SerialPortRecvDataEncodeEnum.Bytes;
-
-
-            RunCodeTextEditor.Text = @"/// lang=C#
-using System.Windows;
-using MeasureApp;
-using MeasureApp.ViewModel;
-using MeasureApp.Model;
-
-public class Test
-{
-    public int Main(object dataContext)
-    {
-        GPIB3458AMeasure m3458A = (dataContext as MainWindowDataContext).Measure3458AInstance;
-        SerialPorts serialPorts = (dataContext as MainWindowDataContext).SerialPortsInstance;
-        DataStorage dataStorage = (dataContext as MainWindowDataContext).DataStorageInstance;
-        
-        MessageBox.Show($""Func Return 3458A Line Frequency = { m3458A.GetLineFreq() }"");
-        return 0;
-    }
-}";
         }
 
         private void Window_Closed(object sender, EventArgs e)
@@ -129,12 +109,6 @@ public class Test
                                 SyncDCVDisplayText.StringData = $"{DCVDisplay}";
                                 if (SyncDCVIsAutoStorage.BoolData)
                                 {
-                                    // CollectionView不支持从调度程序以外的线程对其SourceCollection进行的更改
-                                    //SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext(Application.Current.Dispatcher));
-                                    //SynchronizationContext.Current.Post(p1 =>
-                                    //{
-                                    //    dataStorage.AddData(Key3458AString, DCVDisplay);
-                                    //}, null);
                                     dataStorage.AddData(Key3458AString, DCVDisplay);
                                 }
                             }
@@ -439,15 +413,7 @@ public class Test
         {
             try
             {
-                // CollectionView不支持从调度程序以外的线程对其SourceCollection进行的更改
-                //SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext(Application.Current.Dispatcher));
-                //SynchronizationContext.Current.Post(p1 =>
-                //{
-                //    dataStorage.AddData(Key3458AString, Convert.ToDecimal(ManualReadDCVText.StringData));
-                //    // MultimeterDataStorage.Add(ManualReadDCVText.Clone());
-                //}, null);
                 dataStorage.AddData(Key3458AString, Convert.ToDecimal(ManualReadDCVText.StringData));
-                // MultimeterDataStorage.Add(ManualReadDCVText.Clone());
             }
             catch (Exception ex)
             {
@@ -483,104 +449,20 @@ public class Test
         {
             try
             {
-                // TODO
-                var type = CodeCompiler.Run(RunCodeTextEditor.Text, "Test");
-
-                var transformer = Activator.CreateInstance(type);
-                var newContent = type.GetMethod("Main").Invoke(transformer, new object[] { mainWindowDataContext });
-                MessageBox.Show($"result={newContent}");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.ToString());
-            }
-        }
-
-        private void DacTestButton_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                int loopMin = 0;
-                int loopMax = 32;
-                int loopStep = 1;
-                decimal M3458ARange = 10M;
-                decimal M3458AResolution = 0.000001M;
-                decimal voltage;
-
+                // TODO 优化结构
                 _ = Task.Run(() =>
                 {
-                    for (int i = loopMin; i <= loopMax; i += loopStep)
+                    try
                     {
-                        // 向DAC下位机发送电压命令
-                        string DacWriteVoltageCommand = $"{serialPorts.SerialPortNames.First()}::SET;{i};";
-                        string[] splitCmds = DacWriteVoltageCommand.Split(new string[] { "::" }, StringSplitOptions.RemoveEmptyEntries);
-                        serialPorts.WriteString(splitCmds[0], splitCmds[1]);
-                        // 等待100毫秒
-                        Thread.Sleep(100);
-                        // 向3458A发送采集电压命令
-                        voltage = measure3458A.MeasureDCV(M3458ARange, M3458AResolution);
-                        // 存储电压
-                        // CollectionView不支持从调度程序以外的线程对其SourceCollection进行的更改
-                        //SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext(Application.Current.Dispatcher));
-                        //SynchronizationContext.Current.Post(p1 =>
-                        //{
-                        //    dataStorage.AddData(Key3458AString, voltage);
-                        //}, null);
-                        dataStorage.AddData(Key3458AString, voltage);
-                        // 进度输出
-                        mainWindowDataContext.StatusBarText = $"{(i - loopMin) / loopStep + 1}/{(loopMax - loopMin) / loopStep + 1}";
+                        string code = mainWindowDataContext.AutomationCodeEditorText;
+                        var type = CodeCompiler.Run(code, "Test");
+                        var transformer = Activator.CreateInstance(type);
+                        var newContent = type.GetMethod("Main").Invoke(transformer, new object[] { mainWindowDataContext });
+                        MessageBox.Show($"result={newContent}");
                     }
-                });
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.ToString());
-            }
-        }
-        private void DacCommandTestButton_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                string com = serialPorts.SerialPortNames.First();
-                int delay = mainWindowDataContext.DelayText;
-                int LoopTimes = mainWindowDataContext.LoopTimesText;
-                decimal M3458ARange = mainWindowDataContext.MultiMeterSetRangeText;
-                decimal M3458AResolution = mainWindowDataContext.MultiMeterSetResolutionText / 1e6M;
-                byte[] SendCommandByteText = Utility.ToBytesFromHexString(mainWindowDataContext.SendCommandByteText);
-                decimal voltage;
-                // TODO运行标志位
-                _ = Task.Run(() =>
-                {
-                    if (!measure3458A.IsOpen)
+                    catch (Exception ex)
                     {
-                        throw new NullReferenceException("3458A未打开");
-                    }
-
-                    // 丢弃现有缓存
-                    _ = measure3458A.ReadDecimal();
-                    for (int i = 0; i < LoopTimes; i++)
-                    {
-                        // 向DAC下位机发送电压命令
-                        mainWindowDataContext.StatusBarText = $"{i + 1}A/{LoopTimes}";
-                        serialPorts.WriteBytes(com, SendCommandByteText, SendCommandByteText.Length);
-                        // 等待delay拍数，期间采集的数据丢弃
-                        mainWindowDataContext.StatusBarText = $"{i + 1}B/{LoopTimes}";
-                        for (int j = 0; j < delay; j++)
-                        {
-                            _ = measure3458A.ReadDecimal();
-                        }
-                        // 从3458A接收自动采集的电压命令
-                        mainWindowDataContext.StatusBarText = $"{i + 1}C/{LoopTimes}";
-                        voltage = measure3458A.ReadDecimal();
-                        // 存储电压
-                        mainWindowDataContext.StatusBarText = $"{i + 1}D/{LoopTimes}";
-                        // CollectionView不支持从调度程序以外的线程对其SourceCollection进行的更改
-                        //SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext(Application.Current.Dispatcher));
-                        //SynchronizationContext.Current.Post(p1 =>
-                        //{
-                        //    dataStorage.AddData(Key3458AString, voltage);
-                        //}, null);
-                        dataStorage.AddData(Key3458AString, voltage);
+                        MessageBox.Show(ex.ToString());
                     }
                 });
             }

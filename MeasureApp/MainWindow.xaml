@@ -229,14 +229,16 @@
                                     <ComboBoxItem Content="100uV" Tag="100"/>
                                     <ComboBoxItem Content="1mV" Tag="1000"/>
                                 </ComboBox>
-                                <TextBlock x:Name="ManualReadDCVTextBlock" Text="{Binding StringData}" TextWrapping="Wrap" Margin="185,259,10.2,0" VerticalAlignment="Top"/>
-                                <TextBlock x:Name="SyncDCVDisplayTextBlock" Text="{Binding StringData}" TextWrapping="Wrap" Margin="10,49,160.2,0" Width="201" TextAlignment="Center" FontSize="24" VerticalAlignment="Top"/>
+                                <!--TODO-->
+                                <TextBlock x:Name="ManualReadDCVTextBlock" Text="TODO TEXT" TextWrapping="Wrap" Margin="185,259,10.2,0" VerticalAlignment="Top"/>
+                                <TextBlock x:Name="SyncDCVDisplayTextBlock" Text="TODO TEXT" TextWrapping="Wrap" Margin="10,49,160.2,0" Width="201" TextAlignment="Center" FontSize="24" VerticalAlignment="Top"/>
                                 <TextBlock Text="自动测量电压" HorizontalAlignment="Left" Margin="10,16,0,0" VerticalAlignment="Top" Width="201"/>
                                 <TextBlock Text="手动测量电压" HorizontalAlignment="Left" Margin="10,164,0,0" VerticalAlignment="Top" Width="201"/>
                                 <Button x:Name="SyncDCVDisplayButton" Content="打开同步实时数据" HorizontalAlignment="Left" Margin="216,36,0,0" VerticalAlignment="Top" Width="145" Height="64" Click="SyncDCVDisplayButton_Click"/>
                                 <Button x:Name="ManualReadDCVButton" Content="手动读取电压" Click="ManualReadDCVButton_Click" HorizontalAlignment="Left" Margin="10,255,0,0" VerticalAlignment="Top" Width="130" Height="22"/>
                                 <Button x:Name="MultimeterStorageButton" Content="存储" Click="MultimeterStorageButton_Click"  HorizontalAlignment="Left" Margin="10,282,0,0" VerticalAlignment="Top" Width="130" Height="22"/>
-                                <CheckBox Name="SyncDCVDisplayStorageCheckBox" Content="自动存储" IsChecked="{Binding BoolData}" HorizontalAlignment="Left" Margin="216,105,0,0" VerticalAlignment="Top"/>
+                                <!--TODO-->
+                                <CheckBox Name="SyncDCVDisplayStorageCheckBox" Content="自动存储" IsChecked="False" HorizontalAlignment="Left" Margin="216,105,0,0" VerticalAlignment="Top"/>
                             </Grid>
                         </GroupBox>
                     </Grid>
@@ -301,7 +303,8 @@
                                 </TextBox>
                                 <TextBlock Text=";" HorizontalAlignment="Left" Margin="310,51,0,0" VerticalAlignment="Top" Width="7"/>
                                 <TextBlock Text="预览:" HorizontalAlignment="Left" Margin="10,79,0,0" VerticalAlignment="Top" Width="33"/>
-                                <TextBlock Name="SerialPortSendCmdPreviewTextBlock" Text="{Binding StringData}" HorizontalAlignment="Left" Margin="48,79,0,0" VerticalAlignment="Top" Width="269"/>
+                                <!--TODO-->
+                                <TextBlock Name="SerialPortSendCmdPreviewTextBlock" Text="TODO TEXT" HorizontalAlignment="Left" Margin="48,79,0,0" VerticalAlignment="Top" Width="269"/>
                                 <Button Name="SerialPortSendCmdButton" Content="发送命令" HorizontalAlignment="Left" Margin="328,19,0,0" VerticalAlignment="Top" Width="110" Height="75" Click="SerialPortSendCmdButton_Click"/>
                                 <TextBlock Text="接收:" HorizontalAlignment="Left" Margin="10,120,0,0" VerticalAlignment="Top" Width="33"/>
 
@@ -382,11 +385,10 @@
                     <Grid>
                         <GroupBox Header="自动化脚本" Margin="10,10,10.2,10">
                             <Grid>
-                                <avalonEdit:TextEditor Name="RunCodeTextEditor" SyntaxHighlighting="C#" ShowLineNumbers="True" FontFamily="Consolas" FontSize="10pt" Margin="156,10,10,10"/>
+                                <!--<avalonEdit:TextEditor Document="{Binding AutomationCodeEditorDocument}" SyntaxHighlighting="C#" ShowLineNumbers="True" FontFamily="Consolas" FontSize="10pt" Margin="156,10,10,10"/>-->
+                                <local:BindableAvalonEditor Text="{Binding AutomationCodeEditorText}" SyntaxHighlighting="C#" ShowLineNumbers="True" FontFamily="Consolas" FontSize="10pt" Margin="156,10,10,10"/>
                                 <!--<TextBox Name="RunCodeTextBox" AcceptsReturn="True" Height="127" Margin="156,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Left" Width="613" Text="using System.Windows;&#xD;&#xA;using MeasureApp;&#xA;public class Test&#xA;{&#xA;    public static int Main()&#xA;    {&#xA;        MessageBox.Show($&quot;Func Return Data = { CodeCompiler.SayHello() }&quot;);&#xA;        return 0;&#xA;    }&#xA;}"/>-->
                                 <Button Content="运行" Click="Button_Click" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="30" Width="141"/>
-                                <Button Content="DAC测试" Click="DacTestButton_Click" HorizontalAlignment="Left" Margin="10,45,0,0" VerticalAlignment="Top" Height="30" Width="141"/>
-                                <Button Content="DAC命令" Click="DacCommandTestButton_Click" HorizontalAlignment="Left" Margin="10,80,0,0" VerticalAlignment="Top" Height="30" Width="141"/>
 
                                 <Label Content="循环次数" HorizontalAlignment="Left" Margin="2,125,0,0" VerticalAlignment="Top"/>
                                 <TextBox HorizontalAlignment="Left" Margin="65,129,0,0" Text="{Binding LoopTimesText}" TextWrapping="Wrap" VerticalAlignment="Top" Width="86"/>
