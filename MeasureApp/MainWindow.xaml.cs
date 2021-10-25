@@ -1,9 +1,6 @@
-﻿using Microsoft.Win32;
+﻿using MeasureApp.Model;
+using MeasureApp.ViewModel;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -11,18 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Windows.Threading;
-using MeasureApp.ViewModel;
-using System.Reflection;
-using System.Diagnostics;
-using MeasureApp.Model;
 
 namespace MeasureApp
 {
@@ -123,67 +109,6 @@ namespace MeasureApp
                 {
                     _ = MessageBox.Show("GPIB is not open.");
                 }
-            }
-        }
-
-        private void MeasureGuiConfigButtons_Click(object sender, RoutedEventArgs e)
-        {
-            if (measure3458A.IsOpen)
-            {
-                try
-                {
-                    switch ((sender as Button).Tag as string)
-                    {
-                        case "ACAL":
-                            if (MessageBox.Show("需要较长时间，是否继续？", "自动校准确认", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
-                            {
-                                string acal_param = (AcalComboBox.SelectedItem as ComboBoxItem).Tag as string;
-                                measure3458A.WriteCommand("ACAL " + acal_param);
-                                GuiConfigLogTextBox.Text = $"Write: ACAL {acal_param}";
-                            }
-                            break;
-                        case "RANGE":
-                            // %_resolution = (actual resolution/maximum input) × 100
-                            string setRange = (RangeComboBox.SelectedItem as ComboBoxItem).Tag as string;
-                            string setResolution = (ResComboBox.SelectedItem as ComboBoxItem).Tag as string;
-                            string rangeCmd = $"RANGE {setRange}";
-                            if (setRange != "AUTO" && setResolution != "DEFAULT")
-                            {
-                                decimal setRangeDecimal = Convert.ToDecimal(setRange);
-                                decimal setResolutionDecimal = Convert.ToDecimal(setResolution);
-                                rangeCmd += $",{setResolutionDecimal / setRangeDecimal / 10000}";
-                            }
-                            measure3458A.WriteCommand(rangeCmd);
-                            GuiConfigLogTextBox.Text = $"Write: {rangeCmd}";
-                            break;
-                        case "NPLC":
-                            string nplcCmd = $"NPLC {NplcTextBox.Text}";
-                            measure3458A.WriteCommand(nplcCmd);
-                            GuiConfigLogTextBox.Text = $"Write: {nplcCmd}";
-                            break;
-                        case "RANGE?":
-                            bool isArange = measure3458A.QueryDecimal("ARANGE?") != 0M;
-                            measure3458A.WaitForDataAvailable();
-                            decimal readRange = measure3458A.QueryDecimal("RANGE?");
-                            measure3458A.WaitForDataAvailable();
-                            decimal readResolution = measure3458A.QueryDecimal("RES?") * readRange * 10000;
-                            GuiConfigLogTextBox.Text = $"Query: ARANGE? & RANGE? & RES?\nReturn: {(isArange ? "Auto Range, " + readRange.ToString() + "V" : readRange.ToString() + "V, " + readResolution.ToString() + "uV")}";
-                            break;
-                        case "NPLC?":
-                            GuiConfigLogTextBox.Text = $"Query: NPLC?\nReturn: {measure3458A.GetNPLC()} NPLC";
-                            break;
-                        default:
-                            break;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    _ = MessageBox.Show(ex.ToString());
-                }
-            }
-            else
-            {
-                _ = MessageBox.Show("GPIB is not open.");
             }
         }
 
@@ -397,31 +322,5 @@ namespace MeasureApp
             }
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                // TODO 优化结构
-                _ = Task.Run(() =>
-                {
-                    try
-                    {
-                        string code = mainWindowDataContext.AutomationCodeEditorText;
-                        var type = CodeCompiler.Run(code, "Test");
-                        var transformer = Activator.CreateInstance(type);
-                        var newContent = type.GetMethod("Main").Invoke(transformer, new object[] { mainWindowDataContext });
-                        MessageBox.Show($"result={newContent}");
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.ToString());
-                    }
-                });
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.ToString());
-            }
-        }
     }
 }

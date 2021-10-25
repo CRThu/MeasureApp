@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace MeasureApp.ViewModel
 {
@@ -20,6 +17,135 @@ namespace MeasureApp.ViewModel
                 RaisePropertyChanged(() => M3458ABasicConfigCommandLogText);
             }
         }
+
+        // 3458A设置显示位数
+        private ComboBoxItem[] m3458ANdigComboBoxItems = new[] {
+            new ComboBoxItem { Content = "3", Tag = "3" } ,
+            new ComboBoxItem { Content = "4", Tag = "4" } ,
+            new ComboBoxItem { Content = "5", Tag = "5" } ,
+            new ComboBoxItem { Content = "6", Tag = "6" } ,
+            new ComboBoxItem { Content = "7", Tag = "7" } ,
+            new ComboBoxItem { Content = "8", Tag = "8" }};
+        public ComboBoxItem[] M3458ANdigComboBoxItems
+        {
+            get => m3458ANdigComboBoxItems;
+            set
+            {
+                m3458ANdigComboBoxItems = value;
+                RaisePropertyChanged(() => M3458ANdigComboBoxItems);
+            }
+        }
+
+        private string m3458ANdigSelectedValue = "8";
+        public string M3458ANdigSelectedValue
+        {
+            get => m3458ANdigSelectedValue;
+            set
+            {
+                m3458ANdigSelectedValue = value;
+                RaisePropertyChanged(() => M3458ANdigSelectedValue);
+            }
+        }
+
+        // 3458A设置自动校准
+        private ComboBoxItem[] m3458AAcalComboBoxItems = new[] {
+            new ComboBoxItem { Content = "ALL (11 minutes)", Tag = "ALL" } ,
+            new ComboBoxItem { Content = "DCV (1 minute)", Tag = "DCV" } ,
+            new ComboBoxItem { Content = "AC (1 minute)", Tag = "AC" } ,
+            new ComboBoxItem { Content = "OHMS (10 minutes)", Tag = "OHMS" }};
+        public ComboBoxItem[] M3458AAcalComboBoxItems
+        {
+            get => m3458AAcalComboBoxItems;
+            set
+            {
+                m3458AAcalComboBoxItems = value;
+                RaisePropertyChanged(() => M3458AAcalComboBoxItems);
+            }
+        }
+
+        private string m3458AAcalSelectedValue = "ALL";
+        public string M3458AAcalSelectedValue
+        {
+            get => m3458AAcalSelectedValue;
+            set
+            {
+                m3458AAcalSelectedValue = value;
+                RaisePropertyChanged(() => M3458AAcalSelectedValue);
+            }
+        }
+
+        // 3458A设置量程精度
+        private ComboBoxItem[] m3458ASetRangeComboBoxItems = new[] {
+            new ComboBoxItem { Content = "Auto", Tag = "AUTO" } ,
+            new ComboBoxItem { Content = "100mV", Tag = "0.1" } ,
+            new ComboBoxItem { Content = "1V", Tag = "1" } ,
+            new ComboBoxItem { Content = "10V", Tag = "10" } ,
+            new ComboBoxItem { Content = "100V", Tag = "100" } ,
+            new ComboBoxItem { Content = "1kV", Tag = "1000" }};
+        public ComboBoxItem[] M3458ASetRangeComboBoxItems
+        {
+            get => m3458ASetRangeComboBoxItems;
+            set
+            {
+                m3458ASetRangeComboBoxItems = value;
+                RaisePropertyChanged(() => M3458ASetRangeComboBoxItems);
+            }
+        }
+
+        private string m3458ASetRangeSelectedValue = "AUTO";
+        public string M3458ASetRangeSelectedValue
+        {
+            get => m3458ASetRangeSelectedValue;
+            set
+            {
+                m3458ASetRangeSelectedValue = value;
+                RaisePropertyChanged(() => M3458ASetRangeSelectedValue);
+            }
+        }
+
+        private ComboBoxItem[] m3458ASetResolutionComboBoxItems = new[] {
+            new ComboBoxItem { Content = "Default", Tag = "DEFAULT" } ,
+            new ComboBoxItem { Content = "1nV", Tag = "0.001" } ,
+            new ComboBoxItem { Content = "10nV", Tag = "0.01" } ,
+            new ComboBoxItem { Content = "100nV", Tag = "0.1" } ,
+            new ComboBoxItem { Content = "1uV", Tag = "1" } ,
+            new ComboBoxItem { Content = "10uV", Tag = "10" } ,
+            new ComboBoxItem { Content = "100uV", Tag = "100" } ,
+            new ComboBoxItem { Content = "1mV", Tag = "1000" }};
+        public ComboBoxItem[] M3458ASetResolutionComboBoxItems
+        {
+            get => m3458ASetResolutionComboBoxItems;
+            set
+            {
+                m3458ASetResolutionComboBoxItems = value;
+                RaisePropertyChanged(() => M3458ASetResolutionComboBoxItems);
+            }
+        }
+
+        private string m3458ASetResolutionSelectedValue = "DEFAULT";
+        public string M3458ASetResolutionSelectedValue
+        {
+            get => m3458ASetResolutionSelectedValue;
+            set
+            {
+                m3458ASetResolutionSelectedValue = value;
+                RaisePropertyChanged(() => M3458ASetResolutionSelectedValue);
+            }
+        }
+
+        // 3458A NPLC设置
+        private string m3458ASetNplcText = "1";
+        public string M3458ASetNplcText
+        {
+            get => m3458ASetNplcText;
+            set
+            {
+                m3458ASetNplcText = value;
+                RaisePropertyChanged(() => M3458ASetNplcText);
+            }
+        }
+
+        
 
         // 3458A发送命令事件
         private CommandBase m3458ABasicConfigEvent;
@@ -56,12 +182,49 @@ namespace MeasureApp.ViewModel
                                     case "LINE":
                                         M3458ABasicConfigCommandLogText = $"Query: LINE?\nReturn: {Measure3458AInstance.GetLineFreq()} Hz";
                                         break;
-                                    // TODO
-                                    //case "NDIG":
-                                    //    string setNdig = (NdigComboBox.SelectedItem as ComboBoxItem).Tag as string;
-                                    //    Measure3458AInstance.WriteCommand($"NDIG {setNdig}");
-                                    //    M3458ABasicConfigCommandLogText = $"Write: NDIG {setNdig}";
-                                    //    break;
+                                    case "NDIG":
+                                        string setNdig = M3458ANdigSelectedValue;
+                                        Measure3458AInstance.WriteCommand($"NDIG {setNdig}");
+                                        M3458ABasicConfigCommandLogText = $"Write: NDIG {setNdig}";
+                                        break;
+                                    case "ACAL":
+                                        if (MessageBox.Show("需要较长时间，是否继续？", "自动校准确认", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
+                                        {
+                                            string acal_param = M3458AAcalSelectedValue;
+                                            Measure3458AInstance.WriteCommand("ACAL " + acal_param);
+                                            M3458ABasicConfigCommandLogText = $"Write: ACAL {acal_param}";
+                                        }
+                                        break;
+                                    case "RANGE":
+                                        // %_resolution = (actual resolution/maximum input) × 100
+                                        string setRange = M3458ASetRangeSelectedValue;
+                                        string setResolution = M3458ASetResolutionSelectedValue;
+                                        string rangeCmd = $"RANGE {setRange}";
+                                        if (setRange != "AUTO" && setResolution != "DEFAULT")
+                                        {
+                                            decimal setRangeDecimal = Convert.ToDecimal(setRange);
+                                            decimal setResolutionDecimal = Convert.ToDecimal(setResolution);
+                                            rangeCmd += $",{setResolutionDecimal / setRangeDecimal / 10000}";
+                                        }
+                                        Measure3458AInstance.WriteCommand(rangeCmd);
+                                        M3458ABasicConfigCommandLogText = $"Write: {rangeCmd}";
+                                        break;
+                                    case "NPLC":
+                                        string nplcCmd = $"NPLC {M3458ASetNplcText}";
+                                        Measure3458AInstance.WriteCommand(nplcCmd);
+                                        M3458ABasicConfigCommandLogText = $"Write: {nplcCmd}";
+                                        break;
+                                    case "RANGE?":
+                                        bool isArange = Measure3458AInstance.QueryDecimal("ARANGE?") != 0M;
+                                        Measure3458AInstance.WaitForDataAvailable();
+                                        decimal readRange = Measure3458AInstance.QueryDecimal("RANGE?");
+                                        Measure3458AInstance.WaitForDataAvailable();
+                                        decimal readResolution = Measure3458AInstance.QueryDecimal("RES?") * readRange * 10000;
+                                        M3458ABasicConfigCommandLogText = $"Query: ARANGE? & RANGE? & RES?\nReturn: {(isArange ? "Auto Range, " + readRange.ToString() + "V" : readRange.ToString() + "V, " + readResolution.ToString() + "uV")}";
+                                        break;
+                                    case "NPLC?":
+                                        M3458ABasicConfigCommandLogText = $"Query: NPLC?\nReturn: {Measure3458AInstance.GetNPLC()} NPLC";
+                                        break;
                                     default:
                                         throw new NotImplementedException();
                                 }

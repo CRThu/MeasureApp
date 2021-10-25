@@ -1,12 +1,5 @@
 ﻿using MeasureApp.Model;
-using Microsoft.Win32;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -22,6 +15,7 @@ namespace MeasureApp.ViewModel
             // 添加默认Key
             dataStorageInstance.AddKey(Key3458AString);
             dataStorageInstance.AddKey(KeySerialPortString);
+
         }
 
         // 3458A 通信类

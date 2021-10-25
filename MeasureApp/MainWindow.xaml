@@ -200,14 +200,7 @@
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
-                                <ComboBox Name="NdigComboBox" SelectedIndex="0" Margin="111,64,0,0" Width="76" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top">
-                                    <ComboBoxItem Content="3" Tag="3"/>
-                                    <ComboBoxItem Content="4" Tag="4"/>
-                                    <ComboBoxItem Content="5" Tag="5"/>
-                                    <ComboBoxItem Content="6" Tag="6"/>
-                                    <ComboBoxItem Content="7" Tag="7"/>
-                                    <ComboBoxItem Content="8" Tag="8"/>
-                                </ComboBox>
+                                <ComboBox Name="NdigComboBox" ItemsSource="{Binding M3458ANdigComboBoxItems}" SelectedValue="{Binding M3458ANdigSelectedValue}" SelectedValuePath="Tag" Margin="107,66,0,0" Width="80" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top"/>
                                 <Button Tag="NDIG" Content="显示位数" HorizontalAlignment="Left" Margin="207,66,0,0" VerticalAlignment="Top" Width="80">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
@@ -216,41 +209,59 @@
                                     </i:Interaction.Triggers>
                                 </Button>
 
-                                <ComboBox Name="AcalComboBox" SelectedIndex="0" HorizontalAlignment="Left" Margin="10,110,0,0" VerticalAlignment="Top" Width="163" Height="22">
-                                    <ComboBoxItem Content="ALL (11 minutes)" Tag="ALL"/>
-                                    <ComboBoxItem Content="DCV (1 minute)" Tag="DCV"/>
-                                    <ComboBoxItem Content="AC (1 minute)" Tag="AC"/>
-                                    <ComboBoxItem Content="OHMS (10 minutes)" Tag="OHMS"/>
-                                </ComboBox>
-                                <Button Tag="ACAL" Content="执行自动校准" Click="MeasureGuiConfigButtons_Click" HorizontalAlignment="Left" Margin="178,110,0,0" VerticalAlignment="Top" Width="130" Height="22"/>
-                                <ComboBox Name="RangeComboBox" SelectedIndex="0" HorizontalAlignment="Left" Margin="10,146,0,0" VerticalAlignment="Top" Width="79" Height="22">
-                                    <ComboBoxItem Content="Auto" Tag="AUTO"/>
-                                    <ComboBoxItem Content="100mV" Tag="0.1"/>
-                                    <ComboBoxItem Content="1V" Tag="1"/>
-                                    <ComboBoxItem Content="10V" Tag="10"/>
-                                    <ComboBoxItem Content="100V" Tag="100"/>
-                                    <ComboBoxItem Content="1kV" Tag="1000"/>
-                                </ComboBox>
-                                <ComboBox Name="ResComboBox" SelectedIndex="0" HorizontalAlignment="Left" Margin="94,146,0,0" VerticalAlignment="Top" Width="79" Height="22">
-                                    <ComboBoxItem Content="Default" Tag="DEFAULT"/>
-                                    <ComboBoxItem Content="1nV" Tag="0.001"/>
-                                    <ComboBoxItem Content="10nV" Tag="0.01"/>
-                                    <ComboBoxItem Content="100nV" Tag="0.1"/>
-                                    <ComboBoxItem Content="1uV" Tag="1"/>
-                                    <ComboBoxItem Content="10uV" Tag="10"/>
-                                    <ComboBoxItem Content="100uV" Tag="100"/>
-                                    <ComboBoxItem Content="1mV" Tag="1000"/>
-                                </ComboBox>
-                                <Button Tag="RANGE" Content="设置量程/精度" Click="MeasureGuiConfigButtons_Click" HorizontalAlignment="Left" Margin="178,146,0,0" VerticalAlignment="Top" Width="130" Height="22"/>
-                                <TextBox Name="NplcTextBox" Text="10" HorizontalAlignment="Left" Height="23" Margin="10,183,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="163"/>
-                                <Button Tag="NPLC" Content="设置速率(NPLC)" Click="MeasureGuiConfigButtons_Click" HorizontalAlignment="Left" Margin="178,183,0,0" VerticalAlignment="Top" Width="130" Height="22"/>
-                                <Button Tag="RANGE?" Content="读量程/精度" Click="MeasureGuiConfigButtons_Click" HorizontalAlignment="Left" Margin="16,220,0,0" VerticalAlignment="Top" Width="130" Height="22"/>
-                                <Button Tag="NPLC?" Content="读输出速率(NPLC)" Click="MeasureGuiConfigButtons_Click" HorizontalAlignment="Left" Margin="170,220,0,0" VerticalAlignment="Top" Width="130" Height="22"/>
+                                <ComboBox Name="AcalComboBox" ItemsSource="{Binding M3458AAcalComboBoxItems}" SelectedValue="{Binding M3458AAcalSelectedValue}" SelectedValuePath="Tag" HorizontalAlignment="Left" Margin="10,110,0,0" VerticalAlignment="Top" Width="163" Height="22"/>
+                                <Button Tag="ACAL" Content="执行自动校准" HorizontalAlignment="Left" Margin="178,110,0,0" VerticalAlignment="Top" Width="130" Height="22">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <viewmodel:EventCommandBase Command="{Binding M3458ABasicConfigEvent}" CommandParameter="ACAL"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Button>
+                                <ComboBox Name="RangeComboBox" ItemsSource="{Binding M3458ASetRangeComboBoxItems}" SelectedValue="{Binding M3458ASetRangeSelectedValue}" SelectedValuePath="Tag" HorizontalAlignment="Left" Margin="10,146,0,0" VerticalAlignment="Top" Width="79" Height="22"/>
+                                <ComboBox Name="ResComboBox" ItemsSource="{Binding M3458ASetResolutionComboBoxItems}" SelectedValue="{Binding M3458ASetResolutionSelectedValue}" SelectedValuePath="Tag" HorizontalAlignment="Left" Margin="94,146,0,0" VerticalAlignment="Top" Width="79" Height="22"/>
+                                <Button Tag="RANGE" Content="设置量程/精度" HorizontalAlignment="Left" Margin="178,146,0,0" VerticalAlignment="Top" Width="130" Height="22">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <viewmodel:EventCommandBase Command="{Binding M3458ABasicConfigEvent}" CommandParameter="RANGE"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Button>
+                                <TextBox Name="NplcTextBox" Text="{Binding M3458ASetNplcText}" HorizontalAlignment="Left" Height="23" Margin="10,183,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="163"/>
+                                <Button Tag="NPLC" Content="设置速率(NPLC)" HorizontalAlignment="Left" Margin="178,183,0,0" VerticalAlignment="Top" Width="130" Height="22">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <viewmodel:EventCommandBase Command="{Binding M3458ABasicConfigEvent}" CommandParameter="NPLC"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Button>
+                                <Button Tag="RANGE?" Content="读量程/精度" HorizontalAlignment="Left" Margin="16,220,0,0" VerticalAlignment="Top" Width="130" Height="22">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <viewmodel:EventCommandBase Command="{Binding M3458ABasicConfigEvent}" CommandParameter="RANGE?"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Button>
+                                <Button Tag="NPLC?" Content="读输出速率(NPLC)" HorizontalAlignment="Left" Margin="170,220,0,0" VerticalAlignment="Top" Width="130" Height="22">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <viewmodel:EventCommandBase Command="{Binding M3458ABasicConfigEvent}" CommandParameter="NPLC?"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Button>
                                 <TextBox Name="GuiConfigLogTextBox" Margin="10,257,9.8,10" TextWrapping="Wrap" Text="{Binding M3458ABasicConfigCommandLogText}"/>
                             </Grid>
                         </GroupBox>
-                        <GroupBox Header="测量" HorizontalAlignment="Left" Margin="344,10,0,0" Width="383" Height="350" VerticalAlignment="Top">
+                        <GroupBox Header="测量" HorizontalAlignment="Left" Margin="344,10,0,0" Width="405" Height="350" VerticalAlignment="Top">
                             <Grid>
+                                <Border VerticalAlignment="Top" Margin="10,10,10,0" Height="130" BorderBrush="Gray" BorderThickness="0.5" CornerRadius="3">
+                                    <Grid>
+                                        <TextBlock Text="自动测量电压" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="201"/>
+                                        <TextBlock x:Name="SyncDCVDisplayTextBlock" Text="TODO TEXT" TextWrapping="Wrap" Margin="10,30,162,43" Width="201" TextAlignment="Center" VerticalAlignment="Center" FontSize="24"/>
+                                        <Button x:Name="SyncDCVDisplayButton" Content="打开同步实时数据" HorizontalAlignment="Left" Margin="218,23,0,0" VerticalAlignment="Top" Width="145" Height="64" Click="SyncDCVDisplayButton_Click"/>
+                                        <CheckBox Name="SyncDCVDisplayStorageCheckBox" Content="自动存储" IsChecked="False" HorizontalAlignment="Left" Margin="218,98,0,0" VerticalAlignment="Top"/>
+                                    </Grid>
+                                </Border>
+
                                 <Button x:Name="SetMinNPLCButton" Content="最高速度(0 NPLC)" Height="22" Margin="10,184,0,0" Click="SetMinNPLCButton_Click" HorizontalAlignment="Left" Width="130" VerticalAlignment="Top"/>
                                 <Button x:Name="SetMaxNPLCButton" Content="最高精度(1000 NPLC)" Height="22" Margin="185,184,0,0" Click="SetMaxNPLCButton_Click" HorizontalAlignment="Left" Width="130" VerticalAlignment="Top"/>
                                 <ComboBox x:Name="ManualReadDCVRangeComboBox" SelectedIndex="0" HorizontalAlignment="Left" Margin="10,221,0,0" VerticalAlignment="Top" Width="79" Height="22">
@@ -273,14 +284,10 @@
                                 </ComboBox>
                                 <!--TODO-->
                                 <TextBlock x:Name="ManualReadDCVTextBlock" Text="TODO TEXT" TextWrapping="Wrap" Margin="185,259,10.2,0" VerticalAlignment="Top"/>
-                                <TextBlock x:Name="SyncDCVDisplayTextBlock" Text="TODO TEXT" TextWrapping="Wrap" Margin="10,49,160.2,0" Width="201" TextAlignment="Center" FontSize="24" VerticalAlignment="Top"/>
-                                <TextBlock Text="自动测量电压" HorizontalAlignment="Left" Margin="10,16,0,0" VerticalAlignment="Top" Width="201"/>
                                 <TextBlock Text="手动测量电压" HorizontalAlignment="Left" Margin="10,164,0,0" VerticalAlignment="Top" Width="201"/>
-                                <Button x:Name="SyncDCVDisplayButton" Content="打开同步实时数据" HorizontalAlignment="Left" Margin="216,36,0,0" VerticalAlignment="Top" Width="145" Height="64" Click="SyncDCVDisplayButton_Click"/>
                                 <Button x:Name="ManualReadDCVButton" Content="手动读取电压" Click="ManualReadDCVButton_Click" HorizontalAlignment="Left" Margin="10,255,0,0" VerticalAlignment="Top" Width="130" Height="22"/>
                                 <Button x:Name="MultimeterStorageButton" Content="存储" Click="MultimeterStorageButton_Click"  HorizontalAlignment="Left" Margin="10,282,0,0" VerticalAlignment="Top" Width="130" Height="22"/>
                                 <!--TODO-->
-                                <CheckBox Name="SyncDCVDisplayStorageCheckBox" Content="自动存储" IsChecked="False" HorizontalAlignment="Left" Margin="216,105,0,0" VerticalAlignment="Top"/>
                             </Grid>
                         </GroupBox>
                     </Grid>
@@ -427,21 +434,29 @@
                     <Grid>
                         <GroupBox Header="自动化脚本" Margin="10,10,10.2,10">
                             <Grid>
-                                <!--<avalonEdit:TextEditor Document="{Binding AutomationCodeEditorDocument}" SyntaxHighlighting="C#" ShowLineNumbers="True" FontFamily="Consolas" FontSize="10pt" Margin="156,10,10,10"/>-->
-                                <local:BindableAvalonEditor Text="{Binding AutomationCodeEditorText}" SyntaxHighlighting="C#" ShowLineNumbers="True" FontFamily="Consolas" FontSize="10pt" Margin="156,10,10,10"/>
-                                <!--<TextBox Name="RunCodeTextBox" AcceptsReturn="True" Height="127" Margin="156,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Left" Width="613" Text="using System.Windows;&#xD;&#xA;using MeasureApp;&#xA;public class Test&#xA;{&#xA;    public static int Main()&#xA;    {&#xA;        MessageBox.Show($&quot;Func Return Data = { CodeCompiler.SayHello() }&quot;);&#xA;        return 0;&#xA;    }&#xA;}"/>-->
-                                <Button Content="运行" Click="Button_Click" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="30" Width="141"/>
+                                <Border Margin="156,10,10,10" BorderBrush="Gray" BorderThickness="1.5">
+                                    <local:BindableAvalonEditor Text="{Binding AutomationCodeEditorText}" SyntaxHighlighting="C#" ShowLineNumbers="True" FontFamily="Consolas" FontSize="10pt"/>
+                                </Border>
+                                <Button Content="运行" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="30" Width="141">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <viewmodel:EventCommandBase Command="{Binding AutomationCodeRunEvent}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Button>
+                                <Label Content="返回值" HorizontalAlignment="Left" Margin="8,71,0,0" VerticalAlignment="Top"/>
+                                <TextBox Text="{Binding AutomationCodeReturnData}" HorizontalAlignment="Left" Margin="10,101,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="141" Height="38"/>
 
-                                <Label Content="循环次数" HorizontalAlignment="Left" Margin="2,125,0,0" VerticalAlignment="Top"/>
-                                <TextBox HorizontalAlignment="Left" Margin="65,129,0,0" Text="{Binding LoopTimesText}" TextWrapping="Wrap" VerticalAlignment="Top" Width="86"/>
-                                <Label Content="发送命令" HorizontalAlignment="Left" Margin="2,155,0,0" VerticalAlignment="Top"/>
-                                <TextBox HorizontalAlignment="Left" Margin="65,159,0,0" Text="{Binding SendCommandByteText}" TextWrapping="Wrap" VerticalAlignment="Top" Width="86"/>
-                                <Label Content="万用表量程(V)" HorizontalAlignment="Left" Margin="2,181,0,0" VerticalAlignment="Top"/>
-                                <TextBox HorizontalAlignment="Left" Margin="98,185,0,0" Text="{Binding MultiMeterSetRangeText}" TextWrapping="Wrap" VerticalAlignment="Top" Width="53"/>
-                                <Label Content="万用表精度(uV)" HorizontalAlignment="Left" Margin="2,207,0,0" VerticalAlignment="Top"/>
-                                <TextBox HorizontalAlignment="Left" Margin="101,211,0,0" Text="{Binding MultiMeterSetResolutionText}" TextWrapping="Wrap" VerticalAlignment="Top" Width="50"/>
-                                <Label Content="延时(时钟拍数)" HorizontalAlignment="Left" Margin="2,229,0,0" VerticalAlignment="Top"/>
-                                <TextBox HorizontalAlignment="Left" Margin="101,233,0,0" Text="{Binding DelayText}" TextWrapping="Wrap" VerticalAlignment="Top" Width="50"/>
+                                <Label Content="循环次数" HorizontalAlignment="Left" Margin="2,163,0,0" VerticalAlignment="Top"/>
+                                <TextBox HorizontalAlignment="Left" Margin="65,167,0,0" Text="{Binding LoopTimesText}" TextWrapping="Wrap" VerticalAlignment="Top" Width="86"/>
+                                <Label Content="发送命令" HorizontalAlignment="Left" Margin="2,193,0,0" VerticalAlignment="Top"/>
+                                <TextBox HorizontalAlignment="Left" Margin="65,197,0,0" Text="{Binding SendCommandByteText}" TextWrapping="Wrap" VerticalAlignment="Top" Width="86"/>
+                                <Label Content="万用表量程(V)" HorizontalAlignment="Left" Margin="2,219,0,0" VerticalAlignment="Top"/>
+                                <TextBox HorizontalAlignment="Left" Margin="98,223,0,0" Text="{Binding MultiMeterSetRangeText}" TextWrapping="Wrap" VerticalAlignment="Top" Width="53"/>
+                                <Label Content="万用表精度(uV)" HorizontalAlignment="Left" Margin="2,245,0,0" VerticalAlignment="Top"/>
+                                <TextBox HorizontalAlignment="Left" Margin="101,249,0,0" Text="{Binding MultiMeterSetResolutionText}" TextWrapping="Wrap" VerticalAlignment="Top" Width="50"/>
+                                <Label Content="延时(时钟拍数)" HorizontalAlignment="Left" Margin="2,267,0,0" VerticalAlignment="Top"/>
+                                <TextBox HorizontalAlignment="Left" Margin="101,271,0,0" Text="{Binding DelayText}" TextWrapping="Wrap" VerticalAlignment="Top" Width="50"/>
                             </Grid>
                         </GroupBox>
                     </Grid>
