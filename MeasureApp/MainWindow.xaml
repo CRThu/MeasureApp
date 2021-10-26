@@ -75,15 +75,15 @@
                                     </i:Interaction.Triggers>
                                 </ComboBox>
                                 <TextBlock Text="波特率：" HorizontalAlignment="Left" Margin="10,41,0,0" Width="71" TextWrapping="Wrap" Height="18" VerticalAlignment="Top"/>
-                                <ComboBox x:Name="SerialPortBaudRateComboBox" SelectedItem="{Binding SerialportDeviceBaudRateSelectedItem}" HorizontalAlignment="Left" Margin="86,38,0,0" VerticalAlignment="Top" Width="125" Height="23">
+                                <ComboBox x:Name="SerialPortBaudRateComboBox" SelectedValue="{Binding SerialportDeviceBaudRateSelectedValue}" SelectedValuePath="Tag" HorizontalAlignment="Left" Margin="86,38,0,0" VerticalAlignment="Top" Width="125" Height="23">
                                     <ComboBoxItem Content="9600" Tag="9600"/>
                                     <ComboBoxItem Content="38400" Tag="38400"/>
                                     <ComboBoxItem Content="115200" Tag="115200"/>
                                     <ComboBoxItem Content="921600" Tag="921600"/>
-                                    <ComboBoxItem Tag="{Binding ElementName=SerialportDeviceCustomBaudRateTextBox, Path=Text}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
-                                        <TextBox Name="SerialportDeviceCustomBaudRateTextBox" Margin="0,0,20,0">
+                                    <ComboBoxItem Tag="{Binding ElementName=SerialportDeviceCustomBaudRateTextBox, Path=Text}" VerticalContentAlignment="Stretch">
+                                        <TextBox Name="SerialportDeviceCustomBaudRateTextBox" Margin="0,0,20,0" Width="80">
                                             <TextBox.Resources>
-                                                <VisualBrush x:Key="HintText"  TileMode="None" Opacity="0.5" Stretch="None" AlignmentX="Left">
+                                                <VisualBrush x:Key="HintText" TileMode="None" Opacity="0.5" Stretch="None" AlignmentX="Left">
                                                     <VisualBrush.Visual>
                                                         <TextBlock FontStyle="Italic" Text="自定义波特率"/>
                                                     </VisualBrush.Visual>

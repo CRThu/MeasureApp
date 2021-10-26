@@ -152,14 +152,14 @@ namespace MeasureApp.ViewModel
         }
 
         // 串口波特率
-        private ComboBoxItem serialportDeviceBaudRateSelectedItem;
-        public ComboBoxItem SerialportDeviceBaudRateSelectedItem
+        private string serialportDeviceBaudRateSelectedValue = "9600";
+        public string SerialportDeviceBaudRateSelectedValue
         {
-            get => serialportDeviceBaudRateSelectedItem;
+            get => serialportDeviceBaudRateSelectedValue;
             set
             {
-                serialportDeviceBaudRateSelectedItem = value;
-                RaisePropertyChanged(() => SerialportDeviceBaudRateSelectedItem);
+                serialportDeviceBaudRateSelectedValue = value;
+                RaisePropertyChanged(() => SerialportDeviceBaudRateSelectedValue);
             }
         }
 
@@ -176,7 +176,7 @@ namespace MeasureApp.ViewModel
             }
         }
 
-        private string serialportDeviceParitySelectItem;
+        private string serialportDeviceParitySelectItem = Enum.GetName(typeof(Parity), Parity.None);
         public string SerialportDeviceParitySelectItem
         {
             get => serialportDeviceParitySelectItem;
@@ -280,7 +280,7 @@ namespace MeasureApp.ViewModel
                         try
                         {
                             string portName = SerialportDevicesNameSelectItem.Tag as string;
-                            int baudRate = Convert.ToInt32(SerialportDeviceBaudRateSelectedItem.Tag);
+                            int baudRate = Convert.ToInt32(SerialportDeviceBaudRateSelectedValue);
                             Parity parity = (Parity)Enum.Parse(typeof(Parity), SerialportDeviceParitySelectItem);
                             int dataBits = serialportDeviceDataBitsSelectItem;
                             StopBits stopBits = serialportDeviceStopBitsSelectItem switch
