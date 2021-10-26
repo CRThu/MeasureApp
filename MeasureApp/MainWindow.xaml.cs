@@ -26,11 +26,6 @@ namespace MeasureApp
         string Key3458AString = "3458A Data Storage";
         string KeySerialPortString = "Serial Port Data Storage";
 
-        public bool IsSyncDCVDisplay = false;
-        private ManualResetEvent resetEvent = new ManualResetEvent(false);
-        public StringDataClass SyncDCVDisplayText = new StringDataClass() { StringData = "<null>" };
-        public BoolDataBinding SyncDCVIsAutoStorage = new BoolDataBinding() { BoolData = false };
-        public StringDataClass ManualReadDCVText = new StringDataClass() { StringData = "<null>" };
         public StringDataClass SerialPortSendCmdString = new StringDataClass() { StringData = "<null>::<null>;" };
 
         public SerialPortRecvDataType serialPortRecvDataType = new SerialPortRecvDataType();
@@ -52,10 +47,8 @@ namespace MeasureApp
             mainWindowDataContext.SerialPortDeviceSearchEvent.Execute(null);
             SerialPortSendCmd_Changed(null, null);
 
-            SyncDCVDisplayTextBlock.DataContext = SyncDCVDisplayText;
-            ManualReadDCVTextBlock.DataContext = ManualReadDCVText;
+            // TODO
             SerialPortSendCmdPreviewTextBlock.DataContext = SerialPortSendCmdString;
-            SyncDCVDisplayStorageCheckBox.DataContext = SyncDCVIsAutoStorage;
 
             SerialPortRecvDataTypesGrid.DataContext = serialPortRecvDataType;
             serialPortRecvDataType.SerialPortRecvDataTypeEnum = SerialPortRecvDataTypeEnum.Char;
@@ -66,95 +59,6 @@ namespace MeasureApp
         {
             measure3458A.Dispose();
             serialPorts.CloseAll();
-        }
-
-        private void SyncDCVDisplayButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (IsSyncDCVDisplay)
-            {
-                IsSyncDCVDisplay = false;
-                _ = resetEvent.Reset();
-                SyncDCVDisplayButton.Content = "打开同步实时数据";
-            }
-            else
-            {
-                if (measure3458A.IsOpen)
-                {
-                    IsSyncDCVDisplay = true;
-                    resetEvent.Set();
-                    SyncDCVDisplayButton.Content = "关闭同步实时数据";
-                    _ = Task.Run(() =>
-                    {
-                        try
-                        {
-                            while (true)
-                            {
-                                _ = resetEvent.WaitOne();
-                                // 3458A Multimeter User's Guide Page 149
-                                decimal DCVDisplay = measure3458A.ReadDecimal();
-                                SyncDCVDisplayText.StringData = $"{DCVDisplay}";
-                                if (SyncDCVIsAutoStorage.BoolData)
-                                {
-                                    dataStorage.AddData(Key3458AString, DCVDisplay);
-                                }
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            _ = MessageBox.Show(ex.ToString());
-                        }
-                    });
-                }
-                else
-                {
-                    _ = MessageBox.Show("GPIB is not open.");
-                }
-            }
-        }
-
-        private void ManualReadDCVButton_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                string setRange = (ManualReadDCVRangeComboBox.SelectedItem as ComboBoxItem).Tag as string;
-                string setResolution = (ManualReadDCVResComboBox.SelectedItem as ComboBoxItem).Tag as string;
-                decimal setRangeDecimal = Convert.ToDecimal(setRange);
-                decimal setResolutionDecimal = Convert.ToDecimal(setResolution) / 1000000;
-
-                ManualReadDCVText.StringData = "Measuring...";
-                _ = Task.Run(() =>
-                {
-                    ManualReadDCVText.StringData = measure3458A.MeasureDCV(setRangeDecimal, setResolutionDecimal).ToString();
-                });
-            }
-            catch (Exception ex)
-            {
-                _ = MessageBox.Show(ex.ToString());
-            }
-        }
-
-        private void SetMinNPLCButton_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                measure3458A.SetNPLC(0);
-            }
-            catch (Exception ex)
-            {
-                _ = MessageBox.Show(ex.ToString());
-            }
-        }
-
-        private void SetMaxNPLCButton_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                measure3458A.SetNPLC(1000);
-            }
-            catch (Exception ex)
-            {
-                _ = MessageBox.Show(ex.ToString());
-            }
         }
 
         private void SerialPortWriteCmdButton_Click(object sender, RoutedEventArgs e)
@@ -279,18 +183,6 @@ namespace MeasureApp
                         throw new NotImplementedException();
                 }
                 SerialPortRecvDataDisplayTextBox.Text = RecvDataPraseTemp is Array ? string.Join(", ", RecvDataPraseTemp) : RecvDataPraseTemp.ToString();
-            }
-            catch (Exception ex)
-            {
-                _ = MessageBox.Show(ex.ToString());
-            }
-        }
-
-        private void MultimeterStorageButton_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                dataStorage.AddData(Key3458AString, Convert.ToDecimal(ManualReadDCVText.StringData));
             }
             catch (Exception ex)
             {

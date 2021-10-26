@@ -9,6 +9,8 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="504.4" Width="866.4" Closed="Window_Closed" DataContext="">
     <Window.Resources>
+        <viewmodel:M3458ASyncMeasureButtonContentConverter x:Key="M3458ASyncMeasureButtonContentConverter"/>
+
         <local:SerialPortRecvDataTypeToBoolConverter x:Key="SerialPortRecvDataTypeToBoolConverter"/>
         <local:SerialPortRecvDataEncodeToBoolConverter x:Key="SerialPortRecvDataEncodeToBoolConverter"/>
         <local:SerialPortRecvDataType x:Key="SerialPortRecvDataType"/>
@@ -34,11 +36,11 @@
                                 <Button x:Name="OpenGPIBDeviceButton" Content="打开GPIB设备" HorizontalAlignment="Left" Margin="227,111,0,0" VerticalAlignment="Top" Width="158" Height="23">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
-                                            <viewmodel:EventCommandBase Command="{Binding GpibDeviceOpenEvent}" CommandParameter="{Binding ElementName=GpibDeviceComboBox, Path=SelectedItem}"/>
+                                            <viewmodel:EventCommandBase Command="{Binding GpibDeviceOpenEvent}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
-                                <ComboBox x:Name="GpibDeviceComboBox" ItemsSource="{Binding GpibDevicesName}" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="201" Height="23"/>
+                                <ComboBox x:Name="GpibDeviceComboBox" ItemsSource="{Binding GpibDevicesName}" SelectedValue="{Binding GpibDevicesSelectedName}" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="201" Height="23"/>
                                 <TextBlock x:Name="DeviceNameLabel" Text="{Binding GpibDeviceConnectStatusText}" HorizontalAlignment="Left" Margin="227,10,0,0" VerticalAlignment="Top" Width="158" Height="68"/>
                             </Grid>
                         </GroupBox>
@@ -67,7 +69,7 @@
                                 </Button>
                                 <ComboBox x:Name="SerialPortNameComboBox" ItemsSource="{Binding SerialportDevicesNameComboBoxItems}" SelectedItem="{Binding SerialportDevicesNameSelectItem}" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="201" Height="23">
                                     <i:Interaction.Triggers>
-                                        <i:EventTrigger EventName="DataContextChanged">
+                                        <i:EventTrigger EventName="AddValueChanged">
                                             <viewmodel:EventCommandBase Command="{Binding ComboBoxSourceUpdatedEvent}" CommandParameter="{Binding ElementName=SerialPortNameComboBox}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
@@ -255,39 +257,51 @@
                             <Grid>
                                 <Border VerticalAlignment="Top" Margin="10,10,10,0" Height="130" BorderBrush="Gray" BorderThickness="0.5" CornerRadius="3">
                                     <Grid>
-                                        <TextBlock Text="自动测量电压" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="201"/>
-                                        <TextBlock x:Name="SyncDCVDisplayTextBlock" Text="TODO TEXT" TextWrapping="Wrap" Margin="10,30,162,43" Width="201" TextAlignment="Center" VerticalAlignment="Center" FontSize="24"/>
-                                        <Button x:Name="SyncDCVDisplayButton" Content="打开同步实时数据" HorizontalAlignment="Left" Margin="218,23,0,0" VerticalAlignment="Top" Width="145" Height="64" Click="SyncDCVDisplayButton_Click"/>
-                                        <CheckBox Name="SyncDCVDisplayStorageCheckBox" Content="自动存储" IsChecked="False" HorizontalAlignment="Left" Margin="218,98,0,0" VerticalAlignment="Top"/>
+                                        <TextBlock Text="自动测量电压" Margin="10,10,10,0" VerticalAlignment="Top"/>
+                                        <TextBlock x:Name="SyncDCVDisplayTextBlock" Text="{Binding M3458ASyncMeasureText}" TextWrapping="Wrap" Margin="10,42,159,0" TextAlignment="Center" VerticalAlignment="Top" FontSize="24" Height="34"/>
+                                        <Button x:Name="SyncDCVDisplayButton" Content="{Binding M3458AIsSyncMeasureOpen, Converter={StaticResource M3458ASyncMeasureButtonContentConverter}}" HorizontalAlignment="Left" Margin="218,30,0,0" VerticalAlignment="Top" Width="145" Height="57">
+                                            <i:Interaction.Triggers>
+                                                <i:EventTrigger EventName="Click">
+                                                    <viewmodel:EventCommandBase Command="{Binding M3458ASyncMeasureEvent}" CommandParameter="{Binding ElementName=SyncDCVDisplayStorageCheckBox, Path=IsChecked}"/>
+                                                </i:EventTrigger>
+                                            </i:Interaction.Triggers>
+                                        </Button>
+                                        <CheckBox Name="SyncDCVDisplayStorageCheckBox" Content="自动存储" HorizontalAlignment="Left" Margin="218,92,0,0" VerticalAlignment="Top"/>
                                     </Grid>
                                 </Border>
 
-                                <Button x:Name="SetMinNPLCButton" Content="最高速度(0 NPLC)" Height="22" Margin="10,184,0,0" Click="SetMinNPLCButton_Click" HorizontalAlignment="Left" Width="130" VerticalAlignment="Top"/>
-                                <Button x:Name="SetMaxNPLCButton" Content="最高精度(1000 NPLC)" Height="22" Margin="185,184,0,0" Click="SetMaxNPLCButton_Click" HorizontalAlignment="Left" Width="130" VerticalAlignment="Top"/>
-                                <ComboBox x:Name="ManualReadDCVRangeComboBox" SelectedIndex="0" HorizontalAlignment="Left" Margin="10,221,0,0" VerticalAlignment="Top" Width="79" Height="22">
-                                    <ComboBoxItem Content="Auto" Tag="-1"/>
-                                    <ComboBoxItem Content="100mV" Tag="0.1"/>
-                                    <ComboBoxItem Content="1V" Tag="1"/>
-                                    <ComboBoxItem Content="10V" Tag="10"/>
-                                    <ComboBoxItem Content="100V" Tag="100"/>
-                                    <ComboBoxItem Content="1kV" Tag="1000"/>
-                                </ComboBox>
-                                <ComboBox x:Name="ManualReadDCVResComboBox" SelectedIndex="0" HorizontalAlignment="Left" Margin="94,221,0,0" VerticalAlignment="Top" Width="79" Height="22">
-                                    <ComboBoxItem Content="Default" Tag="-1"/>
-                                    <ComboBoxItem Content="1nV" Tag="0.001"/>
-                                    <ComboBoxItem Content="10nV" Tag="0.01"/>
-                                    <ComboBoxItem Content="100nV" Tag="0.1"/>
-                                    <ComboBoxItem Content="1uV" Tag="1"/>
-                                    <ComboBoxItem Content="10uV" Tag="10"/>
-                                    <ComboBoxItem Content="100uV" Tag="100"/>
-                                    <ComboBoxItem Content="1mV" Tag="1000"/>
-                                </ComboBox>
-                                <!--TODO-->
-                                <TextBlock x:Name="ManualReadDCVTextBlock" Text="TODO TEXT" TextWrapping="Wrap" Margin="185,259,10.2,0" VerticalAlignment="Top"/>
-                                <TextBlock Text="手动测量电压" HorizontalAlignment="Left" Margin="10,164,0,0" VerticalAlignment="Top" Width="201"/>
-                                <Button x:Name="ManualReadDCVButton" Content="手动读取电压" Click="ManualReadDCVButton_Click" HorizontalAlignment="Left" Margin="10,255,0,0" VerticalAlignment="Top" Width="130" Height="22"/>
-                                <Button x:Name="MultimeterStorageButton" Content="存储" Click="MultimeterStorageButton_Click"  HorizontalAlignment="Left" Margin="10,282,0,0" VerticalAlignment="Top" Width="130" Height="22"/>
-                                <!--TODO-->
+                                <Border VerticalAlignment="Top" Margin="10,145,10,0" Height="173" BorderBrush="Gray" BorderThickness="0.5" CornerRadius="3">
+                                    <Grid>
+                                        <TextBlock Text="手动测量电压" Margin="10,10,10,0" VerticalAlignment="Top"/>
+                                        <TextBlock Text="速度选择:" Margin="10,43,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="71"/>
+                                        <Button x:Name="SetMinNPLCButton" Content="高速度(0 NPLC)" Height="22" Margin="86,40,0,0" HorizontalAlignment="Left" Width="130" VerticalAlignment="Top">
+                                            <i:Interaction.Triggers>
+                                                <i:EventTrigger EventName="Click">
+                                                    <viewmodel:EventCommandBase Command="{Binding M3458ASetNPLCEvent}" CommandParameter="0"/>
+                                                </i:EventTrigger>
+                                            </i:Interaction.Triggers>
+                                        </Button>
+                                        <Button x:Name="SetMaxNPLCButton" Content="高精度(100 NPLC)" Height="22" Margin="221,40,0,0" HorizontalAlignment="Left" Width="130" VerticalAlignment="Top">
+                                            <i:Interaction.Triggers>
+                                                <i:EventTrigger EventName="Click">
+                                                    <viewmodel:EventCommandBase Command="{Binding M3458ASetNPLCEvent}" CommandParameter="100"/>
+                                                </i:EventTrigger>
+                                            </i:Interaction.Triggers>
+                                        </Button>
+                                        <TextBlock Text="量程选择:" Margin="10,70,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="71"/>
+                                        <ComboBox x:Name="ManualReadDCVRangeComboBox" ItemsSource="{Binding M3458ASetRangeComboBoxItems}" SelectedValue="{Binding M3458AManualMeasureRangeSelectedValue}" SelectedValuePath="Tag" HorizontalAlignment="Left" Margin="86,67,0,0" VerticalAlignment="Top" Width="79" Height="22"/>
+                                        <ComboBox x:Name="ManualReadDCVResComboBox" ItemsSource="{Binding M3458ASetResolutionComboBoxItems}" SelectedValue="{Binding M3458AManualMeasureResolutionSelectedValue}" SelectedValuePath="Tag" HorizontalAlignment="Left" Margin="170,67,0,0" VerticalAlignment="Top" Width="79" Height="22"/>
+                                        <TextBlock x:Name="ManualReadDCVTextBlock" Text="{Binding M3458AManualMeasureText}" TextWrapping="Wrap" Margin="10,98,159,0" TextAlignment="Center" VerticalAlignment="Top" FontSize="24" Height="34"/>
+                                        <Button x:Name="ManualReadDCVButton" Content="手动读取电压" HorizontalAlignment="Left" Margin="218,94,0,0" VerticalAlignment="Top" Width="144" Height="41">
+                                            <i:Interaction.Triggers>
+                                                <i:EventTrigger EventName="Click">
+                                                    <viewmodel:EventCommandBase Command="{Binding M3458AManualMeasureEvent}" CommandParameter="{Binding ElementName=ManualStorageDCVCheckBox, Path=IsChecked}"/>
+                                                </i:EventTrigger>
+                                            </i:Interaction.Triggers>
+                                        </Button>
+                                        <CheckBox Name="ManualStorageDCVCheckBox" Content="自动存储" HorizontalAlignment="Left" Margin="218,140,0,0" VerticalAlignment="Top"/>
+                                    </Grid>
+                                </Border>
                             </Grid>
                         </GroupBox>
                     </Grid>
@@ -352,7 +366,6 @@
                                 </TextBox>
                                 <TextBlock Text=";" HorizontalAlignment="Left" Margin="310,51,0,0" VerticalAlignment="Top" Width="7"/>
                                 <TextBlock Text="预览:" HorizontalAlignment="Left" Margin="10,79,0,0" VerticalAlignment="Top" Width="33"/>
-                                <!--TODO-->
                                 <TextBlock Name="SerialPortSendCmdPreviewTextBlock" Text="TODO TEXT" HorizontalAlignment="Left" Margin="48,79,0,0" VerticalAlignment="Top" Width="269"/>
                                 <Button Name="SerialPortSendCmdButton" Content="发送命令" HorizontalAlignment="Left" Margin="328,19,0,0" VerticalAlignment="Top" Width="110" Height="75" Click="SerialPortSendCmdButton_Click"/>
                                 <TextBlock Text="接收:" HorizontalAlignment="Left" Margin="10,120,0,0" VerticalAlignment="Top" Width="33"/>

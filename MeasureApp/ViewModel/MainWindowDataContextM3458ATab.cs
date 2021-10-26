@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -145,7 +149,230 @@ namespace MeasureApp.ViewModel
             }
         }
 
-        
+        // 3458A 手动测量量程精度设置
+        private string m3458AManualMeasureRangeSelectedValue = "AUTO";
+        public string M3458AManualMeasureRangeSelectedValue
+        {
+            get => m3458AManualMeasureRangeSelectedValue;
+            set
+            {
+                m3458AManualMeasureRangeSelectedValue = value;
+                RaisePropertyChanged(() => M3458AManualMeasureRangeSelectedValue);
+            }
+        }
+
+        private string m3458AManualMeasureResolutionSelectedValue = "DEFAULT";
+        public string M3458AManualMeasureResolutionSelectedValue
+        {
+            get => m3458AManualMeasureResolutionSelectedValue;
+            set
+            {
+                m3458AManualMeasureResolutionSelectedValue = value;
+                RaisePropertyChanged(() => M3458AManualMeasureResolutionSelectedValue);
+            }
+        }
+
+        // 3458A 设置NPLC事件
+        private CommandBase m3458ASetNPLCEvent;
+        public CommandBase M3458ASetNPLCEvent
+        {
+            get
+            {
+                if (m3458ASetNPLCEvent == null)
+                {
+                    m3458ASetNPLCEvent = new CommandBase(new Action<object>(param =>
+                    {
+                        try
+                        {
+                            if (Measure3458AInstance.IsOpen)
+                            {
+                                Measure3458AInstance.SetNPLC(param);
+                            }
+                            else
+                            {
+                                _ = MessageBox.Show("GPIB(3458A) is not open.");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            _ = MessageBox.Show(ex.ToString());
+                        }
+                    }));
+                }
+                return m3458ASetNPLCEvent;
+            }
+        }
+
+        // 3458A 同步电压显示开启标志位
+        private bool m3458AIsSyncMeasureOpen;
+        public bool M3458AIsSyncMeasureOpen
+
+        {
+            get => m3458AIsSyncMeasureOpen;
+            set
+            {
+                m3458AIsSyncMeasureOpen = value;
+                RaisePropertyChanged(() => M3458AIsSyncMeasureOpen);
+            }
+        }
+
+        // 3458A 同步电压显示绑定文本
+        private string m3458ASyncMeasureText = "--------";
+        public string M3458ASyncMeasureText
+        {
+            get => m3458ASyncMeasureText;
+            set
+            {
+                m3458ASyncMeasureText = value;
+                RaisePropertyChanged(() => M3458ASyncMeasureText);
+            }
+        }
+
+        // 3458A 手动测量电压显示绑定文本
+        private string m3458AManualMeasureText = "--------";
+        public string M3458AManualMeasureText
+        {
+            get => m3458AManualMeasureText;
+            set
+            {
+                m3458AManualMeasureText = value;
+                RaisePropertyChanged(() => M3458AManualMeasureText);
+            }
+        }
+
+        // 3458A 同步电压显示事件
+        private ManualResetEvent m3458ASyncMeasureManualResetEvent = new(false);
+        private CommandBase m3458ASyncMeasureEvent;
+        public CommandBase M3458ASyncMeasureEvent
+        {
+            get
+            {
+                if (m3458ASyncMeasureEvent == null)
+                {
+                    m3458ASyncMeasureEvent = new CommandBase(new Action<object>(param =>
+                    {
+                        try
+                        {
+                            if (Measure3458AInstance.IsOpen)
+                            {
+                                if (M3458AIsSyncMeasureOpen)
+                                {
+                                    M3458AIsSyncMeasureOpen = false;
+                                    m3458ASyncMeasureManualResetEvent.Reset();
+                                }
+                                else
+                                {
+                                    M3458AIsSyncMeasureOpen = true;
+                                    m3458ASyncMeasureManualResetEvent.Set();
+                                    _ = Task.Run(() =>
+                                    {
+                                        try
+                                        {
+                                            while (true)
+                                            {
+                                                m3458ASyncMeasureManualResetEvent.WaitOne();
+                                                // 3458A Multimeter User's Guide Page 149
+                                                decimal DCVDisplay = Measure3458AInstance.ReadDecimal();
+                                                M3458ASyncMeasureText = $"{DCVDisplay}";
+
+                                                // 数据自动存储
+                                                bool isStorage = (bool)param;
+                                                if (isStorage)
+                                                {
+                                                    DataStorageInstance.AddData(Key3458AString, DCVDisplay);
+                                                }
+                                            }
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            _ = MessageBox.Show(ex.ToString());
+                                        }
+                                    });
+                                }
+                            }
+                            else
+                            {
+                                _ = MessageBox.Show("GPIB(3458A) is not open.");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            _ = MessageBox.Show(ex.ToString());
+                        }
+                    }));
+                }
+                return m3458ASyncMeasureEvent;
+            }
+        }
+
+        // 3458A 手动测量电压事件
+        private CommandBase m3458AManualMeasureEvent;
+        public CommandBase M3458AManualMeasureEvent
+        {
+            get
+            {
+                if (m3458AManualMeasureEvent == null)
+                {
+                    m3458AManualMeasureEvent = new CommandBase(new Action<object>(param =>
+                    {
+                        try
+                        {
+                            if (Measure3458AInstance.IsOpen)
+                            {
+                                string setRange = m3458AManualMeasureRangeSelectedValue;
+                                string setResolution = M3458AManualMeasureResolutionSelectedValue;
+                                decimal setRangeDecimal;
+                                decimal setResolutionDecimal;
+                                if (setRange == "AUTO")
+                                {
+                                    setRangeDecimal = -1;
+                                    setResolutionDecimal = -1;
+                                }
+                                else if (setResolution == "DEFAULT")
+                                {
+                                    setRangeDecimal = Convert.ToDecimal(setRange);
+                                    setResolutionDecimal = -1;
+                                }
+                                else
+                                {
+                                    setRangeDecimal = Convert.ToDecimal(setRange);
+                                    setResolutionDecimal = Convert.ToDecimal(setResolution) / 1000000;
+                                }
+                                bool isStorage = (bool)param;
+
+                                M3458AManualMeasureText = "Measuring...";
+                                _ = Task.Run(() =>
+                                {
+                                    try
+                                    {
+                                        M3458AManualMeasureText = Measure3458AInstance.MeasureDCV(setRangeDecimal, setResolutionDecimal).ToString();
+                                        // 数据自动存储
+                                        if (isStorage)
+                                        {
+                                            DataStorageInstance.AddData(Key3458AString, Convert.ToDecimal(M3458AManualMeasureText));
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        _ = MessageBox.Show(ex.ToString());
+                                    }
+                                });
+
+                            }
+                            else
+                            {
+                                _ = MessageBox.Show("GPIB(3458A) is not open.");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            _ = MessageBox.Show(ex.ToString());
+                        }
+                    }));
+                }
+                return m3458AManualMeasureEvent;
+            }
+        }
 
         // 3458A发送命令事件
         private CommandBase m3458ABasicConfigEvent;

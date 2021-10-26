@@ -84,7 +84,7 @@ namespace MeasureApp.Model
             return gpib.Query("ERRSTR?");
         }
 
-        public void SetNPLC(decimal NPLC)
+        public void SetNPLC(dynamic NPLC)
         {
             gpib.Write(CommandGenerate("NPLC", NPLC));
         }

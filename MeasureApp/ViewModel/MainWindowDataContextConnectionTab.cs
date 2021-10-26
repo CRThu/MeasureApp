@@ -48,6 +48,18 @@ namespace MeasureApp.ViewModel
             }
         }
 
+        // 选中的GPIB设备地址
+        private string gpibDevicesSelectedName;
+        public string GpibDevicesSelectedName
+        {
+            get => gpibDevicesSelectedName;
+            set
+            {
+                gpibDevicesSelectedName = value;
+                RaisePropertyChanged(() => GpibDevicesSelectedName);
+            }
+        }
+
         // 打开GPIB的设备ID读取
         private string gpibDeviceConnectStatusText = $"No Device Connected.";
         public string GpibDeviceConnectStatusText
@@ -75,7 +87,8 @@ namespace MeasureApp.ViewModel
                         {
                             GpibDevicesName.Clear();
                             GPIB.SearchDevices("GPIB?*INSTR").ToList().ForEach(dev => GpibDevicesName.Add(dev));
-
+                            if (GpibDevicesSelectedName is null)
+                                GpibDevicesSelectedName = GpibDevicesName.First();
                         }
                         catch (Exception ex)
                         {
@@ -99,13 +112,10 @@ namespace MeasureApp.ViewModel
                     {
                         try
                         {
-                            if (param is string)
-                            {
-                                gpibDeviceConnectStatusText = $"No Device Connected.";
-                                Measure3458AInstance.Dispose();
-                                GpibDeviceConnectStatusText = $"{Measure3458AInstance.Open(param as string)} Connected.";
-                                Measure3458AInstance.Timeout = Properties.Settings.Default.GPIBTimeout;
-                            }
+                            gpibDeviceConnectStatusText = $"No Device Connected.";
+                            Measure3458AInstance.Dispose();
+                            GpibDeviceConnectStatusText = $"{Measure3458AInstance.Open(GpibDevicesSelectedName)} Connected.";
+                            Measure3458AInstance.Timeout = Properties.Settings.Default.GPIBTimeout;
                         }
                         catch (Exception ex)
                         {

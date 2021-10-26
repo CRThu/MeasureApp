@@ -103,12 +103,19 @@ public class Automation
                         {
                             _ = Task.Run(() =>
                             {
-                                string code = AutomationCodeEditorText;
-                                var type = CodeCompiler.Run(code, "Automation");
-                                var transformer = Activator.CreateInstance(type);
-                                var newContent = type.GetMethod("Main").Invoke(transformer, new object[] { this });
-                                //MessageBox.Show($"result={newContent}");
-                                AutomationCodeReturnData = newContent.ToString();
+                                try
+                                {
+                                    string code = AutomationCodeEditorText;
+                                    var type = CodeCompiler.Run(code, "Automation");
+                                    var transformer = Activator.CreateInstance(type);
+                                    var newContent = type.GetMethod("Main").Invoke(transformer, new object[] { this });
+                                    //MessageBox.Show($"result={newContent}");
+                                    AutomationCodeReturnData = newContent.ToString();
+                                }
+                                catch (Exception ex)
+                                {
+                                    _ = MessageBox.Show(ex.ToString());
+                                }
                             });
                         }
                         catch (Exception ex)
