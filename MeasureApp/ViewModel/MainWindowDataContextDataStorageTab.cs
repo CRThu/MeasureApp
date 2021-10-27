@@ -12,6 +12,18 @@ namespace MeasureApp.ViewModel
 {
     public partial class MainWindowDataContext : NotificationObjectBase
     {
+        // DataStorage数据源选择
+        private string dataStorageSelectedValue;
+        public string DataStorageSelectedValue
+        {
+            get => dataStorageSelectedValue;
+            set
+            {
+                dataStorageSelectedValue = value;
+                RaisePropertyChanged(() => DataStorageSelectedValue);
+            }
+        }
+
         // DataGrid数据绑定
         private dynamic dataStorageDataGridBinding;
         public dynamic DataStorageDataGridBinding
@@ -36,11 +48,8 @@ namespace MeasureApp.ViewModel
                     {
                         try
                         {
-                            if (param is string)
-                            {
-                                string dataStorageKey = param as string;
-                                DataStorageDataGridBinding = dataStorageInstance.DataStorageDictionary[dataStorageKey];
-                            }
+                            string dataStorageKey = DataStorageSelectedValue;
+                            DataStorageDataGridBinding = dataStorageInstance.DataStorageDictionary[dataStorageKey];
                         }
                         catch (Exception ex)
                         {
@@ -64,20 +73,17 @@ namespace MeasureApp.ViewModel
                     {
                         try
                         {
-                            if (param is string)
+                            string dataStorageKey = DataStorageSelectedValue;
+                            SaveFileDialog saveFileDialog = new()
                             {
-                                string dataStorageKey = param as string;
-                                SaveFileDialog saveFileDialog = new()
-                                {
-                                    Title = "存储数据",
-                                    FileName = DataStorage.GenerateFileName(dataStorageKey),
-                                    DefaultExt = ".txt",
-                                    Filter = "Text File|*.txt"
-                                };
-                                if (saveFileDialog.ShowDialog() == true)
-                                {
-                                    dataStorageInstance.Save(dataStorageKey, saveFileDialog.FileName);
-                                }
+                                Title = "存储数据",
+                                FileName = DataStorage.GenerateFileName(dataStorageKey),
+                                DefaultExt = ".txt",
+                                Filter = "Text File|*.txt"
+                            };
+                            if (saveFileDialog.ShowDialog() == true)
+                            {
+                                dataStorageInstance.Save(dataStorageKey, saveFileDialog.FileName);
                             }
                         }
                         catch (Exception ex)
@@ -102,13 +108,10 @@ namespace MeasureApp.ViewModel
                     {
                         try
                         {
-                            if (param is string)
-                            {
                                 if (MessageBox.Show("清理本次通信数据，是否继续？", "清理数据确认", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
                                 {
-                                    dataStorageInstance.ClearAllData(param as string);
+                                    dataStorageInstance.ClearAllData(DataStorageSelectedValue);
                                 }
-                            }
                         }
                         catch (Exception ex)
                         {

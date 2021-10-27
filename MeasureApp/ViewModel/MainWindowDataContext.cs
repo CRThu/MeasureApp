@@ -15,7 +15,7 @@ namespace MeasureApp.ViewModel
             // 添加默认Key
             dataStorageInstance.AddKey(Key3458AString);
             dataStorageInstance.AddKey(KeySerialPortString);
-
+            dataStorageSelectedValue = Key3458AString;
         }
 
         // 3458A 通信类

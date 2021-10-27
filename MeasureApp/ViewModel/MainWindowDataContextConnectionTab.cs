@@ -10,32 +10,6 @@ namespace MeasureApp.ViewModel
 {
     public partial class MainWindowDataContext : NotificationObjectBase
     {
-
-        // 未成功实现
-        // ComboBox数据源更新事件
-        private CommandBase comboBoxSourceUpdatedEvent;
-        public CommandBase ComboBoxSourceUpdatedEvent
-        {
-            get
-            {
-                if (comboBoxSourceUpdatedEvent == null)
-                {
-                    comboBoxSourceUpdatedEvent = new CommandBase(new Action<object>(param =>
-                    {
-                        try
-                        {
-                            MessageBox.Show("UPDATED");
-                        }
-                        catch (Exception ex)
-                        {
-                            _ = MessageBox.Show(ex.ToString());
-                        }
-                    }));
-                }
-                return comboBoxSourceUpdatedEvent;
-            }
-        }
-
         // 可用GPIB设备地址
         private ObservableCollection<string> gpibDevicesName = new();
         public ObservableCollection<string> GpibDevicesName
@@ -87,7 +61,7 @@ namespace MeasureApp.ViewModel
                         {
                             GpibDevicesName.Clear();
                             GPIB.SearchDevices("GPIB?*INSTR").ToList().ForEach(dev => GpibDevicesName.Add(dev));
-                            if (GpibDevicesSelectedName is null)
+                            if (GpibDevicesName.Count != 0 && GpibDevicesSelectedName is null)
                                 GpibDevicesSelectedName = GpibDevicesName.First();
                         }
                         catch (Exception ex)
@@ -140,14 +114,14 @@ namespace MeasureApp.ViewModel
         }
 
         // 选中串口设备
-        private ComboBoxItem serialportDevicesNameSelectItem = new();
-        public ComboBoxItem SerialportDevicesNameSelectItem
+        private string serialportDevicesNameSelectedValue;
+        public string SerialportDevicesNameSelectedValue
         {
-            get => serialportDevicesNameSelectItem;
+            get => serialportDevicesNameSelectedValue;
             set
             {
-                serialportDevicesNameSelectItem = value;
-                RaisePropertyChanged(() => SerialportDevicesNameSelectItem);
+                serialportDevicesNameSelectedValue = value;
+                RaisePropertyChanged(() => SerialportDevicesNameSelectedValue);
             }
         }
 
@@ -245,17 +219,20 @@ namespace MeasureApp.ViewModel
                     {
                         try
                         {
-                            serialportDevicesNameComboBoxItems.Clear();
+                            SerialportDevicesNameComboBoxItems.Clear();
                             string[] portList = SerialPort.GetPortNames();
                             string[] portDescriptionList = HardwareInfoUtil.GetSerialPortFullName();
                             for (int i = 0; i < portList.Length; ++i)
                             {
-                                serialportDevicesNameComboBoxItems.Add(new()
+                                SerialportDevicesNameComboBoxItems.Add(new()
                                 {
                                     Content = $"{portList[i]}|{portDescriptionList.Where(str => str.Contains(portList[i])).FirstOrDefault() ?? ""}",
                                     Tag = portList[i]
                                 });
                             }
+
+                            if (SerialportDevicesNameComboBoxItems.Count != 0 && SerialportDevicesNameSelectedValue is null)
+                                SerialportDevicesNameSelectedValue = (string)SerialportDevicesNameComboBoxItems.First().Tag;
                         }
                         catch (Exception ex)
                         {
@@ -279,7 +256,7 @@ namespace MeasureApp.ViewModel
                     {
                         try
                         {
-                            string portName = SerialportDevicesNameSelectItem.Tag as string;
+                            string portName = SerialportDevicesNameSelectedValue;
                             int baudRate = Convert.ToInt32(SerialportDeviceBaudRateSelectedValue);
                             Parity parity = (Parity)Enum.Parse(typeof(Parity), SerialportDeviceParitySelectItem);
                             int dataBits = serialportDeviceDataBitsSelectItem;
@@ -317,7 +294,7 @@ namespace MeasureApp.ViewModel
                     {
                         try
                         {
-                            string portName = SerialportDevicesNameSelectItem.Tag as string;
+                            string portName = SerialportDevicesNameSelectedValue;
                             if (!SerialPortsInstance.Close(portName))
                             {
                                 _ = MessageBox.Show("串口已被关闭.");

@@ -26,8 +26,6 @@ namespace MeasureApp
         string Key3458AString = "3458A Data Storage";
         string KeySerialPortString = "Serial Port Data Storage";
 
-        public StringDataClass SerialPortSendCmdString = new StringDataClass() { StringData = "<null>::<null>;" };
-
         public SerialPortRecvDataType serialPortRecvDataType = new SerialPortRecvDataType();
         private dynamic RecvDataPraseTemp;
 
@@ -45,11 +43,8 @@ namespace MeasureApp
 
             mainWindowDataContext.GpibDeviceSearchEvent.Execute(null);
             mainWindowDataContext.SerialPortDeviceSearchEvent.Execute(null);
-            SerialPortSendCmd_Changed(null, null);
 
             // TODO
-            SerialPortSendCmdPreviewTextBlock.DataContext = SerialPortSendCmdString;
-
             SerialPortRecvDataTypesGrid.DataContext = serialPortRecvDataType;
             serialPortRecvDataType.SerialPortRecvDataTypeEnum = SerialPortRecvDataTypeEnum.Char;
             serialPortRecvDataType.SerialPortRecvDataEncodeEnum = SerialPortRecvDataEncodeEnum.Bytes;
@@ -78,45 +73,6 @@ namespace MeasureApp
             try
             {
                 SerialPortReadCmdTextBox.Text = serialPorts.ReadExistingString(SerialPortDebugSelectComboBox.SelectedItem as string);
-            }
-            catch (Exception ex)
-            {
-                _ = MessageBox.Show(ex.ToString());
-            }
-        }
-
-        private void SerialPortSendCmd_Changed(object sender, object e)
-        {
-            try
-            {
-                if (SerialPortSendCmdSerialPortNameComboBox != null
-                && SerialPortSendCmdCommandNameComboBox != null
-                && SerialPortSendCmdParamsTextBox != null)
-                {
-                    string serialPortName = SerialPortSendCmdSerialPortNameComboBox.SelectedItem as string;
-                    string commandName = ((SerialPortSendCmdCommandNameComboBox.SelectedItem as ComboBoxItem).Tag as string) == "Other"
-                            ? ((SerialPortSendCmdCommandNameComboBox.SelectedItem as ComboBoxItem).Content as TextBox).Text
-                            : (SerialPortSendCmdCommandNameComboBox.SelectedItem as ComboBoxItem).Tag as string;
-                    string[] CommandElements = (commandName + ";" + SerialPortSendCmdParamsTextBox.Text).Split(" ,.;|&".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-
-                    if (((SerialPortSendCmdCommandNameComboBox.SelectedItem as ComboBoxItem).Tag as string) == "Other")
-                        ((SerialPortSendCmdCommandNameComboBox.SelectedItem as ComboBoxItem).Content as TextBox).Foreground = new SolidColorBrush(Regex.IsMatch(((SerialPortSendCmdCommandNameComboBox.SelectedItem as ComboBoxItem).Content as TextBox).Text, @"[^a-zA-Z0-9]") ? Colors.Red : Colors.Black);
-                    SerialPortSendCmdParamsTextBox.Foreground = new SolidColorBrush(Regex.IsMatch(SerialPortSendCmdParamsTextBox.Text, @"[^x00-xff\s,.;|&]") ? Colors.Red : Colors.Black);
-                    SerialPortSendCmdString.StringData = $"{serialPortName}::{string.Join(";", CommandElements)};";
-                }
-            }
-            catch (Exception ex)
-            {
-                _ = MessageBox.Show(ex.ToString());
-            }
-        }
-
-        private void SerialPortSendCmdButton_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                string[] splitCmds = SerialPortSendCmdString.StringData.Split(new string[] { "::" }, StringSplitOptions.RemoveEmptyEntries);
-                serialPorts.WriteString(splitCmds[0], splitCmds[1]);
             }
             catch (Exception ex)
             {
@@ -213,6 +169,5 @@ namespace MeasureApp
                 _ = MessageBox.Show(ex.ToString());
             }
         }
-
     }
 }

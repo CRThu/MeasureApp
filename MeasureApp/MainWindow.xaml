@@ -10,11 +10,11 @@
         Title="MainWindow" Height="504.4" Width="866.4" Closed="Window_Closed" DataContext="">
     <Window.Resources>
         <viewmodel:M3458ASyncMeasureButtonContentConverter x:Key="M3458ASyncMeasureButtonContentConverter"/>
+        <viewmodel:SerialPortsStatusTextConverter x:Key="SerialPortsStatusTextConverter"/>
 
         <local:SerialPortRecvDataTypeToBoolConverter x:Key="SerialPortRecvDataTypeToBoolConverter"/>
         <local:SerialPortRecvDataEncodeToBoolConverter x:Key="SerialPortRecvDataEncodeToBoolConverter"/>
         <local:SerialPortRecvDataType x:Key="SerialPortRecvDataType"/>
-        <local:SerialPortsStatusTextConverter x:Key="SerialPortsStatusTextConverter"/>
     </Window.Resources>
     <DockPanel>
         <Grid>
@@ -56,31 +56,25 @@
                                 <Button x:Name="OpenSerialPortButton" Content="打开串口设备" Margin="231,88,10,0" VerticalAlignment="Top" Height="23">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
-                                            <viewmodel:EventCommandBase Command="{Binding SerialPortDeviceOpenEvent}" CommandParameter="{Binding ElementName=SerialPortNameComboBox, Path=Tag}"/>
+                                            <viewmodel:EventCommandBase Command="{Binding SerialPortDeviceOpenEvent}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
                                 <Button x:Name="CloseSerialPortButton" Content="关闭串口设备" Margin="231,116,10,0" VerticalAlignment="Top" Height="23">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
-                                            <viewmodel:EventCommandBase Command="{Binding SerialPortDeviceCloseEvent}" CommandParameter="{Binding ElementName=SerialPortNameComboBox, Path=Tag}"/>
+                                            <viewmodel:EventCommandBase Command="{Binding SerialPortDeviceCloseEvent}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
-                                <ComboBox x:Name="SerialPortNameComboBox" ItemsSource="{Binding SerialportDevicesNameComboBoxItems}" SelectedItem="{Binding SerialportDevicesNameSelectItem}" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="201" Height="23">
-                                    <i:Interaction.Triggers>
-                                        <i:EventTrigger EventName="AddValueChanged">
-                                            <viewmodel:EventCommandBase Command="{Binding ComboBoxSourceUpdatedEvent}" CommandParameter="{Binding ElementName=SerialPortNameComboBox}"/>
-                                        </i:EventTrigger>
-                                    </i:Interaction.Triggers>
-                                </ComboBox>
+                                <ComboBox x:Name="SerialPortNameComboBox" ItemsSource="{Binding SerialportDevicesNameComboBoxItems}" SelectedValue="{Binding SerialportDevicesNameSelectedValue}" SelectedValuePath="Tag" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="201" Height="23"/>
                                 <TextBlock Text="波特率：" HorizontalAlignment="Left" Margin="10,41,0,0" Width="71" TextWrapping="Wrap" Height="18" VerticalAlignment="Top"/>
                                 <ComboBox x:Name="SerialPortBaudRateComboBox" SelectedValue="{Binding SerialportDeviceBaudRateSelectedValue}" SelectedValuePath="Tag" HorizontalAlignment="Left" Margin="86,38,0,0" VerticalAlignment="Top" Width="125" Height="23">
                                     <ComboBoxItem Content="9600" Tag="9600"/>
                                     <ComboBoxItem Content="38400" Tag="38400"/>
                                     <ComboBoxItem Content="115200" Tag="115200"/>
                                     <ComboBoxItem Content="921600" Tag="921600"/>
-                                    <ComboBoxItem Tag="{Binding ElementName=SerialportDeviceCustomBaudRateTextBox, Path=Text}" VerticalContentAlignment="Stretch">
+                                    <ComboBoxItem Tag="{Binding ElementName=SerialportDeviceCustomBaudRateTextBox, Path=Text}">
                                         <TextBox Name="SerialportDeviceCustomBaudRateTextBox" Margin="0,0,20,0" Width="80">
                                             <TextBox.Resources>
                                                 <VisualBrush x:Key="HintText" TileMode="None" Opacity="0.5" Stretch="None" AlignmentX="Left">
@@ -110,7 +104,7 @@
                                 <ComboBox ItemsSource="{Binding SerialportDeviceDataBitsList}" SelectedItem="{Binding SerialportDeviceDataBitsSelectItem}" HorizontalAlignment="Left" Margin="86,90,0,0" VerticalAlignment="Top" Width="125" Height="23"/>
                                 <TextBlock Text="停止位：" HorizontalAlignment="Left" Margin="10,121,0,0" Width="71" TextWrapping="Wrap" Height="18" VerticalAlignment="Top"/>
                                 <ComboBox ItemsSource="{Binding SerialportDeviceStopBitsList}" SelectedItem="{Binding SerialportDeviceStopBitsSelectItem}" HorizontalAlignment="Left" Margin="86,118,0,0" VerticalAlignment="Top" Width="125" Height="23"/>
-                                <TextBlock x:Name="SerialPortDeviceNameTextBlock" Text="{Binding SerialPortsInstance.SerialPortsDict.Keys, Converter={StaticResource SerialPortsStatusTextConverter}}" HorizontalAlignment="Left" Margin="231,10,0,0" Width="154" TextWrapping="Wrap" Height="45" VerticalAlignment="Top"/>
+                                <TextBlock x:Name="SerialPortDeviceNameTextBlock" Text="{Binding SerialPortsInstance.SerialPortsDict.Values, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource SerialPortsStatusTextConverter}}" HorizontalAlignment="Left" Margin="231,10,0,0" Width="154" TextWrapping="Wrap" Height="45" VerticalAlignment="Top"/>
                             </Grid>
                         </GroupBox>
                         <GroupBox Header="GPIB调试" HorizontalAlignment="Left" Margin="10,181,0,10" Width="407">
@@ -144,7 +138,7 @@
                         </GroupBox>
                         <GroupBox Header="串口调试" HorizontalAlignment="Left" Margin="422,181,0,10" Width="407">
                             <Grid>
-                                <ComboBox x:Name="SerialPortDebugSelectComboBox" ItemsSource="{Binding SerialPortsInstance.SerialPortsDict.Keys}" HorizontalAlignment="Left" Margin="288,16,0,0" VerticalAlignment="Top" Width="97" Height="23"/>
+                                <ComboBox x:Name="SerialPortDebugSelectComboBox" ItemsSource="{Binding SerialPortsInstance.SerialPortsDict.Keys, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="288,16,0,0" VerticalAlignment="Top" Width="97" Height="23"/>
                                 <Button x:Name="SerialPortWriteCmdButton" Content="Write" HorizontalAlignment="Left" Margin="227,61,0,0" VerticalAlignment="Top" Width="158" Height="51" Click="SerialPortWriteCmdButton_Click"/>
                                 <Button x:Name="SerialPortReadCmdButton" Content="Read" HorizontalAlignment="Left" Margin="227,137,0,0" VerticalAlignment="Top" Width="158" Height="51" Click="SerialPortReadCmdButton_Click"/>
                                 <TextBox x:Name="SerialPortWriteCmdTextBox" HorizontalAlignment="Left" Height="51" Margin="10,61,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="201"/>
@@ -311,15 +305,21 @@
                         <GroupBox Header="传输" HorizontalAlignment="Left" Margin="10,10,0,0" Width="460" Height="392" VerticalAlignment="Top">
                             <Grid>
                                 <TextBlock Text="发送:" HorizontalAlignment="Left" Margin="10,23,0,0" VerticalAlignment="Top" Width="33"/>
-                                <ComboBox x:Name="SerialPortSendCmdSerialPortNameComboBox" ItemsSource="{Binding SerialPortsInstance.SerialPortsDict.Keys}" HorizontalAlignment="Left" Margin="48,19,0,0" VerticalAlignment="Top" Width="120" Height="23" SelectionChanged="SerialPortSendCmd_Changed"/>
+                                <ComboBox x:Name="SerialPortSendCmdSerialPortNameComboBox" ItemsSource="{Binding SerialPortsInstance.SerialPortsDict.Keys, UpdateSourceTrigger=PropertyChanged}" SelectedValue="{Binding SerialPortSendCmdSerialPortNameSelectedValue}" HorizontalAlignment="Left" Margin="48,19,0,0" VerticalAlignment="Top" Width="120" Height="23">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="SelectionChanged">
+                                            <viewmodel:EventCommandBase Command="{Binding SerialPortSendCmdChangedEvent}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </ComboBox>
                                 <TextBlock Text="::" HorizontalAlignment="Left" Margin="173,23,0,0" VerticalAlignment="Top" Width="7"/>
-                                <ComboBox x:Name="SerialPortSendCmdCommandNameComboBox" SelectedIndex="0" HorizontalAlignment="Left" Margin="185,19,0,0" VerticalAlignment="Top" Width="120" Height="23" SelectionChanged="SerialPortSendCmd_Changed">
+                                <ComboBox x:Name="SerialPortSendCmdCommandNameComboBox" SelectedValue="{Binding SerialportSendCmdCommandNameSelectedValue, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Tag" HorizontalAlignment="Left" Margin="185,19,0,0" VerticalAlignment="Top" Width="120" Height="23">
                                     <ComboBoxItem Content="SET" Tag="SET"/>
                                     <ComboBoxItem Content="GET" Tag="GET"/>
                                     <ComboBoxItem Content="START" Tag="START"/>
                                     <ComboBoxItem Content="END" Tag="END"/>
-                                    <ComboBoxItem Tag="Other" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
-                                        <TextBox Margin="0,0,20,0" TextChanged="SerialPortSendCmd_Changed">
+                                    <ComboBoxItem Tag="Others" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+                                        <TextBox Name="SerialPortSendCmdCommandNameManualTextBox" Margin="0,0,20,0" Width="80" Text="{Binding SerialPortSendCmdCommandNameManualText, UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding SerialPortSendCmdCommandNameManualTextBoxForeGround}">
                                             <TextBox.Resources>
                                                 <VisualBrush x:Key="HintText"  TileMode="None" Opacity="0.5" Stretch="None" AlignmentX="Left">
                                                     <VisualBrush.Visual>
@@ -339,11 +339,21 @@
                                                     </Style.Triggers>
                                                 </Style>
                                             </TextBox.Style>
+                                            <i:Interaction.Triggers>
+                                                <i:EventTrigger EventName="TextChanged">
+                                                    <viewmodel:EventCommandBase Command="{Binding SerialPortSendCmdChangedEvent}"/>
+                                                </i:EventTrigger>
+                                            </i:Interaction.Triggers>
                                         </TextBox>
                                     </ComboBoxItem>
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="SelectionChanged">
+                                            <viewmodel:EventCommandBase Command="{Binding SerialPortSendCmdChangedEvent}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
                                 </ComboBox>
                                 <TextBlock Text=";" HorizontalAlignment="Left" Margin="310,23,0,0" VerticalAlignment="Top" Width="7"/>
-                                <TextBox Name="SerialPortSendCmdParamsTextBox" Margin="48,47,0,0" TextWrapping="Wrap" Text="" Height="22" VerticalAlignment="Top" HorizontalAlignment="Left" Width="257" TextChanged="SerialPortSendCmd_Changed">
+                                <TextBox Name="SerialPortSendCmdParamsTextBox" Text="{Binding SerialPortSendCmdParamsText, UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding SerialPortSendCmdParamsTextBoxForeGround}" Margin="48,47,0,0" TextWrapping="Wrap" Height="22" VerticalAlignment="Top" HorizontalAlignment="Left" Width="257">
                                     <TextBox.Resources>
                                         <VisualBrush x:Key="HintText"  TileMode="None" Opacity="0.5" Stretch="None" AlignmentX="Left">
                                             <VisualBrush.Visual>
@@ -363,13 +373,23 @@
                                             </Style.Triggers>
                                         </Style>
                                     </TextBox.Style>
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="TextChanged">
+                                            <viewmodel:EventCommandBase Command="{Binding SerialPortSendCmdChangedEvent}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
                                 </TextBox>
                                 <TextBlock Text=";" HorizontalAlignment="Left" Margin="310,51,0,0" VerticalAlignment="Top" Width="7"/>
                                 <TextBlock Text="预览:" HorizontalAlignment="Left" Margin="10,79,0,0" VerticalAlignment="Top" Width="33"/>
-                                <TextBlock Name="SerialPortSendCmdPreviewTextBlock" Text="TODO TEXT" HorizontalAlignment="Left" Margin="48,79,0,0" VerticalAlignment="Top" Width="269"/>
-                                <Button Name="SerialPortSendCmdButton" Content="发送命令" HorizontalAlignment="Left" Margin="328,19,0,0" VerticalAlignment="Top" Width="110" Height="75" Click="SerialPortSendCmdButton_Click"/>
+                                <TextBlock Name="SerialPortSendCmdPreviewTextBlock" Text="{Binding SerialPortSendCmdPreviewText}" HorizontalAlignment="Left" Margin="48,79,0,0" VerticalAlignment="Top" Width="269"/>
+                                <Button Name="SerialPortSendCmdButton" Content="发送命令" HorizontalAlignment="Left" Margin="328,19,0,0" VerticalAlignment="Top" Width="110" Height="75">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <viewmodel:EventCommandBase Command="{Binding SerialPortSendCmdEvent}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Button>
                                 <TextBlock Text="接收:" HorizontalAlignment="Left" Margin="10,120,0,0" VerticalAlignment="Top" Width="33"/>
-
                                 <GroupBox Header="数据类型" HorizontalAlignment="Left" Height="81" Margin="48,122,0,0" VerticalAlignment="Top" Width="390">
                                     <Grid Name="SerialPortRecvDataTypesGrid" DataContext="{Binding Source={StaticResource SerialPortRecvDataType}}">
                                         <RadioButton Content="Ascii" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" GroupName="SerialPortRecvDataEncodeGroupName" IsChecked="{Binding SerialPortRecvDataEncodeEnum, Converter={StaticResource SerialPortRecvDataEncodeToBoolConverter}, ConverterParameter=0}"/>
@@ -386,7 +406,7 @@
                                 <Button Name="SerialPortRecvDataButton" Content="接收数据" HorizontalAlignment="Left" Margin="195,208,0,0" VerticalAlignment="Top" Width="110" Height="32" Click="SerialPortRecvDataButton_Click"/>
                                 <Button Name="SerialPortRecvDataStorageButton" Content="存储数据" HorizontalAlignment="Left" Margin="328,208,0,0" VerticalAlignment="Top" Width="110" Height="32" Click="SerialPortRecvDataStorageButton_Click"/>
                                 <TextBox Name="SerialPortRecvDataDisplayTextBox" HorizontalAlignment="Left" Height="115" Margin="48,245,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="390"/>
-                                <ComboBox x:Name="SerialPortRecvDataSerialPortNameComboBox" ItemsSource="{Binding SerialPortsInstance.SerialPortsDict.Keys}" HorizontalAlignment="Left" Margin="48,212,0,0" VerticalAlignment="Top" Width="120" Height="23"/>
+                                <ComboBox x:Name="SerialPortRecvDataSerialPortNameComboBox" ItemsSource="{Binding SerialPortsInstance.SerialPortsDict.Keys, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="48,212,0,0" VerticalAlignment="Top" Width="120" Height="23"/>
                             </Grid>
                         </GroupBox>
                         <GroupBox Header="存储" HorizontalAlignment="Left" Height="392" Margin="475,10,0,0" VerticalAlignment="Top" Width="350">
@@ -408,10 +428,10 @@
                         <GroupBox Header="存储" Margin="10,10,10.2,10">
                             <Grid>
                                 <TextBlock Text="选择数据源：" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="230"/>
-                                <ListBox Name="DataStorageSelectListBox" ItemsSource="{Binding DataStorageInstance.DataStorageDictionary.Keys}" HorizontalAlignment="Left" Height="106" Margin="10,30,0,0" VerticalAlignment="Top" Width="230">
+                                <ListBox Name="DataStorageSelectListBox" ItemsSource="{Binding DataStorageInstance.DataStorageDictionary.Keys}" SelectedValue="{Binding DataStorageSelectedValue}" HorizontalAlignment="Left" Height="106" Margin="10,30,0,0" VerticalAlignment="Top" Width="230">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="SelectionChanged">
-                                            <viewmodel:EventCommandBase Command="{Binding DataStorageSelectionChangedEvent}" CommandParameter="{Binding ElementName=DataStorageSelectListBox, Path=SelectedItem}"/>
+                                            <viewmodel:EventCommandBase Command="{Binding DataStorageSelectionChangedEvent}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </ListBox>
@@ -428,14 +448,14 @@
                                 <Button Name="DataStorageExportListDataButton" Content="导出该数据" HorizontalAlignment="Left" Margin="10,141,0,0" VerticalAlignment="Top" Width="107" Height="32">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
-                                            <viewmodel:EventCommandBase Command="{Binding DataStorageStoreEvent}" CommandParameter="{Binding ElementName=DataStorageSelectListBox, Path=SelectedItem}"/>
+                                            <viewmodel:EventCommandBase Command="{Binding DataStorageStoreEvent}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
                                 <Button Name="DataStorageClearListDataButton" Content="清空该数据" HorizontalAlignment="Left" Margin="133,141,0,0" VerticalAlignment="Top" Width="107" Height="32">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
-                                            <viewmodel:EventCommandBase Command="{Binding DataStorageDeleteEvent}" CommandParameter="{Binding ElementName=DataStorageSelectListBox, Path=SelectedItem}"/>
+                                            <viewmodel:EventCommandBase Command="{Binding DataStorageDeleteEvent}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
