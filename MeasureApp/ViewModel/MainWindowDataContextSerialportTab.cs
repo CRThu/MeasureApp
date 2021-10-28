@@ -59,7 +59,7 @@ namespace MeasureApp.ViewModel
             }
         }
 
-        private string serialPortSendCmdCommandNameManualText="MANUAL";
+        private string serialPortSendCmdCommandNameManualText = "MANUAL";
         public string SerialPortSendCmdCommandNameManualText
         {
             get => serialPortSendCmdCommandNameManualText;
@@ -109,7 +109,7 @@ namespace MeasureApp.ViewModel
                         try
                         {
                             string serialPortName = SerialPortSendCmdSerialPortNameSelectedValue ?? "";
-                            string commandName = SerialportSendCmdCommandNameSelectedValue=="Others"? SerialPortSendCmdCommandNameManualText : SerialportSendCmdCommandNameSelectedValue;
+                            string commandName = SerialportSendCmdCommandNameSelectedValue == "Others" ? SerialPortSendCmdCommandNameManualText : SerialportSendCmdCommandNameSelectedValue;
                             string[] CommandElements = (commandName + ";" + SerialPortSendCmdParamsText ?? "").Split(" ,.;|&".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
                             SerialPortSendCmdPreviewText = $"{serialPortName}::{string.Join(";", CommandElements)};";
 
@@ -148,6 +148,18 @@ namespace MeasureApp.ViewModel
                     }));
                 }
                 return serialPortSendCmdEvent;
+            }
+        }
+
+        // 串口数据接收模块串口选择数据绑定
+        private string serialPortRecvDataSerialPortNameSelectedValue;
+        public string SerialPortRecvDataSerialPortNameSelectedValue
+        {
+            get => serialPortRecvDataSerialPortNameSelectedValue;
+            set
+            {
+                serialPortRecvDataSerialPortNameSelectedValue = value;
+                RaisePropertyChanged(() => SerialPortRecvDataSerialPortNameSelectedValue);
             }
         }
 

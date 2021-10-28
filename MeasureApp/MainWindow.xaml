@@ -7,7 +7,12 @@
         xmlns:local="clr-namespace:MeasureApp" xmlns:viewmodel="clr-namespace:MeasureApp.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodel:MainWindowDataContext}"
         xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
         mc:Ignorable="d"
-        Title="MainWindow" Height="504.4" Width="866.4" Closed="Window_Closed" DataContext="">
+        Title="MainWindow" Height="504.4" Width="866.4">
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Closed">
+            <viewmodel:EventCommandBase Command="{Binding MainWindowClosedEvent}"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
     <Window.Resources>
         <viewmodel:M3458ASyncMeasureButtonContentConverter x:Key="M3458ASyncMeasureButtonContentConverter"/>
         <viewmodel:SerialPortsStatusTextConverter x:Key="SerialPortsStatusTextConverter"/>
@@ -112,7 +117,7 @@
                                 <TextBlock Text="Write Command" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top" Width="201"/>
                                 <TextBlock Text="Read Data" HorizontalAlignment="Left" Margin="10,117,0,0" VerticalAlignment="Top" Width="201"/>
                                 <TextBox x:Name="WriteCmdTextBox" Text="{Binding GPIBDebugWriteCommandText}" HorizontalAlignment="Left" Height="51" Margin="10,61,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="201"/>
-                                <TextBox x:Name="ReadCmdTextBox"  Text="{Binding GPIBDebugReadCommandText}" HorizontalAlignment="Left" Height="51" Margin="10,138,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="201"/>
+                                <TextBox x:Name="ReadCmdTextBox" Text="{Binding GPIBDebugReadCommandText}" HorizontalAlignment="Left" Height="51" Margin="10,138,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="201"/>
                                 <Button x:Name="QueryCmdButton" Content="Query" HorizontalAlignment="Left" Margin="227,61,0,0" VerticalAlignment="Top" Width="158" Height="51">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
@@ -138,11 +143,23 @@
                         </GroupBox>
                         <GroupBox Header="串口调试" HorizontalAlignment="Left" Margin="422,181,0,10" Width="407">
                             <Grid>
-                                <ComboBox x:Name="SerialPortDebugSelectComboBox" ItemsSource="{Binding SerialPortsInstance.SerialPortsDict.Keys, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="288,16,0,0" VerticalAlignment="Top" Width="97" Height="23"/>
-                                <Button x:Name="SerialPortWriteCmdButton" Content="Write" HorizontalAlignment="Left" Margin="227,61,0,0" VerticalAlignment="Top" Width="158" Height="51" Click="SerialPortWriteCmdButton_Click"/>
-                                <Button x:Name="SerialPortReadCmdButton" Content="Read" HorizontalAlignment="Left" Margin="227,137,0,0" VerticalAlignment="Top" Width="158" Height="51" Click="SerialPortReadCmdButton_Click"/>
-                                <TextBox x:Name="SerialPortWriteCmdTextBox" HorizontalAlignment="Left" Height="51" Margin="10,61,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="201"/>
-                                <TextBox x:Name="SerialPortReadCmdTextBox" HorizontalAlignment="Left" Height="51" Margin="10,138,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="201"/>
+                                <ComboBox x:Name="SerialPortDebugSelectComboBox" ItemsSource="{Binding SerialPortsInstance.SerialPortsDict, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Key" SelectedValue="{Binding SerialportDebugPortNameSelectedValue, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Key" HorizontalAlignment="Left" Margin="288,16,0,0" VerticalAlignment="Top" Width="97" Height="23"/>
+                                <Button x:Name="SerialPortWriteCmdButton" Content="Write" HorizontalAlignment="Left" Margin="227,61,0,0" VerticalAlignment="Top" Width="158" Height="51">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <viewmodel:EventCommandBase Command="{Binding SerialPortDebugWriteCmdEvent}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Button>
+                                <Button x:Name="SerialPortReadCmdButton" Content="Read" HorizontalAlignment="Left" Margin="227,137,0,0" VerticalAlignment="Top" Width="158" Height="51">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <viewmodel:EventCommandBase Command="{Binding SerialPortDebugReadCmdEvent}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Button>
+                                <TextBox x:Name="SerialPortWriteCmdTextBox" Text="{Binding SerialPortDebugWriteCommandText}" HorizontalAlignment="Left" Height="51" Margin="10,61,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="201"/>
+                                <TextBox x:Name="SerialPortReadCmdTextBox" Text="{Binding SerialPortDebugReadCommandText}" HorizontalAlignment="Left" Height="51" Margin="10,138,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="201"/>
                                 <TextBlock Text="Write Command" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top" Width="201"/>
                                 <TextBlock Text="Read Data" HorizontalAlignment="Left" Margin="10,117,0,0" VerticalAlignment="Top" Width="201"/>
                                 <TextBlock Text="串口选择" HorizontalAlignment="Left" Margin="227,21,0,0" VerticalAlignment="Top" Width="56"/>
@@ -300,12 +317,40 @@
                         </GroupBox>
                     </Grid>
                 </TabItem>
-                <TabItem Header="串口下位机控制">
+                <TabItem Header="串口指令通信">
+                    <Grid>
+                        <Border BorderBrush="Gray" BorderThickness="1.5" Margin="10,10,0,0" Height="200" Width="350" VerticalAlignment="Top" HorizontalAlignment="Left">
+                            <Grid ShowGridLines="True" Name="gridview">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="1*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="30"/>
+                                    <RowDefinition Height="30"/>
+                                    <RowDefinition Height="30"/>
+                                    <RowDefinition Height="30"/>
+                                    <RowDefinition Height="30"/>
+                                    <RowDefinition Height="1*"/>
+                                </Grid.RowDefinitions>
+                                <!--TODO-->
+                                <TextBlock Text="数据写" Grid.Row="0" Grid.Column="0"/>
+                                <TextBox Margin="5,5,5,5" Text="{Binding REG[0]}" Grid.Row="0" Grid.Column="1"/>
+                                <TextBlock Text="寄存器写" Grid.Row="1" Grid.Column="0"/>
+                                <TextBox Margin="5,5,5,5" Text="{Binding REG[1]}" Grid.Row="1" Grid.Column="1"/>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="串口数据通信">
                     <Grid>
                         <GroupBox Header="传输" HorizontalAlignment="Left" Margin="10,10,0,0" Width="460" Height="392" VerticalAlignment="Top">
                             <Grid>
                                 <TextBlock Text="发送:" HorizontalAlignment="Left" Margin="10,23,0,0" VerticalAlignment="Top" Width="33"/>
-                                <ComboBox x:Name="SerialPortSendCmdSerialPortNameComboBox" ItemsSource="{Binding SerialPortsInstance.SerialPortsDict.Keys, UpdateSourceTrigger=PropertyChanged}" SelectedValue="{Binding SerialPortSendCmdSerialPortNameSelectedValue}" HorizontalAlignment="Left" Margin="48,19,0,0" VerticalAlignment="Top" Width="120" Height="23">
+                                <ComboBox x:Name="SerialPortSendCmdSerialPortNameComboBox" ItemsSource="{Binding SerialPortsInstance.SerialPortsDict, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Key" SelectedValue="{Binding SerialPortSendCmdSerialPortNameSelectedValue, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Key" HorizontalAlignment="Left" Margin="48,19,0,0" VerticalAlignment="Top" Width="120" Height="23">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="SelectionChanged">
                                             <viewmodel:EventCommandBase Command="{Binding SerialPortSendCmdChangedEvent}"/>
@@ -406,7 +451,7 @@
                                 <Button Name="SerialPortRecvDataButton" Content="接收数据" HorizontalAlignment="Left" Margin="195,208,0,0" VerticalAlignment="Top" Width="110" Height="32" Click="SerialPortRecvDataButton_Click"/>
                                 <Button Name="SerialPortRecvDataStorageButton" Content="存储数据" HorizontalAlignment="Left" Margin="328,208,0,0" VerticalAlignment="Top" Width="110" Height="32" Click="SerialPortRecvDataStorageButton_Click"/>
                                 <TextBox Name="SerialPortRecvDataDisplayTextBox" HorizontalAlignment="Left" Height="115" Margin="48,245,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="390"/>
-                                <ComboBox x:Name="SerialPortRecvDataSerialPortNameComboBox" ItemsSource="{Binding SerialPortsInstance.SerialPortsDict.Keys, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="48,212,0,0" VerticalAlignment="Top" Width="120" Height="23"/>
+                                <ComboBox x:Name="SerialPortRecvDataSerialPortNameComboBox" ItemsSource="{Binding SerialPortsInstance.SerialPortsDict, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Key" SelectedValue="{Binding SerialPortRecvDataSerialPortNameSelectedValue, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Key" HorizontalAlignment="Left" Margin="48,212,0,0" VerticalAlignment="Top" Width="120" Height="23"/>
                             </Grid>
                         </GroupBox>
                         <GroupBox Header="存储" HorizontalAlignment="Left" Height="392" Margin="475,10,0,0" VerticalAlignment="Top" Width="350">
@@ -470,26 +515,29 @@
                                 <Border Margin="156,10,10,10" BorderBrush="Gray" BorderThickness="1.5">
                                     <local:BindableAvalonEditor Text="{Binding AutomationCodeEditorText}" SyntaxHighlighting="C#" ShowLineNumbers="True" FontFamily="Consolas" FontSize="10pt"/>
                                 </Border>
-                                <Button Content="运行" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="30" Width="141">
+                                <Button Content="加载" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="30" Width="68">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <viewmodel:EventCommandBase Command="{Binding AutomationCodeLoadFileEvent}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Button>
+                                <Button Content="保存" HorizontalAlignment="Left" Margin="83,10,0,0" VerticalAlignment="Top" Height="30" Width="68">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <viewmodel:EventCommandBase Command="{Binding AutomationCodeSaveFileEvent}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Button>
+                                <Button Content="运行" HorizontalAlignment="Left" Margin="10,45,0,0" VerticalAlignment="Top" Height="30" Width="141">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
                                             <viewmodel:EventCommandBase Command="{Binding AutomationCodeRunEvent}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
-                                <Label Content="返回值" HorizontalAlignment="Left" Margin="8,71,0,0" VerticalAlignment="Top"/>
-                                <TextBox Text="{Binding AutomationCodeReturnData}" HorizontalAlignment="Left" Margin="10,101,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="141" Height="38"/>
-
-                                <Label Content="循环次数" HorizontalAlignment="Left" Margin="2,163,0,0" VerticalAlignment="Top"/>
-                                <TextBox HorizontalAlignment="Left" Margin="65,167,0,0" Text="{Binding LoopTimesText}" TextWrapping="Wrap" VerticalAlignment="Top" Width="86"/>
-                                <Label Content="发送命令" HorizontalAlignment="Left" Margin="2,193,0,0" VerticalAlignment="Top"/>
-                                <TextBox HorizontalAlignment="Left" Margin="65,197,0,0" Text="{Binding SendCommandByteText}" TextWrapping="Wrap" VerticalAlignment="Top" Width="86"/>
-                                <Label Content="万用表量程(V)" HorizontalAlignment="Left" Margin="2,219,0,0" VerticalAlignment="Top"/>
-                                <TextBox HorizontalAlignment="Left" Margin="98,223,0,0" Text="{Binding MultiMeterSetRangeText}" TextWrapping="Wrap" VerticalAlignment="Top" Width="53"/>
-                                <Label Content="万用表精度(uV)" HorizontalAlignment="Left" Margin="2,245,0,0" VerticalAlignment="Top"/>
-                                <TextBox HorizontalAlignment="Left" Margin="101,249,0,0" Text="{Binding MultiMeterSetResolutionText}" TextWrapping="Wrap" VerticalAlignment="Top" Width="50"/>
-                                <Label Content="延时(时钟拍数)" HorizontalAlignment="Left" Margin="2,267,0,0" VerticalAlignment="Top"/>
-                                <TextBox HorizontalAlignment="Left" Margin="101,271,0,0" Text="{Binding DelayText}" TextWrapping="Wrap" VerticalAlignment="Top" Width="50"/>
+                                <Label Content="返回值" HorizontalAlignment="Left" Margin="8,115,0,0" VerticalAlignment="Top"/>
+                                <TextBox Text="{Binding AutomationCodeReturnData}" HorizontalAlignment="Left" Margin="10,145,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="141" Height="38"/>
                             </Grid>
                         </GroupBox>
                     </Grid>

@@ -54,6 +54,31 @@ namespace MeasureApp.ViewModel
             }
         }
 
+        // MainWindow关闭事件
+        private CommandBase mainWindowClosedEvent;
+        public CommandBase MainWindowClosedEvent
+        {
+            get
+            {
+                if (mainWindowClosedEvent == null)
+                {
+                    mainWindowClosedEvent = new CommandBase(new Action<object>(param =>
+                    {
+                        try
+                        {
+                            Measure3458AInstance.Dispose();
+                            SerialPortsInstance.CloseAll();
+                        }
+                        catch (Exception ex)
+                        {
+                            _ = MessageBox.Show(ex.ToString());
+                        }
+                    }));
+                }
+                return mainWindowClosedEvent;
+            }
+        }
+
         // 状态栏
         private string _statusBarText = "statusBar";
         public string StatusBarText

@@ -271,6 +271,14 @@ namespace MeasureApp.ViewModel
                             {
                                 _ = MessageBox.Show("串口已被打开.");
                             }
+
+                            // 更新串口默认选择
+                            if (SerialPortsInstance.SerialPortNames.Any() && SerialportDebugPortNameSelectedValue is null)
+                                SerialportDebugPortNameSelectedValue = SerialPortsInstance.SerialPortsDict.Keys.First();
+                            if (SerialPortsInstance.SerialPortNames.Any() && SerialPortSendCmdSerialPortNameSelectedValue is null)
+                                SerialPortSendCmdSerialPortNameSelectedValue = SerialPortsInstance.SerialPortsDict.Keys.First();
+                            if (SerialPortsInstance.SerialPortNames.Any() && SerialPortRecvDataSerialPortNameSelectedValue is null)
+                                SerialPortRecvDataSerialPortNameSelectedValue = SerialPortsInstance.SerialPortsDict.Keys.First();
                         }
                         catch (Exception ex)
                         {
@@ -299,6 +307,14 @@ namespace MeasureApp.ViewModel
                             {
                                 _ = MessageBox.Show("串口已被关闭.");
                             }
+
+                            // 更新串口默认选择
+                            if (SerialPortsInstance.SerialPortNames.Any() && SerialportDebugPortNameSelectedValue is null)
+                                SerialportDebugPortNameSelectedValue = SerialPortsInstance.SerialPortsDict.Keys.First();
+                            if (SerialPortsInstance.SerialPortNames.Any() && SerialPortSendCmdSerialPortNameSelectedValue is null)
+                                SerialPortSendCmdSerialPortNameSelectedValue = SerialPortsInstance.SerialPortsDict.Keys.First();
+                            if (SerialPortsInstance.SerialPortNames.Any() && SerialPortRecvDataSerialPortNameSelectedValue is null)
+                                SerialPortRecvDataSerialPortNameSelectedValue = SerialPortsInstance.SerialPortsDict.Keys.First();
                         }
                         catch (Exception ex)
                         {
@@ -375,6 +391,90 @@ namespace MeasureApp.ViewModel
                     }));
                 }
                 return gPIBDebugCommandEvent;
+            }
+        }
+
+        // 串口调试模块通信指定串口绑定
+        private string serialportDebugPortNameSelectedValue;
+        public string SerialportDebugPortNameSelectedValue
+        {
+            get => serialportDebugPortNameSelectedValue;
+            set
+            {
+                serialportDebugPortNameSelectedValue = value;
+                RaisePropertyChanged(() => SerialportDebugPortNameSelectedValue);
+            }
+        }
+
+        // 串口调试模块收发文本框绑定
+        private string serialPortDebugWriteCommandText;
+        public string SerialPortDebugWriteCommandText
+        {
+            get => serialPortDebugWriteCommandText;
+            set
+            {
+                serialPortDebugWriteCommandText = value;
+                RaisePropertyChanged(() => SerialPortDebugWriteCommandText);
+            }
+        }
+
+        private string serialPortDebugReadCommandText;
+        public string SerialPortDebugReadCommandText
+        {
+            get => serialPortDebugReadCommandText;
+            set
+            {
+                serialPortDebugReadCommandText = value;
+                RaisePropertyChanged(() => SerialPortDebugReadCommandText);
+            }
+        }
+
+
+        // 串口调试模块发送命令事件
+        private CommandBase serialPortDebugWriteCmdEvent;
+        public CommandBase SerialPortDebugWriteCmdEvent
+        {
+            get
+            {
+                if (serialPortDebugWriteCmdEvent == null)
+                {
+                    serialPortDebugWriteCmdEvent = new CommandBase(new Action<object>(param =>
+                    {
+                        try
+                        {
+                            SerialPortsInstance.WriteString(SerialportDebugPortNameSelectedValue, SerialPortDebugWriteCommandText);
+                        }
+                        catch (Exception ex)
+                        {
+                            _ = MessageBox.Show(ex.ToString());
+                        }
+                    }));
+                }
+                return serialPortDebugWriteCmdEvent;
+            }
+        }
+
+        // 串口调试模块接收命令事件
+        private CommandBase serialPortDebugReadCmdEvent;
+        public CommandBase SerialPortDebugReadCmdEvent
+        {
+            get
+            {
+                if (serialPortDebugReadCmdEvent == null)
+                {
+                    serialPortDebugReadCmdEvent = new CommandBase(new Action<object>(param =>
+                    {
+                        try
+                        {
+                            SerialPortDebugReadCommandText = SerialPortsInstance.ReadExistingString(SerialportDebugPortNameSelectedValue);
+                        }
+                        catch (Exception ex)
+                        {
+                            _ = MessageBox.Show(ex.ToString());
+                        }
+                    }));
+                }
+                return serialPortDebugReadCmdEvent;
             }
         }
     }

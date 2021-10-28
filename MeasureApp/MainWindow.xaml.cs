@@ -20,10 +20,8 @@ namespace MeasureApp
         MainWindowDataContext mainWindowDataContext = new MainWindowDataContext();
 
         // 重构临时变量
-        GPIB3458AMeasure measure3458A;
         DataStorage dataStorage;
         SerialPorts serialPorts;
-        string Key3458AString = "3458A Data Storage";
         string KeySerialPortString = "Serial Port Data Storage";
 
         public SerialPortRecvDataType serialPortRecvDataType = new SerialPortRecvDataType();
@@ -32,7 +30,6 @@ namespace MeasureApp
         public MainWindow()
         {
             // 重构临时变量
-            measure3458A = mainWindowDataContext.Measure3458AInstance;
             dataStorage = mainWindowDataContext.DataStorageInstance;
             serialPorts = mainWindowDataContext.SerialPortsInstance;
 
@@ -48,36 +45,6 @@ namespace MeasureApp
             SerialPortRecvDataTypesGrid.DataContext = serialPortRecvDataType;
             serialPortRecvDataType.SerialPortRecvDataTypeEnum = SerialPortRecvDataTypeEnum.Char;
             serialPortRecvDataType.SerialPortRecvDataEncodeEnum = SerialPortRecvDataEncodeEnum.Bytes;
-        }
-
-        private void Window_Closed(object sender, EventArgs e)
-        {
-            measure3458A.Dispose();
-            serialPorts.CloseAll();
-        }
-
-        private void SerialPortWriteCmdButton_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                serialPorts.WriteString(SerialPortDebugSelectComboBox.SelectedItem as string, SerialPortWriteCmdTextBox.Text);
-            }
-            catch (Exception ex)
-            {
-                _ = MessageBox.Show(ex.ToString());
-            }
-        }
-
-        private void SerialPortReadCmdButton_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                SerialPortReadCmdTextBox.Text = serialPorts.ReadExistingString(SerialPortDebugSelectComboBox.SelectedItem as string);
-            }
-            catch (Exception ex)
-            {
-                _ = MessageBox.Show(ex.ToString());
-            }
         }
 
         private void SerialPortRecvDataButton_Click(object sender, RoutedEventArgs e)
