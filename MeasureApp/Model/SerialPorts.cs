@@ -133,5 +133,14 @@ namespace MeasureApp.Model
              });
             return offset;
         }
+
+        public void RemoveDataReceivedEvent(string serialPort, SerialDataReceivedEventHandler serialDataReceivedEventHandler)
+        {
+            SerialPortsDict[serialPort].DataReceived -= serialDataReceivedEventHandler;
+        }
+        public void AddDataReceivedEvent(string serialPort, SerialDataReceivedEventHandler serialDataReceivedEventHandler)
+        {
+            SerialPortsDict[serialPort].DataReceived += serialDataReceivedEventHandler;
+        }
     }
 }

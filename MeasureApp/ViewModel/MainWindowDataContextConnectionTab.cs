@@ -271,6 +271,11 @@ namespace MeasureApp.ViewModel
                             {
                                 _ = MessageBox.Show("串口已被打开.");
                             }
+                            else
+                            {
+                                // TODO 
+                                SerialPortsInstance.AddDataReceivedEvent(portName, SerialPortDataReceivedCallBack);
+                            }
 
                             // 更新串口默认选择
                             if (SerialPortsInstance.SerialPortNames.Any() && SerialportDebugPortNameSelectedValue is null)
@@ -279,6 +284,9 @@ namespace MeasureApp.ViewModel
                                 SerialPortSendCmdSerialPortNameSelectedValue = SerialPortsInstance.SerialPortsDict.Keys.First();
                             if (SerialPortsInstance.SerialPortNames.Any() && SerialPortRecvDataSerialPortNameSelectedValue is null)
                                 SerialPortRecvDataSerialPortNameSelectedValue = SerialPortsInstance.SerialPortsDict.Keys.First();
+                            if (SerialPortsInstance.SerialPortNames.Any() && SerialportCommandPortNameSelectedValue is null)
+                                SerialportCommandPortNameSelectedValue = SerialPortsInstance.SerialPortsDict.Keys.First();
+                            
                         }
                         catch (Exception ex)
                         {
@@ -315,6 +323,8 @@ namespace MeasureApp.ViewModel
                                 SerialPortSendCmdSerialPortNameSelectedValue = SerialPortsInstance.SerialPortsDict.Keys.First();
                             if (SerialPortsInstance.SerialPortNames.Any() && SerialPortRecvDataSerialPortNameSelectedValue is null)
                                 SerialPortRecvDataSerialPortNameSelectedValue = SerialPortsInstance.SerialPortsDict.Keys.First();
+                            if (SerialPortsInstance.SerialPortNames.Any() && SerialportCommandPortNameSelectedValue is null)
+                                SerialportCommandPortNameSelectedValue = SerialPortsInstance.SerialPortsDict.Keys.First();
                         }
                         catch (Exception ex)
                         {

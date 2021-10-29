@@ -138,8 +138,8 @@ namespace MeasureApp.ViewModel
                     {
                         try
                         {
-                            //string[] splitCmds = SerialPortSendCmdString.StringData.Split(new string[] { "::" }, StringSplitOptions.RemoveEmptyEntries);
-                            //serialPorts.WriteString(splitCmds[0], splitCmds[1]);
+                            string[] splitCmds = SerialPortSendCmdPreviewText.Split(new string[] { "::" }, StringSplitOptions.RemoveEmptyEntries);
+                            SerialPortsInstance.WriteString(splitCmds[0], splitCmds[1]);
                         }
                         catch (Exception ex)
                         {
