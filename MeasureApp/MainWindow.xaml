@@ -16,6 +16,8 @@
     <Window.Resources>
         <viewmodel:M3458ASyncMeasureButtonContentConverter x:Key="M3458ASyncMeasureButtonContentConverter"/>
         <viewmodel:SerialPortsStatusTextConverter x:Key="SerialPortsStatusTextConverter"/>
+        <viewmodel:SerialPortCommandIsListeningButtonContentConverter x:Key="SerialPortCommandIsListeningButtonContentConverter"/>
+
 
         <local:SerialPortRecvDataTypeToBoolConverter x:Key="SerialPortRecvDataTypeToBoolConverter"/>
         <local:SerialPortRecvDataEncodeToBoolConverter x:Key="SerialPortRecvDataEncodeToBoolConverter"/>
@@ -319,11 +321,18 @@
                 </TabItem>
                 <TabItem Header="串口指令通信">
                     <Grid>
-                        <ComboBox x:Name="SerialPortCommandSerialPortSelectComboBox" ItemsSource="{Binding SerialPortsInstance.SerialPortsDict, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Key" SelectedValue="{Binding SerialportCommandPortNameSelectedValue, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Key" HorizontalAlignment="Left" Margin="88,10,0,0" VerticalAlignment="Top" Width="97" Height="23"/>
-                        <Button Margin="365,10,0,0" HorizontalAlignment="Left" Width="106" Height="23" VerticalAlignment="Top"/>
-                        <Button Margin="476,10,0,0" HorizontalAlignment="Left" Width="106" Height="23" VerticalAlignment="Top"/>
-                        <Border BorderBrush="Gray" BorderThickness="1.5" Margin="10,45,0,0" Height="200" Width="350" VerticalAlignment="Top" HorizontalAlignment="Left">
-                            <Grid ShowGridLines="True" Name="gridview">
+                        <TextBlock Text="串口选择：" TextWrapping="Wrap" Margin="10,14,0,0" TextAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                        <ComboBox x:Name="SerialPortCommandSerialPortSelectComboBox" ItemsSource="{Binding SerialPortsInstance.SerialPortsDict, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Key" SelectedValue="{Binding SerialportCommandPortNameSelectedValue, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Key" HorizontalAlignment="Left" Margin="75,10,0,0" VerticalAlignment="Top" Width="97" Height="23"/>
+                        <Button Content="{Binding SerialPortCommandIsListeningDataReceived,Converter={StaticResource SerialPortCommandIsListeningButtonContentConverter}}" Margin="447,10,0,0" HorizontalAlignment="Left" Width="106" Height="23" VerticalAlignment="Top">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="Click">
+                                    <viewmodel:EventCommandBase Command="{Binding SerialPortCommandListenEvent}" CommandParameter="Add"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </Button>
+                        <Border BorderBrush="Gray" BorderThickness="1.5" Margin="10,45,0,0" Height="185" Width="432" VerticalAlignment="Top" HorizontalAlignment="Left">
+                            <Grid Name="gridview">
+                                <!--ShowGridLines="True"-->
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="1*"/>
                                     <ColumnDefinition Width="1*"/>
@@ -400,7 +409,56 @@
                                 </Button>
                             </Grid>
                         </Border>
-                        <TextBox Margin="365,45,10,0" Text="{Binding CommandLog}" AcceptsReturn="True" TextWrapping="Wrap" VerticalAlignment="Top" Height="164"/>
+
+                        <Border Margin="10,235,0,10" HorizontalAlignment="Left" Width="432" BorderBrush="Gray" BorderThickness="1.5">
+                            <Grid>
+                                <local:BindableAvalonEditor Document="{Binding SerialportCommandScriptEditorDocument}" Margin="5,5,0,5" ShowLineNumbers="True" FontFamily="Consolas" FontSize="10pt" HorizontalAlignment="Left" Width="284"/>
+                                <Button Content="加载" Margin="294,10,0,0" VerticalAlignment="Top" Height="28" HorizontalAlignment="Left" Width="60">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <viewmodel:EventCommandBase Command="{Binding SerialportCommandScriptLoadFileEvent}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Button>
+                                <Button Content="保存" Margin="359,10,0,0" VerticalAlignment="Top" Height="28" HorizontalAlignment="Left" Width="60">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <viewmodel:EventCommandBase Command="{Binding SerialportCommandScriptSaveFileEvent}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Button>
+                                <Button Content="运行" Margin="294,43,0,0" VerticalAlignment="Top" Height="28" HorizontalAlignment="Left" Width="60">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <viewmodel:EventCommandBase Command="{Binding SerialportCommandScriptRunEvent}" CommandParameter="Run"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Button>
+                                <Button Content="单步" Margin="294,76,0,0" VerticalAlignment="Top" Height="28" HorizontalAlignment="Left" Width="60">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <viewmodel:EventCommandBase Command="{Binding SerialportCommandScriptRunEvent}" CommandParameter="RunOnce"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Button>
+                                <Button Content="行数重置" Margin="359,76,0,0" VerticalAlignment="Top" Height="28" HorizontalAlignment="Left" Width="60">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <viewmodel:EventCommandBase Command="{Binding SerialportCommandScriptRunEvent}" CommandParameter="ClearCursor"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Button>
+                                <CheckBox Content="至STOP" IsChecked="{Binding SerialportCommandScriptIsRunToStop}" Margin="359,49,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="70"/>
+                                <TextBlock Text="运行延时" Margin="294,113,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="48"/>
+                                <TextBox Text="{Binding SerialportCommandScriptRunDelayMilliSecound, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="347,112,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="37" Height="18"/>
+                                <TextBlock Text="毫秒" Margin="389,113,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="30"/>
+                                <TextBlock Text="行数" Margin="294,136,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="30"/>
+                                <TextBox Text="{Binding SerialportCommandScriptCurruntLineCursor}" HorizontalAlignment="Left" Margin="329,135,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="37" Height="18"/>
+                                <TextBlock Text="/" Margin="371,136,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="10"/>
+                                <TextBlock Text="{Binding SerialportCommandScriptEditorDocument.LineCount}" Margin="386,136,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="33"/>
+                            </Grid>
+                        </Border>
+                        <TextBox Margin="447,45,10,10" Text="{Binding SerialportCommandLog, UpdateSourceTrigger=PropertyChanged}" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" TextWrapping="Wrap"/>
                     </Grid>
                 </TabItem>
                 <TabItem Header="串口数据通信">

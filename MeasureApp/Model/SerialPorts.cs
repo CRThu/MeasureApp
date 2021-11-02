@@ -90,7 +90,9 @@ namespace MeasureApp.Model
 
         public string ReadExistingString(string serialPort)
         {
-            return SerialPortsDict[serialPort].ReadExisting();
+            byte[] buf = new byte[SerialPortsDict[serialPort].BytesToRead];
+            ReadExistingBytes(serialPort, buf);
+            return Encoding.Default.GetString(buf);
         }
 
         public void ReadExistingBytes(string serialPort, byte[] responseBytes)
@@ -138,6 +140,7 @@ namespace MeasureApp.Model
         {
             SerialPortsDict[serialPort].DataReceived -= serialDataReceivedEventHandler;
         }
+
         public void AddDataReceivedEvent(string serialPort, SerialDataReceivedEventHandler serialDataReceivedEventHandler)
         {
             SerialPortsDict[serialPort].DataReceived += serialDataReceivedEventHandler;
