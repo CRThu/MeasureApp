@@ -282,33 +282,38 @@ namespace MeasureApp.ViewModel
                                 switch (param as string)
                                 {
                                     case "Run":
-                                        bool isStop = SerialportCommandScriptIsRunToStop;
-                                        do
+                                        DispatcherTimer timer = new()
                                         {
-                                            string command = SerialPortCommandScriptGetCurrentLine();
-                                            // 特殊命令解析
-                                            if (IsMatchHtmlTag(command))
+                                            Interval = TimeSpan.FromMilliseconds(SerialportCommandScriptRunDelayMilliSecound),
+
+                                        };
+                                        timer.Tick += (sender, args) =>
+                                        {
+                                            try
                                             {
-                                                if (IsMatchHtmlTag(command, "stop"))
+                                                // 运行到STOP则退出
+                                                if (!SerialPortCommandRunScriptCurrentLine(isStopTagEnabled: SerialportCommandScriptIsRunToStop))
                                                 {
-                                                    MessageBox.Show(MatchHtmlTag(command, "stop"));
+                                                    timer.Stop();
                                                 }
-                                                else if (IsMatchHtmlTag(command, "script"))
+
+                                                // 运行到程序结尾则退出
+                                                if (!SerialPortCommandScriptToNextLine())
                                                 {
-                                                    MessageBox.Show(MatchHtmlTag(command, "script"));
+                                                    timer.Stop();
                                                 }
-                                                else
-                                                {
-                                                    throw new FormatException($"Unknown Command: {command}");
-                                                }
+
                                             }
-                                            Debug.WriteLine(command);
-                                            // TODO
-                                            //Thread.Sleep(SerialportCommandScriptRunDelayMilliSecound);
-                                        } while (SerialPortCommandScriptToNextLine());
+                                            catch (Exception ex)
+                                            {
+                                                _ = MessageBox.Show(ex.ToString());
+                                                timer.Stop();
+                                            }
+                                        };
+                                        timer.Start();
                                         break;
                                     case "RunOnce":
-                                        SerialPortCommandScriptSendCurrentLine(SerialportCommandPortNameSelectedValue);
+                                        SerialPortCommandRunScriptCurrentLine(isStopTagEnabled: false);
                                         SerialPortCommandScriptToNextLine();
                                         break;
                                     case "ClearCursor":
@@ -329,19 +334,58 @@ namespace MeasureApp.ViewModel
             }
         }
 
-        public bool IsMatchHtmlTag(string codeString)
+        public bool SerialPortCommandRunScriptCurrentLine(bool isStopTagEnabled = true, bool isScriptTagEnabled = true)
+        {
+            string line = SerialPortCommandScriptGetCurrentLine();
+            string code = line.Split('#', 2).First().Trim();
+
+            // 特殊命令解析
+            if (IsMatchHtmlTag(code))
+            {
+                if (IsMatchHtmlTag(code, "stop"))
+                {
+                    if (isStopTagEnabled)
+                    {
+                        // TODO
+                        //MessageBox.Show(MatchHtmlTag(code, "stop"));
+                        return false;
+                    }
+                }
+                else if (IsMatchHtmlTag(code, "script"))
+                {
+                    if (isScriptTagEnabled)
+                    {
+                        // TODO
+                        //MessageBox.Show(MatchHtmlTag(code, "script"));
+                    }
+                }
+                else
+                {
+                    throw new FormatException($"Unknown Command: {code}");
+                }
+            }
+            else
+            {
+                // Debug.WriteLine($"[{SerialportCommandPortNameSelectedValue}]:{code}");
+                SerialPortsInstance.WriteString(SerialportCommandPortNameSelectedValue, code);
+            }
+
+            return true;
+        }
+
+        public static bool IsMatchHtmlTag(string codeString)
         {
             string regexStr = @"<[^>]+>";
             return Regex.IsMatch(codeString, regexStr, RegexOptions.IgnoreCase);
         }
 
-        public bool IsMatchHtmlTag(string codeString, string TagName)
+        public static bool IsMatchHtmlTag(string codeString, string TagName)
         {
             string regexStr = @$"<{TagName}[^>]*?>[\s\S]*?</{TagName}>";
             return Regex.IsMatch(codeString, regexStr, RegexOptions.IgnoreCase);
         }
 
-        public string MatchHtmlTag(string codeString, string TagName)
+        public static string MatchHtmlTag(string codeString, string TagName)
         {
             string regexStr = @$"<{TagName}[^>]*?>(?<Attribute>[\s\S]*)</{TagName}>";
             //string regexStr = @$"<{TagName}[^>]*?>(?<Attribute>[^<]*)</{TagName}>";
@@ -350,10 +394,6 @@ namespace MeasureApp.ViewModel
             return match.Groups["Attribute"].Value;
         }
 
-        public void SerialPortCommandScriptSendCurrentLine(string com)
-        {
-            SerialPortsInstance.WriteString(com, SerialPortCommandScriptGetCurrentLine());
-        }
         public string SerialPortCommandScriptGetCurrentLine()
         {
             return SerialPortCommandScriptGetLine(SerialportCommandScriptCurruntLineCursor);

@@ -45,7 +45,8 @@ namespace MeasureApp.Model
             }
             catch (Exception ex)
             {
-                _ = MessageBox.Show(ex.ToString());
+                //MessageBox.Show(ex.ToString());
+                Debug.WriteLine(ex.ToString());
                 return Array.Empty<string>();
             }
         }
