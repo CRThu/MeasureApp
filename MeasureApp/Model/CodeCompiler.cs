@@ -15,7 +15,7 @@ using Microsoft.CodeAnalysis;
 using System.IO;
 using System.Diagnostics;
 
-namespace MeasureApp
+namespace MeasureApp.Model
 {
     public static class CodeCompiler
     {

@@ -139,7 +139,7 @@ namespace MeasureApp.ViewModel
                             {
                                 int index = Convert.ToInt32(param);
                                 string com = SerialportCommandPortNameSelectedValue;
-                                List<string> vs = new(SerialportCommandModels[index].ParamTexts);
+                                List<dynamic> vs = new(SerialportCommandModels[index].sendParamsProc(SerialportCommandModels[index].ParamTexts));
                                 vs.Insert(0, SerialportCommandModels[index].CommandText);
                                 SerialPortsInstance.WriteString(com, $"{string.Join(";", vs)};");
                             }

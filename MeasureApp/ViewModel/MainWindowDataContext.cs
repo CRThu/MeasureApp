@@ -55,6 +55,31 @@ namespace MeasureApp.ViewModel
         }
 
         // MainWindow关闭事件
+        private CommandBase mainWindowLoadedEvent;
+        public CommandBase MainWindowLoadedEvent
+        {
+            get
+            {
+                if (mainWindowLoadedEvent == null)
+                {
+                    mainWindowLoadedEvent = new CommandBase(new Action<object>(param =>
+                    {
+                        try
+                        {
+                            GpibDeviceSearchEvent.Execute(null);
+                            SerialPortDeviceSearchEvent.Execute(null);
+                        }
+                        catch (Exception ex)
+                        {
+                            _ = MessageBox.Show(ex.ToString());
+                        }
+                    }));
+                }
+                return mainWindowLoadedEvent;
+            }
+        }
+
+        // MainWindow关闭事件
         private CommandBase mainWindowClosedEvent;
         public CommandBase MainWindowClosedEvent
         {
@@ -80,13 +105,13 @@ namespace MeasureApp.ViewModel
         }
 
         // 状态栏
-        private string _statusBarText = "statusBar";
+        private string statusBarText = "StatusBar";
         public string StatusBarText
         {
-            get => _statusBarText;
+            get => statusBarText;
             set
             {
-                _statusBarText = value;
+                statusBarText = value;
                 RaisePropertyChanged(() => StatusBarText);
             }
         }

@@ -1,5 +1,6 @@
 ﻿using MeasureApp.Model;
 using MeasureApp.ViewModel;
+using Microsoft.Xaml.Behaviors;
 using System;
 using System.Linq;
 using System.Text;
@@ -38,8 +39,14 @@ namespace MeasureApp
             //DataContext = new MainWindowDataContext();
             DataContext = mainWindowDataContext;
 
-            mainWindowDataContext.GpibDeviceSearchEvent.Execute(null);
-            mainWindowDataContext.SerialPortDeviceSearchEvent.Execute(null);
+            // TEST
+            //Button btn = new Button();
+            //btn.Content = "Button";
+            //var triggers = Interaction.GetTriggers(btn);
+            //Microsoft.Xaml.Behaviors.EventTrigger trigger1 = new("Click");
+            //trigger1.Actions.Add(new EventCommandBase() { Command = TestEvent });
+            //triggers.Add(trigger1);
+            //SettingsGrid.Children.Add(btn);
 
             // TODO
             SerialPortRecvDataTypesGrid.DataContext = serialPortRecvDataType;
@@ -134,6 +141,30 @@ namespace MeasureApp
             catch (Exception ex)
             {
                 _ = MessageBox.Show(ex.ToString());
+            }
+        }
+
+        // MsgBox Test
+        private CommandBase testEvent;
+        public CommandBase TestEvent
+        {
+            get
+            {
+                if (testEvent == null)
+                {
+                    testEvent = new CommandBase(new Action<object>(param =>
+                    {
+                        try
+                        {
+                            MessageBox.Show("Test Event Triggered");
+                        }
+                        catch (Exception ex)
+                        {
+                            _ = MessageBox.Show(ex.ToString());
+                        }
+                    }));
+                }
+                return testEvent;
             }
         }
     }

@@ -5,10 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:local="clr-namespace:MeasureApp" xmlns:viewmodel="clr-namespace:MeasureApp.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodel:MainWindowDataContext}"
-        xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
+        xmlns:view="clr-namespace:MeasureApp.View"
         mc:Ignorable="d"
         Title="MainWindow" Height="504.4" Width="866.4">
     <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <viewmodel:EventCommandBase Command="{Binding MainWindowLoadedEvent}"/>
+        </i:EventTrigger>
         <i:EventTrigger EventName="Closed">
             <viewmodel:EventCommandBase Command="{Binding MainWindowClosedEvent}"/>
         </i:EventTrigger>
@@ -412,7 +415,7 @@
 
                         <Border Margin="10,235,0,10" HorizontalAlignment="Left" Width="432" BorderBrush="Gray" BorderThickness="1.5">
                             <Grid>
-                                <local:BindableAvalonEditor Document="{Binding SerialportCommandScriptEditorDocument}" Margin="5,5,0,5" ShowLineNumbers="True" FontFamily="Consolas" FontSize="10pt" HorizontalAlignment="Left" Width="284"/>
+                                <view:BindableAvalonEditor Document="{Binding SerialportCommandScriptEditorDocument}" Margin="5,5,0,5" ShowLineNumbers="True" FontFamily="Consolas" FontSize="10pt" HorizontalAlignment="Left" Width="284"/>
                                 <Button Content="加载" Margin="294,10,0,0" VerticalAlignment="Top" Height="28" HorizontalAlignment="Left" Width="60">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
@@ -459,6 +462,7 @@
                             </Grid>
                         </Border>
                         <TextBox Margin="447,45,10,10" Text="{Binding SerialportCommandLog, UpdateSourceTrigger=PropertyChanged}" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" TextWrapping="Wrap"/>
+                        <TextBlock HorizontalAlignment="Left" Margin="243,14,0,0" Text="REGQ与REGM不兼容与旧版本" TextWrapping="Wrap" VerticalAlignment="Top"/>
                     </Grid>
                 </TabItem>
                 <TabItem Header="串口数据通信">
@@ -629,7 +633,7 @@
                         <GroupBox Header="自动化脚本" Margin="10,10,10.2,10">
                             <Grid>
                                 <Border Margin="156,10,10,10" BorderBrush="Gray" BorderThickness="1.5">
-                                    <local:BindableAvalonEditor Text="{Binding AutomationCodeEditorText}" SyntaxHighlighting="C#" ShowLineNumbers="True" FontFamily="Consolas" FontSize="10pt"/>
+                                    <view:BindableAvalonEditor x:Name="AutomationCodeEditor" Text="{Binding AutomationCodeEditorText}" SyntaxHighlighting="C#" ShowLineNumbers="True" FontFamily="Consolas" FontSize="10pt"/>
                                 </Border>
                                 <Button Content="加载" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="30" Width="68">
                                     <i:Interaction.Triggers>
@@ -656,6 +660,18 @@
                                 <TextBox Text="{Binding AutomationCodeReturnData}" HorizontalAlignment="Left" Margin="10,145,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="141" Height="38"/>
                             </Grid>
                         </GroupBox>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="设置">
+                    <Grid>
+                        <Border BorderBrush="Gray" BorderThickness="0.5" CornerRadius="3" Margin="10,10,0,10" HorizontalAlignment="Left" Width="405">
+                            <Grid Name="SettingsGrid">
+                                
+                            </Grid>
+                        </Border>
+                        <Border BorderBrush="Gray" BorderThickness="0.5" CornerRadius="3" Margin="420,10,10,10">
+                            <TextBlock Text="{Binding SettingsVersionText}" Margin="5,5,5,5" TextWrapping="Wrap"/>
+                        </Border>
                     </Grid>
                 </TabItem>
             </TabControl>

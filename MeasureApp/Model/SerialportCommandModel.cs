@@ -9,11 +9,20 @@ namespace MeasureApp.Model
 {
     public class SerialportCommandModel : NotificationObjectBase
     {
+        public Func<string[], dynamic[]> sendParamsProc = (p) => { return p; };
         public SerialportCommandModel(string commandInfo, int paramNum, string commandText)
         {
             CommandInfo = commandInfo;
             paramTexts = new string[paramNum];
             CommandText = commandText;
+        }
+
+        public SerialportCommandModel(string commandInfo, int paramNum, string commandText, Func<string[], dynamic[]> func)
+        {
+            CommandInfo = commandInfo;
+            paramTexts = new string[paramNum];
+            CommandText = commandText;
+            sendParamsProc = func;
         }
 
         // 命令名称
