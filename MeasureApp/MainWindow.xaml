@@ -4,8 +4,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-        xmlns:local="clr-namespace:MeasureApp" xmlns:viewmodel="clr-namespace:MeasureApp.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodel:MainWindowDataContext}"
+        xmlns:local="clr-namespace:MeasureApp" xmlns:viewmodel="clr-namespace:MeasureApp.ViewModel"
         xmlns:view="clr-namespace:MeasureApp.View"
+        xmlns:oxyplot="http://oxyplot.org/wpf"
         mc:Ignorable="d"
         Title="MainWindow" Height="504.4" Width="866.4">
     <i:Interaction.Triggers>
@@ -16,11 +17,13 @@
             <viewmodel:EventCommandBase Command="{Binding MainWindowClosedEvent}"/>
         </i:EventTrigger>
     </i:Interaction.Triggers>
+    <Window.DataContext>
+        <viewmodel:MainWindowDataContext/>
+    </Window.DataContext>
     <Window.Resources>
         <viewmodel:M3458ASyncMeasureButtonContentConverter x:Key="M3458ASyncMeasureButtonContentConverter"/>
         <viewmodel:SerialPortsStatusTextConverter x:Key="SerialPortsStatusTextConverter"/>
         <viewmodel:SerialPortCommandIsListeningButtonContentConverter x:Key="SerialPortCommandIsListeningButtonContentConverter"/>
-
 
         <local:SerialPortRecvDataTypeToBoolConverter x:Key="SerialPortRecvDataTypeToBoolConverter"/>
         <local:SerialPortRecvDataEncodeToBoolConverter x:Key="SerialPortRecvDataEncodeToBoolConverter"/>
@@ -593,7 +596,7 @@
                         <GroupBox Header="存储" Margin="10,10,10.2,10">
                             <Grid>
                                 <TextBlock Text="选择数据源：" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="230"/>
-                                <ListBox Name="DataStorageSelectListBox" ItemsSource="{Binding DataStorageInstance.DataStorageDictionary.Keys}" SelectedValue="{Binding DataStorageSelectedValue}" HorizontalAlignment="Left" Height="106" Margin="10,30,0,0" VerticalAlignment="Top" Width="230">
+                                <ListBox Name="DataStorageSelectListBox" ItemsSource="{Binding DataStorageInstance.DataStorageDictionary,UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Key" SelectedValue="{Binding DataStorageSelectedValue}" SelectedValuePath="Key" HorizontalAlignment="Left" Height="106" Margin="10,30,0,0" VerticalAlignment="Top" Width="230">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="SelectionChanged">
                                             <viewmodel:EventCommandBase Command="{Binding DataStorageSelectionChangedEvent}"/>
@@ -610,22 +613,42 @@
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </DataGrid>
-                                <Button Name="DataStorageExportListDataButton" Content="导出该数据" HorizontalAlignment="Left" Margin="10,141,0,0" VerticalAlignment="Top" Width="107" Height="32">
+                                <Button Name="DataStorageExportListDataButton" Content="导出选中数据" HorizontalAlignment="Left" Margin="10,178,0,0" VerticalAlignment="Top" Width="107" Height="32">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
                                             <viewmodel:EventCommandBase Command="{Binding DataStorageStoreEvent}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
-                                <Button Name="DataStorageClearListDataButton" Content="清空该数据" HorizontalAlignment="Left" Margin="133,141,0,0" VerticalAlignment="Top" Width="107" Height="32">
+                                <Button Name="DataStorageClearListDataButton" Content="清空选中数据" HorizontalAlignment="Left" Margin="133,178,0,0" VerticalAlignment="Top" Width="107" Height="32">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
                                             <viewmodel:EventCommandBase Command="{Binding DataStorageDeleteEvent}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
+                                <TextBox HorizontalAlignment="Left" Margin="10,222,0,0" Text="{Binding DataStorageAddKeyNameText}" TextWrapping="Wrap" VerticalAlignment="Top" Width="107"/>
+                                <Button Content="添加键值对" HorizontalAlignment="Left" Margin="133,215,0,0" VerticalAlignment="Top" Width="107" Height="32">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <viewmodel:EventCommandBase Command="{Binding DataStorageAddKeyValuePairEvent}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Button>
+                                <Button Content="删除键值对" HorizontalAlignment="Left" Margin="133,252,0,0" VerticalAlignment="Top" Width="107" Height="32">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <viewmodel:EventCommandBase Command="{Binding DataStorageRemoveKeyValuePairEvent}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Button>
                             </Grid>
                         </GroupBox>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="图表">
+                    <Grid>
+                        <oxyplot:PlotView Model="{Binding PlotViewPlotModel}" Margin="205,10,10,10"/>
                     </Grid>
                 </TabItem>
                 <TabItem Header="自动化脚本">
@@ -666,7 +689,7 @@
                     <Grid>
                         <Border BorderBrush="Gray" BorderThickness="0.5" CornerRadius="3" Margin="10,10,0,10" HorizontalAlignment="Left" Width="405">
                             <Grid Name="SettingsGrid">
-                                
+                                <!--TODO-->
                             </Grid>
                         </Border>
                         <Border BorderBrush="Gray" BorderThickness="0.5" CornerRadius="3" Margin="420,10,10,10">

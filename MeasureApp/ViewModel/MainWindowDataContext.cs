@@ -1,4 +1,5 @@
 ﻿using MeasureApp.Model;
+using OxyPlot.Series;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -16,6 +17,15 @@ namespace MeasureApp.ViewModel
             dataStorageInstance.AddKey(Key3458AString);
             dataStorageInstance.AddKey(KeySerialPortString);
             dataStorageSelectedValue = Key3458AString;
+
+            // TEST
+            PlotViewPlotModel.Series.Add(new LineSeries());
+            //var lineSeries = plotViewPlotModel.Series[0] as LineSeries;
+            //lineSeries.Points.Add(new OxyPlot.DataPoint(1, 1));
+            //lineSeries.Points.Add(new OxyPlot.DataPoint(2, 4));
+            //lineSeries.Points.Add(new OxyPlot.DataPoint(3, 9));
+            //lineSeries.Points.Add(new OxyPlot.DataPoint(4, 16));
+            //lineSeries.Points.Add(new OxyPlot.DataPoint(5, 25));
         }
 
         // 3458A 通信类

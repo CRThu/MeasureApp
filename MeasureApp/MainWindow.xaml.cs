@@ -58,7 +58,7 @@ namespace MeasureApp
         {
             try
             {
-                string serialPortName = SerialPortRecvDataSerialPortNameComboBox.SelectedItem as string;
+                string serialPortName = mainWindowDataContext.SerialPortRecvDataSerialPortNameSelectedValue;
                 switch (serialPortRecvDataType.SerialPortRecvDataEncodeEnum)
                 {
                     case SerialPortRecvDataEncodeEnum.Ascii:

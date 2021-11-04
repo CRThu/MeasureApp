@@ -41,6 +41,17 @@ namespace MeasureApp.Model
             });
         }
 
+        public void RemoveKey(string key)
+        {
+            DataStorageDictionary.Remove(key);
+
+            // async
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                lockers.Remove(key);
+            });
+        }
+
         public void AddData(string key, dynamic value)
         {
             if (!DataStorageDictionary.ContainsKey(key))
