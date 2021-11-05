@@ -1,5 +1,6 @@
 ﻿using MeasureApp.Model;
 using Microsoft.Win32;
+using OxyPlot;
 using OxyPlot.Series;
 using System;
 using System.Collections.Generic;
@@ -69,14 +70,6 @@ namespace MeasureApp.ViewModel
                                 DataStorageDataGridBinding = null;
                             else
                                 DataStorageDataGridBinding = dataStorageInstance.DataStorageDictionary[DataStorageSelectedValue];
-
-                            // TEST 未刷新
-                            var lineSeries = plotViewPlotModel.Series[0] as LineSeries;
-                            for (int x = 0; x < DataStorageDataGridBinding.Count; x++)
-                            {
-                                double y = Convert.ToDouble(DataStorageDataGridBinding[x].StringData);
-                                lineSeries.Points.Add(new OxyPlot.DataPoint(x, y));
-                            }
                         }
                         catch (Exception ex)
                         {

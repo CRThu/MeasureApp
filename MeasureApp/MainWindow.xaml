@@ -6,7 +6,7 @@
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:local="clr-namespace:MeasureApp" xmlns:viewmodel="clr-namespace:MeasureApp.ViewModel"
         xmlns:view="clr-namespace:MeasureApp.View"
-        xmlns:oxyplot="http://oxyplot.org/wpf"
+        xmlns:oxy="http://oxyplot.org/wpf"
         mc:Ignorable="d"
         Title="MainWindow" Height="504.4" Width="866.4">
     <i:Interaction.Triggers>
@@ -648,7 +648,14 @@
                 </TabItem>
                 <TabItem Header="图表">
                     <Grid>
-                        <oxyplot:PlotView Model="{Binding PlotViewPlotModel}" Margin="205,10,10,10"/>
+                        <Button Content="刷新" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="107" Height="32">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="Click">
+                                    <viewmodel:EventCommandBase Command="{Binding PlotViewPlotRefreshEvent}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </Button>
+                        <oxy:PlotView Model="{Binding PlotViewPlotModel,UpdateSourceTrigger=PropertyChanged}" Margin="205,10,10,10"/>
                     </Grid>
                 </TabItem>
                 <TabItem Header="自动化脚本">

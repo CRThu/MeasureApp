@@ -1,6 +1,9 @@
 ﻿using MeasureApp.Model;
 using MeasureApp.ViewModel;
 using Microsoft.Xaml.Behaviors;
+using OxyPlot;
+using OxyPlot.Axes;
+using OxyPlot.Series;
 using System;
 using System.Linq;
 using System.Text;
@@ -141,30 +144,6 @@ namespace MeasureApp
             catch (Exception ex)
             {
                 _ = MessageBox.Show(ex.ToString());
-            }
-        }
-
-        // MsgBox Test
-        private CommandBase testEvent;
-        public CommandBase TestEvent
-        {
-            get
-            {
-                if (testEvent == null)
-                {
-                    testEvent = new CommandBase(new Action<object>(param =>
-                    {
-                        try
-                        {
-                            MessageBox.Show("Test Event Triggered");
-                        }
-                        catch (Exception ex)
-                        {
-                            _ = MessageBox.Show(ex.ToString());
-                        }
-                    }));
-                }
-                return testEvent;
             }
         }
     }

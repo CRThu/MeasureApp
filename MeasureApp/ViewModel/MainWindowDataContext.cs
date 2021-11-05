@@ -1,4 +1,5 @@
 ﻿using MeasureApp.Model;
+using OxyPlot.Axes;
 using OxyPlot.Series;
 using System;
 using System.Windows;
@@ -19,13 +20,12 @@ namespace MeasureApp.ViewModel
             dataStorageSelectedValue = Key3458AString;
 
             // TEST
+            //PlotViewDataPoints.CollectionChanged += (_, _) => { PlotViewPlotModel.InvalidatePlot(true); };
+            PlotViewPlotModel.Axes.Add(new LinearAxis() { Position = AxisPosition.Left });
+            PlotViewPlotModel.Axes.Add(new LinearAxis() { Position = AxisPosition.Bottom });
             PlotViewPlotModel.Series.Add(new LineSeries());
-            //var lineSeries = plotViewPlotModel.Series[0] as LineSeries;
-            //lineSeries.Points.Add(new OxyPlot.DataPoint(1, 1));
-            //lineSeries.Points.Add(new OxyPlot.DataPoint(2, 4));
-            //lineSeries.Points.Add(new OxyPlot.DataPoint(3, 9));
-            //lineSeries.Points.Add(new OxyPlot.DataPoint(4, 16));
-            //lineSeries.Points.Add(new OxyPlot.DataPoint(5, 25));
+            var lineSeries = PlotViewPlotModel.Series[0] as LineSeries;
+            lineSeries.ItemsSource = PlotViewDataPoints;
         }
 
         // 3458A 通信类
