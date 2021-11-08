@@ -6,7 +6,7 @@
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:local="clr-namespace:MeasureApp" xmlns:viewmodel="clr-namespace:MeasureApp.ViewModel"
         xmlns:view="clr-namespace:MeasureApp.View"
-        xmlns:oxy="http://oxyplot.org/wpf"
+        xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         mc:Ignorable="d"
         Title="MainWindow" Height="504.4" Width="866.4">
     <i:Interaction.Triggers>
@@ -655,7 +655,9 @@
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </Button>
-                        <oxy:PlotView Model="{Binding PlotViewPlotModel,UpdateSourceTrigger=PropertyChanged}" Margin="205,10,10,10"/>
+                        <Border Margin="205,10,10,10" BorderBrush="Gray" BorderThickness="1.5">
+                            <lvc:CartesianChart Series="{Binding Series}" DisableAnimations="True" Hoverable="False" DataTooltip="{x:Null}" Zoom="Xy"/>
+                        </Border>
                     </Grid>
                 </TabItem>
                 <TabItem Header="自动化脚本">

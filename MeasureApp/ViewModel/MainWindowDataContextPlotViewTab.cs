@@ -1,43 +1,38 @@
-﻿using OxyPlot;
-using OxyPlot.Series;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using LiveCharts;
+using LiveCharts.Definitions.Series;
+using LiveCharts.Geared;
+using LiveCharts.Wpf;
 
 namespace MeasureApp.ViewModel
 {
     public partial class MainWindowDataContext : NotificationObjectBase
     {
         // 图表数据绑定
-        private PlotModel plotViewPlotModel = new() { Title = "图表" };
-        public PlotModel PlotViewPlotModel
-        {
-            get => plotViewPlotModel;
-            set
-            {
-                plotViewPlotModel = value;
-                RaisePropertyChanged(() => PlotViewPlotModel);
-            }
-        }
+        private GearedValues<double> _observableValues = new();
 
-        // DataPoints
-        private ObservableCollection<DataPoint> plotViewDataPoints = new();
-        public ObservableCollection<DataPoint> PlotViewDataPoints
+        private SeriesCollection series;
+
+        public SeriesCollection Series
         {
-            get => plotViewDataPoints;
+            get => series;
             set
             {
-                plotViewDataPoints = value;
-                RaisePropertyChanged(() => PlotViewDataPoints);
+                series = value;
+                RaisePropertyChanged(() => Series);
             }
         }
 
         // PlotView数据刷新事件
         // TODO
+        Random random = new();
+        double trend = 0;
         private CommandBase plotViewPlotRefreshEvent;
         public CommandBase PlotViewPlotRefreshEvent
         {
@@ -49,11 +44,13 @@ namespace MeasureApp.ViewModel
                     {
                         try
                         {
-                            for (int i = 0; i < DataStorageDataGridBinding.Count; i++)
+                            List<double> l = new();
+                            for (int i = 0; i < 500000; i++)
                             {
-                                PlotViewDataPoints.Add(new DataPoint(i + 1, Convert.ToDouble(DataStorageDataGridBinding[i].StringData)));
+                                trend += ((random.NextDouble() - 0.5) / 6) + 1;
+                                l.Add(trend - _observableValues.Count - i);
                             }
-                            PlotViewPlotModel.InvalidatePlot(true);
+                            _observableValues.AddRange(l);
                         }
                         catch (Exception ex)
                         {

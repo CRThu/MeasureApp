@@ -1,9 +1,6 @@
 ﻿using MeasureApp.Model;
 using MeasureApp.ViewModel;
 using Microsoft.Xaml.Behaviors;
-using OxyPlot;
-using OxyPlot.Axes;
-using OxyPlot.Series;
 using System;
 using System.Linq;
 using System.Text;

@@ -1,9 +1,11 @@
 ﻿using MeasureApp.Model;
-using OxyPlot.Axes;
-using OxyPlot.Series;
 using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using LiveCharts.Geared;
+using LiveCharts.Wpf;
+using System.Windows.Media;
 
 namespace MeasureApp.ViewModel
 {
@@ -20,12 +22,19 @@ namespace MeasureApp.ViewModel
             dataStorageSelectedValue = Key3458AString;
 
             // TEST
+            _observableValues.WithQuality(Quality.High);
+
+            Series = new()
+            {
+                new GLineSeries
+                {
+                    Values = _observableValues,
+                    Fill = Brushes.Transparent,
+                    PointGeometry = null,
+                    LineSmoothness = 0
+                }
+            };
             //PlotViewDataPoints.CollectionChanged += (_, _) => { PlotViewPlotModel.InvalidatePlot(true); };
-            PlotViewPlotModel.Axes.Add(new LinearAxis() { Position = AxisPosition.Left });
-            PlotViewPlotModel.Axes.Add(new LinearAxis() { Position = AxisPosition.Bottom });
-            PlotViewPlotModel.Series.Add(new LineSeries());
-            var lineSeries = PlotViewPlotModel.Series[0] as LineSeries;
-            lineSeries.ItemsSource = PlotViewDataPoints;
         }
 
         // 3458A 通信类
