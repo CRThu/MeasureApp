@@ -13,7 +13,7 @@ namespace MeasureApp.Model
 {
     public class DataStorage : NotificationObjectBase
     {
-        private Dictionary<string, object> lockers = new();
+        public Dictionary<string, object> lockers = new();
         private ObservableDictionary<string, ObservableCollection<StringDataClass>> _dataStorageDictionary = new();
         public ObservableDictionary<string, ObservableCollection<StringDataClass>> DataStorageDictionary
         {

@@ -578,7 +578,7 @@
                             </Grid>
                         </GroupBox>
                         <GroupBox Header="存储" HorizontalAlignment="Left" Height="392" Margin="475,10,0,0" VerticalAlignment="Top" Width="350">
-                            <DataGrid Name="SerialPortRecvDataStorageDataGrid" ItemsSource="{Binding SerialPortStorageDataGridBinding}" AutoGenerateColumns="False" IsReadOnly="True" Height="355" Margin="5,0,5.4,4.6" VerticalAlignment="Bottom">
+                            <DataGrid Name="SerialPortRecvDataStorageDataGrid" ItemsSource="{Binding DataStorageInstance.DataStorageDictionary[Serial Port Data Storage], UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Value" AutoGenerateColumns="False" IsReadOnly="True" Height="355" Margin="5,0,5.4,4.6" VerticalAlignment="Bottom">
                                 <DataGrid.Columns>
                                     <DataGridTextColumn CanUserSort="False" Width="1*" Header="数据" Binding="{Binding StringData}"/>
                                 </DataGrid.Columns>
@@ -613,32 +613,46 @@
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </DataGrid>
-                                <Button Name="DataStorageExportListDataButton" Content="导出选中数据" HorizontalAlignment="Left" Margin="10,178,0,0" VerticalAlignment="Top" Width="107" Height="32">
+                                <Button Name="DataStorageExportListDataButton" Content="导出选中数据" HorizontalAlignment="Left" Margin="10,191,0,0" VerticalAlignment="Top" Width="107" Height="32">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
                                             <viewmodel:EventCommandBase Command="{Binding DataStorageStoreEvent}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
-                                <Button Name="DataStorageClearListDataButton" Content="清空选中数据" HorizontalAlignment="Left" Margin="133,178,0,0" VerticalAlignment="Top" Width="107" Height="32">
+                                <Button Name="DataStorageClearListDataButton" Content="清空选中数据" HorizontalAlignment="Left" Margin="133,191,0,0" VerticalAlignment="Top" Width="107" Height="32">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
                                             <viewmodel:EventCommandBase Command="{Binding DataStorageDeleteEvent}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
-                                <TextBox HorizontalAlignment="Left" Margin="10,222,0,0" Text="{Binding DataStorageAddKeyNameText}" TextWrapping="Wrap" VerticalAlignment="Top" Width="107"/>
-                                <Button Content="添加键值对" HorizontalAlignment="Left" Margin="133,215,0,0" VerticalAlignment="Top" Width="107" Height="32">
+                                <TextBox HorizontalAlignment="Left" VerticalContentAlignment="Center" Margin="10,228,0,0" Text="{Binding DataStorageAddKeyNameText}" TextWrapping="Wrap" VerticalAlignment="Top" Width="107" Height="32"/>
+                                <Button Content="添加键值对" HorizontalAlignment="Left" Margin="133,228,0,0" VerticalAlignment="Top" Width="107" Height="32">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
                                             <viewmodel:EventCommandBase Command="{Binding DataStorageAddKeyValuePairEvent}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
-                                <Button Content="删除键值对" HorizontalAlignment="Left" Margin="133,252,0,0" VerticalAlignment="Top" Width="107" Height="32">
+                                <Button Content="删除键值对" HorizontalAlignment="Left" Margin="133,265,0,0" VerticalAlignment="Top" Width="107" Height="32">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
                                             <viewmodel:EventCommandBase Command="{Binding DataStorageRemoveKeyValuePairEvent}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Button>
+                                <Button Content="加载数据文件" HorizontalAlignment="Left" Margin="10,154,0,0" VerticalAlignment="Top" Width="107" Height="32">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <viewmodel:EventCommandBase Command="{Binding DataStorageLoadEvent}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Button>
+                                <Button Content="保存数据文件" HorizontalAlignment="Left" Margin="133,154,0,0" VerticalAlignment="Top" Width="107" Height="32">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <viewmodel:EventCommandBase Command="{Binding DataStorageSaveEvent}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
@@ -656,7 +670,7 @@
                             </i:Interaction.Triggers>
                         </Button>
                         <Border Margin="205,10,10,10" BorderBrush="Gray" BorderThickness="1.5">
-                            <lvc:CartesianChart Series="{Binding Series}" DisableAnimations="True" Hoverable="False" DataTooltip="{x:Null}" Zoom="Xy"/>
+                            <lvc:CartesianChart Series="{Binding ChartSeriesCollection}" DisableAnimations="True" Hoverable="False" DataTooltip="{x:Null}"/>
                         </Border>
                     </Grid>
                 </TabItem>

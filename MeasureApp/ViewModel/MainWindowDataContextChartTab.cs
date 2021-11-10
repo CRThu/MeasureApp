@@ -17,15 +17,15 @@ namespace MeasureApp.ViewModel
         // 图表数据绑定
         private GearedValues<double> _observableValues = new();
 
-        private SeriesCollection series;
+        private SeriesCollection chartSeriesCollection;
 
-        public SeriesCollection Series
+        public SeriesCollection ChartSeriesCollection
         {
-            get => series;
+            get => chartSeriesCollection;
             set
             {
-                series = value;
-                RaisePropertyChanged(() => Series);
+                chartSeriesCollection = value;
+                RaisePropertyChanged(() => ChartSeriesCollection);
             }
         }
 

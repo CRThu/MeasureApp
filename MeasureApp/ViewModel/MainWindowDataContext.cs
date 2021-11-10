@@ -17,14 +17,14 @@ namespace MeasureApp.ViewModel
         public MainWindowDataContext()
         {
             // 添加默认Key
-            dataStorageInstance.AddKey(Key3458AString);
-            dataStorageInstance.AddKey(KeySerialPortString);
+            DataStorageInstance.AddKey(Key3458AString);
+            DataStorageInstance.AddKey(KeySerialPortString);
             dataStorageSelectedValue = Key3458AString;
 
             // TEST
             _observableValues.WithQuality(Quality.High);
 
-            Series = new()
+            ChartSeriesCollection = new()
             {
                 new GLineSeries
                 {

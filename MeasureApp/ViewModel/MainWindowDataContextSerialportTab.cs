@@ -162,16 +162,5 @@ namespace MeasureApp.ViewModel
                 RaisePropertyChanged(() => SerialPortRecvDataSerialPortNameSelectedValue);
             }
         }
-
-        // DataGrid数据绑定
-        public dynamic SerialPortStorageDataGridBinding
-        {
-            get => DataStorageInstance.DataStorageDictionary[KeySerialPortString];
-            set
-            {
-                DataStorageInstance.DataStorageDictionary[KeySerialPortString] = value;
-                RaisePropertyChanged(() => SerialPortStorageDataGridBinding);
-            }
-        }
     }
 }

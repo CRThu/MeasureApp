@@ -21,8 +21,6 @@ namespace MeasureApp
         MainWindowDataContext mainWindowDataContext = new MainWindowDataContext();
 
         // 重构临时变量
-        DataStorage dataStorage;
-        SerialPorts serialPorts;
         string KeySerialPortString = "Serial Port Data Storage";
 
         public SerialPortRecvDataType serialPortRecvDataType = new SerialPortRecvDataType();
@@ -30,10 +28,6 @@ namespace MeasureApp
 
         public MainWindow()
         {
-            // 重构临时变量
-            dataStorage = mainWindowDataContext.DataStorageInstance;
-            serialPorts = mainWindowDataContext.SerialPortsInstance;
-
             InitializeComponent();
 
             //DataContext = new MainWindowDataContext();
@@ -62,7 +56,7 @@ namespace MeasureApp
                 switch (serialPortRecvDataType.SerialPortRecvDataEncodeEnum)
                 {
                     case SerialPortRecvDataEncodeEnum.Ascii:
-                        string recvString = serialPorts.ReadExistingString(serialPortName);
+                        string recvString = mainWindowDataContext.SerialPortsInstance.ReadExistingString(serialPortName);
                         switch (serialPortRecvDataType.SerialPortRecvDataTypeEnum)
                         {
                             case SerialPortRecvDataTypeEnum.Char:
@@ -84,7 +78,7 @@ namespace MeasureApp
                     case SerialPortRecvDataEncodeEnum.Bytes:
                         int bytesLength = serialPortRecvDataType.RequiredBytesLength;
                         byte[] recvBytes = new byte[bytesLength];
-                        int recvBytesLen = serialPorts.Read(serialPortName, recvBytes, bytesLength);
+                        int recvBytesLen = mainWindowDataContext.SerialPortsInstance.Read(serialPortName, recvBytes, bytesLength);
                         if (recvBytesLen != recvBytes.Length)
                         {
                             _ = MessageBox.Show($"读取超时, RecvLength = {recvBytesLen}/{recvBytes.Length}!");
@@ -130,12 +124,12 @@ namespace MeasureApp
                     RecvDataPraseTemp.CopyTo(objArray, 0);
                     foreach (object obj in objArray)
                     {
-                        dataStorage.DataStorageDictionary[KeySerialPortString].Add(new StringDataClass { StringData = obj.ToString() });
+                        mainWindowDataContext.DataStorageInstance.DataStorageDictionary[KeySerialPortString].Add(new StringDataClass { StringData = obj.ToString() });
                     }
                 }
                 else
                 {
-                    dataStorage.DataStorageDictionary[KeySerialPortString].Add(new StringDataClass { StringData = RecvDataPraseTemp.ToString() });
+                    mainWindowDataContext.DataStorageInstance.DataStorageDictionary[KeySerialPortString].Add(new StringDataClass { StringData = RecvDataPraseTemp.ToString() });
                 }
             }
             catch (Exception ex)

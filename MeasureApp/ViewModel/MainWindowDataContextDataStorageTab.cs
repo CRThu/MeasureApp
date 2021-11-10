@@ -2,8 +2,11 @@
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -63,11 +66,11 @@ namespace MeasureApp.ViewModel
                         try
                         {
                             if (DataStorageSelectedValue is null)
-                                DataStorageSelectedValue = dataStorageInstance.DataStorageDictionary.Keys.FirstOrDefault();
+                                DataStorageSelectedValue = DataStorageInstance.DataStorageDictionary.Keys.FirstOrDefault();
                             if (DataStorageSelectedValue is null)
                                 DataStorageDataGridBinding = null;
                             else
-                                DataStorageDataGridBinding = dataStorageInstance.DataStorageDictionary[DataStorageSelectedValue];
+                                DataStorageDataGridBinding = DataStorageInstance.DataStorageDictionary[DataStorageSelectedValue];
                         }
                         catch (Exception ex)
                         {
@@ -101,7 +104,7 @@ namespace MeasureApp.ViewModel
                             };
                             if (saveFileDialog.ShowDialog() == true)
                             {
-                                dataStorageInstance.Save(dataStorageKey, saveFileDialog.FileName);
+                                DataStorageInstance.Save(dataStorageKey, saveFileDialog.FileName);
                             }
                         }
                         catch (Exception ex)
@@ -128,7 +131,7 @@ namespace MeasureApp.ViewModel
                         {
                             if (MessageBox.Show("清理本次通信数据，是否继续？", "清理数据确认", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
                             {
-                                dataStorageInstance.ClearAllData(DataStorageSelectedValue);
+                                DataStorageInstance.ClearAllData(DataStorageSelectedValue);
                             }
                         }
                         catch (Exception ex)
@@ -153,7 +156,7 @@ namespace MeasureApp.ViewModel
                     {
                         try
                         {
-                            dataStorageInstance.AddKey(DataStorageAddKeyNameText);
+                            DataStorageInstance.AddKey(DataStorageAddKeyNameText);
                         }
                         catch (Exception ex)
                         {
@@ -165,7 +168,7 @@ namespace MeasureApp.ViewModel
             }
         }
 
-        // 数据源添加键值对
+        // 数据源删除键值对
         private CommandBase dataStorageRemoveKeyValuePairEvent;
         public CommandBase DataStorageRemoveKeyValuePairEvent
         {
@@ -177,7 +180,10 @@ namespace MeasureApp.ViewModel
                     {
                         try
                         {
-                            dataStorageInstance.RemoveKey(DataStorageSelectedValue);
+                            if (MessageBox.Show("删除键值对，是否继续？", "删除键值对确认", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
+                            {
+                                DataStorageInstance.RemoveKey(DataStorageSelectedValue);
+                            }
                         }
                         catch (Exception ex)
                         {
@@ -186,6 +192,67 @@ namespace MeasureApp.ViewModel
                     }));
                 }
                 return dataStorageRemoveKeyValuePairEvent;
+            }
+        }
+
+
+        // 数据源加载
+        private CommandBase dataStorageLoadEvent;
+        public CommandBase DataStorageLoadEvent
+        {
+            get
+            {
+                if (dataStorageLoadEvent == null)
+                {
+                    dataStorageLoadEvent = new CommandBase(new Action<object>(param =>
+                    {
+                        try
+                        {
+                            string json = File.ReadAllText(@"C:\Users\Administrator\Desktop\serialize.json");
+                            var options = new JsonSerializerOptions
+                            {
+                                IncludeFields = true
+                            };
+                            DataStorage ds = JsonSerializer.Deserialize<DataStorage>(json, options);
+                            // locker序列化与反序列化可能存在bug，需要编写新载入函数
+                            DataStorageInstance = ds;
+                        }
+                        catch (Exception ex)
+                        {
+                            _ = MessageBox.Show(ex.ToString());
+                        }
+                    }));
+                }
+                return dataStorageLoadEvent;
+            }
+        }
+
+        // 数据源保存
+        private CommandBase dataStorageSaveEvent;
+        public CommandBase DataStorageSaveEvent
+        {
+            get
+            {
+                if (dataStorageSaveEvent == null)
+                {
+                    dataStorageSaveEvent = new CommandBase(new Action<object>(param =>
+                    {
+                        try
+                        {
+                            var options = new JsonSerializerOptions
+                            {
+                                IncludeFields = true
+                            };
+                            string json = JsonSerializer.Serialize(DataStorageInstance, options);
+                            File.WriteAllText(@"C:\Users\Administrator\Desktop\serialize.json", json);
+                        }
+                        catch (Exception ex)
+                        {
+                            _ = MessageBox.Show(ex.ToString());
+                        }
+                    }));
+                }
+                return dataStorageSaveEvent;
             }
         }
     }
