@@ -82,5 +82,17 @@ namespace MeasureApp.Properties {
                 this["SerialPortWriteTimeout"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string DefaultDirectory {
+            get {
+                return ((string)(this["DefaultDirectory"]));
+            }
+            set {
+                this["DefaultDirectory"] = value;
+            }
+        }
     }
 }

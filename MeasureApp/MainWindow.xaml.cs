@@ -33,6 +33,11 @@ namespace MeasureApp
             //DataContext = new MainWindowDataContext();
             DataContext = mainWindowDataContext;
 
+            // 默认文件选择路径加载
+            if (Properties.Settings.Default.DefaultDirectory == string.Empty)
+                Properties.Settings.Default.DefaultDirectory = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+
+
             // TEST
             //Button btn = new Button();
             //btn.Content = "Button";

@@ -112,6 +112,7 @@ namespace MeasureApp.ViewModel
                         {
                             Measure3458AInstance.Dispose();
                             SerialPortsInstance.CloseAll();
+                            Properties.Settings.Default.Save();
                         }
                         catch (Exception ex)
                         {

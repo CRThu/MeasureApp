@@ -30,9 +30,6 @@ namespace MeasureApp.ViewModel
         }
 
         // PlotView数据刷新事件
-        // TODO
-        Random random = new();
-        double trend = 0;
         private CommandBase plotViewPlotRefreshEvent;
         public CommandBase PlotViewPlotRefreshEvent
         {
@@ -41,6 +38,35 @@ namespace MeasureApp.ViewModel
                 if (plotViewPlotRefreshEvent == null)
                 {
                     plotViewPlotRefreshEvent = new CommandBase(new Action<object>(param =>
+                    {
+                        try
+                        {
+                            // TEST 测试图表更新
+                            _observableValues.Clear();
+                            _observableValues.AddRange(DataStorageInstance.DataStorageDictionary[DataStorageSelectedValue].Select(cls => Convert.ToDouble(cls.StringData)));
+                        }
+                        catch (Exception ex)
+                        {
+                            _ = MessageBox.Show(ex.ToString());
+                        }
+                    }));
+                }
+                return plotViewPlotRefreshEvent;
+            }
+        }
+
+
+        // PlotView大数据量测试事件
+        Random random = new();
+        double trend = 0;
+        private CommandBase plotViewTestEvent;
+        public CommandBase PlotViewTestEvent
+        {
+            get
+            {
+                if (plotViewTestEvent == null)
+                {
+                    plotViewTestEvent = new CommandBase(new Action<object>(param =>
                     {
                         try
                         {
@@ -58,7 +84,7 @@ namespace MeasureApp.ViewModel
                         }
                     }));
                 }
-                return plotViewPlotRefreshEvent;
+                return plotViewTestEvent;
             }
         }
     }

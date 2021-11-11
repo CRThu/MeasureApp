@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
@@ -13,9 +14,11 @@ namespace MeasureApp.Model
 {
     public class DataStorage : NotificationObjectBase
     {
+        [JsonIgnore]
         public Dictionary<string, object> lockers = new();
-        private ObservableDictionary<string, ObservableCollection<StringDataClass>> _dataStorageDictionary = new();
-        public ObservableDictionary<string, ObservableCollection<StringDataClass>> DataStorageDictionary
+
+        private ObservableDictionary<string, ObservableRangeCollection<StringDataClass>> _dataStorageDictionary = new();
+        public ObservableDictionary<string, ObservableRangeCollection<StringDataClass>> DataStorageDictionary
         {
             get => _dataStorageDictionary;
             set
@@ -29,9 +32,29 @@ namespace MeasureApp.Model
         {
         }
 
+        public void Load(DataStorage dataStorage)
+        {
+            Clear();
+            foreach (string key in dataStorage.DataStorageDictionary.Keys)
+            {
+                AddDataCollection(key, dataStorage.GetDataCollection(key));
+            }
+        }
+
+        private void Clear()
+        {
+            DataStorageDictionary.Clear();
+
+            // async
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                lockers.Clear();
+            });
+        }
+
         public void AddKey(string key)
         {
-            DataStorageDictionary.Add(key, new ObservableCollection<StringDataClass>());
+            DataStorageDictionary.Add(key, new ObservableRangeCollection<StringDataClass>());
 
             // async
             Application.Current.Dispatcher.Invoke(() =>
@@ -61,17 +84,23 @@ namespace MeasureApp.Model
             DataStorageDictionary[key].Add(new StringDataClass() { StringData = value.ToString() });
         }
 
-        public IEnumerable<string> GetAllData(string key)
+        public void AddDataCollection(string key, IEnumerable<dynamic> values)
+        {
+            if (!DataStorageDictionary.ContainsKey(key))
+            {
+                AddKey(key);
+            }
+            DataStorageDictionary[key].AddRange(values.Select(value=> new StringDataClass() { StringData = value.ToString() }));
+        }
+
+        public IEnumerable<string> GetDataCollection(string key)
         {
             return DataStorageDictionary[key].Select(str => str.StringData);
         }
 
-        public void ClearAllData(string key)
+        public void ClearDataCollection(string key)
         {
-            lock (lockers[key])
-            {
-                DataStorageDictionary[key].Clear();
-            }
+            DataStorageDictionary[key].Clear();
         }
 
         public static string GenerateDateTimeNow()
@@ -93,7 +122,7 @@ namespace MeasureApp.Model
 
         public void Save(string key, string fileName)
         {
-            File.WriteAllLines(fileName, GetAllData(key));
+            File.WriteAllLines(fileName, GetDataCollection(key));
         }
 
         public void SaveAll(string extension = "txt", string titleName = "DataStorage", bool isAddDateTime = true)

@@ -104,6 +104,7 @@ namespace MeasureApp.ViewModel
                             };
                             if (saveFileDialog.ShowDialog() == true)
                             {
+                                Properties.Settings.Default.DefaultDirectory = Path.GetDirectoryName(saveFileDialog.FileName);
                                 DataStorageInstance.Save(dataStorageKey, saveFileDialog.FileName);
                             }
                         }
@@ -131,7 +132,7 @@ namespace MeasureApp.ViewModel
                         {
                             if (MessageBox.Show("清理本次通信数据，是否继续？", "清理数据确认", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
                             {
-                                DataStorageInstance.ClearAllData(DataStorageSelectedValue);
+                                DataStorageInstance.ClearDataCollection(DataStorageSelectedValue);
                             }
                         }
                         catch (Exception ex)
@@ -208,14 +209,24 @@ namespace MeasureApp.ViewModel
                     {
                         try
                         {
-                            string json = File.ReadAllText(@"C:\Users\Administrator\Desktop\serialize.json");
-                            var options = new JsonSerializerOptions
+                            // Open File Dialog
+                            OpenFileDialog openFileDialog = new()
                             {
-                                IncludeFields = true
+                                Title = "Open Json File...",
+                                Filter = "Json File|*.json",
+                                InitialDirectory = Properties.Settings.Default.DefaultDirectory
                             };
-                            DataStorage ds = JsonSerializer.Deserialize<DataStorage>(json, options);
-                            // locker序列化与反序列化可能存在bug，需要编写新载入函数
-                            DataStorageInstance = ds;
+                            if (openFileDialog.ShowDialog() == true)
+                            {
+                                Properties.Settings.Default.DefaultDirectory = Path.GetDirectoryName(openFileDialog.FileName);
+                                string json = File.ReadAllText(openFileDialog.FileName);
+                                var options = new JsonSerializerOptions
+                                {
+                                    IncludeFields = true
+                                };
+                                DataStorage ds = JsonSerializer.Deserialize<DataStorage>(json, options);
+                                DataStorageInstance.Load(ds);
+                            }
                         }
                         catch (Exception ex)
                         {
@@ -239,12 +250,23 @@ namespace MeasureApp.ViewModel
                     {
                         try
                         {
-                            var options = new JsonSerializerOptions
+                            SaveFileDialog saveFileDialog = new()
                             {
-                                IncludeFields = true
+                                Title = "存储数据",
+                                FileName = $"DataStorage.{DataStorage.GenerateDateTimeNow()}.json",
+                                DefaultExt = ".json",
+                                Filter = "Json File|*.json"
                             };
-                            string json = JsonSerializer.Serialize(DataStorageInstance, options);
-                            File.WriteAllText(@"C:\Users\Administrator\Desktop\serialize.json", json);
+                            if (saveFileDialog.ShowDialog() == true)
+                            {
+                                Properties.Settings.Default.DefaultDirectory = Path.GetDirectoryName(saveFileDialog.FileName);
+                                var options = new JsonSerializerOptions
+                                {
+                                    IncludeFields = true
+                                };
+                                string json = JsonSerializer.Serialize(DataStorageInstance, options);
+                                File.WriteAllText(saveFileDialog.FileName, json);
+                            }
                         }
                         catch (Exception ex)
                         {

@@ -578,7 +578,7 @@
                             </Grid>
                         </GroupBox>
                         <GroupBox Header="存储" HorizontalAlignment="Left" Height="392" Margin="475,10,0,0" VerticalAlignment="Top" Width="350">
-                            <DataGrid Name="SerialPortRecvDataStorageDataGrid" ItemsSource="{Binding DataStorageInstance.DataStorageDictionary[Serial Port Data Storage], UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Value" AutoGenerateColumns="False" IsReadOnly="True" Height="355" Margin="5,0,5.4,4.6" VerticalAlignment="Bottom">
+                            <DataGrid Name="SerialPortRecvDataStorageDataGrid" ItemsSource="{Binding DataStorageInstance.DataStorageDictionary[Serial Port Data Storage], UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False" IsReadOnly="True" Height="355" Margin="5,0,5.4,4.6" VerticalAlignment="Bottom">
                                 <DataGrid.Columns>
                                     <DataGridTextColumn CanUserSort="False" Width="1*" Header="数据" Binding="{Binding StringData}"/>
                                 </DataGrid.Columns>
@@ -660,12 +660,19 @@
                         </GroupBox>
                     </Grid>
                 </TabItem>
-                <TabItem Header="图表">
+                <TabItem Header="可视化">
                     <Grid>
                         <Button Content="刷新" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="107" Height="32">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="Click">
                                     <viewmodel:EventCommandBase Command="{Binding PlotViewPlotRefreshEvent}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </Button>
+                        <Button Content="大数据量测试" HorizontalAlignment="Left" Margin="10,47,0,0" VerticalAlignment="Top" Width="107" Height="32">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="Click">
+                                    <viewmodel:EventCommandBase Command="{Binding PlotViewTestEvent}"/>
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </Button>

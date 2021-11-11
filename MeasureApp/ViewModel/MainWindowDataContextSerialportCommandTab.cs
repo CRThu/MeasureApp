@@ -1,5 +1,6 @@
 ﻿using ICSharpCode.AvalonEdit.Document;
 using MeasureApp.Model;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -9,8 +10,8 @@ using System.IO.Ports;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Forms;
 using System.Windows.Threading;
 
 namespace MeasureApp.ViewModel
@@ -213,10 +214,11 @@ namespace MeasureApp.ViewModel
                             {
                                 Title = "Open Script File...",
                                 Filter = "Text File|*.txt|Task Code|*.task",
-                                InitialDirectory = Directory.GetCurrentDirectory()
+                                InitialDirectory = Properties.Settings.Default.DefaultDirectory
                             };
-                            if (openFileDialog.ShowDialog() == DialogResult.OK)
+                            if (openFileDialog.ShowDialog() == true)
                             {
+                                Properties.Settings.Default.DefaultDirectory = Path.GetDirectoryName(openFileDialog.FileName);
                                 SerialportCommandScriptEditorDocument.Text = File.ReadAllText(openFileDialog.FileName);
                             }
                         }
@@ -247,10 +249,11 @@ namespace MeasureApp.ViewModel
                             {
                                 Title = "Save Script File...",
                                 Filter = "Text File|*.txt|Task Code|*.task",
-                                InitialDirectory = Directory.GetCurrentDirectory()
+                                InitialDirectory = Properties.Settings.Default.DefaultDirectory
                             };
-                            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                            if (saveFileDialog.ShowDialog() == true)
                             {
+                                Properties.Settings.Default.DefaultDirectory = Path.GetDirectoryName(saveFileDialog.FileName);
                                 File.WriteAllText(saveFileDialog.FileName, SerialportCommandScriptEditorDocument.Text);
                             }
                         }
