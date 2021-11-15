@@ -22,19 +22,8 @@ namespace MeasureApp.ViewModel
             dataStorageSelectedValue = Key3458AString;
 
             // TEST
-            _observableValues.WithQuality(Quality.High);
-
-            ChartSeriesCollection = new()
-            {
-                new GLineSeries
-                {
-                    Values = _observableValues,
-                    Fill = Brushes.Transparent,
-                    PointGeometry = null,
-                    LineSmoothness = 0
-                }
-            };
-            //PlotViewDataPoints.CollectionChanged += (_, _) => { PlotViewPlotModel.InvalidatePlot(true); };
+            PlotViewLineValues.WithQuality(Quality.Highest);
+            //PlotViewLineValues.CollectionChanged += (_, _) => MessageBox.Show($"{PlotViewLineValues.Count}");
         }
 
         // 3458A 通信类

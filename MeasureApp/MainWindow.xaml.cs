@@ -129,12 +129,12 @@ namespace MeasureApp
                     RecvDataPraseTemp.CopyTo(objArray, 0);
                     foreach (object obj in objArray)
                     {
-                        mainWindowDataContext.DataStorageInstance.DataStorageDictionary[KeySerialPortString].Add(new StringDataClass { StringData = obj.ToString() });
+                        mainWindowDataContext.DataStorageInstance.DataStorageDictionary[KeySerialPortString].Add(new ObservableValue { Value = obj });
                     }
                 }
                 else
                 {
-                    mainWindowDataContext.DataStorageInstance.DataStorageDictionary[KeySerialPortString].Add(new StringDataClass { StringData = RecvDataPraseTemp.ToString() });
+                    mainWindowDataContext.DataStorageInstance.DataStorageDictionary[KeySerialPortString].Add(new ObservableValue { Value = RecvDataPraseTemp });
                 }
             }
             catch (Exception ex)

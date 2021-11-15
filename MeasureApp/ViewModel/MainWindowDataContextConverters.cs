@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LiveCharts.Geared;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO.Ports;
@@ -58,6 +59,4 @@ namespace MeasureApp.ViewModel
             throw new NotImplementedException();
         }
     }
-
-    
 }

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using LiveCharts;
+using LiveCharts.Configurations;
 using LiveCharts.Definitions.Series;
 using LiveCharts.Geared;
 using LiveCharts.Wpf;
@@ -15,19 +16,25 @@ namespace MeasureApp.ViewModel
     public partial class MainWindowDataContext : NotificationObjectBase
     {
         // 图表数据绑定
-        private GearedValues<double> _observableValues = new();
+        private GearedValues<double> plotViewLineValues = new();
 
-        private SeriesCollection chartSeriesCollection;
-
-        public SeriesCollection ChartSeriesCollection
+        public GearedValues<double> PlotViewLineValues
         {
-            get => chartSeriesCollection;
+            get => plotViewLineValues;
             set
             {
-                chartSeriesCollection = value;
-                RaisePropertyChanged(() => ChartSeriesCollection);
+                plotViewLineValues = value;
+                RaisePropertyChanged(() => PlotViewLineValues);
             }
         }
+
+        // Mapper
+        // XAML: Configuration="{Binding Config}"
+        //public CartesianMapper<StringDataClass> Config
+        //{
+        //    get => Mappers.Xy<StringDataClass>().X(v => Convert.ToDouble(v.X)).Y(v => Convert.ToDouble(v.StringData));
+        //}
+
 
         // PlotView数据刷新事件
         private CommandBase plotViewPlotRefreshEvent;
@@ -41,9 +48,8 @@ namespace MeasureApp.ViewModel
                     {
                         try
                         {
-                            // TEST 测试图表更新
-                            _observableValues.Clear();
-                            _observableValues.AddRange(DataStorageInstance.DataStorageDictionary[DataStorageSelectedValue].Select(cls => Convert.ToDouble(cls.StringData)));
+                            PlotViewLineValues.Clear();
+                            PlotViewLineValues.AddRange(DataStorageInstance.DataStorageDictionary[DataStorageSelectedValue].Select(v => Convert.ToDouble(v.Value)));
                         }
                         catch (Exception ex)
                         {
@@ -57,8 +63,8 @@ namespace MeasureApp.ViewModel
 
 
         // PlotView大数据量测试事件
-        Random random = new();
-        double trend = 0;
+        public Random random = new();
+         public double trend = 0;
         private CommandBase plotViewTestEvent;
         public CommandBase PlotViewTestEvent
         {
@@ -74,9 +80,9 @@ namespace MeasureApp.ViewModel
                             for (int i = 0; i < 500000; i++)
                             {
                                 trend += ((random.NextDouble() - 0.5) / 6) + 1;
-                                l.Add(trend - _observableValues.Count - i);
+                                l.Add(trend - PlotViewLineValues.Count - i);
                             }
-                            _observableValues.AddRange(l);
+                            PlotViewLineValues.AddRange(l);
                         }
                         catch (Exception ex)
                         {

@@ -17,8 +17,8 @@ namespace MeasureApp.Model
         [JsonIgnore]
         public Dictionary<string, object> lockers = new();
 
-        private ObservableDictionary<string, ObservableRangeCollection<StringDataClass>> _dataStorageDictionary = new();
-        public ObservableDictionary<string, ObservableRangeCollection<StringDataClass>> DataStorageDictionary
+        private ObservableDictionary<string, ObservableRangeCollection<ObservableValue>> _dataStorageDictionary = new();
+        public ObservableDictionary<string, ObservableRangeCollection<ObservableValue>> DataStorageDictionary
         {
             get => _dataStorageDictionary;
             set
@@ -54,7 +54,7 @@ namespace MeasureApp.Model
 
         public void AddKey(string key)
         {
-            DataStorageDictionary.Add(key, new ObservableRangeCollection<StringDataClass>());
+            DataStorageDictionary.Add(key, new ObservableRangeCollection<ObservableValue>());
 
             // async
             Application.Current.Dispatcher.Invoke(() =>
@@ -81,7 +81,7 @@ namespace MeasureApp.Model
             {
                 AddKey(key);
             }
-            DataStorageDictionary[key].Add(new StringDataClass() { StringData = value.ToString() });
+            DataStorageDictionary[key].Add(new ObservableValue() { Value = value });
         }
 
         public void AddDataCollection(string key, IEnumerable<dynamic> values)
@@ -90,12 +90,12 @@ namespace MeasureApp.Model
             {
                 AddKey(key);
             }
-            DataStorageDictionary[key].AddRange(values.Select(value=> new StringDataClass() { StringData = value.ToString() }));
+            DataStorageDictionary[key].AddRange(values.Select(value => new ObservableValue() { Value = value }));
         }
 
-        public IEnumerable<string> GetDataCollection(string key)
+        public IEnumerable<dynamic> GetDataCollection(string key)
         {
-            return DataStorageDictionary[key].Select(str => str.StringData);
+            return DataStorageDictionary[key].Select(str => str.Value);
         }
 
         public void ClearDataCollection(string key)
@@ -122,7 +122,7 @@ namespace MeasureApp.Model
 
         public void Save(string key, string fileName)
         {
-            File.WriteAllLines(fileName, GetDataCollection(key));
+            File.WriteAllLines(fileName, GetDataCollection(key).ToList().Select<dynamic, string>(v => v.ToString()));
         }
 
         public void SaveAll(string extension = "txt", string titleName = "DataStorage", bool isAddDateTime = true)

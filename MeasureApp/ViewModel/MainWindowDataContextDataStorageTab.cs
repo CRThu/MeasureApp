@@ -1,5 +1,6 @@
 ﻿using MeasureApp.Model;
 using Microsoft.Win32;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -220,11 +221,12 @@ namespace MeasureApp.ViewModel
                             {
                                 Properties.Settings.Default.DefaultDirectory = Path.GetDirectoryName(openFileDialog.FileName);
                                 string json = File.ReadAllText(openFileDialog.FileName);
-                                var options = new JsonSerializerOptions
-                                {
-                                    IncludeFields = true
-                                };
-                                DataStorage ds = JsonSerializer.Deserialize<DataStorage>(json, options);
+                                //var options = new JsonSerializerOptions
+                                //{
+                                //    IncludeFields = true
+                                //};
+                                //DataStorage ds = System.Text.Json.JsonSerializer.Deserialize<DataStorage>(json, options);
+                                var ds = JsonConvert.DeserializeObject<DataStorage>(json);
                                 DataStorageInstance.Load(ds);
                             }
                         }
@@ -260,11 +262,12 @@ namespace MeasureApp.ViewModel
                             if (saveFileDialog.ShowDialog() == true)
                             {
                                 Properties.Settings.Default.DefaultDirectory = Path.GetDirectoryName(saveFileDialog.FileName);
-                                var options = new JsonSerializerOptions
-                                {
-                                    IncludeFields = true
-                                };
-                                string json = JsonSerializer.Serialize(DataStorageInstance, options);
+                                //var options = new JsonSerializerOptions
+                                //{
+                                //    IncludeFields = true
+                                //};
+                                //string json = System.Text.Json.JsonSerializer.Serialize(DataStorageInstance, options);
+                                string json = JsonConvert.SerializeObject(DataStorageInstance);
                                 File.WriteAllText(saveFileDialog.FileName, json);
                             }
                         }
