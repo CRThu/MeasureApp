@@ -13,11 +13,13 @@
 	<ItemGroup>
 	  <Compile Remove="AutomationExample.cs" />
 	  <Compile Remove="PlotViewExample.cs" />
+	  <Compile Remove="StatusBarProgressBarExample.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <None Include="AutomationExample.cs" />
 	  <None Include="PlotViewExample.cs" />
+	  <None Include="StatusBarProgressBarExample.cs" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -113,8 +113,8 @@ namespace MeasureApp.ViewModel
             }
         }
 
-        // 状态栏
-        private string statusBarText = "StatusBar";
+        // 状态栏文本
+        private string statusBarText = "<NULL>";
         public string StatusBarText
         {
             get => statusBarText;
@@ -122,6 +122,40 @@ namespace MeasureApp.ViewModel
             {
                 statusBarText = value;
                 RaisePropertyChanged(() => StatusBarText);
+            }
+        }
+
+        //状态栏进度条
+        private int statusBarProgressBarMin = 0;
+        public int StatusBarProgressBarMin
+        {
+            get => statusBarProgressBarMin;
+            set
+            {
+                statusBarProgressBarMin = value;
+                RaisePropertyChanged(() => StatusBarProgressBarMin);
+            }
+        }
+
+        private int statusBarProgressBarMax = 100;
+        public int StatusBarProgressBarMax
+        {
+            get => statusBarProgressBarMax;
+            set
+            {
+                statusBarProgressBarMax = value;
+                RaisePropertyChanged(() => StatusBarProgressBarMax);
+            }
+        }
+
+        private int statusBarProgressBarValue = 0;
+        public int StatusBarProgressBarValue
+        {
+            get => statusBarProgressBarValue;
+            set
+            {
+                statusBarProgressBarValue = value;
+                RaisePropertyChanged(() => StatusBarProgressBarValue);
             }
         }
 

@@ -4,7 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-        xmlns:local="clr-namespace:MeasureApp" xmlns:viewmodel="clr-namespace:MeasureApp.ViewModel"
+        xmlns:local="clr-namespace:MeasureApp"
+        xmlns:viewmodel="clr-namespace:MeasureApp.ViewModel"
         xmlns:view="clr-namespace:MeasureApp.View"
         xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf" xmlns:geared="clr-namespace:LiveCharts.Geared;assembly=LiveCharts.Geared"
         mc:Ignorable="d"
@@ -38,7 +39,7 @@
                         <ColumnDefinition Width="200"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Column="0" Text="{Binding StatusBarText}"></TextBlock>
-                    <ProgressBar Grid.Column="1" Margin="10,0,10,0" Value="70"/>
+                    <ProgressBar Grid.Column="1" Margin="10,0,10,0" Minimum="{Binding StatusBarProgressBarMin}" Maximum="{Binding StatusBarProgressBarMax}" Value="{Binding StatusBarProgressBarValue}"/>
                 </Grid>
             </StatusBar>
             <TabControl Margin="10,10,9.6,24.8">
