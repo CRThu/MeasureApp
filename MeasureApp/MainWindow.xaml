@@ -25,7 +25,8 @@
         <viewmodel:M3458ASyncMeasureButtonContentConverter x:Key="M3458ASyncMeasureButtonContentConverter"/>
         <viewmodel:SerialPortsStatusTextConverter x:Key="SerialPortsStatusTextConverter"/>
         <viewmodel:SerialPortCommandIsListeningButtonContentConverter x:Key="SerialPortCommandIsListeningButtonContentConverter"/>
-
+        <viewmodel:SecondsToTimeFormatConverter x:Key="SecondsToTimeFormatConverter"/>
+        
         <local:SerialPortRecvDataTypeToBoolConverter x:Key="SerialPortRecvDataTypeToBoolConverter"/>
         <local:SerialPortRecvDataEncodeToBoolConverter x:Key="SerialPortRecvDataEncodeToBoolConverter"/>
         <local:SerialPortRecvDataType x:Key="SerialPortRecvDataType"/>
@@ -36,10 +37,14 @@
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="100"/>
-                        <ColumnDefinition Width="200"/>
+                        <ColumnDefinition Width="60"/>
+                        <ColumnDefinition Width="160"/>
+                        <ColumnDefinition Width="60"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Text="{Binding StatusBarText}"></TextBlock>
-                    <ProgressBar Grid.Column="1" Margin="10,0,10,0" Minimum="{Binding StatusBarProgressBarMin}" Maximum="{Binding StatusBarProgressBarMax}" Value="{Binding StatusBarProgressBarValue}"/>
+                    <TextBlock Grid.Column="0" Margin="5,0,5,0" Text="{Binding StatusBarText}"></TextBlock>
+                    <TextBlock Grid.Column="1" Margin="3,0,3,0" HorizontalAlignment="Right" Text="{Binding StatusBarProgressElapsedTime, Converter={StaticResource SecondsToTimeFormatConverter}}"></TextBlock>
+                    <ProgressBar Grid.Column="2" Margin="5,0,5,0" Minimum="{Binding StatusBarProgressBarMin}" Maximum="{Binding StatusBarProgressBarMax}" Value="{Binding StatusBarProgressBarValue}"/>
+                    <TextBlock Grid.Column="3" Margin="3,0,3,0" HorizontalAlignment="Left" Text="{Binding StatusBarProgressETATime, Converter={StaticResource SecondsToTimeFormatConverter}}"></TextBlock>
                 </Grid>
             </StatusBar>
             <TabControl Margin="10,10,9.6,24.8">

@@ -12,16 +12,15 @@ public class Automation
 {
     public int Main(MainWindowDataContext dataContext)
     {
-    	Stopwatch sw = new();
-    	sw.Start();
-    	dataContext.StatusBarProgressBarMax = 500-1;
-        for (int i = 0; i < 500; i++)
+        int loop = 500;
+        dataContext.ProgressStopWatchStart(loop);
+        for (int i = 0; i < loop; i++)
         {
-        	Thread.Sleep(10);
-        	dataContext.StatusBarProgressBarValue = i;
-        	dataContext.StatusBarText = $"{sw.ElapsedMilliseconds}ms";
+            Thread.Sleep(10);
+            dataContext.StatusBarText = $"{dataContext.progressStopWatch.ElapsedMilliseconds}ms";
+            dataContext.ProgressStopWatchUpdate(i);
         }
-        sw.Stop();
+        dataContext.ProgressStopWatchStop();
         return 0;
     }
 }

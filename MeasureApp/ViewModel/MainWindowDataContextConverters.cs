@@ -59,4 +59,18 @@ namespace MeasureApp.ViewModel
             throw new NotImplementedException();
         }
     }
+
+    // StatusBar 秒数转时间转换器
+    public class SecondsToTimeFormatConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return new TimeSpan(0, 0, (int)value).ToString(@"hh\:mm\:ss");
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }
