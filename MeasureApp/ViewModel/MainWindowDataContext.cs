@@ -20,7 +20,7 @@ namespace MeasureApp.ViewModel
             // 添加默认Key
             DataStorageInstance.AddKey(Key3458AString);
             DataStorageInstance.AddKey(KeySerialPortString);
-            dataStorageSelectedValue = Key3458AString;
+            DataStorageSelectedValue = Key3458AString;
 
             // TEST
             PlotViewLineValues.WithQuality(Quality.Highest);

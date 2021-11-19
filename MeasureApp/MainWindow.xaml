@@ -7,7 +7,8 @@
         xmlns:local="clr-namespace:MeasureApp"
         xmlns:viewmodel="clr-namespace:MeasureApp.ViewModel"
         xmlns:view="clr-namespace:MeasureApp.View"
-        xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf" xmlns:geared="clr-namespace:LiveCharts.Geared;assembly=LiveCharts.Geared"
+        xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+        xmlns:geared="clr-namespace:LiveCharts.Geared;assembly=LiveCharts.Geared"
         mc:Ignorable="d"
         Title="MainWindow" Height="504.4" Width="866.4">
     <i:Interaction.Triggers>
@@ -26,6 +27,7 @@
         <viewmodel:SerialPortsStatusTextConverter x:Key="SerialPortsStatusTextConverter"/>
         <viewmodel:SerialPortCommandIsListeningButtonContentConverter x:Key="SerialPortCommandIsListeningButtonContentConverter"/>
         <viewmodel:SecondsToTimeFormatConverter x:Key="SecondsToTimeFormatConverter"/>
+        <viewmodel:AutomationTaskRunButtonConverter x:Key="AutomationTaskRunButtonConverter"/>
         
         <local:SerialPortRecvDataTypeToBoolConverter x:Key="SerialPortRecvDataTypeToBoolConverter"/>
         <local:SerialPortRecvDataEncodeToBoolConverter x:Key="SerialPortRecvDataEncodeToBoolConverter"/>
@@ -36,7 +38,7 @@
             <StatusBar DockPanel.Dock="Bottom" MaxHeight="20" VerticalAlignment="Bottom">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="150"/>
                         <ColumnDefinition Width="60"/>
                         <ColumnDefinition Width="160"/>
                         <ColumnDefinition Width="60"/>
@@ -610,11 +612,11 @@
                             <Grid>
                                 <TextBlock Text="选择数据源：" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="230"/>
                                 <ListBox Name="DataStorageSelectListBox" ItemsSource="{Binding DataStorageInstance.DataStorageDictionary,UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Key" SelectedValue="{Binding DataStorageSelectedValue}" SelectedValuePath="Key" HorizontalAlignment="Left" Height="106" Margin="10,30,0,0" VerticalAlignment="Top" Width="230">
-                                    <i:Interaction.Triggers>
+                                    <!--<i:Interaction.Triggers>
                                         <i:EventTrigger EventName="SelectionChanged">
                                             <viewmodel:EventCommandBase Command="{Binding DataStorageSelectionChangedEvent}"/>
                                         </i:EventTrigger>
-                                    </i:Interaction.Triggers>
+                                    </i:Interaction.Triggers>-->
                                 </ListBox>
                                 <DataGrid Name="DataStorageDataGrid" ItemsSource="{Binding DataStorageDataGridBinding}" AutoGenerateColumns="False" IsReadOnly="True" Margin="245,25,6,5">
                                     <DataGrid.Columns>
@@ -719,7 +721,7 @@
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
-                                <Button Content="运行" HorizontalAlignment="Left" Margin="10,45,0,0" VerticalAlignment="Top" Height="30" Width="141">
+                                <Button Content="{Binding AutomationIsRun, Converter={StaticResource AutomationTaskRunButtonConverter}}" HorizontalAlignment="Left" Margin="10,45,0,0" VerticalAlignment="Top" Height="30" Width="141">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
                                             <viewmodel:EventCommandBase Command="{Binding AutomationCodeRunEvent}"/>

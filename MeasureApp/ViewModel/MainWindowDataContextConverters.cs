@@ -73,4 +73,19 @@ namespace MeasureApp.ViewModel
             throw new NotImplementedException();
         }
     }
+
+
+    // 自动化任务运行/停止按钮文本
+    public class AutomationTaskRunButtonConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return (bool)value ? "停止" : "运行";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

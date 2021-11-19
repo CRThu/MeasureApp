@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -97,7 +98,24 @@ namespace MeasureApp.ViewModel
             }
         }
 
+        // 获取终止状态
+        public bool IsAutomationCancelled => automationCancellationTokenSource.Token.IsCancellationRequested;
+
+
+        // 3458A 同步电压显示开启标志位
+        private bool automationIsRun = false;
+        public bool AutomationIsRun
+
+        {
+            get => automationIsRun;
+            set
+            {
+                automationIsRun = value;
+                RaisePropertyChanged(() => AutomationIsRun);
+            }
+        }
         // 自动化模块执行事件
+        private CancellationTokenSource automationCancellationTokenSource = new();
         private CommandBase automationCodeRunEvent;
         public CommandBase AutomationCodeRunEvent
         {
@@ -109,22 +127,34 @@ namespace MeasureApp.ViewModel
                     {
                         try
                         {
+                            if (AutomationIsRun)
+                            {
+                                automationCancellationTokenSource.Cancel();
+                            }
+                            else
+                            {
+                                automationCancellationTokenSource = new();
+                            }
+
                             _ = Task.Run(() =>
                             {
                                 try
                                 {
-                                    string code = AutomationCodeEditorText;
-                                    var type = CodeCompiler.Run(code, "Automation");
+                                    AutomationIsRun = true;
+                                    AutomationCodeReturnData = "Compiling...";
+                                    var type = CodeCompiler.Run(AutomationCodeEditorText, "Automation");
+                                    AutomationCodeReturnData = "Running...";
                                     var transformer = Activator.CreateInstance(type);
                                     var newContent = type.GetMethod("Main").Invoke(transformer, new object[] { this });
-                                    //MessageBox.Show($"result={newContent}");
-                                    AutomationCodeReturnData = newContent.ToString();
+                                    AutomationCodeReturnData = $"Return: {newContent}";
+                                    AutomationIsRun = false;
                                 }
                                 catch (Exception ex)
                                 {
                                     _ = MessageBox.Show(ex.ToString());
+                                    AutomationIsRun = false;
                                 }
-                            });
+                            }, automationCancellationTokenSource.Token);
                         }
                         catch (Exception ex)
                         {

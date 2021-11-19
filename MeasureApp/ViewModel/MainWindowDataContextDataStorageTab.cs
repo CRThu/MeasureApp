@@ -25,6 +25,7 @@ namespace MeasureApp.ViewModel
             {
                 dataStorageSelectedValue = value;
                 RaisePropertyChanged(() => DataStorageSelectedValue);
+                DataStorageSelectionChangedEvent.Execute(null);
             }
         }
 
@@ -66,12 +67,18 @@ namespace MeasureApp.ViewModel
                     {
                         try
                         {
+                            if (DataStorageSelectedValue is null && DataStorageInstance.DataStorageDictionary.Keys.Count != 0)
+                            {
+                                DataStorageSelectedValue = DataStorageInstance.DataStorageDictionary.Keys.First();
+                            }
                             if (DataStorageSelectedValue is null)
-                                DataStorageSelectedValue = DataStorageInstance.DataStorageDictionary.Keys.FirstOrDefault();
-                            if (DataStorageSelectedValue is null)
+                            {
                                 DataStorageDataGridBinding = null;
+                            }
                             else
+                            {
                                 DataStorageDataGridBinding = DataStorageInstance.DataStorageDictionary[DataStorageSelectedValue];
+                            }
                         }
                         catch (Exception ex)
                         {
@@ -226,7 +233,7 @@ namespace MeasureApp.ViewModel
                                 //    IncludeFields = true
                                 //};
                                 //DataStorage ds = System.Text.Json.JsonSerializer.Deserialize<DataStorage>(json, options);
-                                var ds = JsonConvert.DeserializeObject<DataStorage>(json);
+                                var ds = JsonConvert.DeserializeObject<DataStorage>(json, new JsonSerializerSettings() { FloatParseHandling = FloatParseHandling.Decimal });
                                 DataStorageInstance.Load(ds);
                             }
                         }
@@ -267,7 +274,7 @@ namespace MeasureApp.ViewModel
                                 //    IncludeFields = true
                                 //};
                                 //string json = System.Text.Json.JsonSerializer.Serialize(DataStorageInstance, options);
-                                string json = JsonConvert.SerializeObject(DataStorageInstance);
+                                string json = JsonConvert.SerializeObject(DataStorageInstance, new JsonSerializerSettings() { FloatParseHandling = FloatParseHandling.Decimal });
                                 File.WriteAllText(saveFileDialog.FileName, json);
                             }
                         }

@@ -19,6 +19,8 @@ public class Automation
             Thread.Sleep(10);
             dataContext.StatusBarText = $"{dataContext.progressStopWatch.ElapsedMilliseconds}ms";
             dataContext.ProgressStopWatchUpdate(i);
+            if (dataContext.IsAutomationCancelled)
+                return -1;
         }
         dataContext.ProgressStopWatchStop();
         return 0;
