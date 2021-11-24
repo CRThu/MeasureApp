@@ -13,6 +13,38 @@ namespace MeasureApp.ViewModel
 {
     public partial class MainWindowDataContext : NotificationObjectBase
     {
+        // 设置
+        public int GPIBTimeoutSetting
+        {
+            get => Properties.Settings.Default.GPIBTimeout;
+            set
+            {
+                Properties.Settings.Default.GPIBTimeout = value;
+                RaisePropertyChanged(() => GPIBTimeoutSetting);
+            }
+        }
+        public int SerialPortTimeoutSetting
+        {
+            get => Properties.Settings.Default.SerialPortReadTimeout;
+            set
+            {
+                Properties.Settings.Default.SerialPortReadTimeout = value;
+                Properties.Settings.Default.SerialPortWriteTimeout = value;
+                RaisePropertyChanged(() => SerialPortTimeoutSetting);
+            }
+        }
+
+        public int SerialPortBufferSetting
+        {
+            get => Properties.Settings.Default.SerialPortReadBufferSize;
+            set
+            {
+                Properties.Settings.Default.SerialPortReadBufferSize = value;
+                Properties.Settings.Default.SerialPortWriteBufferSize = value;
+                RaisePropertyChanged(() => SerialPortBufferSetting);
+            }
+        }
+
         // 版本信息
         private StringBuilder settingsVersionText = GetVersion();
         public StringBuilder SettingsVersionText
