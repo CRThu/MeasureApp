@@ -25,6 +25,7 @@ namespace MeasureApp.ViewModel
             // TEST
             PlotViewLineValues.WithQuality(Quality.Highest);
             //PlotViewLineValues.CollectionChanged += (_, _) => MessageBox.Show($"{PlotViewLineValues.Count}");
+
         }
 
         // 3458A 通信类

@@ -423,5 +423,6 @@ namespace MeasureApp.ViewModel
                 return false;
             }
         }
+
     }
 }

@@ -19,7 +19,14 @@ namespace MeasureApp.Model
 {
     public static class CodeCompiler
     {
-        private static readonly IEnumerable<PortableExecutableReference> Assemblies = AppDomain.CurrentDomain.GetAssemblies().Select(x => MetadataReference.CreateFromFile(x.Location));
+        // 删除Location为空的Assembly?测试程序多次运行
+        private static readonly IEnumerable<PortableExecutableReference> Assemblies = AppDomain.CurrentDomain.GetAssemblies()
+            .Select<Assembly, PortableExecutableReference>(
+            (x) =>
+        {
+            return MetadataReference.CreateFromFile(x.Location);
+        }
+        );
         // 测试函数
         public static string SayHello()
         {

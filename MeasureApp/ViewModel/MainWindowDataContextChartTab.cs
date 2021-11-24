@@ -80,9 +80,10 @@ namespace MeasureApp.ViewModel
                             for (int i = 0; i < 500000; i++)
                             {
                                 trend += ((random.NextDouble() - 0.5) / 6) + 1;
-                                l.Add(trend - PlotViewLineValues.Count - i);
+                                l.Add(trend /*- PlotViewLineValues.Count - i*/);
                             }
                             PlotViewLineValues.AddRange(l);
+                            DataStorageInstance.AddDataCollection("Simu DAC", l.Select(a=>(dynamic)a));
                         }
                         catch (Exception ex)
                         {

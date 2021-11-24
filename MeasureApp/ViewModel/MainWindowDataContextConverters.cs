@@ -88,4 +88,50 @@ namespace MeasureApp.ViewModel
             throw new NotImplementedException();
         }
     }
+
+    // 串口数据模块转换器与Enum
+
+    public enum SerialPortRecvDataTypeEnum
+    {
+        Char,
+        UInt8,
+        UInt16,
+        UInt32
+    }
+
+    public enum SerialPortRecvDataEncodeEnum
+    {
+        Ascii,
+        Bytes
+    }
+
+    public class SerialPortRecvDataTypeToBoolConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            SerialPortRecvDataTypeEnum serialPortRecvDataType = (SerialPortRecvDataTypeEnum)value;
+            return serialPortRecvDataType == (SerialPortRecvDataTypeEnum)int.Parse(parameter.ToString());
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            bool isChecked = (bool)value;
+            return !isChecked ? null : (object)(SerialPortRecvDataTypeEnum)int.Parse(parameter.ToString());
+        }
+    }
+
+    public class SerialPortRecvDataEncodeToBoolConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            SerialPortRecvDataEncodeEnum serialPortRecvDataEncode = (SerialPortRecvDataEncodeEnum)value;
+            return serialPortRecvDataEncode == (SerialPortRecvDataEncodeEnum)int.Parse(parameter.ToString());
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            bool isChecked = (bool)value;
+            return !isChecked ? null : (object)(SerialPortRecvDataEncodeEnum)int.Parse(parameter.ToString());
+        }
+    }
 }

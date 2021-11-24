@@ -28,10 +28,9 @@
         <viewmodel:SerialPortCommandIsListeningButtonContentConverter x:Key="SerialPortCommandIsListeningButtonContentConverter"/>
         <viewmodel:SecondsToTimeFormatConverter x:Key="SecondsToTimeFormatConverter"/>
         <viewmodel:AutomationTaskRunButtonConverter x:Key="AutomationTaskRunButtonConverter"/>
-        
-        <local:SerialPortRecvDataTypeToBoolConverter x:Key="SerialPortRecvDataTypeToBoolConverter"/>
-        <local:SerialPortRecvDataEncodeToBoolConverter x:Key="SerialPortRecvDataEncodeToBoolConverter"/>
-        <local:SerialPortRecvDataType x:Key="SerialPortRecvDataType"/>
+
+        <viewmodel:SerialPortRecvDataTypeToBoolConverter x:Key="SerialPortRecvDataTypeToBoolConverter"/>
+        <viewmodel:SerialPortRecvDataEncodeToBoolConverter x:Key="SerialPortRecvDataEncodeToBoolConverter"/>
     </Window.Resources>
     <DockPanel>
         <Grid>
@@ -574,7 +573,7 @@
                                 </Button>
                                 <TextBlock Text="接收:" HorizontalAlignment="Left" Margin="10,120,0,0" VerticalAlignment="Top" Width="33"/>
                                 <GroupBox Header="数据类型" HorizontalAlignment="Left" Height="81" Margin="48,122,0,0" VerticalAlignment="Top" Width="390">
-                                    <Grid Name="SerialPortRecvDataTypesGrid" DataContext="{Binding Source={StaticResource SerialPortRecvDataType}}">
+                                    <Grid Name="SerialPortRecvDataTypesGrid">
                                         <RadioButton Content="Ascii" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" GroupName="SerialPortRecvDataEncodeGroupName" IsChecked="{Binding SerialPortRecvDataEncodeEnum, Converter={StaticResource SerialPortRecvDataEncodeToBoolConverter}, ConverterParameter=0}"/>
                                         <RadioButton Name="SerialPortRecvDataTypeIsBytesRadioButton" Content="Bytes" HorizontalAlignment="Left" Margin="10,34,0,0" VerticalAlignment="Top" GroupName="SerialPortRecvDataEncodeGroupName" IsChecked="{Binding SerialPortRecvDataEncodeEnum, Converter={StaticResource SerialPortRecvDataEncodeToBoolConverter}, ConverterParameter=1}"/>
 
@@ -586,9 +585,21 @@
                                         <TextBox HorizontalAlignment="Left" Height="19" Margin="229,32,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="142" IsEnabled="{Binding ElementName=SerialPortRecvDataTypeIsArrayCheckBox, Path=IsChecked}" Text="{Binding ArrayCount}"/>
                                     </Grid>
                                 </GroupBox>
-                                <Button Name="SerialPortRecvDataButton" Content="接收数据" HorizontalAlignment="Left" Margin="195,208,0,0" VerticalAlignment="Top" Width="110" Height="32" Click="SerialPortRecvDataButton_Click"/>
-                                <Button Name="SerialPortRecvDataStorageButton" Content="存储数据" HorizontalAlignment="Left" Margin="328,208,0,0" VerticalAlignment="Top" Width="110" Height="32" Click="SerialPortRecvDataStorageButton_Click"/>
-                                <TextBox Name="SerialPortRecvDataDisplayTextBox" HorizontalAlignment="Left" Height="115" Margin="48,245,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="390"/>
+                                <Button Name="SerialPortRecvDataButton" Content="接收数据" HorizontalAlignment="Left" Margin="195,208,0,0" VerticalAlignment="Top" Width="110" Height="32">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <viewmodel:EventCommandBase Command="{Binding SerialPortRecvDataEvent}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Button>
+                                <Button Name="SerialPortRecvDataStorageButton" Content="存储数据" HorizontalAlignment="Left" Margin="328,208,0,0" VerticalAlignment="Top" Width="110" Height="32">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <viewmodel:EventCommandBase Command="{Binding SerialPortRecvDataStorageEvent}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Button>
+                                <TextBox Name="SerialPortRecvDataDisplayTextBox" Text="{Binding SerialPortRecvDataDisplayText}" HorizontalAlignment="Left" Height="115" Margin="48,245,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="390"/>
                                 <ComboBox x:Name="SerialPortRecvDataSerialPortNameComboBox" ItemsSource="{Binding SerialPortsInstance.SerialPortsDict, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Key" SelectedValue="{Binding SerialPortRecvDataSerialPortNameSelectedValue, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Key" HorizontalAlignment="Left" Margin="48,212,0,0" VerticalAlignment="Top" Width="120" Height="23"/>
                             </Grid>
                         </GroupBox>
