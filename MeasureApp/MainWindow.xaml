@@ -164,8 +164,8 @@
                         </GroupBox>
                         <GroupBox Header="串口调试" HorizontalAlignment="Left" Margin="422,181,0,10" Width="407">
                             <Grid>
-                                <CheckBox Content="16进制写入" IsChecked="False" IsEnabled="False" HorizontalAlignment="Left" Margin="129,41,0,0" VerticalAlignment="Top"/>
-                                <CheckBox Content="16进制读取" IsChecked="False" IsEnabled="False" HorizontalAlignment="Left" Margin="129,117,0,0" VerticalAlignment="Top"/>
+                                <CheckBox Content="16进制写入" IsChecked="{Binding SerialPortDebugWriteIsHex}" HorizontalAlignment="Left" Margin="129,41,0,0" VerticalAlignment="Top"/>
+                                <CheckBox Content="16进制读取" IsChecked="{Binding SerialPortDebugReadIsHex}" HorizontalAlignment="Left" Margin="129,117,0,0" VerticalAlignment="Top"/>
                                 <ComboBox x:Name="SerialPortDebugSelectComboBox" ItemsSource="{Binding SerialPortsInstance.SerialPortsDict, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Key" SelectedValue="{Binding SerialportDebugPortNameSelectedValue, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Key" HorizontalAlignment="Left" Margin="288,16,0,0" VerticalAlignment="Top" Width="97" Height="23"/>
                                 <Button x:Name="SerialPortWriteCmdButton" Content="Write" HorizontalAlignment="Left" Margin="227,61,0,0" VerticalAlignment="Top" Width="158" Height="51">
                                     <i:Interaction.Triggers>
@@ -479,7 +479,7 @@
                                 <TextBlock Text="{Binding SerialportCommandScriptEditorDocument.LineCount}" Margin="386,136,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="33"/>
                             </Grid>
                         </Border>
-                        <TextBox Margin="447,45,10,10" Text="{Binding SerialportCommandLog, UpdateSourceTrigger=PropertyChanged}" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" TextWrapping="Wrap"/>
+                        <TextBox Margin="447,45,10,10" Text="{Binding SerialportCommandLog.Text, Mode=OneWay}" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" TextWrapping="Wrap"/>
                         <TextBlock HorizontalAlignment="Left" Margin="243,14,0,0" Text="REGQ与REGM不兼容与旧版本" TextWrapping="Wrap" VerticalAlignment="Top"/>
                     </Grid>
                 </TabItem>

@@ -9,7 +9,7 @@ namespace MeasureApp.Model
 {
     public static class Utility
     {
-        public static byte[] ToBytesFromHexString(string hexString)
+        public static byte[] Hex2Bytes(string hexString)
         {
             hexString = hexString.Replace(" ", "");
             if (hexString.Length % 2 != 0)
@@ -22,6 +22,11 @@ namespace MeasureApp.Model
                 returnBytes[i] = Convert.ToByte(hexString.Substring(i * 2, 2), 16);
             }
             return returnBytes;
+        }
+
+        public static string Bytes2Hex(byte[] bytes)
+        {
+            return BitConverter.ToString(bytes).Replace("-", "");
         }
 
         public static T TimeoutCheck<T>(int millisecondsTimeout, Func<T> func)

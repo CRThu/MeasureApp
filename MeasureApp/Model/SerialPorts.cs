@@ -83,27 +83,28 @@ namespace MeasureApp.Model
             SerialPortsDict[serialPort].Write(strData);
         }
 
-        public void WriteBytes(string serialPort, byte[] buffer, int bytesCount)
+        public void WriteBytes(string serialPort, byte[] buffer)
         {
-            SerialPortsDict[serialPort].Write(buffer, 0, bytesCount);
+            SerialPortsDict[serialPort].Write(buffer, 0, buffer.Length);
         }
 
         public string ReadExistingString(string serialPort)
         {
-            byte[] buf = new byte[SerialPortsDict[serialPort].BytesToRead];
-            ReadExistingBytes(serialPort, buf);
-            return Encoding.Default.GetString(buf);
+            return Encoding.Default.GetString(ReadExistingBytes(serialPort));
         }
 
-        public void ReadExistingBytes(string serialPort, byte[] responseBytes)
+        public byte[] ReadExistingBytes(string serialPort)
         {
-            int offset = 0, bytesRead;
-
-            while (SerialPortsDict[serialPort].BytesToRead > 0)
+            int offset = 0, bytesReaded;
+            int bytesToRead = SerialPortsDict[serialPort].BytesToRead;
+            byte[] buf = new byte[bytesToRead];
+            while (bytesToRead > 0)
             {
-                bytesRead = SerialPortsDict[serialPort].Read(responseBytes, offset, SerialPortsDict[serialPort].BytesToRead);
-                offset += bytesRead;
+                bytesReaded = SerialPortsDict[serialPort].Read(buf, offset, bytesToRead);
+                offset += bytesReaded;
+                bytesToRead -= bytesReaded;
             }
+            return buf;
         }
 
         public int Read(string serialPort, byte[] responseBytes, int bytesExpected)

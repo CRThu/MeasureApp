@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Ports;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
@@ -77,8 +78,8 @@ namespace MeasureApp.ViewModel
         }
 
         // 串口命令模块监听
-        private string serialportCommandLog;
-        public string SerialportCommandLog
+        private BindableStringBuilder serialportCommandLog = new();
+        public BindableStringBuilder SerialportCommandLog
         {
             get => serialportCommandLog;
             set
@@ -193,7 +194,7 @@ namespace MeasureApp.ViewModel
             int _bytesToRead = SerialPortsInstance.SerialPortsDict[SerialportCommandPortNameSelectedValue].BytesToRead;
             if (_bytesToRead > 0)
             {
-                SerialportCommandLog += SerialPortsInstance.ReadExistingString(SerialportCommandPortNameSelectedValue) + "\n";
+                SerialportCommandLog.AppendLine(SerialPortsInstance.ReadExistingString(SerialportCommandPortNameSelectedValue));
             }
         }
 

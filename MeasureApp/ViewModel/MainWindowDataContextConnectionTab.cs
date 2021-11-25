@@ -281,7 +281,7 @@ namespace MeasureApp.ViewModel
                                 SerialPortRecvDataSerialPortNameSelectedValue = SerialPortsInstance.SerialPortsDict.Keys.First();
                             if (SerialPortsInstance.SerialPortNames.Any() && SerialportCommandPortNameSelectedValue is null)
                                 SerialportCommandPortNameSelectedValue = SerialPortsInstance.SerialPortsDict.Keys.First();
-                            
+
                         }
                         catch (Exception ex)
                         {
@@ -411,6 +411,29 @@ namespace MeasureApp.ViewModel
             }
         }
 
+        // 串口调试模块16进制选择绑定
+        private bool serialPortDebugWriteIsHex;
+        public bool SerialPortDebugWriteIsHex
+        {
+            get => serialPortDebugWriteIsHex;
+            set
+            {
+                serialPortDebugWriteIsHex = value;
+                RaisePropertyChanged(() => SerialPortDebugWriteIsHex);
+            }
+        }
+
+        private bool serialPortDebugReadIsHex;
+        public bool SerialPortDebugReadIsHex
+        {
+            get => serialPortDebugReadIsHex;
+            set
+            {
+                serialPortDebugReadIsHex = value;
+                RaisePropertyChanged(() => SerialPortDebugReadIsHex);
+            }
+        }
+
         // 串口调试模块收发文本框绑定
         private string serialPortDebugWriteCommandText;
         public string SerialPortDebugWriteCommandText
@@ -447,7 +470,14 @@ namespace MeasureApp.ViewModel
                     {
                         try
                         {
-                            SerialPortsInstance.WriteString(SerialportDebugPortNameSelectedValue, SerialPortDebugWriteCommandText);
+                            if (SerialPortDebugWriteIsHex)
+                            {
+                                SerialPortsInstance.WriteBytes(SerialportDebugPortNameSelectedValue, Utility.Hex2Bytes(SerialPortDebugWriteCommandText));
+                            }
+                            else
+                            {
+                                SerialPortsInstance.WriteString(SerialportDebugPortNameSelectedValue, SerialPortDebugWriteCommandText);
+                            }
                         }
                         catch (Exception ex)
                         {
@@ -471,7 +501,9 @@ namespace MeasureApp.ViewModel
                     {
                         try
                         {
-                            SerialPortDebugReadCommandText = SerialPortsInstance.ReadExistingString(SerialportDebugPortNameSelectedValue);
+                            SerialPortDebugReadCommandText = SerialPortDebugReadIsHex
+                                ? Utility.Bytes2Hex(SerialPortsInstance.ReadExistingBytes(SerialportDebugPortNameSelectedValue))
+                                : SerialPortsInstance.ReadExistingString(SerialportDebugPortNameSelectedValue);
                         }
                         catch (Exception ex)
                         {
