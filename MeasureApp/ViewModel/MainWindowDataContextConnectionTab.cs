@@ -126,13 +126,12 @@ namespace MeasureApp.ViewModel
         }
 
         // 串口波特率
-        private string serialportDeviceBaudRateSelectedValue = "9600";
         public string SerialportDeviceBaudRateSelectedValue
         {
-            get => serialportDeviceBaudRateSelectedValue;
+            get => Properties.Settings.Default.DefaultSerialPortBaudRate;
             set
             {
-                serialportDeviceBaudRateSelectedValue = value;
+                Properties.Settings.Default.DefaultSerialPortBaudRate = value;
                 RaisePropertyChanged(() => SerialportDeviceBaudRateSelectedValue);
             }
         }
@@ -150,13 +149,13 @@ namespace MeasureApp.ViewModel
             }
         }
 
-        private string serialportDeviceParitySelectItem = Enum.GetName(typeof(Parity), Parity.None);
+        // Enum.GetName(typeof(Parity), Parity.None);
         public string SerialportDeviceParitySelectItem
         {
-            get => serialportDeviceParitySelectItem;
+            get => Properties.Settings.Default.DefaultSerialPortParity;
             set
             {
-                serialportDeviceParitySelectItem = value;
+                Properties.Settings.Default.DefaultSerialPortParity = value;
                 RaisePropertyChanged(() => SerialportDeviceParitySelectItem);
             }
         }
@@ -173,7 +172,7 @@ namespace MeasureApp.ViewModel
             }
         }
 
-        private int serialportDeviceDataBitsSelectItem = 8;
+        private int serialportDeviceDataBitsSelectItem = Properties.Settings.Default.DefaultSerialPortDataBits;
         public int SerialportDeviceDataBitsSelectItem
         {
             get => serialportDeviceDataBitsSelectItem;
@@ -196,7 +195,7 @@ namespace MeasureApp.ViewModel
             }
         }
 
-        private float serialportDeviceStopBitsSelectItem = 1.0F;
+        private float serialportDeviceStopBitsSelectItem = Properties.Settings.Default.DefaultSerialPortStopBits;
         public float SerialportDeviceStopBitsSelectItem
         {
             get => serialportDeviceStopBitsSelectItem;

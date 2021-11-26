@@ -94,5 +94,53 @@ namespace MeasureApp.Properties {
                 this["DefaultDirectory"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("9600")]
+        public string DefaultSerialPortBaudRate {
+            get {
+                return ((string)(this["DefaultSerialPortBaudRate"]));
+            }
+            set {
+                this["DefaultSerialPortBaudRate"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("None")]
+        public string DefaultSerialPortParity {
+            get {
+                return ((string)(this["DefaultSerialPortParity"]));
+            }
+            set {
+                this["DefaultSerialPortParity"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("8")]
+        public int DefaultSerialPortDataBits {
+            get {
+                return ((int)(this["DefaultSerialPortDataBits"]));
+            }
+            set {
+                this["DefaultSerialPortDataBits"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public float DefaultSerialPortStopBits {
+            get {
+                return ((float)(this["DefaultSerialPortStopBits"]));
+            }
+            set {
+                this["DefaultSerialPortStopBits"] = value;
+            }
+        }
     }
 }

@@ -113,8 +113,6 @@ namespace MeasureApp.Model
             {
                 while (bytesExpected > 0)
                 {
-                    //if (SerialPortsDict[serialPort].BytesToRead > 0)
-                    //{
                     try
                     {
                         bytesRead = SerialPortsDict[serialPort].Read(responseBytes, offset, bytesExpected);
@@ -125,7 +123,6 @@ namespace MeasureApp.Model
                     {
                         break;
                     }
-                    //}
                 }
                 return true;
             });
