@@ -37,7 +37,7 @@ namespace MeasureApp.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("4096")]
+        [global::System.Configuration.DefaultSettingValueAttribute("65536")]
         public int SerialPortReadBufferSize {
             get {
                 return ((int)(this["SerialPortReadBufferSize"]));
@@ -49,7 +49,7 @@ namespace MeasureApp.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("4096")]
+        [global::System.Configuration.DefaultSettingValueAttribute("65536")]
         public int SerialPortWriteBufferSize {
             get {
                 return ((int)(this["SerialPortWriteBufferSize"]));

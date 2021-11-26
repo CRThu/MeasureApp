@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MeasureApp.ViewModel
+namespace MeasureApp.Model
 {
     public class NotificationObjectBase : INotifyPropertyChanged
     {

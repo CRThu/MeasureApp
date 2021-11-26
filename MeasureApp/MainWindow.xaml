@@ -30,6 +30,8 @@
         <viewmodel:AutomationTaskRunButtonConverter x:Key="AutomationTaskRunButtonConverter"/>
         <viewmodel:SerialPortRecvDataTypeToBoolConverter x:Key="SerialPortRecvDataTypeToBoolConverter"/>
         <viewmodel:SerialPortRecvDataEncodeToBoolConverter x:Key="SerialPortRecvDataEncodeToBoolConverter"/>
+        <viewmodel:Bool2ControlVisibilityConverter x:Key="Bool2ControlVisibilityConverter"/>
+        <viewmodel:BoolInverter2ControlVisibilityConverter x:Key="BoolInverter2ControlVisibilityConverter"/>
     </Window.Resources>
     <DockPanel>
         <Grid>
@@ -487,85 +489,90 @@
                     <Grid>
                         <GroupBox Header="传输" HorizontalAlignment="Left" Margin="10,10,0,0" Width="460" Height="392" VerticalAlignment="Top">
                             <Grid>
-                                <TextBlock Text="发送:" HorizontalAlignment="Left" Margin="10,23,0,0" VerticalAlignment="Top" Width="33"/>
-                                <ComboBox x:Name="SerialPortSendCmdSerialPortNameComboBox" ItemsSource="{Binding SerialPortsInstance.SerialPortsDict, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Key" SelectedValue="{Binding SerialPortSendCmdSerialPortNameSelectedValue, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Key" HorizontalAlignment="Left" Margin="48,19,0,0" VerticalAlignment="Top" Width="120" Height="23">
+                                <TextBlock Text="发送:" HorizontalAlignment="Left" Margin="10,23,0,0" VerticalAlignment="Top"/>
+                                <CheckBox Name="SerialPortSendCmdIsHexCheckBox" Content="16进制" IsChecked="{Binding SerialPortSendCmdIsHex}" HorizontalAlignment="Left" Margin="10,53,0,0" VerticalAlignment="Top"/>
+                                <ComboBox x:Name="SerialPortSendCmdSerialPortNameComboBox" ItemsSource="{Binding SerialPortsInstance.SerialPortsDict, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Key" SelectedValue="{Binding SerialPortSendCmdSerialPortNameSelectedValue, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Key" HorizontalAlignment="Left" Margin="328,20,0,0" VerticalAlignment="Top" Width="110" Height="23">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="SelectionChanged">
                                             <viewmodel:EventCommandBase Command="{Binding SerialPortSendCmdChangedEvent}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </ComboBox>
-                                <TextBlock Text="::" HorizontalAlignment="Left" Margin="173,23,0,0" VerticalAlignment="Top" Width="7"/>
-                                <ComboBox x:Name="SerialPortSendCmdCommandNameComboBox" SelectedValue="{Binding SerialportSendCmdCommandNameSelectedValue, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Tag" HorizontalAlignment="Left" Margin="185,19,0,0" VerticalAlignment="Top" Width="120" Height="23">
-                                    <ComboBoxItem Content="SET" Tag="SET"/>
-                                    <ComboBoxItem Content="GET" Tag="GET"/>
-                                    <ComboBoxItem Content="START" Tag="START"/>
-                                    <ComboBoxItem Content="END" Tag="END"/>
-                                    <ComboBoxItem Tag="Others" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
-                                        <TextBox Name="SerialPortSendCmdCommandNameManualTextBox" Margin="0,0,20,0" Width="80" Text="{Binding SerialPortSendCmdCommandNameManualText, UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding SerialPortSendCmdCommandNameManualTextBoxForeGround}">
-                                            <TextBox.Resources>
-                                                <VisualBrush x:Key="HintText"  TileMode="None" Opacity="0.5" Stretch="None" AlignmentX="Left">
-                                                    <VisualBrush.Visual>
-                                                        <TextBlock FontStyle="Italic" Text="自定义命令"/>
-                                                    </VisualBrush.Visual>
-                                                </VisualBrush>
-                                            </TextBox.Resources>
-                                            <TextBox.Style>
-                                                <Style TargetType="{x:Type TextBox}">
-                                                    <Style.Triggers>
-                                                        <Trigger Property="Text" Value="{x:Null}">
-                                                            <Setter Property="Background" Value="{StaticResource HintText}"/>
-                                                        </Trigger>
-                                                        <Trigger Property="Text" Value="">
-                                                            <Setter Property="Background" Value="{StaticResource HintText}"/>
-                                                        </Trigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </TextBox.Style>
-                                            <i:Interaction.Triggers>
-                                                <i:EventTrigger EventName="TextChanged">
-                                                    <viewmodel:EventCommandBase Command="{Binding SerialPortSendCmdChangedEvent}"/>
-                                                </i:EventTrigger>
-                                            </i:Interaction.Triggers>
-                                        </TextBox>
-                                    </ComboBoxItem>
-                                    <i:Interaction.Triggers>
-                                        <i:EventTrigger EventName="SelectionChanged">
-                                            <viewmodel:EventCommandBase Command="{Binding SerialPortSendCmdChangedEvent}"/>
-                                        </i:EventTrigger>
-                                    </i:Interaction.Triggers>
-                                </ComboBox>
-                                <TextBlock Text=";" HorizontalAlignment="Left" Margin="310,23,0,0" VerticalAlignment="Top" Width="7"/>
-                                <TextBox Name="SerialPortSendCmdParamsTextBox" Text="{Binding SerialPortSendCmdParamsText, UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding SerialPortSendCmdParamsTextBoxForeGround}" Margin="48,47,0,0" TextWrapping="Wrap" Height="22" VerticalAlignment="Top" HorizontalAlignment="Left" Width="257">
-                                    <TextBox.Resources>
-                                        <VisualBrush x:Key="HintText"  TileMode="None" Opacity="0.5" Stretch="None" AlignmentX="Left">
-                                            <VisualBrush.Visual>
-                                                <TextBlock FontStyle="Italic" Text="自定义参数，可用&quot; ,.;|&amp;&quot;分隔多个参数"/>
-                                            </VisualBrush.Visual>
-                                        </VisualBrush>
-                                    </TextBox.Resources>
-                                    <TextBox.Style>
-                                        <Style TargetType="{x:Type TextBox}">
-                                            <Style.Triggers>
-                                                <Trigger Property="Text" Value="{x:Null}">
-                                                    <Setter Property="Background" Value="{StaticResource HintText}"/>
-                                                </Trigger>
-                                                <Trigger Property="Text" Value="">
-                                                    <Setter Property="Background" Value="{StaticResource HintText}"/>
-                                                </Trigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBox.Style>
-                                    <i:Interaction.Triggers>
-                                        <i:EventTrigger EventName="TextChanged">
-                                            <viewmodel:EventCommandBase Command="{Binding SerialPortSendCmdChangedEvent}"/>
-                                        </i:EventTrigger>
-                                    </i:Interaction.Triggers>
-                                </TextBox>
-                                <TextBlock Text=";" HorizontalAlignment="Left" Margin="310,51,0,0" VerticalAlignment="Top" Width="7"/>
-                                <TextBlock Text="预览:" HorizontalAlignment="Left" Margin="10,79,0,0" VerticalAlignment="Top" Width="33"/>
-                                <TextBlock Name="SerialPortSendCmdPreviewTextBlock" Text="{Binding SerialPortSendCmdPreviewText}" HorizontalAlignment="Left" Margin="48,79,0,0" VerticalAlignment="Top" Width="269"/>
-                                <Button Name="SerialPortSendCmdButton" Content="发送命令" HorizontalAlignment="Left" Margin="328,19,0,0" VerticalAlignment="Top" Width="110" Height="75">
+                                <Grid HorizontalAlignment="Left" Width="250" Height="93" VerticalAlignment="Top" Margin="73,10,0,0" Visibility="{Binding ElementName=SerialPortSendCmdIsHexCheckBox, Path=IsChecked, Converter={StaticResource BoolInverter2ControlVisibilityConverter}}">
+                                    <ComboBox x:Name="SerialPortSendCmdCommandNameComboBox" SelectedValue="{Binding SerialportSendCmdCommandNameSelectedValue, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Tag" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="227" Height="23">
+                                        <ComboBoxItem Content="SET" Tag="SET"/>
+                                        <ComboBoxItem Content="GET" Tag="GET"/>
+                                        <ComboBoxItem Content="START" Tag="START"/>
+                                        <ComboBoxItem Content="END" Tag="END"/>
+                                        <ComboBoxItem Tag="Others" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+                                            <TextBox Name="SerialPortSendCmdCommandNameManualTextBox" Margin="0,0,20,0" Width="80" Text="{Binding SerialPortSendCmdCommandNameManualText, UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding SerialPortSendCmdCommandNameManualTextBoxForeGround}">
+                                                <TextBox.Resources>
+                                                    <VisualBrush x:Key="HintText"  TileMode="None" Opacity="0.5" Stretch="None" AlignmentX="Left">
+                                                        <VisualBrush.Visual>
+                                                            <TextBlock FontStyle="Italic" Text="自定义命令"/>
+                                                        </VisualBrush.Visual>
+                                                    </VisualBrush>
+                                                </TextBox.Resources>
+                                                <TextBox.Style>
+                                                    <Style TargetType="{x:Type TextBox}">
+                                                        <Style.Triggers>
+                                                            <Trigger Property="Text" Value="{x:Null}">
+                                                                <Setter Property="Background" Value="{StaticResource HintText}"/>
+                                                            </Trigger>
+                                                            <Trigger Property="Text" Value="">
+                                                                <Setter Property="Background" Value="{StaticResource HintText}"/>
+                                                            </Trigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBox.Style>
+                                                <i:Interaction.Triggers>
+                                                    <i:EventTrigger EventName="TextChanged">
+                                                        <viewmodel:EventCommandBase Command="{Binding SerialPortSendCmdChangedEvent}"/>
+                                                    </i:EventTrigger>
+                                                </i:Interaction.Triggers>
+                                            </TextBox>
+                                        </ComboBoxItem>
+                                        <i:Interaction.Triggers>
+                                            <i:EventTrigger EventName="SelectionChanged">
+                                                <viewmodel:EventCommandBase Command="{Binding SerialPortSendCmdChangedEvent}"/>
+                                            </i:EventTrigger>
+                                        </i:Interaction.Triggers>
+                                    </ComboBox>
+                                    <TextBlock Text=";" HorizontalAlignment="Left" Margin="242,14,0,0" VerticalAlignment="Top" Width="7"/>
+                                    <TextBox Name="SerialPortSendCmdParamsTextBox" Text="{Binding SerialPortSendCmdParamsText, UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding SerialPortSendCmdParamsTextBoxForeGround}" Margin="10,38,0,0" TextWrapping="Wrap" Height="22" VerticalAlignment="Top" HorizontalAlignment="Left" Width="227">
+                                        <TextBox.Resources>
+                                            <VisualBrush x:Key="HintText"  TileMode="None" Opacity="0.5" Stretch="None" AlignmentX="Left">
+                                                <VisualBrush.Visual>
+                                                    <TextBlock FontStyle="Italic" Text="自定义参数，可用&quot; ,.;|&amp;&quot;分隔多个参数"/>
+                                                </VisualBrush.Visual>
+                                            </VisualBrush>
+                                        </TextBox.Resources>
+                                        <TextBox.Style>
+                                            <Style TargetType="{x:Type TextBox}">
+                                                <Style.Triggers>
+                                                    <Trigger Property="Text" Value="{x:Null}">
+                                                        <Setter Property="Background" Value="{StaticResource HintText}"/>
+                                                    </Trigger>
+                                                    <Trigger Property="Text" Value="">
+                                                        <Setter Property="Background" Value="{StaticResource HintText}"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBox.Style>
+                                        <i:Interaction.Triggers>
+                                            <i:EventTrigger EventName="TextChanged">
+                                                <viewmodel:EventCommandBase Command="{Binding SerialPortSendCmdChangedEvent}"/>
+                                            </i:EventTrigger>
+                                        </i:Interaction.Triggers>
+                                    </TextBox>
+                                    <TextBlock Text=";" HorizontalAlignment="Left" Margin="242,41,0,0" VerticalAlignment="Top" Width="7"/>
+                                    <TextBlock Text="预览:" HorizontalAlignment="Left" Margin="10,68,0,0" VerticalAlignment="Top" Width="33"/>
+                                    <TextBlock Name="SerialPortSendCmdPreviewTextBlock" Text="{Binding SerialPortSendCmdPreviewText}" HorizontalAlignment="Left" Margin="48,68,0,0" VerticalAlignment="Top" Width="198"/>
+                                </Grid>
+                                <Grid HorizontalAlignment="Left" Width="250" Height="93" VerticalAlignment="Top" Margin="73,10,0,0" Visibility="{Binding ElementName=SerialPortSendCmdIsHexCheckBox, Path=IsChecked, Converter={StaticResource Bool2ControlVisibilityConverter}}">
+                                    <TextBox Text="{Binding SerialPortSendCmdHexText}" Margin="10,10,10,10"/>
+                                </Grid>
+                                <Button Name="SerialPortSendCmdButton" Content="发送命令" HorizontalAlignment="Left" Margin="328,48,0,0" VerticalAlignment="Top" Width="110" Height="46">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
                                             <viewmodel:EventCommandBase Command="{Binding SerialPortSendCmdEvent}"/>

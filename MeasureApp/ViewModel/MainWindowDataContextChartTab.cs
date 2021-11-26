@@ -10,6 +10,7 @@ using LiveCharts.Configurations;
 using LiveCharts.Definitions.Series;
 using LiveCharts.Geared;
 using LiveCharts.Wpf;
+using MeasureApp.Model;
 
 namespace MeasureApp.ViewModel
 {

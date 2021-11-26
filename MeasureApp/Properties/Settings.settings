@@ -6,10 +6,10 @@
       <Value Profile="(Default)">5000</Value>
     </Setting>
     <Setting Name="SerialPortReadBufferSize" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">4096</Value>
+      <Value Profile="(Default)">65536</Value>
     </Setting>
     <Setting Name="SerialPortWriteBufferSize" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">4096</Value>
+      <Value Profile="(Default)">65536</Value>
     </Setting>
     <Setting Name="SerialPortReadTimeout" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">1000</Value>

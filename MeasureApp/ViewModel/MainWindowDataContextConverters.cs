@@ -6,6 +6,7 @@ using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Data;
 
 namespace MeasureApp.ViewModel
@@ -132,6 +133,34 @@ namespace MeasureApp.ViewModel
         {
             bool isChecked = (bool)value;
             return !isChecked ? null : (object)(SerialPortRecvDataEncodeEnum)int.Parse(parameter.ToString());
+        }
+    }
+
+    // bool转控件Visiblilty属性
+    // Visibility="{Binding ElementName=SerialPortSendCmdIsHexCheckBox, Path=IsChecked, Converter={StaticResource BoolInverter2ControlVisibilityConverter}}"
+    public class Bool2ControlVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return (bool)value ? Visibility.Visible : Visibility.Hidden;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class BoolInverter2ControlVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return !(bool)value ? Visibility.Visible : Visibility.Hidden;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
         }
     }
 }

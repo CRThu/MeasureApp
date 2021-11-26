@@ -72,6 +72,29 @@ namespace MeasureApp.ViewModel
             }
         }
 
+        // 串口指令发送模块参数16进制
+        private bool serialPortSendCmdIsHex;
+        public bool SerialPortSendCmdIsHex
+        {
+            get => serialPortSendCmdIsHex;
+            set
+            {
+                serialPortSendCmdIsHex = value;
+                RaisePropertyChanged(() => SerialPortSendCmdIsHex);
+            }
+        }
+
+        // 串口指令发送模块参数16进制
+        private string serialPortSendCmdHexText;
+        public string SerialPortSendCmdHexText
+        {
+            get => serialPortSendCmdHexText;
+            set
+            {
+                serialPortSendCmdHexText = value;
+                RaisePropertyChanged(() => SerialPortSendCmdHexText);
+            }
+        }
 
         // 串口指令发送模块参数文本框数据绑定
         private string serialPortSendCmdParamsText;
@@ -222,10 +245,9 @@ namespace MeasureApp.ViewModel
                     {
                         try
                         {
-                            string serialPortName = SerialPortSendCmdSerialPortNameSelectedValue ?? "";
                             string commandName = SerialportSendCmdCommandNameSelectedValue == "Others" ? SerialPortSendCmdCommandNameManualText : SerialportSendCmdCommandNameSelectedValue;
                             string[] CommandElements = (commandName + ";" + SerialPortSendCmdParamsText ?? "").Split(" ,.;|&".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-                            SerialPortSendCmdPreviewText = $"{serialPortName}::{string.Join(";", CommandElements)};";
+                            SerialPortSendCmdPreviewText = $"{string.Join(";", CommandElements)};";
 
                             SerialPortSendCmdCommandNameManualTextBoxForeGround = new SolidColorBrush(Regex.IsMatch(SerialPortSendCmdCommandNameManualText ?? "", @"[^a-zA-Z0-9]") ? Colors.Red : Colors.Black);
                             SerialPortSendCmdParamsTextBoxForeGround = new SolidColorBrush(Regex.IsMatch(SerialPortSendCmdParamsText ?? "", @"[^x00-xff\s,.;|&]") ? Colors.Red : Colors.Black);
@@ -252,8 +274,14 @@ namespace MeasureApp.ViewModel
                     {
                         try
                         {
-                            string[] splitCmds = SerialPortSendCmdPreviewText.Split(new string[] { "::" }, StringSplitOptions.RemoveEmptyEntries);
-                            SerialPortsInstance.WriteString(splitCmds[0], splitCmds[1]);
+                            if(SerialPortSendCmdIsHex)
+                            {
+                                SerialPortsInstance.WriteBytes(SerialPortSendCmdSerialPortNameSelectedValue, Utility.Hex2Bytes(SerialPortSendCmdHexText));
+                            }
+                            else
+                            {
+                                SerialPortsInstance.WriteString(SerialPortSendCmdSerialPortNameSelectedValue, SerialPortSendCmdPreviewText);
+                            }
                         }
                         catch (Exception ex)
                         {
@@ -318,11 +346,11 @@ namespace MeasureApp.ViewModel
                                 case SerialPortRecvDataEncodeEnum.Bytes:
                                     int bytesLength = RequiredBytesLength;
                                     byte[] recvBytes = new byte[bytesLength];
-                                    int recvBytesLen = SerialPortsInstance.Read(serialPortName, recvBytes, bytesLength);
+                                    int recvBytesLen = SerialPortsInstance.ReadBytes(serialPortName, recvBytes, bytesLength);
                                     if (recvBytesLen != recvBytes.Length)
                                     {
                                         _ = MessageBox.Show($"读取超时, RecvLength = {recvBytesLen}/{recvBytes.Length}!");
-                                        SerialPortRecvDataDisplayText = BitConverter.ToString(recvBytes);
+                                        SerialPortRecvDataDisplayText = Utility.Bytes2Hex(recvBytes);
                                         return;
                                     }
                                     switch (SerialPortRecvDataTypeEnum)

@@ -95,45 +95,40 @@ namespace MeasureApp.Model
 
         public byte[] ReadExistingBytes(string serialPort)
         {
-            int offset = 0, bytesReaded;
-            int bytesToRead = SerialPortsDict[serialPort].BytesToRead;
-            byte[] buf = new byte[bytesToRead];
-            while (bytesToRead > 0)
-            {
-                bytesReaded = SerialPortsDict[serialPort].Read(buf, offset, bytesToRead);
-                offset += bytesReaded;
-                bytesToRead -= bytesReaded;
-            }
+            int len = SerialPortsDict[serialPort].BytesToRead;
+            byte[] buf = new byte[len];
+            ReadBytes(serialPort, buf, len);
             return buf;
         }
 
-        public int Read(string serialPort, byte[] responseBytes, int bytesExpected)
+        public int ReadBytes(string serialPort, byte[] responseBytes, int bytesExpected)
         {
-            return Read(serialPort, responseBytes, bytesExpected, SerialPortsDict[serialPort].ReadTimeout);
+            return ReadBytes(serialPort, responseBytes, bytesExpected, SerialPortsDict[serialPort].ReadTimeout);
         }
 
-        public int Read(string serialPort, byte[] responseBytes, int bytesExpected, int millisecondsTimeout)
+        public int ReadBytes(string serialPort, byte[] responseBytes, int bytesExpected, int millisecondsTimeout)
         {
             int offset = 0, bytesRead;
             bool result = Utility.TimeoutCheck(millisecondsTimeout, () =>
-             {
-                 while (bytesExpected > 0)
-                 {
-                     if (SerialPortsDict[serialPort].BytesToRead > 0)
-                     {
-                         try
-                         {
-                             bytesRead = SerialPortsDict[serialPort].Read(responseBytes, offset, bytesExpected);
-                             offset += bytesRead;
-                             bytesExpected -= bytesRead;
-                         }
-                         catch (Exception)
-                         {
-                         }
-                     }
-                 }
-                 return true;
-             });
+            {
+                while (bytesExpected > 0)
+                {
+                    //if (SerialPortsDict[serialPort].BytesToRead > 0)
+                    //{
+                    try
+                    {
+                        bytesRead = SerialPortsDict[serialPort].Read(responseBytes, offset, bytesExpected);
+                        offset += bytesRead;
+                        bytesExpected -= bytesRead;
+                    }
+                    catch (Exception)
+                    {
+                        break;
+                    }
+                    //}
+                }
+                return true;
+            });
             return offset;
         }
 
