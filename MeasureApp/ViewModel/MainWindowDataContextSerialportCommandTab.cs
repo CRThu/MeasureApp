@@ -45,14 +45,41 @@ namespace MeasureApp.ViewModel
 
 
         // GUI绑定
+        // TODO
         private ObservableCollection<SerialportCommandModel> serialportCommandModels = new()
         {
+            new SerialportCommandModel("初始化", 0, "RESET"),
+            new SerialportCommandModel("初始化", 0, "OPEN"),
             new SerialportCommandModel("写字节", 1, "DATW"),
             new SerialportCommandModel("读字节", 0, "DATR"),
             new SerialportCommandModel("写寄存器", 2, "REGW"),
             new SerialportCommandModel("读寄存器", 1, "REGR"),
-            new SerialportCommandModel("写寄存器位", 3, "REGM"),
-            new SerialportCommandModel("读寄存器位", 2, "REGQ"),
+            new SerialportCommandModel("写寄存器位", 3, "REGM",
+                (p) =>
+                {
+                    int[] regBitsPos = p[1].Split(':').Select(s => Convert.ToInt32(s)).ToArray();
+                    if (regBitsPos.Length != 2)
+                        throw new ArgumentOutOfRangeException($"regBitsPos.Count() = {regBitsPos.Length}");
+                    int regBitsMSB = regBitsPos.Max();
+                    int regBitsLSB = regBitsPos.Min();
+                    int regBitsLen = regBitsMSB - regBitsLSB + 1;
+                    // Modify REG21[10:0]=0x180
+                    // REGM;21;0;11;180;
+                    return new dynamic[] { p[0], regBitsLSB, regBitsLen, p[2] };
+                }),
+            new SerialportCommandModel("读寄存器位", 2, "REGQ",
+                (p) =>
+                {
+                    int[] regBitsPos = p[1].Split(':').Select(s => Convert.ToInt32(s)).ToArray();
+                    if (regBitsPos.Length != 2)
+                        throw new ArgumentOutOfRangeException($"regBitsPos.Count() = {regBitsPos.Length}");
+                    int regBitsMSB = regBitsPos.Max();
+                    int regBitsLSB = regBitsPos.Min();
+                    int regBitsLen = regBitsMSB - regBitsLSB + 1;
+                    // Query REG21[10:0]=0x180
+                    // REGQ;21;0;11;
+                    return new dynamic[] { p[0], regBitsLSB, regBitsLen };
+                }),
         };
 
         public ObservableCollection<SerialportCommandModel> SerialportCommandModels
@@ -78,8 +105,10 @@ namespace MeasureApp.ViewModel
         }
 
         // 串口命令模块监听
-        private BindableStringBuilder serialportCommandLog = new();
-        public BindableStringBuilder SerialportCommandLog
+        // TODO
+        private object serialPortCommandLoglocker = new();
+        private ObservableRangeCollection<string> serialportCommandLog = new();
+        public ObservableRangeCollection<string> SerialportCommandLog
         {
             get => serialportCommandLog;
             set
@@ -141,7 +170,7 @@ namespace MeasureApp.ViewModel
                             {
                                 int index = Convert.ToInt32(param);
                                 string com = SerialportCommandPortNameSelectedValue;
-                                List<dynamic> vs = new(SerialportCommandModels[index].sendParamsProc(SerialportCommandModels[index].ParamTexts));
+                                List<dynamic> vs = new(SerialportCommandModels[index].SendParamsTexts);
                                 vs.Insert(0, SerialportCommandModels[index].CommandText);
                                 SerialPortsInstance.WriteString(com, $"{string.Join(";", vs)};");
                             }
@@ -191,10 +220,22 @@ namespace MeasureApp.ViewModel
         // 串口监听回调
         private void SerialPortDataReceivedCallBack(object sender, SerialDataReceivedEventArgs e)
         {
-            int _bytesToRead = SerialPortsInstance.SerialPortsDict[SerialportCommandPortNameSelectedValue].BytesToRead;
-            if (_bytesToRead > 0)
+            try
             {
-                SerialportCommandLog.AppendLine(SerialPortsInstance.ReadExistingString(SerialportCommandPortNameSelectedValue));
+                int _bytesToRead = SerialPortsInstance.SerialPortsDict[SerialportCommandPortNameSelectedValue].BytesToRead;
+                if (_bytesToRead > 0)
+                {
+                    //SerialportCommandLog.AppendLine(SerialPortsInstance.ReadExistingString(SerialportCommandPortNameSelectedValue));
+                    lock (serialPortCommandLoglocker)
+                    {
+                        SerialportCommandLog.AddRange(SerialPortsInstance.ReadExistingString(SerialportCommandPortNameSelectedValue)
+                        .Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries));
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
             }
         }
 

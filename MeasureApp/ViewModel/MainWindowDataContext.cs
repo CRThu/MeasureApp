@@ -7,6 +7,7 @@ using LiveCharts.Geared;
 using LiveCharts.Wpf;
 using System.Windows.Media;
 using System.Diagnostics;
+using System.Windows.Data;
 
 namespace MeasureApp.ViewModel
 {
@@ -26,6 +27,11 @@ namespace MeasureApp.ViewModel
             PlotViewLineValues.WithQuality(Quality.Highest);
             //PlotViewLineValues.CollectionChanged += (_, _) => MessageBox.Show($"{PlotViewLineValues.Count}");
 
+            // async
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                BindingOperations.EnableCollectionSynchronization(SerialportCommandLog, serialPortCommandLoglocker);
+            });
         }
 
         // 3458A 通信类

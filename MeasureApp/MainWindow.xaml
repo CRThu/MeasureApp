@@ -10,7 +10,7 @@
         xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         xmlns:geared="clr-namespace:LiveCharts.Geared;assembly=LiveCharts.Geared"
         mc:Ignorable="d"
-        Title="MainWindow" Height="504.4" Width="866.4">
+        Title="MainWindow" Height="550" Width="880">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <viewmodel:EventCommandBase Command="{Binding MainWindowLoadedEvent}"/>
@@ -345,7 +345,7 @@
                 <TabItem Header="串口指令通信">
                     <Grid>
                         <TextBlock Text="串口选择：" TextWrapping="Wrap" Margin="10,14,0,0" TextAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Left"/>
-                        <ComboBox x:Name="SerialPortCommandSerialPortSelectComboBox" ItemsSource="{Binding SerialPortsInstance.SerialPortsDict, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Key" SelectedValue="{Binding SerialportCommandPortNameSelectedValue, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Key" HorizontalAlignment="Left" Margin="75,10,0,0" VerticalAlignment="Top" Width="97" Height="23"/>
+                        <ComboBox ItemsSource="{Binding SerialPortsInstance.SerialPortsDict, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Key" SelectedValue="{Binding SerialportCommandPortNameSelectedValue, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Key" HorizontalAlignment="Left" Margin="75,10,0,0" VerticalAlignment="Top" Width="97" Height="23"/>
                         <Button Content="{Binding SerialPortCommandIsListeningDataReceived,Converter={StaticResource SerialPortCommandIsListeningButtonContentConverter}}" Margin="447,10,0,0" HorizontalAlignment="Left" Width="106" Height="23" VerticalAlignment="Top">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="Click">
@@ -353,7 +353,7 @@
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </Button>
-                        <Border BorderBrush="Gray" BorderThickness="1.5" Margin="10,45,0,0" Height="185" Width="432" VerticalAlignment="Top" HorizontalAlignment="Left">
+                        <Border BorderBrush="Gray" BorderThickness="1.5" Margin="10,38,0,0" Height="218" Width="432" VerticalAlignment="Top" HorizontalAlignment="Left">
                             <Grid Name="gridview">
                                 <!--ShowGridLines="True"-->
                                 <Grid.ColumnDefinitions>
@@ -370,70 +370,86 @@
                                     <RowDefinition Height="30"/>
                                     <RowDefinition Height="30"/>
                                     <RowDefinition Height="30"/>
+                                    <RowDefinition Height="30"/>
                                     <RowDefinition Height="1*"/>
                                 </Grid.RowDefinitions>
                                 <!--TODO-->
                                 <TextBlock Margin="5,5,5,5" Text="{Binding SerialportCommandModels[0].CommandInfo}" Grid.Row="0" Grid.Column="0"/>
-                                <TextBox Margin="5,5,5,5" Text="{Binding SerialportCommandModels[0].ParamTexts[0]}" Grid.Row="0" Grid.Column="1"/>
-                                <Button Margin="5,5,5,5" Content="{Binding SerialportCommandModels[0].CommandText}" Grid.Row="0" Grid.Column="4">
+                                <Button Margin="5,5,5,5" Content="{Binding SerialportCommandModels[0].CommandText}" Grid.Row="0" Grid.Column="3">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
                                             <viewmodel:EventCommandBase Command="{Binding SerialportCommandSendEvent}" CommandParameter="0"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
-                                <TextBlock Margin="5,5,5,5" Text="{Binding SerialportCommandModels[1].CommandInfo}" Grid.Row="1" Grid.Column="0"/>
-                                <Button Margin="5,5,5,5" Content="{Binding SerialportCommandModels[1].CommandText}" Grid.Row="1" Grid.Column="4">
+                                <Button Margin="5,5,5,5" Content="{Binding SerialportCommandModels[1].CommandText}" Grid.Row="0" Grid.Column="4">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
                                             <viewmodel:EventCommandBase Command="{Binding SerialportCommandSendEvent}" CommandParameter="1"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
-                                <TextBlock Margin="5,5,5,5" Text="{Binding SerialportCommandModels[2].CommandInfo}" Grid.Row="2" Grid.Column="0"/>
-                                <TextBox Margin="5,5,5,5" Text="{Binding SerialportCommandModels[2].ParamTexts[0]}" Grid.Row="2" Grid.Column="1"/>
-                                <TextBox Margin="5,5,5,5" Text="{Binding SerialportCommandModels[2].ParamTexts[1]}" Grid.Row="2" Grid.Column="2"/>
-                                <Button Margin="5,5,5,5" Content="{Binding SerialportCommandModels[2].CommandText}" Grid.Row="2" Grid.Column="4">
+                                <TextBlock Margin="5,5,5,5" Text="{Binding SerialportCommandModels[2].CommandInfo}" Grid.Row="1" Grid.Column="0"/>
+                                <TextBox Margin="5,5,5,5" Text="{Binding SerialportCommandModels[2].ParamTexts[0]}" Grid.Row="1" Grid.Column="1"/>
+                                <Button Margin="5,5,5,5" Content="{Binding SerialportCommandModels[2].CommandText}" Grid.Row="1" Grid.Column="4">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
                                             <viewmodel:EventCommandBase Command="{Binding SerialportCommandSendEvent}" CommandParameter="2"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
-                                <TextBlock Margin="5,5,5,5" Text="{Binding SerialportCommandModels[3].CommandInfo}" Grid.Row="3" Grid.Column="0"/>
-                                <TextBox Margin="5,5,5,5" Text="{Binding SerialportCommandModels[3].ParamTexts[0]}" Grid.Row="3" Grid.Column="1"/>
-                                <Button Margin="5,5,5,5" Content="{Binding SerialportCommandModels[3].CommandText}" Grid.Row="3" Grid.Column="4">
+                                <TextBlock Margin="5,5,5,5" Text="{Binding SerialportCommandModels[3].CommandInfo}" Grid.Row="2" Grid.Column="0"/>
+                                <Button Margin="5,5,5,5" Content="{Binding SerialportCommandModels[3].CommandText}" Grid.Row="2" Grid.Column="4">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
                                             <viewmodel:EventCommandBase Command="{Binding SerialportCommandSendEvent}" CommandParameter="3"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
-                                <TextBlock Margin="5,5,5,5" Text="{Binding SerialportCommandModels[4].CommandInfo}" Grid.Row="4" Grid.Column="0"/>
-                                <TextBox Margin="5,5,5,5" Text="{Binding SerialportCommandModels[4].ParamTexts[0]}" Grid.Row="4" Grid.Column="1"/>
-                                <TextBox Margin="5,5,5,5" Text="{Binding SerialportCommandModels[4].ParamTexts[1]}" Grid.Row="4" Grid.Column="2"/>
-                                <TextBox Margin="5,5,5,5" Text="{Binding SerialportCommandModels[4].ParamTexts[2]}" Grid.Row="4" Grid.Column="3"/>
-                                <Button Margin="5,5,5,5" Content="{Binding SerialportCommandModels[4].CommandText}" Grid.Row="4" Grid.Column="4">
+                                <TextBlock Margin="5,5,5,5" Text="{Binding SerialportCommandModels[4].CommandInfo}" Grid.Row="3" Grid.Column="0"/>
+                                <TextBox Margin="5,5,5,5" Text="{Binding SerialportCommandModels[4].ParamTexts[0]}" Grid.Row="3" Grid.Column="1"/>
+                                <TextBox Margin="5,5,5,5" Text="{Binding SerialportCommandModels[4].ParamTexts[1]}" Grid.Row="3" Grid.Column="2"/>
+                                <Button Margin="5,5,5,5" Content="{Binding SerialportCommandModels[4].CommandText}" Grid.Row="3" Grid.Column="4">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
                                             <viewmodel:EventCommandBase Command="{Binding SerialportCommandSendEvent}" CommandParameter="4"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
-                                <TextBlock Margin="5,5,5,5" Text="{Binding SerialportCommandModels[5].CommandInfo}" Grid.Row="5" Grid.Column="0"/>
-                                <TextBox Margin="5,5,5,5" Text="{Binding SerialportCommandModels[5].ParamTexts[0]}" Grid.Row="5" Grid.Column="1"/>
-                                <TextBox Margin="5,5,5,5" Text="{Binding SerialportCommandModels[5].ParamTexts[1]}" Grid.Row="5" Grid.Column="2"/>
-                                <Button Margin="5,5,5,5" Content="{Binding SerialportCommandModels[5].CommandText}" Grid.Row="5" Grid.Column="4">
+                                <TextBlock Margin="5,5,5,5" Text="{Binding SerialportCommandModels[5].CommandInfo}" Grid.Row="4" Grid.Column="0"/>
+                                <TextBox Margin="5,5,5,5" Text="{Binding SerialportCommandModels[5].ParamTexts[0]}" Grid.Row="4" Grid.Column="1"/>
+                                <Button Margin="5,5,5,5" Content="{Binding SerialportCommandModels[5].CommandText}" Grid.Row="4" Grid.Column="4">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
                                             <viewmodel:EventCommandBase Command="{Binding SerialportCommandSendEvent}" CommandParameter="5"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
+                                <TextBlock Margin="5,5,5,5" Text="{Binding SerialportCommandModels[6].CommandInfo}" Grid.Row="5" Grid.Column="0"/>
+                                <TextBox Margin="5,5,5,5" Text="{Binding SerialportCommandModels[6].ParamTexts[0]}" Grid.Row="5" Grid.Column="1"/>
+                                <TextBox Margin="5,5,5,5" Text="{Binding SerialportCommandModels[6].ParamTexts[1]}" Grid.Row="5" Grid.Column="2"/>
+                                <TextBox Margin="5,5,5,5" Text="{Binding SerialportCommandModels[6].ParamTexts[2]}" Grid.Row="5" Grid.Column="3"/>
+                                <Button Margin="5,5,5,5" Content="{Binding SerialportCommandModels[6].CommandText}" Grid.Row="5" Grid.Column="4">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <viewmodel:EventCommandBase Command="{Binding SerialportCommandSendEvent}" CommandParameter="6"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Button>
+                                <TextBlock Margin="5,5,5,5" Text="{Binding SerialportCommandModels[7].CommandInfo}" Grid.Row="6" Grid.Column="0"/>
+                                <TextBox Margin="5,5,5,5" Text="{Binding SerialportCommandModels[7].ParamTexts[0]}" Grid.Row="6" Grid.Column="1"/>
+                                <TextBox Margin="5,5,5,5" Text="{Binding SerialportCommandModels[7].ParamTexts[1]}" Grid.Row="6" Grid.Column="2"/>
+                                <Button Margin="5,5,5,5" Content="{Binding SerialportCommandModels[7].CommandText}" Grid.Row="6" Grid.Column="4">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <viewmodel:EventCommandBase Command="{Binding SerialportCommandSendEvent}" CommandParameter="7"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Button>
                             </Grid>
                         </Border>
 
-                        <Border Margin="10,235,0,10" HorizontalAlignment="Left" Width="432" BorderBrush="Gray" BorderThickness="1.5">
+                        <Border Margin="10,261,0,10" HorizontalAlignment="Left" Width="432" BorderBrush="Gray" BorderThickness="1.5">
                             <Grid>
                                 <view:BindableAvalonEditor Document="{Binding SerialportCommandScriptEditorDocument}" Margin="5,5,0,5" ShowLineNumbers="True" FontFamily="Consolas" FontSize="10pt" HorizontalAlignment="Left" Width="284"/>
                                 <Button Content="加载" Margin="294,10,0,0" VerticalAlignment="Top" Height="28" HorizontalAlignment="Left" Width="60">
@@ -481,8 +497,8 @@
                                 <TextBlock Text="{Binding SerialportCommandScriptEditorDocument.LineCount}" Margin="386,136,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="33"/>
                             </Grid>
                         </Border>
-                        <TextBox Margin="447,45,10,10" Text="{Binding SerialportCommandLog.Text, Mode=OneWay}" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" TextWrapping="Wrap"/>
-                        <TextBlock HorizontalAlignment="Left" Margin="243,14,0,0" Text="REGQ与REGM不兼容与旧版本" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                        <!--<TextBox Margin="447,45,10,10" Text="{Binding SerialportCommandLog.Text, Mode=OneWay}" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" TextWrapping="Wrap"/>-->
+                        <ListView Margin="447,38,10,10" ItemsSource="{Binding SerialportCommandLog}"/>
                     </Grid>
                 </TabItem>
                 <TabItem Header="串口数据通信">

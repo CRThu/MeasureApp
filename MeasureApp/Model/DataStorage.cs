@@ -14,6 +14,7 @@ namespace MeasureApp.Model
 {
     public class DataStorage : NotificationObjectBase
     {
+        // TODO 是否可以直接lock整个dictionary保证线程安全
         [JsonIgnore]
         public Dictionary<string, object> lockers = new();
 

@@ -60,5 +60,11 @@ namespace MeasureApp.Model
                 RaisePropertyChanged(() => ParamTexts);
             }
         }
+
+        // 传出参数
+        public dynamic[] SendParamsTexts
+        {
+            get => sendParamsProc(ParamTexts);
+        }
     }
 }
