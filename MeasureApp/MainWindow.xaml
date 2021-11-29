@@ -349,7 +349,21 @@
                         <Button Content="{Binding SerialPortCommandIsListeningDataReceived,Converter={StaticResource SerialPortCommandIsListeningButtonContentConverter}}" Margin="447,10,0,0" HorizontalAlignment="Left" Width="106" Height="23" VerticalAlignment="Top">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="Click">
-                                    <viewmodel:EventCommandBase Command="{Binding SerialPortCommandListenEvent}" CommandParameter="Add"/>
+                                    <viewmodel:EventCommandBase Command="{Binding SerialPortCommandListenEvent}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </Button>
+                        <Button Content="清空记录" Margin="558,10,0,0" HorizontalAlignment="Left" Width="106" Height="23" VerticalAlignment="Top">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="Click">
+                                    <viewmodel:EventCommandBase Command="{Binding SerialPortCommandCleanLogEvent}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </Button>
+                        <Button Content="导出记录" Margin="669,10,0,0" HorizontalAlignment="Left" Width="106" Height="23" VerticalAlignment="Top">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="Click">
+                                    <viewmodel:EventCommandBase Command="{Binding SerialPortCommandSaveLogEvent}"/>
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </Button>

@@ -108,7 +108,8 @@ namespace MeasureApp.ViewModel
                                 Title = "存储数据",
                                 FileName = DataStorage.GenerateFileName(dataStorageKey),
                                 DefaultExt = ".txt",
-                                Filter = "Text File|*.txt"
+                                Filter = "Text File|*.txt",
+                                InitialDirectory = Properties.Settings.Default.DefaultDirectory
                             };
                             if (saveFileDialog.ShowDialog() == true)
                             {
@@ -264,7 +265,8 @@ namespace MeasureApp.ViewModel
                                 Title = "存储数据",
                                 FileName = $"DataStorage.{DataStorage.GenerateDateTimeNow()}.json",
                                 DefaultExt = ".json",
-                                Filter = "Json File|*.json"
+                                Filter = "Json File|*.json",
+                                InitialDirectory = Properties.Settings.Default.DefaultDirectory
                             };
                             if (saveFileDialog.ShowDialog() == true)
                             {

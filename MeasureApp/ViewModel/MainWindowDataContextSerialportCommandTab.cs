@@ -217,6 +217,66 @@ namespace MeasureApp.ViewModel
             }
         }
 
+        // 串口记录清空
+        private CommandBase serialPortCommandCleanLogEvent;
+        public CommandBase SerialPortCommandCleanLogEvent
+        {
+            get
+            {
+                if (serialPortCommandCleanLogEvent == null)
+                {
+                    serialPortCommandCleanLogEvent = new CommandBase(new Action<object>(param =>
+                    {
+                        try
+                        {
+                            SerialportCommandLog.Clear();
+                        }
+                        catch (Exception ex)
+                        {
+                            _ = MessageBox.Show(ex.ToString());
+                        }
+                    }));
+                }
+                return serialPortCommandCleanLogEvent;
+            }
+        }
+
+        // 串口记录导出
+        private CommandBase serialPortCommandSaveLogEvent;
+        public CommandBase SerialPortCommandSaveLogEvent
+        {
+            get
+            {
+                if (serialPortCommandSaveLogEvent == null)
+                {
+                    serialPortCommandSaveLogEvent = new CommandBase(new Action<object>(param =>
+                    {
+                        try
+                        {
+                            SaveFileDialog saveFileDialog = new()
+                            {
+                                Title = "存储数据",
+                                FileName = "SerialPortLog",
+                                DefaultExt = ".log",
+                                Filter = "Log File|*.log",
+                                InitialDirectory = Properties.Settings.Default.DefaultDirectory
+                            };
+                            if (saveFileDialog.ShowDialog() == true)
+                            {
+                                Properties.Settings.Default.DefaultDirectory = Path.GetDirectoryName(saveFileDialog.FileName);
+                                File.WriteAllLines(saveFileDialog.FileName, SerialportCommandLog);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            _ = MessageBox.Show(ex.ToString());
+                        }
+                    }));
+                }
+                return serialPortCommandSaveLogEvent;
+            }
+        }
+
         // 串口监听回调
         private void SerialPortDataReceivedCallBack(object sender, SerialDataReceivedEventArgs e)
         {
