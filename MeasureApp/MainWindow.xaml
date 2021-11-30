@@ -32,6 +32,7 @@
         <viewmodel:SerialPortRecvDataEncodeToBoolConverter x:Key="SerialPortRecvDataEncodeToBoolConverter"/>
         <viewmodel:Bool2ControlVisibilityConverter x:Key="Bool2ControlVisibilityConverter"/>
         <viewmodel:BoolInverter2ControlVisibilityConverter x:Key="BoolInverter2ControlVisibilityConverter"/>
+        <viewmodel:DateTimeToStringConverter x:Key="DateTimeToStringConverter"/>
     </Window.Resources>
     <DockPanel>
         <Grid>
@@ -511,8 +512,15 @@
                                 <TextBlock Text="{Binding SerialportCommandScriptEditorDocument.LineCount}" Margin="386,136,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="33"/>
                             </Grid>
                         </Border>
-                        <!--<TextBox Margin="447,45,10,10" Text="{Binding SerialportCommandLog.Text, Mode=OneWay}" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" TextWrapping="Wrap"/>-->
-                        <ListView Margin="447,38,10,10" ItemsSource="{Binding SerialportCommandLog}"/>
+                        <ListView Margin="447,38,10,10" ItemsSource="{Binding SerialportCommandLog}">
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Header="时间" DisplayMemberBinding="{Binding Time, Converter={StaticResource DateTimeToStringConverter}}" Width="160"/>
+                                    <GridViewColumn Header="发送方" DisplayMemberBinding="{Binding Host}" Width="50"/>
+                                    <GridViewColumn Header="消息" DisplayMemberBinding="{Binding Message}" Width="300"/>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
                     </Grid>
                 </TabItem>
                 <TabItem Header="串口数据通信">

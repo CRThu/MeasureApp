@@ -105,10 +105,9 @@ namespace MeasureApp.ViewModel
         }
 
         // 串口命令模块监听
-        // TODO
         private object serialPortCommandLoglocker = new();
-        private ObservableRangeCollection<string> serialportCommandLog = new();
-        public ObservableRangeCollection<string> SerialportCommandLog
+        private ObservableRangeCollection<SerialPortCommLog> serialportCommandLog = new();
+        public ObservableRangeCollection<SerialPortCommLog> SerialportCommandLog
         {
             get => serialportCommandLog;
             set
@@ -172,7 +171,13 @@ namespace MeasureApp.ViewModel
                                 string com = SerialportCommandPortNameSelectedValue;
                                 List<dynamic> vs = new(SerialportCommandModels[index].SendParamsTexts);
                                 vs.Insert(0, SerialportCommandModels[index].CommandText);
-                                SerialPortsInstance.WriteString(com, $"{string.Join(";", vs)};");
+                                string sendText = $"{string.Join(";", vs)};";
+                                SerialPortsInstance.WriteString(com, sendText);
+
+                                lock (serialPortCommandLoglocker)
+                                {
+                                    SerialportCommandLog.Add(new SerialPortCommLog("WPF", sendText));
+                                }
                             }
                         }
                         catch (Exception ex)
@@ -264,7 +269,7 @@ namespace MeasureApp.ViewModel
                             if (saveFileDialog.ShowDialog() == true)
                             {
                                 Properties.Settings.Default.DefaultDirectory = Path.GetDirectoryName(saveFileDialog.FileName);
-                                File.WriteAllLines(saveFileDialog.FileName, SerialportCommandLog);
+                                File.WriteAllLines(saveFileDialog.FileName, SerialportCommandLog.Select(l => l.ToString()));
                             }
                         }
                         catch (Exception ex)
@@ -285,11 +290,10 @@ namespace MeasureApp.ViewModel
                 int _bytesToRead = SerialPortsInstance.SerialPortsDict[SerialportCommandPortNameSelectedValue].BytesToRead;
                 if (_bytesToRead > 0)
                 {
-                    //SerialportCommandLog.AppendLine(SerialPortsInstance.ReadExistingString(SerialportCommandPortNameSelectedValue));
+                    string[] msgCollection = SerialPortsInstance.ReadExistingString(SerialportCommandPortNameSelectedValue).Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
                     lock (serialPortCommandLoglocker)
                     {
-                        SerialportCommandLog.AddRange(SerialPortsInstance.ReadExistingString(SerialportCommandPortNameSelectedValue)
-                        .Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries));
+                        SerialportCommandLog.AddRange(msgCollection.Select(l => new SerialPortCommLog("COM", l)));
                     }
                 }
             }
@@ -462,6 +466,14 @@ namespace MeasureApp.ViewModel
                     {
                         // TODO
                         //MessageBox.Show(MatchHtmlTag(code, "script"));
+                    }
+                }
+                else if (IsMatchHtmlTag(code, "delay"))
+                {
+                    if (isScriptTagEnabled)
+                    {
+                        // 阻塞ui
+                        Thread.Sleep(Convert.ToInt32(MatchHtmlTag(code, "delay")));
                     }
                 }
                 else
