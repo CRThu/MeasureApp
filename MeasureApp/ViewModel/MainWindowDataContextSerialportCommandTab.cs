@@ -172,12 +172,13 @@ namespace MeasureApp.ViewModel
                                 List<dynamic> vs = new(SerialportCommandModels[index].SendParamsTexts);
                                 vs.Insert(0, SerialportCommandModels[index].CommandText);
                                 string sendText = $"{string.Join(";", vs)};";
-                                SerialPortsInstance.WriteString(com, sendText);
 
+                                // LOG
                                 lock (serialPortCommandLoglocker)
                                 {
                                     SerialportCommandLog.Add(new SerialPortCommLog("WPF", sendText));
                                 }
+                                SerialPortsInstance.WriteString(com, sendText);
                             }
                         }
                         catch (Exception ex)
@@ -448,6 +449,12 @@ namespace MeasureApp.ViewModel
             string line = SerialPortCommandScriptGetCurrentLine();
             string code = line.Split('#', 2).First().Trim();
 
+            // 检测是否为空行
+            if (string.IsNullOrWhiteSpace(code))
+            {
+                return true;
+            }
+
             // 特殊命令解析
             if (IsMatchHtmlTag(code))
             {
@@ -476,6 +483,14 @@ namespace MeasureApp.ViewModel
                         Thread.Sleep(Convert.ToInt32(MatchHtmlTag(code, "delay")));
                     }
                 }
+                else if (IsMatchHtmlTag(code, "MsgBox"))
+                {
+                    if (isScriptTagEnabled)
+                    {
+                        // 阻塞ui
+                        MessageBox.Show(MatchHtmlTag(code, "MsgBox"));
+                    }
+                }
                 else
                 {
                     throw new FormatException($"Unknown Command: {code}");
@@ -483,6 +498,12 @@ namespace MeasureApp.ViewModel
             }
             else
             {
+                // LOG
+                lock (serialPortCommandLoglocker)
+                {
+                    SerialportCommandLog.Add(new SerialPortCommLog("WPF", code));
+                }
+
                 // Debug.WriteLine($"[{SerialportCommandPortNameSelectedValue}]:{code}");
                 SerialPortsInstance.WriteString(SerialportCommandPortNameSelectedValue, code);
             }

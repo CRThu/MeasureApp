@@ -109,6 +109,8 @@ namespace MeasureApp.Model
         public int ReadBytes(string serialPort, byte[] responseBytes, int bytesExpected, int millisecondsTimeout)
         {
             int offset = 0, bytesRead;
+            // TODO
+            // BUG 数据量大时采集数据为全0
             bool result = Utility.TimeoutCheck(millisecondsTimeout, () =>
             {
                 while (bytesExpected > 0)

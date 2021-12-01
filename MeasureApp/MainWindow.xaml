@@ -10,7 +10,7 @@
         xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         xmlns:geared="clr-namespace:LiveCharts.Geared;assembly=LiveCharts.Geared"
         mc:Ignorable="d"
-        Title="MainWindow" Height="550" Width="880">
+        Title="MeasureApp" Height="550" Width="900">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <viewmodel:EventCommandBase Command="{Binding MainWindowLoadedEvent}"/>
@@ -368,6 +368,7 @@
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </Button>
+                        <CheckBox Name="SerialPortCommandLogIsAutoScrollCheckBox" Content="自动滚动" VerticalAlignment="Top" Margin="780,14,0,0" HorizontalAlignment="Left" Width="68"/>
                         <Border BorderBrush="Gray" BorderThickness="1.5" Margin="10,38,0,0" Height="218" Width="432" VerticalAlignment="Top" HorizontalAlignment="Left">
                             <Grid Name="gridview">
                                 <!--ShowGridLines="True"-->
@@ -520,6 +521,9 @@
                                     <GridViewColumn Header="消息" DisplayMemberBinding="{Binding Message}" Width="300"/>
                                 </GridView>
                             </ListView.View>
+                            <i:Interaction.Behaviors>
+                                <viewmodel:AutoScrollBehavior IsAutoScroll="{Binding ElementName=SerialPortCommandLogIsAutoScrollCheckBox, Path=IsChecked}"/>
+                            </i:Interaction.Behaviors>
                         </ListView>
                     </Grid>
                 </TabItem>
