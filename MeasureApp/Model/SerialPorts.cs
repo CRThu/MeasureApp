@@ -93,6 +93,7 @@ namespace MeasureApp.Model
             return Encoding.Default.GetString(ReadExistingBytes(serialPort));
         }
 
+
         public byte[] ReadExistingBytes(string serialPort)
         {
             int len = SerialPortsDict[serialPort].BytesToRead;
@@ -101,16 +102,15 @@ namespace MeasureApp.Model
             return buf;
         }
 
-        public int ReadBytes(string serialPort, byte[] responseBytes, int bytesExpected)
+        public int ReadBytesWithTimeoutCheck(string serialPort, byte[] responseBytes, int bytesExpected)
         {
-            return ReadBytes(serialPort, responseBytes, bytesExpected, SerialPortsDict[serialPort].ReadTimeout);
+            return ReadBytesWithTimeoutCheck(serialPort, responseBytes, bytesExpected, SerialPortsDict[serialPort].ReadTimeout);
         }
 
-        public int ReadBytes(string serialPort, byte[] responseBytes, int bytesExpected, int millisecondsTimeout)
+        // 线程不安全
+        public int ReadBytesWithTimeoutCheck(string serialPort, byte[] responseBytes, int bytesExpected, int millisecondsTimeout)
         {
             int offset = 0, bytesRead;
-            // TODO
-            // BUG 数据量大时采集数据为全0
             bool result = Utility.TimeoutCheck(millisecondsTimeout, () =>
             {
                 while (bytesExpected > 0)
@@ -128,6 +128,18 @@ namespace MeasureApp.Model
                 }
                 return true;
             });
+            return offset;
+        }
+
+        public int ReadBytes(string serialPort, byte[] responseBytes, int bytesExpected)
+        {
+            int offset = 0, bytesRead;
+            while (bytesExpected > 0)
+            {
+                bytesRead = SerialPortsDict[serialPort].Read(responseBytes, offset, bytesExpected);
+                offset += bytesRead;
+                bytesExpected -= bytesRead;
+            }
             return offset;
         }
 

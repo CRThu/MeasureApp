@@ -346,7 +346,7 @@ namespace MeasureApp.ViewModel
                                 case SerialPortRecvDataEncodeEnum.Bytes:
                                     int bytesLength = RequiredBytesLength;
                                     byte[] recvBytes = new byte[bytesLength];
-                                    int recvBytesLen = SerialPortsInstance.ReadBytes(serialPortName, recvBytes, bytesLength);
+                                    int recvBytesLen = SerialPortsInstance.ReadBytesWithTimeoutCheck(serialPortName, recvBytes, bytesLength);
                                     if (recvBytesLen != recvBytes.Length)
                                     {
                                         _ = MessageBox.Show($"读取超时, RecvLength = {recvBytesLen}/{recvBytes.Length}!");
