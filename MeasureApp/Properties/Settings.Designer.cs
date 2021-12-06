@@ -98,9 +98,9 @@ namespace MeasureApp.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("9600")]
-        public string DefaultSerialPortBaudRate {
+        public int DefaultSerialPortBaudRate {
             get {
-                return ((string)(this["DefaultSerialPortBaudRate"]));
+                return ((int)(this["DefaultSerialPortBaudRate"]));
             }
             set {
                 this["DefaultSerialPortBaudRate"] = value;

@@ -20,7 +20,7 @@
     <Setting Name="DefaultDirectory" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="DefaultSerialPortBaudRate" Type="System.String" Scope="User">
+    <Setting Name="DefaultSerialPortBaudRate" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">9600</Value>
     </Setting>
     <Setting Name="DefaultSerialPortParity" Type="System.String" Scope="User">
