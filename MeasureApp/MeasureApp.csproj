@@ -12,15 +12,22 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Compile Remove="AutomationExample.cs" />
-	  <Compile Remove="PlotViewExample.cs" />
-	  <Compile Remove="StatusBarProgressBarExample.cs" />
+		<Compile Remove="AutomationExample.cs" />
+		<Compile Remove="AutomationExamples\AutomationExample.cs" />
+		<Compile Remove="AutomationExamples\AutomationExample2.cs" />
+		<Compile Remove="AutomationExamples\AutomationTemplate.cs" />
+		<Compile Remove="AutomationExamples\PlotViewExample.cs" />
+		<Compile Remove="AutomationExamples\StatusBarProgressBarExample.cs" />
+		<Compile Remove="PlotViewExample.cs" />
+		<Compile Remove="StatusBarProgressBarExample.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Include="AutomationExample.cs" />
-	  <None Include="PlotViewExample.cs" />
-	  <None Include="StatusBarProgressBarExample.cs" />
+		<None Include="AutomationExamples\AutomationExample2.cs" />
+		<None Include="AutomationExamples\AutomationExample.cs" />
+		<None Include="AutomationExamples\AutomationTemplate.cs" />
+		<None Include="AutomationExamples\PlotViewExample.cs" />
+		<None Include="AutomationExamples\StatusBarProgressBarExample.cs" />
 	</ItemGroup>
 
 	<ItemGroup>

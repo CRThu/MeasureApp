@@ -13,28 +13,23 @@ public class Automation
         try
         {
             // 引用上下文
-            string Key3458AString = "3458A Data Storage";
-
             GPIB3458AMeasure m3458A = dataContext.Measure3458AInstance;
             SerialPorts serialPorts = dataContext.SerialPortsInstance;
             DataStorage dataStorage = dataContext.DataStorageInstance;
 
             // 检测设备
             if (serialPorts.SerialPortNames.Count() != 1)
-            {
                 throw new NullReferenceException("串口未打开");
-            }
-
             if (!m3458A.IsOpen)
-            {
                 throw new NullReferenceException("3458A未打开");
-            }
 
             // 配置
-            string serialPortName = serialPorts.SerialPortNames.First();
             int delayClock = 2;
             int LoopTimes = 262144;
-            byte[] SendCommandByteText = Utility.ToBytesFromHexString("02A600");
+            string SendCommandHex = "02A600";
+            string StorageKey = dataContext.Key3458AString;
+            string serialPortName = serialPorts.SerialPortNames.First();
+            byte[] SendCommandBytes = Utility.Hex2Bytes(SendCommandHex);
             decimal voltage;
 
             // 丢弃现有缓存
@@ -47,7 +42,7 @@ public class Automation
             {
                 // 向DAC下位机发送电压命令
                 dataContext.StatusBarText = $"{i + 1}A/{LoopTimes}";
-                serialPorts.WriteBytes(serialPortName, SendCommandByteText, SendCommandByteText.Length);
+                serialPorts.WriteBytes(serialPortName, SendCommandBytes);
 
                 // 等待delay拍数，期间采集的数据丢弃
                 dataContext.StatusBarText = $"{i + 1}B/{LoopTimes}";
@@ -62,7 +57,7 @@ public class Automation
 
                 // 存储电压
                 dataContext.StatusBarText = $"{i + 1}D/{LoopTimes}";
-                dataStorage.AddData(Key3458AString, voltage);
+                dataStorage.AddData(StorageKey, voltage);
 
                 // 进度更新与任务停止检测
                 dataContext.ProgressStopWatchUpdate(i);

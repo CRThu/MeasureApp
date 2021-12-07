@@ -92,6 +92,31 @@ namespace MeasureApp.ViewModel
             }
         }
 
+        // 预设命令
+        private ObservableCollection<SerialPortPresetCommand> serialPortPresetCommands = new()
+        {
+            new SerialPortPresetCommand() { GroupName = "功率", PresetCommandName = "低功率", PresetCommand = "REGM;01;6;2;0;" },
+            new SerialPortPresetCommand() { GroupName = "功率", PresetCommandName = "中功率", PresetCommand = "REGM;01;6;2;1;" },
+            new SerialPortPresetCommand() { GroupName = "功率", PresetCommandName = "高功率", PresetCommand = "REGM;01;6;2;2;" },
+            new SerialPortPresetCommand() { GroupName = "工作模式", PresetCommandName = "连续转换模式", PresetCommand = "REGM;1;2;4;0;" },
+            new SerialPortPresetCommand() { GroupName = "工作模式", PresetCommandName = "单次转换模式", PresetCommand = "REGM;1;2;4;1;" },
+            new SerialPortPresetCommand() { GroupName = "工作模式", PresetCommandName = "待机模式", PresetCommand = "REGM;1;2;4;2;" },
+            new SerialPortPresetCommand() { GroupName = "工作模式", PresetCommandName = "关断模式", PresetCommand = "REGM;1;2;4;3;" },
+            new SerialPortPresetCommand() { GroupName = "工作模式", PresetCommandName = "空闲模式", PresetCommand = "REGM;1;2;4;4;" },
+            new SerialPortPresetCommand() { GroupName = "工作模式", PresetCommandName = "内部失调校准", PresetCommand = "REGM;1;2;4;5;" },
+            new SerialPortPresetCommand() { GroupName = "工作模式", PresetCommandName = "内部增益校准", PresetCommand = "REGM;1;2;4;6;" },
+
+        };
+        public ObservableCollection<SerialPortPresetCommand> SerialPortPresetCommands
+        {
+            get => serialPortPresetCommands;
+            set
+            {
+                serialPortPresetCommands = value;
+                RaisePropertyChanged(() => SerialPortPresetCommands);
+            }
+        }
+
         // 串口命令脚本编辑器数据绑定
         private TextDocument serialportCommandScriptEditorDocument = new();
         public TextDocument SerialportCommandScriptEditorDocument
