@@ -9,16 +9,16 @@ namespace MeasureApp.Model
     public class SerialPortPresetCommand : NotificationObjectBase
     {
         public string GroupName { get; set; }
-        public string PresetCommandName { get; set; }
-        public string PresetCommandDescription { get; set; }
-        public string PresetCommand { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public string Command { get; set; }
 
-        public SerialPortPresetCommand(string groupName = "", string presetCommandName = "", string presetCommandDescription = "", string presetCommand = "")
+        public SerialPortPresetCommand(string groupName = "", string name = "", string description = "", string command = "")
         {
             GroupName = groupName;
-            PresetCommandName = presetCommandName;
-            PresetCommandDescription = presetCommandDescription;
-            PresetCommand = presetCommand;
+            Name = name;
+            Description = description;
+            Command = command;
         }
     }
 }

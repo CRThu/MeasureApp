@@ -142,5 +142,17 @@ namespace MeasureApp.Properties {
                 this["DefaultSerialPortStopBits"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string DefaultPresetCommandsJsonPath {
+            get {
+                return ((string)(this["DefaultPresetCommandsJsonPath"]));
+            }
+            set {
+                this["DefaultPresetCommandsJsonPath"] = value;
+            }
+        }
     }
 }

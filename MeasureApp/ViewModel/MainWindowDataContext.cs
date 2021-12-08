@@ -8,6 +8,7 @@ using LiveCharts.Wpf;
 using System.Windows.Media;
 using System.Diagnostics;
 using System.Windows.Data;
+using System.IO;
 
 namespace MeasureApp.ViewModel
 {
@@ -32,6 +33,12 @@ namespace MeasureApp.ViewModel
             {
                 BindingOperations.EnableCollectionSynchronization(SerialportCommandLog, serialPortCommandLoglocker);
             });
+
+            // 加载串口预设指令
+            if (File.Exists(Properties.Settings.Default.DefaultPresetCommandsJsonPath))
+            {
+                SerialPortLoadPresetCommandsFromFile(Properties.Settings.Default.DefaultPresetCommandsJsonPath);
+            }
         }
 
         // 3458A 通信类

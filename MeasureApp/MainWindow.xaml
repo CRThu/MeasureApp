@@ -10,7 +10,7 @@
         xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         xmlns:geared="clr-namespace:LiveCharts.Geared;assembly=LiveCharts.Geared"
         mc:Ignorable="d"
-        Title="MeasureApp" Height="550" Width="900">
+        Title="MeasureApp" Height="600" Width="1000">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <viewmodel:EventCommandBase Command="{Binding MainWindowLoadedEvent}"/>
@@ -33,6 +33,7 @@
         <viewmodel:Bool2ControlVisibilityConverter x:Key="Bool2ControlVisibilityConverter"/>
         <viewmodel:BoolInverter2ControlVisibilityConverter x:Key="BoolInverter2ControlVisibilityConverter"/>
         <viewmodel:DateTimeToStringConverter x:Key="DateTimeToStringConverter"/>
+        <viewmodel:IsNotNullConverter x:Key="IsNotNullConverter"/>
     </Window.Resources>
     <DockPanel>
         <Grid>
@@ -509,13 +510,13 @@
                                             </CollectionViewSource.GroupDescriptions>
                                         </CollectionViewSource>
                                     </Grid.Resources>
-                                    <ListView ItemsSource="{Binding Source={StaticResource SerialPortPresetCommandsGroupView}}" Margin="0,0,76,0">
+                                    <ListView Name="SerialPortPresetCommandsListView" ItemsSource="{Binding Source={StaticResource SerialPortPresetCommandsGroupView}}" SelectedItem="{Binding SerialportPresetCommandSelectedItem}" Margin="0,0,76,0">
                                         <ListView.View>
                                             <GridView>
                                                 <!--<GridViewColumn Header="命令组" DisplayMemberBinding="{Binding GroupName}" Width="80"/>-->
-                                                <GridViewColumn Header="命令配置" DisplayMemberBinding="{Binding PresetCommandName}" Width="120"/>
-                                                <!--<GridViewColumn Header="命令描述" DisplayMemberBinding="{Binding PresetCommandDescription}" Width="100"/>-->
-                                                <GridViewColumn Header="命令脚本" DisplayMemberBinding="{Binding PresetCommand}" Width="150"/>
+                                                <GridViewColumn Header="命令配置" DisplayMemberBinding="{Binding Name}" Width="120"/>
+                                                <!--<GridViewColumn Header="命令描述" DisplayMemberBinding="{Binding Description}" Width="100"/>-->
+                                                <GridViewColumn Header="命令脚本" DisplayMemberBinding="{Binding Command}" Width="150"/>
                                             </GridView>
                                         </ListView.View>
                                         <ListView.GroupStyle>
@@ -543,17 +544,24 @@
                                             </GroupStyle>
                                         </ListView.GroupStyle>
                                     </ListView>
-                                    <Button Content="TODO" Margin="317,10,0,0" VerticalAlignment="Top" Height="28" Width="61" HorizontalAlignment="Left">
+                                    <Button Content="加载" Margin="317,10,0,0" VerticalAlignment="Top" Height="28" Width="61" HorizontalAlignment="Left">
                                         <i:Interaction.Triggers>
                                             <i:EventTrigger EventName="Click">
-                                                <viewmodel:EventCommandBase Command="{Binding TODO}"/>
+                                                <viewmodel:EventCommandBase Command="{Binding SerialportCommandPresetLoadEvent}"/>
                                             </i:EventTrigger>
                                         </i:Interaction.Triggers>
                                     </Button>
-                                    <Button Content="TODO" Margin="317,43,0,0" VerticalAlignment="Top" Height="28" Width="61" HorizontalAlignment="Left">
+                                    <Button Content="发送" Margin="317,43,0,0" VerticalAlignment="Top" Height="28" Width="61" HorizontalAlignment="Left" IsEnabled="{Binding ElementName=SerialPortPresetCommandsListView,Path=SelectedItem,Converter={StaticResource IsNotNullConverter}}">
                                         <i:Interaction.Triggers>
                                             <i:EventTrigger EventName="Click">
-                                                <viewmodel:EventCommandBase Command="{Binding TODO}"/>
+                                                <viewmodel:EventCommandBase Command="{Binding SerialportCommandPresetSendEvent}"/>
+                                            </i:EventTrigger>
+                                        </i:Interaction.Triggers>
+                                    </Button>
+                                    <Button Content="添加" Margin="317,76,0,0" VerticalAlignment="Top" Height="28" Width="61" HorizontalAlignment="Left" IsEnabled="{Binding ElementName=SerialPortPresetCommandsListView,Path=SelectedItem,Converter={StaticResource IsNotNullConverter}}">
+                                        <i:Interaction.Triggers>
+                                            <i:EventTrigger EventName="Click">
+                                                <viewmodel:EventCommandBase Command="{Binding SerialportCommandPresetAddCodeEvent}"/>
                                             </i:EventTrigger>
                                         </i:Interaction.Triggers>
                                     </Button>

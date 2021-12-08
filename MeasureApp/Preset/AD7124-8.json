@@ -1,0 +1,62 @@
+[
+    {
+        "GroupName": "功率",
+        "Name": "低功率",
+        "Command": "REGM;01;6;2;0",
+        "Description": ""
+    },
+    {
+        "GroupName": "功率",
+        "Name": "中功率",
+        "Command": "REGM;01;6;2;1;",
+        "Description": ""
+    },
+    {
+        "GroupName": "功率",
+        "Name": "高功率",
+        "Command": "REGM;01;6;2;2;",
+        "Description": ""
+    },
+    {
+        "GroupName": "工作模式",
+        "Name": "连续转换模式",
+        "Command": "REGM;1;2;4;0;",
+        "Description": ""
+    },
+    {
+        "GroupName": "工作模式",
+        "Name": "单次转换模式",
+        "Command": "REGM;1;2;4;1;",
+        "Description": ""
+    },
+    {
+        "GroupName": "工作模式",
+        "Name": "待机模式",
+        "Command": "REGM;1;2;4;2;",
+        "Description": ""
+    },
+    {
+        "GroupName": "工作模式",
+        "Name": "关断模式",
+        "Command": "REGM;1;2;4;3;",
+        "Description": ""
+    },
+    {
+        "GroupName": "工作模式",
+        "Name": "空闲模式",
+        "Command": "REGM;1;2;4;4;",
+        "Description": ""
+    },
+    {
+        "GroupName": "工作模式",
+        "Name": "内部失调校准",
+        "Command": "REGM;1;2;4;5;",
+        "Description": ""
+    },
+    {
+        "GroupName": "工作模式",
+        "Name": "内部增益校准",
+        "Command": "REGM;1;2;4;6;",
+        "Description": ""
+    }
+]

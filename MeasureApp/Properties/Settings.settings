@@ -32,5 +32,8 @@
     <Setting Name="DefaultSerialPortStopBits" Type="System.Single" Scope="User">
       <Value Profile="(Default)">1</Value>
     </Setting>
+    <Setting Name="DefaultPresetCommandsJsonPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>

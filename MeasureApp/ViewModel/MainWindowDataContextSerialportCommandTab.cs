@@ -1,6 +1,7 @@
 ﻿using ICSharpCode.AvalonEdit.Document;
 using MeasureApp.Model;
 using Microsoft.Win32;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -93,20 +94,7 @@ namespace MeasureApp.ViewModel
         }
 
         // 预设命令
-        private ObservableCollection<SerialPortPresetCommand> serialPortPresetCommands = new()
-        {
-            new SerialPortPresetCommand() { GroupName = "功率", PresetCommandName = "低功率", PresetCommand = "REGM;01;6;2;0;" },
-            new SerialPortPresetCommand() { GroupName = "功率", PresetCommandName = "中功率", PresetCommand = "REGM;01;6;2;1;" },
-            new SerialPortPresetCommand() { GroupName = "功率", PresetCommandName = "高功率", PresetCommand = "REGM;01;6;2;2;" },
-            new SerialPortPresetCommand() { GroupName = "工作模式", PresetCommandName = "连续转换模式", PresetCommand = "REGM;1;2;4;0;" },
-            new SerialPortPresetCommand() { GroupName = "工作模式", PresetCommandName = "单次转换模式", PresetCommand = "REGM;1;2;4;1;" },
-            new SerialPortPresetCommand() { GroupName = "工作模式", PresetCommandName = "待机模式", PresetCommand = "REGM;1;2;4;2;" },
-            new SerialPortPresetCommand() { GroupName = "工作模式", PresetCommandName = "关断模式", PresetCommand = "REGM;1;2;4;3;" },
-            new SerialPortPresetCommand() { GroupName = "工作模式", PresetCommandName = "空闲模式", PresetCommand = "REGM;1;2;4;4;" },
-            new SerialPortPresetCommand() { GroupName = "工作模式", PresetCommandName = "内部失调校准", PresetCommand = "REGM;1;2;4;5;" },
-            new SerialPortPresetCommand() { GroupName = "工作模式", PresetCommandName = "内部增益校准", PresetCommand = "REGM;1;2;4;6;" },
-
-        };
+        private ObservableCollection<SerialPortPresetCommand> serialPortPresetCommands = new();
         public ObservableCollection<SerialPortPresetCommand> SerialPortPresetCommands
         {
             get => serialPortPresetCommands;
@@ -114,6 +102,18 @@ namespace MeasureApp.ViewModel
             {
                 serialPortPresetCommands = value;
                 RaisePropertyChanged(() => SerialPortPresetCommands);
+            }
+        }
+
+        // 预设命令选中项绑定
+        private SerialPortPresetCommand serialportPresetCommandSelectedItem;
+        public SerialPortPresetCommand SerialportPresetCommandSelectedItem
+        {
+            get => serialportPresetCommandSelectedItem;
+            set
+            {
+                serialportPresetCommandSelectedItem = value;
+                RaisePropertyChanged(() => SerialportPresetCommandSelectedItem);
             }
         }
 
@@ -215,6 +215,112 @@ namespace MeasureApp.ViewModel
                 return serialportCommandSendEvent;
             }
         }
+
+        // 加载预设指令函数
+        public void SerialPortLoadPresetCommandsFromFile(string jsonPath)
+        {
+            string json = File.ReadAllText(jsonPath);
+            //var options = new JsonSerializerOptions
+            //{
+            //    IncludeFields = true
+            //};
+            //var ds = System.Text.Json.JsonSerializer.Deserialize<ObservableCollection<SerialPortPresetCommand>>(json, options);
+            var ds = JsonConvert.DeserializeObject<ObservableCollection<SerialPortPresetCommand>>(json);
+            SerialPortPresetCommands = ds;
+        }
+
+        // 加载预设指令事件
+        private CommandBase serialportCommandPresetLoadEvent;
+        public CommandBase SerialportCommandPresetLoadEvent
+        {
+            get
+            {
+                if (serialportCommandPresetLoadEvent == null)
+                {
+                    serialportCommandPresetLoadEvent = new CommandBase(new Action<object>(param =>
+                    {
+                        try
+                        {
+                            // Open File Dialog
+                            OpenFileDialog openFileDialog = new()
+                            {
+                                Title = "Open Json File...",
+                                Filter = "Json File|*.json",
+                                InitialDirectory = Properties.Settings.Default.DefaultDirectory
+                            };
+                            if (openFileDialog.ShowDialog() == true)
+                            {
+                                Properties.Settings.Default.DefaultDirectory = Path.GetDirectoryName(openFileDialog.FileName);
+                                Properties.Settings.Default.DefaultPresetCommandsJsonPath = openFileDialog.FileName;
+                                SerialPortLoadPresetCommandsFromFile(openFileDialog.FileName);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            _ = MessageBox.Show(ex.ToString());
+                        }
+                    }));
+                }
+                return serialportCommandPresetLoadEvent;
+            }
+        }
+
+        // 串口预设指令发送
+        private CommandBase serialportCommandPresetSendEvent;
+        public CommandBase SerialportCommandPresetSendEvent
+        {
+            get
+            {
+                if (serialportCommandPresetSendEvent == null)
+                {
+                    serialportCommandPresetSendEvent = new CommandBase(new Action<object>(param =>
+                    {
+                        try
+                        {
+                            string com = SerialportCommandPortNameSelectedValue;
+                            string sendText = SerialportPresetCommandSelectedItem.Command;
+                            // LOG
+                            lock (serialPortCommandLoglocker)
+                            {
+                                SerialportCommandLog.Add(new SerialPortCommLog("WPF", sendText));
+                            }
+                            SerialPortsInstance.WriteString(com, sendText);
+                        }
+                        catch (Exception ex)
+                        {
+                            _ = MessageBox.Show(ex.ToString());
+                        }
+                    }));
+                }
+                return serialportCommandPresetSendEvent;
+            }
+        }
+
+        // 串口预设指令添加至Code
+        private CommandBase serialportCommandPresetAddCodeEvent;
+        public CommandBase SerialportCommandPresetAddCodeEvent
+        {
+            get
+            {
+                if (serialportCommandPresetAddCodeEvent == null)
+                {
+                    serialportCommandPresetAddCodeEvent = new CommandBase(new Action<object>(param =>
+                    {
+                        try
+                        {
+                            SerialportCommandScriptEditorDocument.Text += "\n" + SerialportPresetCommandSelectedItem.Command;
+                        }
+                        catch (Exception ex)
+                        {
+                            _ = MessageBox.Show(ex.ToString());
+                        }
+                    }));
+                }
+                return serialportCommandPresetAddCodeEvent;
+            }
+        }
+
+
 
         // 串口监听打开/关闭事件
         private CommandBase serialPortCommandListenEvent;
