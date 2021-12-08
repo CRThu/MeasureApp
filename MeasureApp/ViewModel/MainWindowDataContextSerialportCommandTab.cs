@@ -198,11 +198,6 @@ namespace MeasureApp.ViewModel
                                 vs.Insert(0, SerialportCommandModels[index].CommandText);
                                 string sendText = $"{string.Join(";", vs)};";
 
-                                // LOG
-                                lock (serialPortCommandLoglocker)
-                                {
-                                    SerialportCommandLog.Add(new SerialPortCommLog("WPF", sendText));
-                                }
                                 SerialPortsInstance.WriteString(com, sendText);
                             }
                         }
@@ -279,11 +274,7 @@ namespace MeasureApp.ViewModel
                         {
                             string com = SerialportCommandPortNameSelectedValue;
                             string sendText = SerialportPresetCommandSelectedItem.Command;
-                            // LOG
-                            lock (serialPortCommandLoglocker)
-                            {
-                                SerialportCommandLog.Add(new SerialPortCommLog("WPF", sendText));
-                            }
+                           
                             SerialPortsInstance.WriteString(com, sendText);
                         }
                         catch (Exception ex)
@@ -337,10 +328,12 @@ namespace MeasureApp.ViewModel
                             if (!SerialPortCommandIsListeningDataReceived)
                             {
                                 SerialPortsInstance.AddDataReceivedEvent(SerialportCommandPortNameSelectedValue, SerialPortDataReceivedCallBack);
+                                SerialPortsInstance.PreWriteString += SerialPortPreWriteString;
                             }
                             else
                             {
                                 SerialPortsInstance.RemoveDataReceivedEvent(SerialportCommandPortNameSelectedValue, SerialPortDataReceivedCallBack);
+                                SerialPortsInstance.PreWriteString -= SerialPortPreWriteString;
                             }
                             SerialPortCommandIsListeningDataReceived = !SerialPortCommandIsListeningDataReceived;
                         }
@@ -411,6 +404,18 @@ namespace MeasureApp.ViewModel
                     }));
                 }
                 return serialPortCommandSaveLogEvent;
+            }
+        }
+
+        // 串口发送回调
+        private void SerialPortPreWriteString(string portName, string data)
+        {
+            if (portName == SerialportCommandPortNameSelectedValue)
+            {
+                lock (serialPortCommandLoglocker)
+                {
+                    SerialportCommandLog.Add(new SerialPortCommLog("WPF", data));
+                }
             }
         }
 
@@ -629,12 +634,6 @@ namespace MeasureApp.ViewModel
             }
             else
             {
-                // LOG
-                lock (serialPortCommandLoglocker)
-                {
-                    SerialportCommandLog.Add(new SerialPortCommLog("WPF", code));
-                }
-
                 // Debug.WriteLine($"[{SerialportCommandPortNameSelectedValue}]:{code}");
                 SerialPortsInstance.WriteString(SerialportCommandPortNameSelectedValue, code);
             }

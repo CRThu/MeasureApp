@@ -12,6 +12,10 @@ namespace MeasureApp.Model
 {
     public class SerialPorts : NotificationObjectBase
     {
+        // 写入串口前触发委托
+        public delegate void PreWriteStringHandler(string portName, string data);
+        public event PreWriteStringHandler PreWriteString;
+
         private ObservableDictionary<string, SerialPort> serialPortsDict = new();
         public ObservableDictionary<string, SerialPort> SerialPortsDict
         {
@@ -80,6 +84,8 @@ namespace MeasureApp.Model
 
         public void WriteString(string serialPort, string strData)
         {
+            if (PreWriteString is not null)
+                PreWriteString(serialPort, strData);
             SerialPortsDict[serialPort].Write(strData);
         }
 
