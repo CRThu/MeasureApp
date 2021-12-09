@@ -37,7 +37,13 @@ namespace MeasureApp.ViewModel
             // 加载串口预设指令
             if (File.Exists(Properties.Settings.Default.DefaultPresetCommandsJsonPath))
             {
-                SerialPortLoadPresetCommandsFromFile(Properties.Settings.Default.DefaultPresetCommandsJsonPath);
+                SerialPortLoadPresetCommandsFromJson(Properties.Settings.Default.DefaultPresetCommandsJsonPath);
+            }
+
+            // 加载串口记录模块关键词颜色文件
+            if (File.Exists(Properties.Settings.Default.DefaultLogKeywordColorJsonPath))
+            {
+                SerialPortCommLog.SerialPortLogLoadKeywordColorFromJson(Properties.Settings.Default.DefaultLogKeywordColorJsonPath);
             }
         }
 

@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +14,8 @@ namespace MeasureApp.Model
 {
     public class SerialPortCommLog : NotificationObjectBase
     {
+        private static Dictionary<string, Brush> KeywordColor = new();
+
         private DateTime time;
         public DateTime Time
         {
@@ -45,7 +49,7 @@ namespace MeasureApp.Model
             }
         }
 
-        private System.Windows.Media.Brush color;
+        private Brush color;
         public Brush Color
         {
             get => color;
@@ -56,7 +60,7 @@ namespace MeasureApp.Model
             }
         }
 
-        public SerialPortCommLog(string host, dynamic msg)
+        public SerialPortCommLog(string host, dynamic msg, bool isHighlight = false)
         {
             Time = DateTime.Now;
             Host = host;
@@ -66,8 +70,51 @@ namespace MeasureApp.Model
             //{
             //    Color = new SolidColorBrush(new Color() { A = 0xFF, R = 0x04, G = 0x22, B = 0x71 });
             //});
-            Color = Brushes.DarkGreen;
+            string s;
+            Color = isHighlight && ((s = IsContainKeywords(msg)) != null)
+                ? GetKeywordColor(s)
+                : Brushes.DarkBlue;
         }
+
+        public static void SerialPortLogLoadKeywordColorFromJson(string fileName)
+        {
+            if (fileName == null)
+            {
+                string json = JsonConvert.SerializeObject(
+                    new Dictionary<string, Brush>()
+                    {
+                        { "PASS", Brushes.Green },
+                        { "FAIL", Brushes.Red },
+                        { "__DEFAULT__", Brushes.Orange },
+                    });
+                File.WriteAllText(@"D:\Projects\MeasureApp\MeasureApp\Config\LogKeywordColor.json", json);
+            }
+            else
+            {
+                string json = File.ReadAllText(@"D:\Projects\MeasureApp\MeasureApp\Config\LogKeywordColor.json");
+                KeywordColor = JsonConvert.DeserializeObject<Dictionary<string, Brush>>(json);
+            }
+        }
+
+        private static string IsContainKeywords(string msg)
+        {
+            if (msg == string.Empty)
+                return null;
+            foreach (string i in KeywordColor.Keys)
+            {
+                if (msg.Contains(i, StringComparison.CurrentCultureIgnoreCase))
+                {
+                    return i.ToUpper();
+                }
+            }
+            return null;
+        }
+
+        private static Brush GetKeywordColor(string s)
+        {
+            return KeywordColor.ContainsKey(s) ? KeywordColor[s] : KeywordColor["__DEFAULT__"];
+        }
+
 
         public override string ToString()
         {

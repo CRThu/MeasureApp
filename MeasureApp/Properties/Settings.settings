@@ -33,7 +33,13 @@
       <Value Profile="(Default)">1</Value>
     </Setting>
     <Setting Name="DefaultPresetCommandsJsonPath" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">./Config/AD7124-8.json</Value>
+    </Setting>
+    <Setting Name="DefaultLogKeywordColorJsonPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">./Config/LogKeywordColor.json</Value>
+    </Setting>
+    <Setting Name="IsSerialPortLogKeywordHighlight" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
     </Setting>
   </Settings>
 </SettingsFile>

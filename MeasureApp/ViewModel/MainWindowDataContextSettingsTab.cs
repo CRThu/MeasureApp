@@ -45,6 +45,17 @@ namespace MeasureApp.ViewModel
             }
         }
 
+        public bool SerialPortLogKeywordHighlightSetting
+        {
+            get => Properties.Settings.Default.IsSerialPortLogKeywordHighlight;
+            set
+            {
+                Properties.Settings.Default.IsSerialPortLogKeywordHighlight = value;
+                RaisePropertyChanged(() => SerialPortLogKeywordHighlightSetting);
+            }
+        }
+        
+
         // 版本信息
         private StringBuilder settingsVersionText = GetVersion();
         public StringBuilder SettingsVersionText

@@ -145,13 +145,37 @@ namespace MeasureApp.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("./Config/AD7124-8.json")]
         public string DefaultPresetCommandsJsonPath {
             get {
                 return ((string)(this["DefaultPresetCommandsJsonPath"]));
             }
             set {
                 this["DefaultPresetCommandsJsonPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("./Config/LogKeywordColor.json")]
+        public string DefaultLogKeywordColorJsonPath {
+            get {
+                return ((string)(this["DefaultLogKeywordColorJsonPath"]));
+            }
+            set {
+                this["DefaultLogKeywordColorJsonPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool IsSerialPortLogKeywordHighlight {
+            get {
+                return ((bool)(this["IsSerialPortLogKeywordHighlight"]));
+            }
+            set {
+                this["IsSerialPortLogKeywordHighlight"] = value;
             }
         }
     }

@@ -847,15 +847,17 @@
                     <Grid>
                         <Border BorderBrush="Gray" BorderThickness="0.5" CornerRadius="3" Margin="10,10,0,10" HorizontalAlignment="Left" Width="405">
                             <Grid Name="SettingsGrid">
-                                <TextBlock Text="GPIB超时" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Width="100" Margin="10,10,0,0"/>
-                                <TextBox Text="{Binding GPIBTimeoutSetting, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Width="98" Height="20" VerticalAlignment="Top" Margin="115,10,0,0"/>
-                                <TextBlock Text="毫秒" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Width="40" Margin="218,10,0,0"/>
-                                <TextBlock Text="串口超时" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Width="100" Margin="10,35,0,0"/>
-                                <TextBox Text="{Binding SerialPortTimeoutSetting, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Width="98" Height="20" VerticalAlignment="Top" Margin="115,35,0,0"/>
-                                <TextBlock Text="毫秒" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Width="40" Margin="218,35,0,0"/>
-                                <TextBlock Text="串口缓冲区大小" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Width="100" Margin="10,60,0,0"/>
-                                <TextBox Text="{Binding SerialPortBufferSetting, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Width="98" Height="20" VerticalAlignment="Top" Margin="115,60,0,0"/>
-                                <TextBlock Text="字节" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Width="40" Margin="218,60,0,0"/>
+                                <TextBlock Text="GPIB超时" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Width="120" Margin="10,10,0,0"/>
+                                <TextBox Text="{Binding GPIBTimeoutSetting, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Width="98" Height="20" VerticalAlignment="Top" Margin="135,10,0,0"/>
+                                <TextBlock Text="毫秒" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Width="40" Margin="238,10,0,0"/>
+                                <TextBlock Text="串口超时" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Width="120" Margin="10,35,0,0"/>
+                                <TextBox Text="{Binding SerialPortTimeoutSetting, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Width="98" Height="20" VerticalAlignment="Top" Margin="135,35,0,0"/>
+                                <TextBlock Text="毫秒" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Width="40" Margin="238,35,0,0"/>
+                                <TextBlock Text="串口缓冲区大小" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Width="120" Margin="10,60,0,0"/>
+                                <TextBox Text="{Binding SerialPortBufferSetting, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Width="98" Height="20" VerticalAlignment="Top" Margin="135,60,0,0"/>
+                                <TextBlock Text="字节" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Width="40" Margin="238,60,0,0"/>
+                                <TextBlock Text="串口日志关键词高亮" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Width="120" Margin="10,85,0,0"/>
+                                <CheckBox IsChecked="{Binding SerialPortLogKeywordHighlightSetting,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="135,87,0,0" VerticalAlignment="Top"/>
                             </Grid>
                         </Border>
                         <Border BorderBrush="Gray" BorderThickness="0.5" CornerRadius="3" Margin="420,10,10,10">

@@ -212,7 +212,7 @@ namespace MeasureApp.ViewModel
         }
 
         // 加载预设指令函数
-        public void SerialPortLoadPresetCommandsFromFile(string jsonPath)
+        public void SerialPortLoadPresetCommandsFromJson(string jsonPath)
         {
             string json = File.ReadAllText(jsonPath);
             //var options = new JsonSerializerOptions
@@ -247,7 +247,7 @@ namespace MeasureApp.ViewModel
                             {
                                 Properties.Settings.Default.DefaultDirectory = Path.GetDirectoryName(openFileDialog.FileName);
                                 Properties.Settings.Default.DefaultPresetCommandsJsonPath = openFileDialog.FileName;
-                                SerialPortLoadPresetCommandsFromFile(openFileDialog.FileName);
+                                SerialPortLoadPresetCommandsFromJson(openFileDialog.FileName);
                             }
                         }
                         catch (Exception ex)
@@ -274,7 +274,7 @@ namespace MeasureApp.ViewModel
                         {
                             string com = SerialportCommandPortNameSelectedValue;
                             string sendText = SerialportPresetCommandSelectedItem.Command;
-                           
+
                             SerialPortsInstance.WriteString(com, sendText);
                         }
                         catch (Exception ex)
@@ -414,7 +414,7 @@ namespace MeasureApp.ViewModel
             {
                 lock (serialPortCommandLoglocker)
                 {
-                    SerialportCommandLog.Add(new SerialPortCommLog("WPF", data));
+                    SerialportCommandLog.Add(new SerialPortCommLog("WPF", data, false));
                 }
             }
         }
@@ -430,7 +430,7 @@ namespace MeasureApp.ViewModel
                     string[] msgCollection = SerialPortsInstance.ReadExistingString(SerialportCommandPortNameSelectedValue).Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
                     lock (serialPortCommandLoglocker)
                     {
-                        SerialportCommandLog.AddRange(msgCollection.Select(l => new SerialPortCommLog("COM", l)));
+                        SerialportCommandLog.AddRange(msgCollection.Select(l => new SerialPortCommLog("COM", l, Properties.Settings.Default.IsSerialPortLogKeywordHighlight)));
                     }
                 }
             }
