@@ -97,15 +97,15 @@
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
-                                <ComboBox x:Name="SerialPortNameComboBox" ItemsSource="{Binding SerialportDevicesNameComboBoxItems}" SelectedValue="{Binding SerialportDevicesNameSelectedValue}" SelectedValuePath="Tag" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="201" Height="23"/>
+                                <ComboBox x:Name="SerialPortNameComboBox" ItemsSource="{Binding SerialportDevicesNameComboBoxItems}" SelectedValue="{Binding SerialportDevicesNameSelectedValue}" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="201" Height="23"/>
                                 <TextBlock Text="波特率：" HorizontalAlignment="Left" Margin="10,41,0,0" Width="71" TextWrapping="Wrap" Height="18" VerticalAlignment="Top"/>
                                 <ComboBox x:Name="SerialPortBaudRateComboBox" ItemsSource="{Binding SerialportDeviceBaudRateList}" Text="{Binding SerialportDeviceBaudRate}" IsEditable="True" HorizontalAlignment="Left" Margin="86,38,0,0" VerticalAlignment="Top" Width="125" Height="23"/>
                                 <TextBlock Text="校验位：" HorizontalAlignment="Left" Margin="10,67,0,0" Width="71" TextWrapping="Wrap" Height="18" VerticalAlignment="Top"/>
-                                <ComboBox ItemsSource="{Binding SerialportDeviceParityList}" SelectedItem="{Binding SerialportDeviceParitySelectItem}" HorizontalAlignment="Left" Margin="86,64,0,0" VerticalAlignment="Top" Width="125" Height="23"/>
+                                <ComboBox ItemsSource="{Binding SerialportDeviceParityList}" SelectedValue="{Binding SerialportDeviceParitySelectedValue}" HorizontalAlignment="Left" Margin="86,64,0,0" VerticalAlignment="Top" Width="125" Height="23"/>
                                 <TextBlock Text="数据位：" HorizontalAlignment="Left" Margin="10,92,0,0" Width="71" TextWrapping="Wrap" Height="18" VerticalAlignment="Top"/>
-                                <ComboBox ItemsSource="{Binding SerialportDeviceDataBitsList}" SelectedItem="{Binding SerialportDeviceDataBitsSelectItem}" HorizontalAlignment="Left" Margin="86,90,0,0" VerticalAlignment="Top" Width="125" Height="23"/>
+                                <ComboBox ItemsSource="{Binding SerialportDeviceDataBitsList}" SelectedValue="{Binding SerialportDeviceDataBitsSelectedValue}" HorizontalAlignment="Left" Margin="86,90,0,0" VerticalAlignment="Top" Width="125" Height="23"/>
                                 <TextBlock Text="停止位：" HorizontalAlignment="Left" Margin="10,121,0,0" Width="71" TextWrapping="Wrap" Height="18" VerticalAlignment="Top"/>
-                                <ComboBox ItemsSource="{Binding SerialportDeviceStopBitsList}" SelectedItem="{Binding SerialportDeviceStopBitsSelectItem}" HorizontalAlignment="Left" Margin="86,118,0,0" VerticalAlignment="Top" Width="125" Height="23"/>
+                                <ComboBox ItemsSource="{Binding SerialportDeviceStopBitsList}" SelectedValue="{Binding SerialportDeviceStopBitsSelectedValue}" HorizontalAlignment="Left" Margin="86,118,0,0" VerticalAlignment="Top" Width="125" Height="23"/>
                                 <TextBlock x:Name="SerialPortDeviceNameTextBlock" Text="{Binding SerialPortsInstance.SerialPortsDict.Values, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource SerialPortsStatusTextConverter}}" HorizontalAlignment="Left" Margin="231,10,0,0" Width="154" TextWrapping="Wrap" Height="45" VerticalAlignment="Top"/>
                             </Grid>
                         </GroupBox>
@@ -887,10 +887,16 @@
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
-                                <Label Content="返回值" HorizontalAlignment="Left" Margin="8,115,0,0" VerticalAlignment="Top"/>
-                                <TextBox Text="{Binding AutomationCodeReturnData}" HorizontalAlignment="Left" Margin="10,145,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="141" Height="38"/>
+                                <Label Content="返回值" HorizontalAlignment="Left" Margin="10,80,0,0" VerticalAlignment="Top" Height="25"/>
+                                <TextBox Text="{Binding AutomationCodeReturnData}" HorizontalAlignment="Left" Margin="10,110,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="141" Height="38"/>
+                                <Grid Width="141" HorizontalAlignment="Left" Margin="10,153,0,10"/>
                             </Grid>
                         </GroupBox>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="实用工具">
+                    <Grid>
+                        <TextBlock Text="TODO"/>
                     </Grid>
                 </TabItem>
                 <TabItem Header="设置">

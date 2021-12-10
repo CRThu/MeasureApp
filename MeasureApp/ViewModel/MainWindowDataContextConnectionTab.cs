@@ -48,6 +48,23 @@ namespace MeasureApp.ViewModel
 
 
         // 搜索GPIB设备事件
+        public void GpibSearchDevice()
+        {
+            try
+            {
+                GpibDevicesName.Clear();
+                GPIB.SearchDevices("GPIB?*INSTR").ToList().ForEach(dev => GpibDevicesName.Add(dev));
+                if (GpibDevicesName.Count != 0 && GpibDevicesSelectedName is null)
+                {
+                    GpibDevicesSelectedName = GpibDevicesName.First();
+                }
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
+            }
+        }
+
         private CommandBase gpibDeviceSearchEvent;
         public CommandBase GpibDeviceSearchEvent
         {
@@ -55,20 +72,7 @@ namespace MeasureApp.ViewModel
             {
                 if (gpibDeviceSearchEvent == null)
                 {
-                    gpibDeviceSearchEvent = new CommandBase(new Action<object>(param =>
-                    {
-                        try
-                        {
-                            GpibDevicesName.Clear();
-                            GPIB.SearchDevices("GPIB?*INSTR").ToList().ForEach(dev => GpibDevicesName.Add(dev));
-                            if (GpibDevicesName.Count != 0 && GpibDevicesSelectedName is null)
-                                GpibDevicesSelectedName = GpibDevicesName.First();
-                        }
-                        catch (Exception ex)
-                        {
-                            _ = MessageBox.Show(ex.ToString());
-                        }
-                    }));
+                    gpibDeviceSearchEvent = new CommandBase(new Action<object>(param => GpibSearchDevice()));
                 }
                 return gpibDeviceSearchEvent;
             }
@@ -102,8 +106,8 @@ namespace MeasureApp.ViewModel
         }
 
         // 可用串口设备
-        private ObservableCollection<ComboBoxItem> serialportDevicesNameComboBoxItems = new();
-        public ObservableCollection<ComboBoxItem> SerialportDevicesNameComboBoxItems
+        private ObservableCollection<string> serialportDevicesNameComboBoxItems = new();
+        public ObservableCollection<string> SerialportDevicesNameComboBoxItems
         {
             get => serialportDevicesNameComboBoxItems;
             set
@@ -139,108 +143,68 @@ namespace MeasureApp.ViewModel
 
 
         // 串口校验
-        private string[] serialportDeviceParityList = Enum.GetNames(typeof(Parity));
-        public string[] SerialportDeviceParityList
-        {
-            get => serialportDeviceParityList;
-            set
-            {
-                serialportDeviceParityList = value;
-                RaisePropertyChanged(() => SerialportDeviceParityList);
-            }
-        }
+        public static string[] SerialportDeviceParityList { get; set; } = Enum.GetNames(typeof(Parity));
 
         // Enum.GetName(typeof(Parity), Parity.None);
-        public string SerialportDeviceParitySelectItem
+        public string SerialportDeviceParitySelectedValue
         {
             get => Properties.Settings.Default.DefaultSerialPortParity;
             set
             {
                 Properties.Settings.Default.DefaultSerialPortParity = value;
-                RaisePropertyChanged(() => SerialportDeviceParitySelectItem);
+                RaisePropertyChanged(() => SerialportDeviceParitySelectedValue);
             }
         }
 
         // 串口数据位
-        private int[] serialportDeviceDataBitsList = new[] { 5, 6, 7, 8 };
-        public int[] SerialportDeviceDataBitsList
-        {
-            get => serialportDeviceDataBitsList;
-            set
-            {
-                serialportDeviceDataBitsList = value;
-                RaisePropertyChanged(() => SerialportDeviceDataBitsList);
-            }
-        }
+        public int[] SerialportDeviceDataBitsList { get; set; } = new[] { 5, 6, 7, 8 };
 
         private int serialportDeviceDataBitsSelectItem = Properties.Settings.Default.DefaultSerialPortDataBits;
-        public int SerialportDeviceDataBitsSelectItem
+        public int SerialportDeviceDataBitsSelectedValue
         {
             get => serialportDeviceDataBitsSelectItem;
             set
             {
                 serialportDeviceDataBitsSelectItem = value;
-                RaisePropertyChanged(() => SerialportDeviceDataBitsSelectItem);
+                RaisePropertyChanged(() => SerialportDeviceDataBitsSelectedValue);
             }
         }
 
         // 串口停止位
-        private float[] serialportDeviceStopBitsList = new[] { 1.0F, 1.5F, 2.0F };
-        public float[] SerialportDeviceStopBitsList
-        {
-            get => serialportDeviceStopBitsList;
-            set
-            {
-                serialportDeviceStopBitsList = value;
-                RaisePropertyChanged(() => SerialportDeviceStopBitsList);
-            }
-        }
+        public float[] SerialportDeviceStopBitsList { get; set; } = new[] { 1.0F, 1.5F, 2.0F };
 
-        private float serialportDeviceStopBitsSelectItem = Properties.Settings.Default.DefaultSerialPortStopBits;
-        public float SerialportDeviceStopBitsSelectItem
+        private float serialportDeviceStopBitsSelectedValue = Properties.Settings.Default.DefaultSerialPortStopBits;
+        public float SerialportDeviceStopBitsSelectedValue
         {
-            get => serialportDeviceStopBitsSelectItem;
+            get => serialportDeviceStopBitsSelectedValue;
             set
             {
-                serialportDeviceStopBitsSelectItem = value;
-                RaisePropertyChanged(() => SerialportDeviceStopBitsSelectItem);
+                serialportDeviceStopBitsSelectedValue = value;
+                RaisePropertyChanged(() => SerialportDeviceStopBitsSelectedValue);
             }
         }
 
         // 搜索串口设备事件
-        private CommandBase serialPortDeviceSearchEvent;
-        public CommandBase SerialPortDeviceSearchEvent
+        public void SerialPortSearchDevice()
         {
-            get
+            try
             {
-                if (serialPortDeviceSearchEvent == null)
+                SerialportDevicesNameComboBoxItems.Clear();
+                string[] portList = SerialPort.GetPortNames();
+                string[] portDescriptionList = HardwareInfoUtil.GetSerialPortFullName();
+                for (int i = 0; i < portList.Length; ++i)
                 {
-                    serialPortDeviceSearchEvent = new CommandBase(new Action<object>(param =>
-                    {
-                        try
-                        {
-                            SerialportDevicesNameComboBoxItems.Clear();
-                            string[] portList = SerialPort.GetPortNames();
-                            string[] portDescriptionList = HardwareInfoUtil.GetSerialPortFullName();
-                            for (int i = 0; i < portList.Length; ++i)
-                            {
-                                SerialportDevicesNameComboBoxItems.Add(new()
-                                {
-                                    Content = $"{portList[i]}|{portDescriptionList.Where(str => str.Contains(portList[i])).FirstOrDefault() ?? ""}",
-                                    Tag = portList[i]
-                                });
-                            }
-
-                            if (SerialportDevicesNameComboBoxItems.Count != 0 && SerialportDevicesNameSelectedValue is null)
-                                SerialportDevicesNameSelectedValue = (string)SerialportDevicesNameComboBoxItems.First().Tag;
-                        }
-                        catch (Exception ex)
-                        {
-                            _ = MessageBox.Show(ex.ToString());
-                        }
-                    }));
+                    SerialportDevicesNameComboBoxItems.Add($"{portList[i]}|{portDescriptionList.Where(str => str.Contains(portList[i])).FirstOrDefault() ?? ""}");
                 }
-                return serialPortDeviceSearchEvent;
+
+                if (SerialportDevicesNameComboBoxItems.Count != 0 && SerialportDevicesNameSelectedValue is null)
+                {
+                    SerialportDevicesNameSelectedValue = SerialportDevicesNameComboBoxItems.First();
+                }
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
             }
         }
 
@@ -256,11 +220,11 @@ namespace MeasureApp.ViewModel
                     {
                         try
                         {
-                            string portName = SerialportDevicesNameSelectedValue;
+                            string portName = SerialportDevicesNameSelectedValue.Split('|')[0];
                             int baudRate = SerialportDeviceBaudRate;
-                            Parity parity = (Parity)Enum.Parse(typeof(Parity), SerialportDeviceParitySelectItem);
+                            Parity parity = (Parity)Enum.Parse(typeof(Parity), SerialportDeviceParitySelectedValue);
                             int dataBits = serialportDeviceDataBitsSelectItem;
-                            StopBits stopBits = serialportDeviceStopBitsSelectItem switch
+                            StopBits stopBits = serialportDeviceStopBitsSelectedValue switch
                             {
                                 1.0F => StopBits.One,
                                 1.5F => StopBits.OnePointFive,
@@ -305,7 +269,7 @@ namespace MeasureApp.ViewModel
                     {
                         try
                         {
-                            string portName = SerialportDevicesNameSelectedValue;
+                            string portName = SerialportDevicesNameSelectedValue.Split('|')[0];
                             if (!SerialPortsInstance.Close(portName))
                             {
                                 _ = MessageBox.Show("串口已被关闭.");
@@ -514,5 +478,20 @@ namespace MeasureApp.ViewModel
                 return serialPortDebugReadCmdEvent;
             }
         }
+
+        // CommandBase
+        private CommandBase serialPortDeviceSearchEvent;
+        public CommandBase SerialPortDeviceSearchEvent
+        {
+            get
+            {
+                if (serialPortDeviceSearchEvent == null)
+                {
+                    serialPortDeviceSearchEvent = new CommandBase(new Action<object>(param => SerialPortSearchDevice()));
+                }
+                return serialPortDeviceSearchEvent;
+            }
+        }
+
     }
 }

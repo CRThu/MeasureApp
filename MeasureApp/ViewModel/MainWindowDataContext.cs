@@ -83,54 +83,32 @@ namespace MeasureApp.ViewModel
             }
         }
 
-        // MainWindow关闭事件
-        private CommandBase mainWindowLoadedEvent;
-        public CommandBase MainWindowLoadedEvent
+        // MainWindow加载事件
+        public void MainWindowLoaded()
         {
-            get
+            try
             {
-                if (mainWindowLoadedEvent == null)
-                {
-                    mainWindowLoadedEvent = new CommandBase(new Action<object>(param =>
-                    {
-                        try
-                        {
-                            GpibDeviceSearchEvent.Execute(null);
-                            SerialPortDeviceSearchEvent.Execute(null);
-                        }
-                        catch (Exception ex)
-                        {
-                            _ = MessageBox.Show(ex.ToString());
-                        }
-                    }));
-                }
-                return mainWindowLoadedEvent;
+                GpibSearchDevice();
+                SerialPortSearchDevice();
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
             }
         }
 
         // MainWindow关闭事件
-        private CommandBase mainWindowClosedEvent;
-        public CommandBase MainWindowClosedEvent
+        public void MainWindowClosed()
         {
-            get
+            try
             {
-                if (mainWindowClosedEvent == null)
-                {
-                    mainWindowClosedEvent = new CommandBase(new Action<object>(param =>
-                    {
-                        try
-                        {
-                            Measure3458AInstance.Dispose();
-                            SerialPortsInstance.CloseAll();
-                            Properties.Settings.Default.Save();
-                        }
-                        catch (Exception ex)
-                        {
-                            _ = MessageBox.Show(ex.ToString());
-                        }
-                    }));
-                }
-                return mainWindowClosedEvent;
+                Measure3458AInstance.Dispose();
+                SerialPortsInstance.CloseAll();
+                Properties.Settings.Default.Save();
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
             }
         }
 
@@ -226,6 +204,49 @@ namespace MeasureApp.ViewModel
         }
 
         // 通用DataGrid自动添加行号
+        public static void DataGridLoadingRowAddRowIndex(object param)
+        {
+            try
+            {
+                if (param is DataGridRowEventArgs)
+                {
+                    var row = (param as DataGridRowEventArgs).Row;
+                    row.Header = (row.GetIndex() + 1).ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
+            }
+        }
+
+        // CommandBase
+        private CommandBase mainWindowLoadedEvent;
+        public CommandBase MainWindowLoadedEvent
+        {
+            get
+            {
+                if (mainWindowLoadedEvent == null)
+                {
+                    mainWindowLoadedEvent = new CommandBase(new Action<object>(param => MainWindowLoaded()));
+                }
+                return mainWindowLoadedEvent;
+            }
+        }
+
+        private CommandBase mainWindowClosedEvent;
+        public CommandBase MainWindowClosedEvent
+        {
+            get
+            {
+                if (mainWindowClosedEvent == null)
+                {
+                    mainWindowClosedEvent = new CommandBase(new Action<object>(param => MainWindowClosed()));
+                }
+                return mainWindowClosedEvent;
+            }
+        }
+
         private CommandBase dataGridLoadingRowAddRowIndexEvent;
         public CommandBase DataGridLoadingRowAddRowIndexEvent
         {
@@ -233,21 +254,7 @@ namespace MeasureApp.ViewModel
             {
                 if (dataGridLoadingRowAddRowIndexEvent == null)
                 {
-                    dataGridLoadingRowAddRowIndexEvent = new CommandBase(new Action<object>(param =>
-                    {
-                        try
-                        {
-                            if (param is DataGridRowEventArgs)
-                            {
-                                var row = (param as DataGridRowEventArgs).Row;
-                                row.Header = (row.GetIndex() + 1).ToString();
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            _ = MessageBox.Show(ex.ToString());
-                        }
-                    }));
+                    dataGridLoadingRowAddRowIndexEvent = new CommandBase(new Action<object>(param => DataGridLoadingRowAddRowIndex(param)));
                 }
                 return dataGridLoadingRowAddRowIndexEvent;
             }

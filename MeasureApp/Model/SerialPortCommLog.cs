@@ -80,6 +80,7 @@ namespace MeasureApp.Model
         {
             if (fileName == null)
             {
+                // FOR TEST
                 string json = JsonConvert.SerializeObject(
                     new Dictionary<string, Brush>()
                     {
@@ -87,11 +88,11 @@ namespace MeasureApp.Model
                         { "FAIL", Brushes.Red },
                         { "__DEFAULT__", Brushes.Orange },
                     });
-                File.WriteAllText(@"D:\Projects\MeasureApp\MeasureApp\Config\LogKeywordColor.json", json);
+                File.WriteAllText(fileName, json);
             }
             else
             {
-                string json = File.ReadAllText(@"D:\Projects\MeasureApp\MeasureApp\Config\LogKeywordColor.json");
+                string json = File.ReadAllText(fileName);
                 KeywordColor = JsonConvert.DeserializeObject<Dictionary<string, Brush>>(json);
             }
         }
@@ -114,7 +115,6 @@ namespace MeasureApp.Model
         {
             return KeywordColor.ContainsKey(s) ? KeywordColor[s] : KeywordColor["__DEFAULT__"];
         }
-
 
         public override string ToString()
         {
