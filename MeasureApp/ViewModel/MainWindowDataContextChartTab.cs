@@ -37,6 +37,28 @@ namespace MeasureApp.ViewModel
         //}
 
 
+        // 缩放
+        private double plotViewFrom = 0;
+        private double plotViewTo = 1;
+        public double PlotViewFrom
+        {
+            get => plotViewFrom;
+            set
+            {
+                plotViewFrom = value;
+                RaisePropertyChanged(() => PlotViewFrom);
+            }
+        }
+        public double PlotViewTo
+        {
+            get => plotViewTo;
+            set
+            {
+                plotViewTo = value;
+                RaisePropertyChanged(() => PlotViewTo);
+            }
+        }
+
         // PlotView数据刷新事件
         private CommandBase plotViewPlotRefreshEvent;
         public CommandBase PlotViewPlotRefreshEvent
@@ -65,7 +87,7 @@ namespace MeasureApp.ViewModel
 
         // PlotView大数据量测试事件
         public Random random = new();
-         public double trend = 0;
+        public double trend = 0;
         private CommandBase plotViewTestEvent;
         public CommandBase PlotViewTestEvent
         {
@@ -84,7 +106,7 @@ namespace MeasureApp.ViewModel
                                 l.Add(trend /*- PlotViewLineValues.Count - i*/);
                             }
                             PlotViewLineValues.AddRange(l);
-                            DataStorageInstance.AddDataCollection("Simu DAC", l.Select(a=>(dynamic)a));
+                            DataStorageInstance.AddDataCollection("Simu DAC", l.Select(a => (dynamic)a));
                         }
                         catch (Exception ex)
                         {

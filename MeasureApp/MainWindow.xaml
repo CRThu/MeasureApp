@@ -801,11 +801,61 @@
                             </i:Interaction.Triggers>
                         </Button>
                         <Border Margin="205,10,10,10" BorderBrush="Gray" BorderThickness="1.5">
-                            <lvc:CartesianChart DisableAnimations="True" Hoverable="False" DataTooltip="{x:Null}">
-                                <lvc:CartesianChart.Series>
-                                    <geared:GLineSeries Values="{Binding PlotViewLineValues}" Fill="Transparent" PointGeometry="{x:Null}" LineSmoothness="0"/>
-                                </lvc:CartesianChart.Series>
-                            </lvc:CartesianChart>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"></RowDefinition>
+                                    <RowDefinition Height="100"></RowDefinition>
+                                </Grid.RowDefinitions>
+                                <lvc:CartesianChart Grid.Row="0" Zoom="X" DisableAnimations="True" Hoverable="False" DataTooltip="{x:Null}">
+                                    <lvc:CartesianChart.Resources>
+                                        <Style TargetType="lvc:Separator">
+                                            <Setter Property="StrokeThickness" Value="2.5"></Setter>
+                                            <Setter Property="Stroke" Value="#E7E7E7"></Setter>
+                                            <Style.Triggers>
+                                                <Trigger Property="AxisOrientation" Value="X">
+                                                    <Setter Property="IsEnabled" Value="False"></Setter>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </lvc:CartesianChart.Resources>
+                                    <lvc:CartesianChart.Series>
+                                        <geared:GLineSeries Values="{Binding PlotViewLineValues}" Fill="Transparent" PointGeometry="{x:Null}" LineSmoothness="0"/>
+                                    </lvc:CartesianChart.Series>
+                                    <lvc:CartesianChart.AxisX>
+                                        <lvc:Axis MinValue="{Binding PlotViewFrom, Mode=TwoWay}" MaxValue="{Binding PlotViewTo, Mode=TwoWay}" Separator="{x:Static lvc:DefaultAxes.CleanSeparator}"/>
+                                    </lvc:CartesianChart.AxisX>
+                                </lvc:CartesianChart>
+                                <lvc:CartesianChart Grid.Row="1" DisableAnimations="True" 
+                                        ScrollMode="X"
+                                        ScrollHorizontalFrom="{Binding PlotViewFrom, Mode=TwoWay}"
+                                        ScrollHorizontalTo="{Binding PlotViewTo, Mode=TwoWay}"
+                                        ScrollBarFill="#25303030"
+                                        DataTooltip="{x:Null}"
+                                        Hoverable="False"
+                                        Margin="20 10">
+                                    <lvc:CartesianChart.Resources>
+                                        <Style TargetType="lvc:Separator">
+                                            <Setter Property="IsEnabled" Value="False"></Setter>
+                                        </Style>
+                                    </lvc:CartesianChart.Resources>
+                                    <lvc:CartesianChart.Series>
+                                        <geared:GLineSeries Values="{Binding PlotViewLineValues}"
+                                        Fill="Silver"
+                                        StrokeThickness="0"
+                                        PointGeometry="{x:Null}"
+                                        AreaLimit="0"/>
+                                    </lvc:CartesianChart.Series>
+                                    <lvc:CartesianChart.AxisX>
+                                        <lvc:Axis IsMerged="True" 
+                                              Foreground="#98000000"
+                                              FontSize="22"
+                                              FontWeight="UltraBold"/>
+                                    </lvc:CartesianChart.AxisX>
+                                    <lvc:CartesianChart.AxisY>
+                                        <lvc:Axis ShowLabels="False" />
+                                    </lvc:CartesianChart.AxisY>
+                                </lvc:CartesianChart>
+                            </Grid>
                         </Border>
                     </Grid>
                 </TabItem>
