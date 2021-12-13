@@ -341,10 +341,7 @@
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </Button>
-                        <CheckBox Name="SerialPortCommandLogIsAutoScrollCheckBox" Content="自动滚动" VerticalAlignment="Top" Margin="780,14,0,0" HorizontalAlignment="Left" Width="68"/>
-
-
-
+                        <CheckBox Name="SerialPortCommandLogIsAutoScrollCheckBox" IsChecked="True" Content="自动滚动" VerticalAlignment="Top" Margin="780,14,0,0" HorizontalAlignment="Left" Width="68"/>
                         <Border Margin="10,261,0,10" HorizontalAlignment="Left" Width="432" BorderBrush="Gray" BorderThickness="1.5">
                             <Grid>
                                 <view:BindableAvalonEditor Document="{Binding SerialportCommandScriptEditorDocument}" Margin="5,5,0,5" ShowLineNumbers="True" FontFamily="Consolas" FontSize="10pt" HorizontalAlignment="Left" Width="284"/>
@@ -393,7 +390,7 @@
                                 <TextBlock Text="{Binding SerialportCommandScriptEditorDocument.LineCount}" Margin="386,136,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="33"/>
                             </Grid>
                         </Border>
-                        <ListView Margin="447,38,10,10" ItemsSource="{Binding SerialportCommandLog}">
+                        <ListView Margin="447,38,10,10" ItemsSource="{Binding SerialPortLogger.LogCollection}">
                             <ListView.ItemContainerStyle>
                                 <Style TargetType="{x:Type ListViewItem}">
                                     <Setter Property="Foreground" Value="{Binding Color}"/>
@@ -633,7 +630,7 @@
                                         <TextBox.Resources>
                                             <VisualBrush x:Key="HintText"  TileMode="None" Opacity="0.5" Stretch="None" AlignmentX="Left">
                                                 <VisualBrush.Visual>
-                                                    <TextBlock FontStyle="Italic" Text="自定义参数，可用&quot; ,.;|&amp;&quot;分隔多个参数"/>
+                                                    <TextBlock FontStyle="Italic" Text="自定义参数，可用&quot; ,;|&amp;&quot;分隔多个参数"/>
                                                 </VisualBrush.Visual>
                                             </VisualBrush>
                                         </TextBox.Resources>

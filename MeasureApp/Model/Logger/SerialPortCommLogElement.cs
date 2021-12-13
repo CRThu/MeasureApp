@@ -10,9 +10,9 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
 
-namespace MeasureApp.Model
+namespace MeasureApp.Model.Logger
 {
-    public class SerialPortCommLog : NotificationObjectBase
+    public class SerialPortCommLogElement : NotificationObjectBase
     {
         private static Dictionary<string, Brush> KeywordColor = new();
 
@@ -60,7 +60,7 @@ namespace MeasureApp.Model
             }
         }
 
-        public SerialPortCommLog(string host, dynamic msg, bool isHighlight = false)
+        public SerialPortCommLogElement(dynamic msg, string host = "<null>", bool isHighlight = false)
         {
             Time = DateTime.Now;
             Host = host;

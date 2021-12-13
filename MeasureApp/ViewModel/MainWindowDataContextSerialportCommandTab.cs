@@ -1,5 +1,6 @@
 ﻿using ICSharpCode.AvalonEdit.Document;
 using MeasureApp.Model;
+using MeasureApp.Model.Logger;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using System;
@@ -130,15 +131,14 @@ namespace MeasureApp.ViewModel
         }
 
         // 串口命令模块监听
-        private object serialPortCommandLoglocker = new();
-        private ObservableRangeCollection<SerialPortCommLog> serialportCommandLog = new();
-        public ObservableRangeCollection<SerialPortCommLog> SerialportCommandLog
+        private SerialPortCommLogger serialPortLogger = new();
+        public SerialPortCommLogger SerialPortLogger
         {
-            get => serialportCommandLog;
+            get => serialPortLogger;
             set
             {
-                serialportCommandLog = value;
-                RaisePropertyChanged(() => SerialportCommandLog);
+                serialPortLogger = value;
+                RaisePropertyChanged(() => SerialPortLogger);
             }
         }
 
@@ -359,7 +359,7 @@ namespace MeasureApp.ViewModel
                     {
                         try
                         {
-                            SerialportCommandLog.Clear();
+                            SerialPortLogger.Clear();
                         }
                         catch (Exception ex)
                         {
@@ -394,7 +394,7 @@ namespace MeasureApp.ViewModel
                             if (saveFileDialog.ShowDialog() == true)
                             {
                                 Properties.Settings.Default.DefaultDirectory = Path.GetDirectoryName(saveFileDialog.FileName);
-                                File.WriteAllLines(saveFileDialog.FileName, SerialportCommandLog.Select(l => l.ToString()));
+                                SerialPortLogger.Save(saveFileDialog.FileName);
                             }
                         }
                         catch (Exception ex)
@@ -412,10 +412,7 @@ namespace MeasureApp.ViewModel
         {
             if (portName == SerialportCommandPortNameSelectedValue)
             {
-                lock (serialPortCommandLoglocker)
-                {
-                    SerialportCommandLog.Add(new SerialPortCommLog("WPF", data, false));
-                }
+                SerialPortLogger.Add(data, "WPF", false);
             }
         }
 
@@ -428,10 +425,8 @@ namespace MeasureApp.ViewModel
                 if (_bytesToRead > 0)
                 {
                     string[] msgCollection = SerialPortsInstance.ReadExistingString(SerialportCommandPortNameSelectedValue).Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-                    lock (serialPortCommandLoglocker)
-                    {
-                        SerialportCommandLog.AddRange(msgCollection.Select(l => new SerialPortCommLog("COM", l, Properties.Settings.Default.IsSerialPortLogKeywordHighlight)));
-                    }
+
+                    SerialPortLogger.AddRange(msgCollection, "COM", Properties.Settings.Default.IsSerialPortLogKeywordHighlight);
                 }
             }
             catch (Exception ex)
@@ -625,6 +620,15 @@ namespace MeasureApp.ViewModel
                     {
                         // 阻塞ui
                         MessageBox.Show(MatchHtmlTag(code, "MsgBox"));
+                    }
+                }
+                else if (IsMatchHtmlTag(code, "wait"))
+                {
+                    if (isScriptTagEnabled)
+                    {
+                        // TODO 等待至指令
+                        //MatchHtmlTag(code, "wait")
+                        MessageBox.Show(SerialPortLogger.IsLastLogContains("COM", "[COMMAND]")?"[COMMAND]":"Nothing");
                     }
                 }
                 else

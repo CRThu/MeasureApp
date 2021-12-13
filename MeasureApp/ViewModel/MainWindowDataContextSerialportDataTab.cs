@@ -246,11 +246,11 @@ namespace MeasureApp.ViewModel
                         try
                         {
                             string commandName = SerialportSendCmdCommandNameSelectedValue == "Others" ? SerialPortSendCmdCommandNameManualText : SerialportSendCmdCommandNameSelectedValue;
-                            string[] CommandElements = (commandName + ";" + SerialPortSendCmdParamsText ?? "").Split(" ,.;|&".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                            string[] CommandElements = (commandName + ";" + SerialPortSendCmdParamsText ?? "").Split(" ,;|&".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
                             SerialPortSendCmdPreviewText = $"{string.Join(";", CommandElements)};";
 
-                            SerialPortSendCmdCommandNameManualTextBoxForeGround = new SolidColorBrush(Regex.IsMatch(SerialPortSendCmdCommandNameManualText ?? "", @"[^a-zA-Z0-9]") ? Colors.Red : Colors.Black);
-                            SerialPortSendCmdParamsTextBoxForeGround = new SolidColorBrush(Regex.IsMatch(SerialPortSendCmdParamsText ?? "", @"[^x00-xff\s,.;|&]") ? Colors.Red : Colors.Black);
+                            SerialPortSendCmdCommandNameManualTextBoxForeGround = new SolidColorBrush(Regex.IsMatch(SerialPortSendCmdCommandNameManualText ?? "", @"[^a-zA-Z0-9.]") ? Colors.Red : Colors.Black);
+                            SerialPortSendCmdParamsTextBoxForeGround = new SolidColorBrush(Regex.IsMatch(SerialPortSendCmdParamsText ?? "", @"[^x00-xff.\s,;|&]") ? Colors.Red : Colors.Black);
                         }
                         catch (Exception ex)
                         {
@@ -331,13 +331,13 @@ namespace MeasureApp.ViewModel
                                             RecvDataPraseTemp = recvString;
                                             break;
                                         case SerialPortRecvDataTypeEnum.UInt8:
-                                            RecvDataPraseTemp = recvString.Split(" ,.;|&".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Select(data => Convert.ToByte(data)).ToArray();
+                                            RecvDataPraseTemp = recvString.Split(" ,;|&".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Select(data => Convert.ToByte(data)).ToArray();
                                             break;
                                         case SerialPortRecvDataTypeEnum.UInt16:
-                                            RecvDataPraseTemp = recvString.Split(" ,.;|&".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Select(data => Convert.ToUInt16(data)).ToArray();
+                                            RecvDataPraseTemp = recvString.Split(" ,;|&".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Select(data => Convert.ToUInt16(data)).ToArray();
                                             break;
                                         case SerialPortRecvDataTypeEnum.UInt32:
-                                            RecvDataPraseTemp = recvString.Split(" ,.;|&".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Select(data => Convert.ToInt32(data)).ToArray();
+                                            RecvDataPraseTemp = recvString.Split(" ,;|&".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Select(data => Convert.ToInt32(data)).ToArray();
                                             break;
                                         default:
                                             throw new NotImplementedException();

@@ -28,12 +28,6 @@ namespace MeasureApp.ViewModel
             PlotViewLineValues.WithQuality(Quality.Highest);
             //PlotViewLineValues.CollectionChanged += (_, _) => MessageBox.Show($"{PlotViewLineValues.Count}");
 
-            // async
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                BindingOperations.EnableCollectionSynchronization(SerialportCommandLog, serialPortCommandLoglocker);
-            });
-
             // 加载串口预设指令
             if (File.Exists(Properties.Settings.Default.DefaultPresetCommandsJsonPath))
             {
@@ -43,7 +37,7 @@ namespace MeasureApp.ViewModel
             // 加载串口记录模块关键词颜色文件
             if (File.Exists(Properties.Settings.Default.DefaultLogKeywordColorJsonPath))
             {
-                SerialPortCommLog.SerialPortLogLoadKeywordColorFromJson(Properties.Settings.Default.DefaultLogKeywordColorJsonPath);
+                SerialPortLogger.LoadKeywordFile(Properties.Settings.Default.DefaultLogKeywordColorJsonPath);
             }
         }
 
