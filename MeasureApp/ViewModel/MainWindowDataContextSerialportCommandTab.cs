@@ -179,11 +179,6 @@ namespace MeasureApp.ViewModel
             }
         }
 
-        // 非VM函数-START
-        // 非VM函数-START
-        // 非VM函数-START
-        // 非VM函数-START
-
         // 加载预设指令函数
         public void SerialPortLoadPresetCommandsFromJson(string jsonPath)
         {
@@ -225,14 +220,60 @@ namespace MeasureApp.ViewModel
             }
         }
 
-        public bool SerialPortCommandScriptRunLine(string line, bool isStopTagEnabled = true, bool isScriptTagEnabled = true)
+        // 完整脚本运行
+        public void SerialPortCommandScriptRunAll()
+        {
+            DispatcherTimer timer = new()
+            {
+                Interval = TimeSpan.FromMilliseconds(SerialportCommandScriptRunDelayMilliSecound),
+
+            };
+            timer.Tick += (sender, args) =>
+            {
+                SerialPortCommandScriptRunAllByTick((DispatcherTimer)sender);
+            };
+            timer.Start();
+        }
+
+        public void SerialPortCommandScriptRunAllByTick(DispatcherTimer timer)
+        {
+            try
+            {
+            start:
+                string line = SerialPortCommandScriptGetCurrentLine();
+                var status = SerialPortCommandScriptRunLine(line, isStopTagEnabled: SerialportCommandScriptIsRunToStop);
+                // 运行到STOP则退出
+                if (status == SerialPortScriptRunStatus.Stopped)
+                {
+                    timer.Stop();
+                }
+                // 运行到程序结尾则退出
+                if (!SerialPortCommandScriptToNextLine())
+                {
+                    timer.Stop();
+                }
+                // 运行到空行则跳转执行下一行
+                if (status == SerialPortScriptRunStatus.BlankLine)
+                {
+                    goto start;
+                }
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
+                timer.Stop();
+            }
+        }
+
+        // 脚本单行运行
+        public SerialPortScriptRunStatus SerialPortCommandScriptRunLine(string line, bool isStopTagEnabled = true, bool isScriptTagEnabled = true)
         {
             string code = line.Split('#', 2).First().Trim();
 
             // 检测是否为空行
             if (string.IsNullOrWhiteSpace(code))
             {
-                return true;
+                return SerialPortScriptRunStatus.BlankLine;
             }
 
             // 特殊命令解析
@@ -244,7 +285,7 @@ namespace MeasureApp.ViewModel
                     {
                         // TODO
                         //MessageBox.Show(MatchHtmlTag(code, "stop"));
-                        return false;
+                        return SerialPortScriptRunStatus.Stopped;
                     }
                 }
                 else if (HtmlTagUtility.IsMatchHtmlTag(code, "script"))
@@ -298,48 +339,16 @@ namespace MeasureApp.ViewModel
                 SerialPortsInstance.WriteString(SerialportCommandPortNameSelectedValue, code);
             }
 
-            return true;
+            return SerialPortScriptRunStatus.Executed;
         }
 
-        public void SerialPortCommandScriptRunAll()
-        {
-            DispatcherTimer timer = new()
-            {
-                Interval = TimeSpan.FromMilliseconds(SerialportCommandScriptRunDelayMilliSecound),
-
-            };
-            timer.Tick += (sender, args) =>
-            {
-                try
-                {
-                    // 运行到STOP则退出
-                    string line = SerialPortCommandScriptGetCurrentLine();
-                    if (!SerialPortCommandScriptRunLine(line, isStopTagEnabled: SerialportCommandScriptIsRunToStop))
-                    {
-                        timer.Stop();
-                    }
-
-                    // 运行到程序结尾则退出
-                    if (!SerialPortCommandScriptToNextLine())
-                    {
-                        timer.Stop();
-                    }
-
-                }
-                catch (Exception ex)
-                {
-                    _ = MessageBox.Show(ex.ToString());
-                    timer.Stop();
-                }
-            };
-            timer.Start();
-        }
-
+        // 获取本行脚本
         public string SerialPortCommandScriptGetCurrentLine()
         {
             return SerialPortCommandScriptGetLine(SerialportCommandScriptCurruntLineCursor);
         }
 
+        // 获取行号脚本
         public string SerialPortCommandScriptGetLine(int lineCursor)
         {
             DocumentLine dl = SerialportCommandScriptEditorDocument.Lines[lineCursor - 1];
@@ -348,6 +357,7 @@ namespace MeasureApp.ViewModel
             return command;
         }
 
+        // 跳转到下一行
         public bool SerialPortCommandScriptToNextLine()
         {
             if (SerialportCommandScriptCurruntLineCursor < SerialportCommandScriptEditorDocument.LineCount)
@@ -361,11 +371,6 @@ namespace MeasureApp.ViewModel
                 return false;
             }
         }
-
-        // 非VM函数-END
-        // 非VM函数-END
-        // 非VM函数-END
-        // 非VM函数-END
 
         // 发送指令事件
         public void SerialPortCommandSend(object param)
@@ -566,7 +571,7 @@ namespace MeasureApp.ViewModel
                             break;
                         case "RunOnce":
                             string line = SerialPortCommandScriptGetCurrentLine();
-                            SerialPortCommandScriptRunLine(line,isStopTagEnabled: false);
+                            SerialPortCommandScriptRunLine(line, isStopTagEnabled: false);
                             SerialPortCommandScriptToNextLine();
                             break;
                         case "ClearCursor":
