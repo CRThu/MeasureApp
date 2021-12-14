@@ -348,35 +348,35 @@
                                 <Button Content="加载" Margin="294,10,0,0" VerticalAlignment="Top" Height="28" HorizontalAlignment="Left" Width="60">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
-                                            <viewmodel:EventCommandBase Command="{Binding SerialportCommandScriptLoadFileEvent}"/>
+                                            <viewmodel:EventCommandBase Command="{Binding SerialPortCommandScriptLoadFileEvent}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
                                 <Button Content="保存" Margin="359,10,0,0" VerticalAlignment="Top" Height="28" HorizontalAlignment="Left" Width="60">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
-                                            <viewmodel:EventCommandBase Command="{Binding SerialportCommandScriptSaveFileEvent}"/>
+                                            <viewmodel:EventCommandBase Command="{Binding SerialPortCommandScriptSaveFileEvent}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
                                 <Button Content="运行" Margin="294,43,0,0" VerticalAlignment="Top" Height="28" HorizontalAlignment="Left" Width="60">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
-                                            <viewmodel:EventCommandBase Command="{Binding SerialportCommandScriptRunEvent}" CommandParameter="Run"/>
+                                            <viewmodel:EventCommandBase Command="{Binding SerialPortCommandScriptRunEvent}" CommandParameter="Run"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
                                 <Button Content="单步" Margin="294,76,0,0" VerticalAlignment="Top" Height="28" HorizontalAlignment="Left" Width="60">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
-                                            <viewmodel:EventCommandBase Command="{Binding SerialportCommandScriptRunEvent}" CommandParameter="RunOnce"/>
+                                            <viewmodel:EventCommandBase Command="{Binding SerialPortCommandScriptRunEvent}" CommandParameter="RunOnce"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
                                 <Button Content="行数重置" Margin="359,76,0,0" VerticalAlignment="Top" Height="28" HorizontalAlignment="Left" Width="60">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
-                                            <viewmodel:EventCommandBase Command="{Binding SerialportCommandScriptRunEvent}" CommandParameter="ClearCursor"/>
+                                            <viewmodel:EventCommandBase Command="{Binding SerialPortCommandScriptRunEvent}" CommandParameter="ClearCursor"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
@@ -433,7 +433,7 @@
                                     <Button Margin="5,5,5,5" Content="{Binding SerialportCommandModels[0].CommandText}" Grid.Row="0" Grid.Column="3">
                                         <i:Interaction.Triggers>
                                             <i:EventTrigger EventName="Click">
-                                                <viewmodel:EventCommandBase Command="{Binding SerialportCommandSendEvent}" CommandParameter="0"/>
+                                                <viewmodel:EventCommandBase Command="{Binding SerialPortCommandSendEvent}" CommandParameter="0"/>
                                             </i:EventTrigger>
                                         </i:Interaction.Triggers>
                                     </Button>
@@ -549,14 +549,14 @@
                                     <Button Content="加载" Margin="317,10,0,0" VerticalAlignment="Top" Height="28" Width="61" HorizontalAlignment="Left">
                                         <i:Interaction.Triggers>
                                             <i:EventTrigger EventName="Click">
-                                                <viewmodel:EventCommandBase Command="{Binding SerialportCommandPresetLoadEvent}"/>
+                                                <viewmodel:EventCommandBase Command="{Binding SerialPortCommandPresetLoadEvent}"/>
                                             </i:EventTrigger>
                                         </i:Interaction.Triggers>
                                     </Button>
                                     <Button Content="发送" Margin="317,43,0,0" VerticalAlignment="Top" Height="28" Width="61" HorizontalAlignment="Left" IsEnabled="{Binding ElementName=SerialPortPresetCommandsListView,Path=SelectedItem,Converter={StaticResource IsNotNullConverter}}">
                                         <i:Interaction.Triggers>
                                             <i:EventTrigger EventName="Click">
-                                                <viewmodel:EventCommandBase Command="{Binding SerialportCommandPresetSendEvent}"/>
+                                                <viewmodel:EventCommandBase Command="{Binding SerialPortCommandPresetSendEvent}"/>
                                             </i:EventTrigger>
                                         </i:Interaction.Triggers>
                                     </Button>

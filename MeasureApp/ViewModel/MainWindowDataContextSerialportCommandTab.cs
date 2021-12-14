@@ -1,6 +1,7 @@
 ﻿using ICSharpCode.AvalonEdit.Document;
 using MeasureApp.Model;
 using MeasureApp.Model.Logger;
+using MeasureApp.Model.SerialPortScript;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using System;
@@ -13,6 +14,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
@@ -44,7 +46,6 @@ namespace MeasureApp.ViewModel
                 RaisePropertyChanged(() => SerialPortCommandIsListeningDataReceived);
             }
         }
-
 
         // GUI绑定
         // TODO
@@ -178,38 +179,10 @@ namespace MeasureApp.ViewModel
             }
         }
 
-        // 发送指令事件
-        private CommandBase serialportCommandSendEvent;
-        public CommandBase SerialportCommandSendEvent
-        {
-            get
-            {
-                if (serialportCommandSendEvent == null)
-                {
-                    serialportCommandSendEvent = new CommandBase(new Action<object>(param =>
-                    {
-                        try
-                        {
-                            if (param is string)
-                            {
-                                int index = Convert.ToInt32(param);
-                                string com = SerialportCommandPortNameSelectedValue;
-                                List<dynamic> vs = new(SerialportCommandModels[index].SendParamsTexts);
-                                vs.Insert(0, SerialportCommandModels[index].CommandText);
-                                string sendText = $"{string.Join(";", vs)};";
-
-                                SerialPortsInstance.WriteString(com, sendText);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            _ = MessageBox.Show(ex.ToString());
-                        }
-                    }));
-                }
-                return serialportCommandSendEvent;
-            }
-        }
+        // 非VM函数-START
+        // 非VM函数-START
+        // 非VM函数-START
+        // 非VM函数-START
 
         // 加载预设指令函数
         public void SerialPortLoadPresetCommandsFromJson(string jsonPath)
@@ -222,189 +195,6 @@ namespace MeasureApp.ViewModel
             //var ds = System.Text.Json.JsonSerializer.Deserialize<ObservableCollection<SerialPortPresetCommand>>(json, options);
             var ds = JsonConvert.DeserializeObject<ObservableCollection<SerialPortPresetCommand>>(json);
             SerialPortPresetCommands = ds;
-        }
-
-        // 加载预设指令事件
-        private CommandBase serialportCommandPresetLoadEvent;
-        public CommandBase SerialportCommandPresetLoadEvent
-        {
-            get
-            {
-                if (serialportCommandPresetLoadEvent == null)
-                {
-                    serialportCommandPresetLoadEvent = new CommandBase(new Action<object>(param =>
-                    {
-                        try
-                        {
-                            // Open File Dialog
-                            OpenFileDialog openFileDialog = new()
-                            {
-                                Title = "Open Json File...",
-                                Filter = "Json File|*.json",
-                                InitialDirectory = Properties.Settings.Default.DefaultDirectory
-                            };
-                            if (openFileDialog.ShowDialog() == true)
-                            {
-                                Properties.Settings.Default.DefaultDirectory = Path.GetDirectoryName(openFileDialog.FileName);
-                                Properties.Settings.Default.DefaultPresetCommandsJsonPath = openFileDialog.FileName;
-                                SerialPortLoadPresetCommandsFromJson(openFileDialog.FileName);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            _ = MessageBox.Show(ex.ToString());
-                        }
-                    }));
-                }
-                return serialportCommandPresetLoadEvent;
-            }
-        }
-
-        // 串口预设指令发送
-        private CommandBase serialportCommandPresetSendEvent;
-        public CommandBase SerialportCommandPresetSendEvent
-        {
-            get
-            {
-                if (serialportCommandPresetSendEvent == null)
-                {
-                    serialportCommandPresetSendEvent = new CommandBase(new Action<object>(param =>
-                    {
-                        try
-                        {
-                            string com = SerialportCommandPortNameSelectedValue;
-                            string sendText = SerialportPresetCommandSelectedItem.Command;
-
-                            SerialPortsInstance.WriteString(com, sendText);
-                        }
-                        catch (Exception ex)
-                        {
-                            _ = MessageBox.Show(ex.ToString());
-                        }
-                    }));
-                }
-                return serialportCommandPresetSendEvent;
-            }
-        }
-
-        // 串口预设指令添加至Code
-        private CommandBase serialportCommandPresetAddCodeEvent;
-        public CommandBase SerialportCommandPresetAddCodeEvent
-        {
-            get
-            {
-                if (serialportCommandPresetAddCodeEvent == null)
-                {
-                    serialportCommandPresetAddCodeEvent = new CommandBase(new Action<object>(param =>
-                    {
-                        try
-                        {
-                            SerialportCommandScriptEditorDocument.Text += "\n" + SerialportPresetCommandSelectedItem.Command;
-                        }
-                        catch (Exception ex)
-                        {
-                            _ = MessageBox.Show(ex.ToString());
-                        }
-                    }));
-                }
-                return serialportCommandPresetAddCodeEvent;
-            }
-        }
-
-
-
-        // 串口监听打开/关闭事件
-        private CommandBase serialPortCommandListenEvent;
-        public CommandBase SerialPortCommandListenEvent
-        {
-            get
-            {
-                if (serialPortCommandListenEvent == null)
-                {
-                    serialPortCommandListenEvent = new CommandBase(new Action<object>(param =>
-                    {
-                        try
-                        {
-                            if (!SerialPortCommandIsListeningDataReceived)
-                            {
-                                SerialPortsInstance.AddDataReceivedEvent(SerialportCommandPortNameSelectedValue, SerialPortDataReceivedCallBack);
-                                SerialPortsInstance.PreWriteString += SerialPortPreWriteString;
-                            }
-                            else
-                            {
-                                SerialPortsInstance.RemoveDataReceivedEvent(SerialportCommandPortNameSelectedValue, SerialPortDataReceivedCallBack);
-                                SerialPortsInstance.PreWriteString -= SerialPortPreWriteString;
-                            }
-                            SerialPortCommandIsListeningDataReceived = !SerialPortCommandIsListeningDataReceived;
-                        }
-                        catch (Exception ex)
-                        {
-                            _ = MessageBox.Show(ex.ToString());
-                        }
-                    }));
-                }
-                return serialPortCommandListenEvent;
-            }
-        }
-
-        // 串口记录清空
-        private CommandBase serialPortCommandCleanLogEvent;
-        public CommandBase SerialPortCommandCleanLogEvent
-        {
-            get
-            {
-                if (serialPortCommandCleanLogEvent == null)
-                {
-                    serialPortCommandCleanLogEvent = new CommandBase(new Action<object>(param =>
-                    {
-                        try
-                        {
-                            SerialPortLogger.Clear();
-                        }
-                        catch (Exception ex)
-                        {
-                            _ = MessageBox.Show(ex.ToString());
-                        }
-                    }));
-                }
-                return serialPortCommandCleanLogEvent;
-            }
-        }
-
-        // 串口记录导出
-        private CommandBase serialPortCommandSaveLogEvent;
-        public CommandBase SerialPortCommandSaveLogEvent
-        {
-            get
-            {
-                if (serialPortCommandSaveLogEvent == null)
-                {
-                    serialPortCommandSaveLogEvent = new CommandBase(new Action<object>(param =>
-                    {
-                        try
-                        {
-                            SaveFileDialog saveFileDialog = new()
-                            {
-                                Title = "存储数据",
-                                FileName = "SerialPortLog",
-                                DefaultExt = ".log",
-                                Filter = "Log File|*.log",
-                                InitialDirectory = Properties.Settings.Default.DefaultDirectory
-                            };
-                            if (saveFileDialog.ShowDialog() == true)
-                            {
-                                Properties.Settings.Default.DefaultDirectory = Path.GetDirectoryName(saveFileDialog.FileName);
-                                SerialPortLogger.Save(saveFileDialog.FileName);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            _ = MessageBox.Show(ex.ToString());
-                        }
-                    }));
-                }
-                return serialPortCommandSaveLogEvent;
-            }
         }
 
         // 串口发送回调
@@ -435,149 +225,8 @@ namespace MeasureApp.ViewModel
             }
         }
 
-        // 串口命令模块加载脚本
-        private CommandBase serialportCommandScriptLoadFileEvent;
-        public CommandBase SerialportCommandScriptLoadFileEvent
+        public bool SerialPortCommandScriptRunLine(string line, bool isStopTagEnabled = true, bool isScriptTagEnabled = true)
         {
-            get
-            {
-                if (serialportCommandScriptLoadFileEvent == null)
-                {
-                    serialportCommandScriptLoadFileEvent = new CommandBase(new Action<object>(param =>
-                    {
-                        try
-                        {
-                            // Open File Dialog
-                            OpenFileDialog openFileDialog = new()
-                            {
-                                Title = "Open Script File...",
-                                Filter = "Text File|*.txt|Task Code|*.task",
-                                InitialDirectory = Properties.Settings.Default.DefaultDirectory
-                            };
-                            if (openFileDialog.ShowDialog() == true)
-                            {
-                                Properties.Settings.Default.DefaultDirectory = Path.GetDirectoryName(openFileDialog.FileName);
-                                SerialportCommandScriptEditorDocument.Text = File.ReadAllText(openFileDialog.FileName);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            _ = MessageBox.Show(ex.ToString());
-                        }
-                    }));
-                }
-                return serialportCommandScriptLoadFileEvent;
-            }
-        }
-
-        // 串口命令模块保存脚本
-        private CommandBase serialportCommandScriptSaveFileEvent;
-        public CommandBase SerialportCommandScriptSaveFileEvent
-        {
-            get
-            {
-                if (serialportCommandScriptSaveFileEvent == null)
-                {
-                    serialportCommandScriptSaveFileEvent = new CommandBase(new Action<object>(param =>
-                    {
-                        try
-                        {
-                            // Save File Dialog
-                            SaveFileDialog saveFileDialog = new()
-                            {
-                                Title = "Save Script File...",
-                                Filter = "Text File|*.txt|Task Code|*.task",
-                                InitialDirectory = Properties.Settings.Default.DefaultDirectory
-                            };
-                            if (saveFileDialog.ShowDialog() == true)
-                            {
-                                Properties.Settings.Default.DefaultDirectory = Path.GetDirectoryName(saveFileDialog.FileName);
-                                File.WriteAllText(saveFileDialog.FileName, SerialportCommandScriptEditorDocument.Text);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            _ = MessageBox.Show(ex.ToString());
-                        }
-                    }));
-                }
-                return serialportCommandScriptSaveFileEvent;
-            }
-        }
-
-
-        // 串口命令模块运行脚本
-        private CommandBase serialportCommandScriptRunEvent;
-        public CommandBase SerialportCommandScriptRunEvent
-        {
-            get
-            {
-                if (serialportCommandScriptRunEvent == null)
-                {
-                    serialportCommandScriptRunEvent = new CommandBase(new Action<object>(param =>
-                    {
-                        try
-                        {
-                            if (param is string)
-                            {
-                                switch (param as string)
-                                {
-                                    case "Run":
-                                        DispatcherTimer timer = new()
-                                        {
-                                            Interval = TimeSpan.FromMilliseconds(SerialportCommandScriptRunDelayMilliSecound),
-
-                                        };
-                                        timer.Tick += (sender, args) =>
-                                        {
-                                            try
-                                            {
-                                                // 运行到STOP则退出
-                                                if (!SerialPortCommandRunScriptCurrentLine(isStopTagEnabled: SerialportCommandScriptIsRunToStop))
-                                                {
-                                                    timer.Stop();
-                                                }
-
-                                                // 运行到程序结尾则退出
-                                                if (!SerialPortCommandScriptToNextLine())
-                                                {
-                                                    timer.Stop();
-                                                }
-
-                                            }
-                                            catch (Exception ex)
-                                            {
-                                                _ = MessageBox.Show(ex.ToString());
-                                                timer.Stop();
-                                            }
-                                        };
-                                        timer.Start();
-                                        break;
-                                    case "RunOnce":
-                                        SerialPortCommandRunScriptCurrentLine(isStopTagEnabled: false);
-                                        SerialPortCommandScriptToNextLine();
-                                        break;
-                                    case "ClearCursor":
-                                        SerialportCommandScriptCurruntLineCursor = 1;
-                                        break;
-                                    default:
-                                        break;
-                                }
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            _ = MessageBox.Show(ex.ToString());
-                        }
-                    }));
-                }
-                return serialportCommandScriptRunEvent;
-            }
-        }
-
-        public bool SerialPortCommandRunScriptCurrentLine(bool isStopTagEnabled = true, bool isScriptTagEnabled = true)
-        {
-            string line = SerialPortCommandScriptGetCurrentLine();
             string code = line.Split('#', 2).First().Trim();
 
             // 检测是否为空行
@@ -587,9 +236,9 @@ namespace MeasureApp.ViewModel
             }
 
             // 特殊命令解析
-            if (IsMatchHtmlTag(code))
+            if (HtmlTagUtility.IsMatchHtmlTag(code))
             {
-                if (IsMatchHtmlTag(code, "stop"))
+                if (HtmlTagUtility.IsMatchHtmlTag(code, "stop"))
                 {
                     if (isStopTagEnabled)
                     {
@@ -598,7 +247,7 @@ namespace MeasureApp.ViewModel
                         return false;
                     }
                 }
-                else if (IsMatchHtmlTag(code, "script"))
+                else if (HtmlTagUtility.IsMatchHtmlTag(code, "script"))
                 {
                     if (isScriptTagEnabled)
                     {
@@ -606,29 +255,36 @@ namespace MeasureApp.ViewModel
                         //MessageBox.Show(MatchHtmlTag(code, "script"));
                     }
                 }
-                else if (IsMatchHtmlTag(code, "delay"))
+                else if (HtmlTagUtility.IsMatchHtmlTag(code, "delay"))
                 {
                     if (isScriptTagEnabled)
                     {
                         // 阻塞ui
-                        Thread.Sleep(Convert.ToInt32(MatchHtmlTag(code, "delay")));
+                        Thread.Sleep(Convert.ToInt32(HtmlTagUtility.MatchHtmlTag(code, "delay")));
                     }
                 }
-                else if (IsMatchHtmlTag(code, "MsgBox"))
+                else if (HtmlTagUtility.IsMatchHtmlTag(code, "MsgBox"))
                 {
                     if (isScriptTagEnabled)
                     {
                         // 阻塞ui
-                        MessageBox.Show(MatchHtmlTag(code, "MsgBox"));
+                        MessageBox.Show(HtmlTagUtility.MatchHtmlTag(code, "MsgBox"));
                     }
                 }
-                else if (IsMatchHtmlTag(code, "wait"))
+                else if (HtmlTagUtility.IsMatchHtmlTag(code, "wait"))
                 {
                     if (isScriptTagEnabled)
                     {
-                        // TODO 等待至指令
+                        // 阻塞ui
                         //MatchHtmlTag(code, "wait")
-                        MessageBox.Show(SerialPortLogger.IsLastLogContains("COM", "[COMMAND]")?"[COMMAND]":"Nothing");
+                        //MessageBox.Show(SerialPortLogger.IsLastLogContains("COM", "[COMMAND]") ? "[COMMAND]" : "Nothing");
+                        bool result = Utility.TimeoutCheck(10000, () =>
+                        {
+                            while (!SerialPortLogger.IsLastLogContains("COM", HtmlTagUtility.MatchHtmlTag(code, "wait")))
+                                ;
+                            return true;
+                        });
+                        MessageBox.Show(result.ToString());
                     }
                 }
                 else
@@ -645,25 +301,38 @@ namespace MeasureApp.ViewModel
             return true;
         }
 
-        public static bool IsMatchHtmlTag(string codeString)
+        public void SerialPortCommandScriptRunAll()
         {
-            string regexStr = @"<[^>]+>";
-            return Regex.IsMatch(codeString, regexStr, RegexOptions.IgnoreCase);
-        }
+            DispatcherTimer timer = new()
+            {
+                Interval = TimeSpan.FromMilliseconds(SerialportCommandScriptRunDelayMilliSecound),
 
-        public static bool IsMatchHtmlTag(string codeString, string TagName)
-        {
-            string regexStr = @$"<{TagName}[^>]*?>[\s\S]*?</{TagName}>";
-            return Regex.IsMatch(codeString, regexStr, RegexOptions.IgnoreCase);
-        }
+            };
+            timer.Tick += (sender, args) =>
+            {
+                try
+                {
+                    // 运行到STOP则退出
+                    string line = SerialPortCommandScriptGetCurrentLine();
+                    if (!SerialPortCommandScriptRunLine(line, isStopTagEnabled: SerialportCommandScriptIsRunToStop))
+                    {
+                        timer.Stop();
+                    }
 
-        public static string MatchHtmlTag(string codeString, string TagName)
-        {
-            string regexStr = @$"<{TagName}[^>]*?>(?<Attribute>[\s\S]*)</{TagName}>";
-            //string regexStr = @$"<{TagName}[^>]*?>(?<Attribute>[^<]*)</{TagName}>";
-            Match match = Regex.Match(codeString, regexStr, RegexOptions.IgnoreCase);
-            // Debug.WriteLine($"{match.Groups["Attribute"].Value}");
-            return match.Groups["Attribute"].Value;
+                    // 运行到程序结尾则退出
+                    if (!SerialPortCommandScriptToNextLine())
+                    {
+                        timer.Stop();
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    _ = MessageBox.Show(ex.ToString());
+                    timer.Stop();
+                }
+            };
+            timer.Start();
         }
 
         public string SerialPortCommandScriptGetCurrentLine()
@@ -693,5 +362,356 @@ namespace MeasureApp.ViewModel
             }
         }
 
+        // 非VM函数-END
+        // 非VM函数-END
+        // 非VM函数-END
+        // 非VM函数-END
+
+        // 发送指令事件
+        public void SerialPortCommandSend(object param)
+        {
+            try
+            {
+                if (param is string)
+                {
+                    int index = Convert.ToInt32(param);
+                    string com = SerialportCommandPortNameSelectedValue;
+                    List<dynamic> vs = new(SerialportCommandModels[index].SendParamsTexts);
+                    vs.Insert(0, SerialportCommandModels[index].CommandText);
+                    string sendText = $"{string.Join(";", vs)};";
+
+                    SerialPortsInstance.WriteString(com, sendText);
+                }
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
+            }
+        }
+
+        // 加载预设指令事件
+        public void SerialPortCommandPresetLoad()
+        {
+            try
+            {
+                // Open File Dialog
+                OpenFileDialog openFileDialog = new()
+                {
+                    Title = "Open Json File...",
+                    Filter = "Json File|*.json",
+                    InitialDirectory = Properties.Settings.Default.DefaultDirectory
+                };
+                if (openFileDialog.ShowDialog() == true)
+                {
+                    Properties.Settings.Default.DefaultDirectory = Path.GetDirectoryName(openFileDialog.FileName);
+                    Properties.Settings.Default.DefaultPresetCommandsJsonPath = openFileDialog.FileName;
+                    SerialPortLoadPresetCommandsFromJson(openFileDialog.FileName);
+                }
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
+            }
+        }
+
+        // 串口预设指令发送
+        public void SerialPortCommandPresetSend()
+        {
+            try
+            {
+                string com = SerialportCommandPortNameSelectedValue;
+                string sendText = SerialportPresetCommandSelectedItem.Command;
+
+                SerialPortsInstance.WriteString(com, sendText);
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
+            }
+        }
+
+        // 串口预设指令添加至Code
+        public void SerialPortCommandPresetAddCode()
+        {
+            try
+            {
+                SerialportCommandScriptEditorDocument.Text += "\n" + SerialportPresetCommandSelectedItem.Command;
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
+            }
+        }
+
+        // 串口监听打开/关闭事件
+        public void SerialPortCommandListen()
+        {
+            try
+            {
+                if (!SerialPortCommandIsListeningDataReceived)
+                {
+                    SerialPortsInstance.AddDataReceivedEvent(SerialportCommandPortNameSelectedValue, SerialPortDataReceivedCallBack);
+                    SerialPortsInstance.PreWriteString += SerialPortPreWriteString;
+                }
+                else
+                {
+                    SerialPortsInstance.RemoveDataReceivedEvent(SerialportCommandPortNameSelectedValue, SerialPortDataReceivedCallBack);
+                    SerialPortsInstance.PreWriteString -= SerialPortPreWriteString;
+                }
+                SerialPortCommandIsListeningDataReceived = !SerialPortCommandIsListeningDataReceived;
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
+            }
+        }
+
+        // 串口记录清空
+        public void SerialPortCommandCleanLog()
+        {
+            try
+            {
+                SerialPortLogger.Clear();
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
+            }
+        }
+
+        // 串口记录导出
+        public void SerialPortCommandSaveLog()
+        {
+            try
+            {
+                SaveFileDialog saveFileDialog = new()
+                {
+                    Title = "存储数据",
+                    FileName = "SerialPortLog",
+                    DefaultExt = ".log",
+                    Filter = "Log File|*.log",
+                    InitialDirectory = Properties.Settings.Default.DefaultDirectory
+                };
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    Properties.Settings.Default.DefaultDirectory = Path.GetDirectoryName(saveFileDialog.FileName);
+                    SerialPortLogger.Save(saveFileDialog.FileName);
+                }
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
+            }
+        }
+
+        // 串口命令模块加载脚本
+        public void SerialPortCommandScriptLoadFile()
+        {
+            try
+            {
+                // Open File Dialog
+                OpenFileDialog openFileDialog = new()
+                {
+                    Title = "Open Script File...",
+                    Filter = "Text File|*.txt|Task Code|*.task",
+                    InitialDirectory = Properties.Settings.Default.DefaultDirectory
+                };
+                if (openFileDialog.ShowDialog() == true)
+                {
+                    Properties.Settings.Default.DefaultDirectory = Path.GetDirectoryName(openFileDialog.FileName);
+                    SerialportCommandScriptEditorDocument.Text = File.ReadAllText(openFileDialog.FileName);
+                }
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
+            }
+        }
+
+        // 串口命令模块保存脚本
+        public void SerialPortCommandScriptSaveFile()
+        {
+            try
+            {
+                // Save File Dialog
+                SaveFileDialog saveFileDialog = new()
+                {
+                    Title = "Save Script File...",
+                    Filter = "Text File|*.txt|Task Code|*.task",
+                    InitialDirectory = Properties.Settings.Default.DefaultDirectory
+                };
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    Properties.Settings.Default.DefaultDirectory = Path.GetDirectoryName(saveFileDialog.FileName);
+                    File.WriteAllText(saveFileDialog.FileName, SerialportCommandScriptEditorDocument.Text);
+                }
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
+            }
+        }
+
+        // 串口命令模块运行脚本
+        public void SerialPortCommandScriptRun(object param)
+        {
+            try
+            {
+                if (param is string)
+                {
+                    switch (param as string)
+                    {
+                        case "Run":
+                            SerialPortCommandScriptRunAll();
+                            break;
+                        case "RunOnce":
+                            string line = SerialPortCommandScriptGetCurrentLine();
+                            SerialPortCommandScriptRunLine(line,isStopTagEnabled: false);
+                            SerialPortCommandScriptToNextLine();
+                            break;
+                        case "ClearCursor":
+                            SerialportCommandScriptCurruntLineCursor = 1;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
+            }
+        }
+
+        // CommandBase
+        private CommandBase serialPortCommandSendEvent;
+        public CommandBase SerialPortCommandSendEvent
+        {
+            get
+            {
+                if (serialPortCommandSendEvent == null)
+                {
+                    serialPortCommandSendEvent = new CommandBase(new Action<object>(param => SerialPortCommandSend(param)));
+                }
+                return serialPortCommandSendEvent;
+            }
+        }
+
+        private CommandBase serialPortCommandPresetLoadEvent;
+        public CommandBase SerialPortCommandPresetLoadEvent
+        {
+            get
+            {
+                if (serialPortCommandPresetLoadEvent == null)
+                {
+                    serialPortCommandPresetLoadEvent = new CommandBase(new Action<object>(param => SerialPortCommandPresetLoad()));
+                }
+                return serialPortCommandPresetLoadEvent;
+            }
+        }
+
+        private CommandBase serialPortCommandPresetSendEvent;
+        public CommandBase SerialPortCommandPresetSendEvent
+        {
+            get
+            {
+                if (serialPortCommandPresetSendEvent == null)
+                {
+                    serialPortCommandPresetSendEvent = new CommandBase(new Action<object>(param => SerialPortCommandPresetSend()));
+                }
+                return serialPortCommandPresetSendEvent;
+            }
+        }
+
+        private CommandBase serialportCommandPresetAddCodeEvent;
+        public CommandBase SerialportCommandPresetAddCodeEvent
+        {
+            get
+            {
+                if (serialportCommandPresetAddCodeEvent == null)
+                {
+                    serialportCommandPresetAddCodeEvent = new CommandBase(new Action<object>(param => SerialPortCommandPresetAddCode()));
+                }
+                return serialportCommandPresetAddCodeEvent;
+            }
+        }
+
+        private CommandBase serialPortCommandListenEvent;
+        public CommandBase SerialPortCommandListenEvent
+        {
+            get
+            {
+                if (serialPortCommandListenEvent == null)
+                {
+                    serialPortCommandListenEvent = new CommandBase(new Action<object>(param => SerialPortCommandListen()));
+                }
+                return serialPortCommandListenEvent;
+            }
+        }
+
+        private CommandBase serialPortCommandCleanLogEvent;
+        public CommandBase SerialPortCommandCleanLogEvent
+        {
+            get
+            {
+                if (serialPortCommandCleanLogEvent == null)
+                {
+                    serialPortCommandCleanLogEvent = new CommandBase(new Action<object>(param => SerialPortCommandCleanLog()));
+                }
+                return serialPortCommandCleanLogEvent;
+            }
+        }
+
+        private CommandBase serialPortCommandSaveLogEvent;
+        public CommandBase SerialPortCommandSaveLogEvent
+        {
+            get
+            {
+                if (serialPortCommandSaveLogEvent == null)
+                {
+                    serialPortCommandSaveLogEvent = new CommandBase(new Action<object>(param => SerialPortCommandSaveLog()));
+                }
+                return serialPortCommandSaveLogEvent;
+            }
+        }
+
+        private CommandBase serialPortCommandScriptLoadFileEvent;
+        public CommandBase SerialPortCommandScriptLoadFileEvent
+        {
+            get
+            {
+                if (serialPortCommandScriptLoadFileEvent == null)
+                {
+                    serialPortCommandScriptLoadFileEvent = new CommandBase(new Action<object>(param => SerialPortCommandScriptLoadFile()));
+                }
+                return serialPortCommandScriptLoadFileEvent;
+            }
+        }
+
+        private CommandBase serialPortCommandScriptSaveFileEvent;
+        public CommandBase SerialPortCommandScriptSaveFileEvent
+        {
+            get
+            {
+                if (serialPortCommandScriptSaveFileEvent == null)
+                {
+                    serialPortCommandScriptSaveFileEvent = new CommandBase(new Action<object>(param => SerialPortCommandScriptSaveFile()));
+                }
+                return serialPortCommandScriptSaveFileEvent;
+            }
+        }
+
+        private CommandBase serialPortCommandScriptRunEvent;
+        public CommandBase SerialPortCommandScriptRunEvent
+        {
+            get
+            {
+                if (serialPortCommandScriptRunEvent == null)
+                {
+                    serialPortCommandScriptRunEvent = new CommandBase(new Action<object>(param => SerialPortCommandScriptRun(param)));
+                }
+                return serialPortCommandScriptRunEvent;
+            }
+        }
     }
 }
