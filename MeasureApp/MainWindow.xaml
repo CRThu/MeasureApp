@@ -440,7 +440,7 @@
                                     <Button Margin="5,5,5,5" Content="{Binding SerialportCommandModels[1].CommandText}" Grid.Row="0" Grid.Column="4">
                                         <i:Interaction.Triggers>
                                             <i:EventTrigger EventName="Click">
-                                                <viewmodel:EventCommandBase Command="{Binding SerialportCommandSendEvent}" CommandParameter="1"/>
+                                                <viewmodel:EventCommandBase Command="{Binding SerialPortCommandSendEvent}" CommandParameter="1"/>
                                             </i:EventTrigger>
                                         </i:Interaction.Triggers>
                                     </Button>
@@ -449,7 +449,7 @@
                                     <Button Margin="5,5,5,5" Content="{Binding SerialportCommandModels[2].CommandText}" Grid.Row="1" Grid.Column="4">
                                         <i:Interaction.Triggers>
                                             <i:EventTrigger EventName="Click">
-                                                <viewmodel:EventCommandBase Command="{Binding SerialportCommandSendEvent}" CommandParameter="2"/>
+                                                <viewmodel:EventCommandBase Command="{Binding SerialPortCommandSendEvent}" CommandParameter="2"/>
                                             </i:EventTrigger>
                                         </i:Interaction.Triggers>
                                     </Button>
@@ -457,7 +457,7 @@
                                     <Button Margin="5,5,5,5" Content="{Binding SerialportCommandModels[3].CommandText}" Grid.Row="2" Grid.Column="4">
                                         <i:Interaction.Triggers>
                                             <i:EventTrigger EventName="Click">
-                                                <viewmodel:EventCommandBase Command="{Binding SerialportCommandSendEvent}" CommandParameter="3"/>
+                                                <viewmodel:EventCommandBase Command="{Binding SerialPortCommandSendEvent}" CommandParameter="3"/>
                                             </i:EventTrigger>
                                         </i:Interaction.Triggers>
                                     </Button>
@@ -467,7 +467,7 @@
                                     <Button Margin="5,5,5,5" Content="{Binding SerialportCommandModels[4].CommandText}" Grid.Row="3" Grid.Column="4">
                                         <i:Interaction.Triggers>
                                             <i:EventTrigger EventName="Click">
-                                                <viewmodel:EventCommandBase Command="{Binding SerialportCommandSendEvent}" CommandParameter="4"/>
+                                                <viewmodel:EventCommandBase Command="{Binding SerialPortCommandSendEvent}" CommandParameter="4"/>
                                             </i:EventTrigger>
                                         </i:Interaction.Triggers>
                                     </Button>
@@ -476,7 +476,7 @@
                                     <Button Margin="5,5,5,5" Content="{Binding SerialportCommandModels[5].CommandText}" Grid.Row="4" Grid.Column="4">
                                         <i:Interaction.Triggers>
                                             <i:EventTrigger EventName="Click">
-                                                <viewmodel:EventCommandBase Command="{Binding SerialportCommandSendEvent}" CommandParameter="5"/>
+                                                <viewmodel:EventCommandBase Command="{Binding SerialPortCommandSendEvent}" CommandParameter="5"/>
                                             </i:EventTrigger>
                                         </i:Interaction.Triggers>
                                     </Button>
@@ -487,7 +487,7 @@
                                     <Button Margin="5,5,5,5" Content="{Binding SerialportCommandModels[6].CommandText}" Grid.Row="5" Grid.Column="4">
                                         <i:Interaction.Triggers>
                                             <i:EventTrigger EventName="Click">
-                                                <viewmodel:EventCommandBase Command="{Binding SerialportCommandSendEvent}" CommandParameter="6"/>
+                                                <viewmodel:EventCommandBase Command="{Binding SerialPortCommandSendEvent}" CommandParameter="6"/>
                                             </i:EventTrigger>
                                         </i:Interaction.Triggers>
                                     </Button>
@@ -497,7 +497,7 @@
                                     <Button Margin="5,5,5,5" Content="{Binding SerialportCommandModels[7].CommandText}" Grid.Row="6" Grid.Column="4">
                                         <i:Interaction.Triggers>
                                             <i:EventTrigger EventName="Click">
-                                                <viewmodel:EventCommandBase Command="{Binding SerialportCommandSendEvent}" CommandParameter="7"/>
+                                                <viewmodel:EventCommandBase Command="{Binding SerialPortCommandSendEvent}" CommandParameter="7"/>
                                             </i:EventTrigger>
                                         </i:Interaction.Triggers>
                                     </Button>

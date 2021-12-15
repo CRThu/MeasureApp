@@ -223,45 +223,51 @@ namespace MeasureApp.ViewModel
         // 完整脚本运行
         public void SerialPortCommandScriptRunAll()
         {
-            DispatcherTimer timer = new()
+            System.Timers.Timer timer = new()
             {
-                Interval = TimeSpan.FromMilliseconds(SerialportCommandScriptRunDelayMilliSecound),
-
+                Interval = SerialportCommandScriptRunDelayMilliSecound,
             };
-            timer.Tick += (sender, args) =>
+            timer.Elapsed += (sender, args) =>
             {
-                SerialPortCommandScriptRunAllByTick((DispatcherTimer)sender);
+                timer.Stop();
+                //Debug.WriteLine("TICK");
+                var isContinue = SerialPortCommandScriptRunAllByTick();
+                if (isContinue)
+                    timer.Start();
             };
             timer.Start();
         }
 
-        public void SerialPortCommandScriptRunAllByTick(DispatcherTimer timer)
+        // 返回值 false:停止运行,true:继续运行
+        public bool SerialPortCommandScriptRunAllByTick()
         {
             try
             {
+                bool isContinue = true;
             start:
                 string line = SerialPortCommandScriptGetCurrentLine();
                 var status = SerialPortCommandScriptRunLine(line, isStopTagEnabled: SerialportCommandScriptIsRunToStop);
                 // 运行到STOP则退出
                 if (status == SerialPortScriptRunStatus.Stopped)
                 {
-                    timer.Stop();
+                    isContinue = false;
                 }
                 // 运行到程序结尾则退出
                 if (!SerialPortCommandScriptToNextLine())
                 {
-                    timer.Stop();
+                    isContinue = false;
                 }
                 // 运行到空行则跳转执行下一行
-                if (status == SerialPortScriptRunStatus.BlankLine)
+                if (isContinue && status == SerialPortScriptRunStatus.BlankLine)
                 {
                     goto start;
                 }
+                return isContinue;
             }
             catch (Exception ex)
             {
                 _ = MessageBox.Show(ex.ToString());
-                timer.Stop();
+                return false;
             }
         }
 
@@ -277,60 +283,43 @@ namespace MeasureApp.ViewModel
             }
 
             // 特殊命令解析
-            if (HtmlTagUtility.IsMatchHtmlTag(code))
+            if (XmlTag.IsMatchXmlTag(code))
             {
-                if (HtmlTagUtility.IsMatchHtmlTag(code, "stop"))
+                Dictionary<string, string> TagAttrs = XmlTag.GetXmlTagAttrs(code);
+                switch (TagAttrs["Tag"].ToUpper())
                 {
-                    if (isStopTagEnabled)
-                    {
-                        // TODO
-                        //MessageBox.Show(MatchHtmlTag(code, "stop"));
-                        return SerialPortScriptRunStatus.Stopped;
-                    }
-                }
-                else if (HtmlTagUtility.IsMatchHtmlTag(code, "script"))
-                {
-                    if (isScriptTagEnabled)
-                    {
-                        // TODO
-                        //MessageBox.Show(MatchHtmlTag(code, "script"));
-                    }
-                }
-                else if (HtmlTagUtility.IsMatchHtmlTag(code, "delay"))
-                {
-                    if (isScriptTagEnabled)
-                    {
-                        // 阻塞ui
-                        Thread.Sleep(Convert.ToInt32(HtmlTagUtility.MatchHtmlTag(code, "delay")));
-                    }
-                }
-                else if (HtmlTagUtility.IsMatchHtmlTag(code, "MsgBox"))
-                {
-                    if (isScriptTagEnabled)
-                    {
-                        // 阻塞ui
-                        MessageBox.Show(HtmlTagUtility.MatchHtmlTag(code, "MsgBox"));
-                    }
-                }
-                else if (HtmlTagUtility.IsMatchHtmlTag(code, "wait"))
-                {
-                    if (isScriptTagEnabled)
-                    {
-                        // 阻塞ui
+                    case "STOP":
+                        if (isStopTagEnabled)
+                        {
+                            //MessageBox.Show(MatchHtmlTag(code, "stop"));
+                            return SerialPortScriptRunStatus.Stopped;
+                        }
+                        break;
+                    case "SCRIPT":
+                        if (isScriptTagEnabled)
+                        {
+                            //MessageBox.Show(MatchHtmlTag(code, "script"));
+                        }
+                        break;
+                    case "DELAY":
+                        Thread.Sleep(Convert.ToInt32(XmlTag.MatchHtmlTag(code, "delay")));
+                        break;
+                    case "MSGBOX":
+                        MessageBox.Show(XmlTag.MatchHtmlTag(code, "MsgBox"));
+                        break;
+                    case "WAIT":
                         //MatchHtmlTag(code, "wait")
                         //MessageBox.Show(SerialPortLogger.IsLastLogContains("COM", "[COMMAND]") ? "[COMMAND]" : "Nothing");
                         bool result = Utility.TimeoutCheck(10000, () =>
                         {
-                            while (!SerialPortLogger.IsLastLogContains("COM", HtmlTagUtility.MatchHtmlTag(code, "wait")))
+                            while (!SerialPortLogger.IsLastLogContains("COM", XmlTag.MatchHtmlTag(code, "wait")))
                                 ;
                             return true;
                         });
                         MessageBox.Show(result.ToString());
-                    }
-                }
-                else
-                {
-                    throw new FormatException($"Unknown Command: {code}");
+                        break;
+                    default:
+                        throw new FormatException($"Unknown Command: {code}");
                 }
             }
             else
@@ -351,25 +340,33 @@ namespace MeasureApp.ViewModel
         // 获取行号脚本
         public string SerialPortCommandScriptGetLine(int lineCursor)
         {
-            DocumentLine dl = SerialportCommandScriptEditorDocument.Lines[lineCursor - 1];
-            string command = SerialportCommandScriptEditorDocument.Text.Substring(dl.Offset, dl.Length);
-            // Debug.WriteLine($"{dl.Offset}+{dl.Length}({dl.IsDeleted}):{command}");
-            return command;
+            // To UI Thread
+            return Application.Current.Dispatcher.Invoke(() =>
+            {
+                DocumentLine dl = SerialportCommandScriptEditorDocument.Lines[lineCursor - 1];
+                string command = SerialportCommandScriptEditorDocument.Text.Substring(dl.Offset, dl.Length);
+                //Debug.WriteLine($"{DateTime.Now}|{dl.Offset}+{dl.Length}:{command}");
+                return command;
+            });
         }
 
         // 跳转到下一行
         public bool SerialPortCommandScriptToNextLine()
         {
-            if (SerialportCommandScriptCurruntLineCursor < SerialportCommandScriptEditorDocument.LineCount)
+            // To UI Thread
+            return Application.Current.Dispatcher.Invoke(() =>
             {
-                SerialportCommandScriptCurruntLineCursor++;
-                return true;
-            }
-            else
-            {
-                SerialportCommandScriptCurruntLineCursor = 1;
-                return false;
-            }
+                if (SerialportCommandScriptCurruntLineCursor < SerialportCommandScriptEditorDocument.LineCount)
+                {
+                    SerialportCommandScriptCurruntLineCursor++;
+                    return true;
+                }
+                else
+                {
+                    SerialportCommandScriptCurruntLineCursor = 1;
+                    return false;
+                }
+            });
         }
 
         // 发送指令事件
