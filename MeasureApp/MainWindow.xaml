@@ -34,6 +34,7 @@
         <viewmodel:BoolInverter2ControlVisibilityConverter x:Key="BoolInverter2ControlVisibilityConverter"/>
         <viewmodel:DateTimeToStringConverter x:Key="DateTimeToStringConverter"/>
         <viewmodel:IsNotNullConverter x:Key="IsNotNullConverter"/>
+        <viewmodel:IntToBitBoolConverter x:Key="IntToBitBoolConverter"/>
     </Window.Resources>
     <DockPanel>
         <Grid>
@@ -428,6 +429,23 @@
                                         <RowDefinition Height="30"/>
                                         <RowDefinition Height="1*"/>
                                     </Grid.RowDefinitions>
+                                    <Grid.Resources>
+                                        <VisualBrush x:Key="HintTextRegisterAddress" TileMode="None" Opacity="0.5" Stretch="None" AlignmentX="Left">
+                                            <VisualBrush.Visual>
+                                                <TextBlock FontStyle="Italic" Text="Address"/>
+                                            </VisualBrush.Visual>
+                                        </VisualBrush>
+                                        <VisualBrush x:Key="HintTextRegisterData" TileMode="None" Opacity="0.5" Stretch="None" AlignmentX="Left">
+                                            <VisualBrush.Visual>
+                                                <TextBlock FontStyle="Italic" Text="Data"/>
+                                            </VisualBrush.Visual>
+                                        </VisualBrush>
+                                        <VisualBrush x:Key="HintTextRegisterBits" TileMode="None" Opacity="0.5" Stretch="None" AlignmentX="Left">
+                                            <VisualBrush.Visual>
+                                                <TextBlock FontStyle="Italic" Text="Start:End"/>
+                                            </VisualBrush.Visual>
+                                        </VisualBrush>
+                                    </Grid.Resources>
                                     <!--TODO-->
                                     <TextBlock Margin="5,5,5,5" Text="{Binding SerialportCommandModels[0].CommandInfo}" Grid.Row="0" Grid.Column="0"/>
                                     <Button Margin="5,5,5,5" Content="{Binding SerialportCommandModels[0].CommandText}" Grid.Row="0" Grid.Column="3">
@@ -445,7 +463,20 @@
                                         </i:Interaction.Triggers>
                                     </Button>
                                     <TextBlock Margin="5,5,5,5" Text="{Binding SerialportCommandModels[2].CommandInfo}" Grid.Row="1" Grid.Column="0"/>
-                                    <TextBox Margin="5,5,5,5" Text="{Binding SerialportCommandModels[2].ParamTexts[0]}" Grid.Row="1" Grid.Column="1"/>
+                                    <TextBox Margin="5,5,5,5" Text="{Binding SerialportCommandModels[2].ParamTexts[0]}" Grid.Row="1" Grid.Column="1">
+                                        <TextBox.Style>
+                                            <Style TargetType="{x:Type TextBox}">
+                                                <Style.Triggers>
+                                                    <Trigger Property="Text" Value="{x:Null}">
+                                                        <Setter Property="Background" Value="{StaticResource HintTextRegisterAddress}"/>
+                                                    </Trigger>
+                                                    <Trigger Property="Text" Value="">
+                                                        <Setter Property="Background" Value="{StaticResource HintTextRegisterAddress}"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBox.Style>
+                                    </TextBox>
                                     <Button Margin="5,5,5,5" Content="{Binding SerialportCommandModels[2].CommandText}" Grid.Row="1" Grid.Column="4">
                                         <i:Interaction.Triggers>
                                             <i:EventTrigger EventName="Click">
@@ -462,8 +493,34 @@
                                         </i:Interaction.Triggers>
                                     </Button>
                                     <TextBlock Margin="5,5,5,5" Text="{Binding SerialportCommandModels[4].CommandInfo}" Grid.Row="3" Grid.Column="0"/>
-                                    <TextBox Margin="5,5,5,5" Text="{Binding SerialportCommandModels[4].ParamTexts[0]}" Grid.Row="3" Grid.Column="1"/>
-                                    <TextBox Margin="5,5,5,5" Text="{Binding SerialportCommandModels[4].ParamTexts[1]}" Grid.Row="3" Grid.Column="2"/>
+                                    <TextBox Margin="5,5,5,5" Text="{Binding SerialportCommandModels[4].ParamTexts[0]}" Grid.Row="3" Grid.Column="1">
+                                        <TextBox.Style>
+                                            <Style TargetType="{x:Type TextBox}">
+                                                <Style.Triggers>
+                                                    <Trigger Property="Text" Value="{x:Null}">
+                                                        <Setter Property="Background" Value="{StaticResource HintTextRegisterAddress}"/>
+                                                    </Trigger>
+                                                    <Trigger Property="Text" Value="">
+                                                        <Setter Property="Background" Value="{StaticResource HintTextRegisterAddress}"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBox.Style>
+                                    </TextBox>
+                                    <TextBox Margin="5,5,5,5" Text="{Binding SerialportCommandModels[4].ParamTexts[1]}" Grid.Row="3" Grid.Column="2">
+                                        <TextBox.Style>
+                                            <Style TargetType="{x:Type TextBox}">
+                                                <Style.Triggers>
+                                                    <Trigger Property="Text" Value="{x:Null}">
+                                                        <Setter Property="Background" Value="{StaticResource HintTextRegisterData}"/>
+                                                    </Trigger>
+                                                    <Trigger Property="Text" Value="">
+                                                        <Setter Property="Background" Value="{StaticResource HintTextRegisterData}"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBox.Style>
+                                    </TextBox>
                                     <Button Margin="5,5,5,5" Content="{Binding SerialportCommandModels[4].CommandText}" Grid.Row="3" Grid.Column="4">
                                         <i:Interaction.Triggers>
                                             <i:EventTrigger EventName="Click">
@@ -472,7 +529,20 @@
                                         </i:Interaction.Triggers>
                                     </Button>
                                     <TextBlock Margin="5,5,5,5" Text="{Binding SerialportCommandModels[5].CommandInfo}" Grid.Row="4" Grid.Column="0"/>
-                                    <TextBox Margin="5,5,5,5" Text="{Binding SerialportCommandModels[5].ParamTexts[0]}" Grid.Row="4" Grid.Column="1"/>
+                                    <TextBox Margin="5,5,5,5" Text="{Binding SerialportCommandModels[5].ParamTexts[0]}" Grid.Row="4" Grid.Column="1">
+                                        <TextBox.Style>
+                                            <Style TargetType="{x:Type TextBox}">
+                                                <Style.Triggers>
+                                                    <Trigger Property="Text" Value="{x:Null}">
+                                                        <Setter Property="Background" Value="{StaticResource HintTextRegisterAddress}"/>
+                                                    </Trigger>
+                                                    <Trigger Property="Text" Value="">
+                                                        <Setter Property="Background" Value="{StaticResource HintTextRegisterAddress}"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBox.Style>
+                                    </TextBox>
                                     <Button Margin="5,5,5,5" Content="{Binding SerialportCommandModels[5].CommandText}" Grid.Row="4" Grid.Column="4">
                                         <i:Interaction.Triggers>
                                             <i:EventTrigger EventName="Click">
@@ -481,9 +551,48 @@
                                         </i:Interaction.Triggers>
                                     </Button>
                                     <TextBlock Margin="5,5,5,5" Text="{Binding SerialportCommandModels[6].CommandInfo}" Grid.Row="5" Grid.Column="0"/>
-                                    <TextBox Margin="5,5,5,5" Text="{Binding SerialportCommandModels[6].ParamTexts[0]}" Grid.Row="5" Grid.Column="1"/>
-                                    <TextBox Margin="5,5,5,5" Text="{Binding SerialportCommandModels[6].ParamTexts[1]}" Grid.Row="5" Grid.Column="2"/>
-                                    <TextBox Margin="5,5,5,5" Text="{Binding SerialportCommandModels[6].ParamTexts[2]}" Grid.Row="5" Grid.Column="3"/>
+                                    <TextBox Margin="5,5,5,5" Text="{Binding SerialportCommandModels[6].ParamTexts[0]}" Grid.Row="5" Grid.Column="1">
+                                        <TextBox.Style>
+                                            <Style TargetType="{x:Type TextBox}">
+                                                <Style.Triggers>
+                                                    <Trigger Property="Text" Value="{x:Null}">
+                                                        <Setter Property="Background" Value="{StaticResource HintTextRegisterAddress}"/>
+                                                    </Trigger>
+                                                    <Trigger Property="Text" Value="">
+                                                        <Setter Property="Background" Value="{StaticResource HintTextRegisterAddress}"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBox.Style>
+                                    </TextBox>
+                                    <TextBox Margin="5,5,5,5" Text="{Binding SerialportCommandModels[6].ParamTexts[1]}" Grid.Row="5" Grid.Column="2">
+                                        <TextBox.Style>
+                                            <Style TargetType="{x:Type TextBox}">
+                                                <Style.Triggers>
+                                                    <Trigger Property="Text" Value="{x:Null}">
+                                                        <Setter Property="Background" Value="{StaticResource HintTextRegisterBits}"/>
+                                                    </Trigger>
+                                                    <Trigger Property="Text" Value="">
+                                                        <Setter Property="Background" Value="{StaticResource HintTextRegisterBits}"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBox.Style>
+                                    </TextBox>
+                                    <TextBox Margin="5,5,5,5" Text="{Binding SerialportCommandModels[6].ParamTexts[2]}" Grid.Row="5" Grid.Column="3">
+                                        <TextBox.Style>
+                                            <Style TargetType="{x:Type TextBox}">
+                                                <Style.Triggers>
+                                                    <Trigger Property="Text" Value="{x:Null}">
+                                                        <Setter Property="Background" Value="{StaticResource HintTextRegisterData}"/>
+                                                    </Trigger>
+                                                    <Trigger Property="Text" Value="">
+                                                        <Setter Property="Background" Value="{StaticResource HintTextRegisterData}"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBox.Style>
+                                    </TextBox>
                                     <Button Margin="5,5,5,5" Content="{Binding SerialportCommandModels[6].CommandText}" Grid.Row="5" Grid.Column="4">
                                         <i:Interaction.Triggers>
                                             <i:EventTrigger EventName="Click">
@@ -492,8 +601,34 @@
                                         </i:Interaction.Triggers>
                                     </Button>
                                     <TextBlock Margin="5,5,5,5" Text="{Binding SerialportCommandModels[7].CommandInfo}" Grid.Row="6" Grid.Column="0"/>
-                                    <TextBox Margin="5,5,5,5" Text="{Binding SerialportCommandModels[7].ParamTexts[0]}" Grid.Row="6" Grid.Column="1"/>
-                                    <TextBox Margin="5,5,5,5" Text="{Binding SerialportCommandModels[7].ParamTexts[1]}" Grid.Row="6" Grid.Column="2"/>
+                                    <TextBox Margin="5,5,5,5" Text="{Binding SerialportCommandModels[7].ParamTexts[0]}" Grid.Row="6" Grid.Column="1">
+                                        <TextBox.Style>
+                                            <Style TargetType="{x:Type TextBox}">
+                                                <Style.Triggers>
+                                                    <Trigger Property="Text" Value="{x:Null}">
+                                                        <Setter Property="Background" Value="{StaticResource HintTextRegisterAddress}"/>
+                                                    </Trigger>
+                                                    <Trigger Property="Text" Value="">
+                                                        <Setter Property="Background" Value="{StaticResource HintTextRegisterAddress}"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBox.Style>
+                                    </TextBox>
+                                    <TextBox Margin="5,5,5,5" Text="{Binding SerialportCommandModels[7].ParamTexts[1]}" Grid.Row="6" Grid.Column="2">
+                                        <TextBox.Style>
+                                            <Style TargetType="{x:Type TextBox}">
+                                                <Style.Triggers>
+                                                    <Trigger Property="Text" Value="{x:Null}">
+                                                        <Setter Property="Background" Value="{StaticResource HintTextRegisterBits}"/>
+                                                    </Trigger>
+                                                    <Trigger Property="Text" Value="">
+                                                        <Setter Property="Background" Value="{StaticResource HintTextRegisterBits}"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBox.Style>
+                                    </TextBox>
                                     <Button Margin="5,5,5,5" Content="{Binding SerialportCommandModels[7].CommandText}" Grid.Row="6" Grid.Column="4">
                                         <i:Interaction.Triggers>
                                             <i:EventTrigger EventName="Click">
@@ -893,7 +1028,101 @@
                 </TabItem>
                 <TabItem Header="实用工具">
                     <Grid>
-                        <TextBlock Text="TODO"/>
+                        <GroupBox Header="比特位计算" Margin="10,10,0,243" HorizontalAlignment="Left" Width="446">
+                            <Grid>
+                                <TextBox Text="{Binding Bits, UpdateSourceTrigger=PropertyChanged}" Width="50" Margin="20,10,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                <Grid Height="70" Width="320" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,40,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="20"/>
+                                        <ColumnDefinition Width="20"/>
+                                        <ColumnDefinition Width="20"/>
+                                        <ColumnDefinition Width="20"/>
+                                        <ColumnDefinition Width="20"/>
+                                        <ColumnDefinition Width="20"/>
+                                        <ColumnDefinition Width="20"/>
+                                        <ColumnDefinition Width="20"/>
+                                        <ColumnDefinition Width="20"/>
+                                        <ColumnDefinition Width="20"/>
+                                        <ColumnDefinition Width="20"/>
+                                        <ColumnDefinition Width="20"/>
+                                        <ColumnDefinition Width="20"/>
+                                        <ColumnDefinition Width="20"/>
+                                        <ColumnDefinition Width="20"/>
+                                        <ColumnDefinition Width="20"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="15"/>
+                                        <RowDefinition Height="20"/>
+                                        <RowDefinition Height="15"/>
+                                        <RowDefinition Height="20"/>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Text="31" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="0"/>
+                                    <TextBlock Text="30" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="1" Grid.Row="0"/>
+                                    <TextBlock Text="29" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="2" Grid.Row="0"/>
+                                    <TextBlock Text="28" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="3" Grid.Row="0"/>
+                                    <TextBlock Text="27" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="4" Grid.Row="0"/>
+                                    <TextBlock Text="26" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="5" Grid.Row="0"/>
+                                    <TextBlock Text="25" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="6" Grid.Row="0"/>
+                                    <TextBlock Text="24" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="7" Grid.Row="0"/>
+                                    <TextBlock Text="23" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="8" Grid.Row="0"/>
+                                    <TextBlock Text="22" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="9" Grid.Row="0"/>
+                                    <TextBlock Text="21" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="10" Grid.Row="0"/>
+                                    <TextBlock Text="20" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="11" Grid.Row="0"/>
+                                    <TextBlock Text="19" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="12" Grid.Row="0"/>
+                                    <TextBlock Text="18" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="13" Grid.Row="0"/>
+                                    <TextBlock Text="17" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="14" Grid.Row="0"/>
+                                    <TextBlock Text="16" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="15" Grid.Row="0"/>
+                                    <TextBlock Text="15" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="2"/>
+                                    <TextBlock Text="14" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="1" Grid.Row="2"/>
+                                    <TextBlock Text="13" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="2" Grid.Row="2"/>
+                                    <TextBlock Text="12" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="3" Grid.Row="2"/>
+                                    <TextBlock Text="11" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="4" Grid.Row="2"/>
+                                    <TextBlock Text="10" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="5" Grid.Row="2"/>
+                                    <TextBlock Text="9" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="6" Grid.Row="2"/>
+                                    <TextBlock Text="8" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="7" Grid.Row="2"/>
+                                    <TextBlock Text="7" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="8" Grid.Row="2"/>
+                                    <TextBlock Text="6" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="9" Grid.Row="2"/>
+                                    <TextBlock Text="5" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="10" Grid.Row="2"/>
+                                    <TextBlock Text="4" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="11" Grid.Row="2"/>
+                                    <TextBlock Text="3" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="12" Grid.Row="2"/>
+                                    <TextBlock Text="2" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="13" Grid.Row="2"/>
+                                    <TextBlock Text="1" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="14" Grid.Row="2"/>
+                                    <TextBlock Text="0" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="15" Grid.Row="2"/>
+                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=31}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="0" Grid.Row="1"/>
+                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=30}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" Grid.Row="1"/>
+                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=29}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="2" Grid.Row="1"/>
+                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=28}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="3" Grid.Row="1"/>
+                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=27}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="4" Grid.Row="1"/>
+                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=26}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="5" Grid.Row="1"/>
+                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=25}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="6" Grid.Row="1"/>
+                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=24}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="7" Grid.Row="1"/>
+                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=23}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="8" Grid.Row="1"/>
+                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=22}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="9" Grid.Row="1"/>
+                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=21}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="10" Grid.Row="1"/>
+                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=20}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="11" Grid.Row="1"/>
+                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=19}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="12" Grid.Row="1"/>
+                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=18}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="13" Grid.Row="1"/>
+                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=17}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="14" Grid.Row="1"/>
+                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=16}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="15" Grid.Row="1"/>
+                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=15}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="0" Grid.Row="3"/>
+                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=14}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" Grid.Row="3"/>
+                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=13}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="2" Grid.Row="3"/>
+                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=12}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="3" Grid.Row="3"/>
+                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=11}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="4" Grid.Row="3"/>
+                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=10}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="5" Grid.Row="3"/>
+                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=9}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="6" Grid.Row="3"/>
+                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=8}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="7" Grid.Row="3"/>
+                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=7}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="8" Grid.Row="3"/>
+                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=6}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="9" Grid.Row="3"/>
+                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=5}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="10" Grid.Row="3"/>
+                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=4}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="11" Grid.Row="3"/>
+                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=3}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="12" Grid.Row="3"/>
+                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=2}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="13" Grid.Row="3"/>
+                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=1}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="14" Grid.Row="3"/>
+                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=0}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="15" Grid.Row="3"/>
+                                </Grid>
+                            </Grid>
+                        </GroupBox>
                     </Grid>
                 </TabItem>
                 <TabItem Header="设置">

@@ -31,7 +31,7 @@ namespace MeasureApp.Model.SerialPortScript
             if (attrsArray.Length % 2 != 0)
                 throw new ArgumentException("Elements of attrsArray are not pairs.");
             for (int i = 0; i < attrsArray.Length; i += 2)
-                Attrs.Add(attrsArray[i], attrsArray[i + 1]);
+                Attrs.Add(attrsArray[i].ToLower(), attrsArray[i + 1]);
             return Attrs;
         }
     }

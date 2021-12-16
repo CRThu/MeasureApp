@@ -289,34 +289,45 @@ namespace MeasureApp.ViewModel
                 switch (TagAttrs["Tag"].ToUpper())
                 {
                     case "STOP":
+                        // <stop/>
                         if (isStopTagEnabled)
                         {
-                            //MessageBox.Show(MatchHtmlTag(code, "stop"));
                             return SerialPortScriptRunStatus.Stopped;
                         }
                         break;
                     case "SCRIPT":
+                        // <script code="..."/>
                         if (isScriptTagEnabled)
                         {
-                            //MessageBox.Show(MatchHtmlTag(code, "script"));
+                            MessageBox.Show(TagAttrs.ContainsKey("code") ? TagAttrs["code"] : "No Codes.");
                         }
                         break;
                     case "DELAY":
-                        Thread.Sleep(Convert.ToInt32(XmlTag.MatchHtmlTag(code, "delay")));
+                        // <delay time="..."/>
+                        // default: time="1000"
+                        Thread.Sleep(Convert.ToInt32(TagAttrs.ContainsKey("time") ? TagAttrs["time"] : "1000"));
                         break;
                     case "MSGBOX":
-                        MessageBox.Show(XmlTag.MatchHtmlTag(code, "MsgBox"));
+                        // <msgbox msg="..."/>
+                        // default: msg="No Message."
+                        MessageBox.Show(TagAttrs.ContainsKey("msg") ? TagAttrs["msg"] : "No Message.");
                         break;
                     case "WAIT":
-                        //MatchHtmlTag(code, "wait")
+                        // <wait keyword="..." timeout="..." stop="..."/>
+                        // default: keyword="[COMMAND]" timeout="1000" stop="true"
                         //MessageBox.Show(SerialPortLogger.IsLastLogContains("COM", "[COMMAND]") ? "[COMMAND]" : "Nothing");
-                        bool result = Utility.TimeoutCheck(10000, () =>
+                        bool result = Utility.TimeoutCheck(Convert.ToInt32(TagAttrs.ContainsKey("timeout") ? TagAttrs["timeout"] : "1000"), () =>
                         {
-                            while (!SerialPortLogger.IsLastLogContains("COM", XmlTag.MatchHtmlTag(code, "wait")))
+                            while (!SerialPortLogger.IsLastLogContains("COM", TagAttrs.ContainsKey("keyword") ? TagAttrs["keyword"] : "[COMMAND]"))
                                 ;
                             return true;
                         });
-                        MessageBox.Show(result.ToString());
+                        if (!result)
+                        {
+                            MessageBox.Show($"{code}: Timeout.");
+                            if (Convert.ToBoolean(TagAttrs.ContainsKey("stop") ? TagAttrs["stop"] : "true"))
+                                return SerialPortScriptRunStatus.Stopped;
+                        }
                         break;
                     default:
                         throw new FormatException($"Unknown Command: {code}");
