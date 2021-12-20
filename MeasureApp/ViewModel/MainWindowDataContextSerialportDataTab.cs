@@ -1,5 +1,6 @@
 ﻿using MeasureApp.Model;
 using MeasureApp.Model.Common;
+using MeasureApp.Model.Converter;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
+using MeasureApp.ViewModel.Common;
 
 namespace MeasureApp.ViewModel
 {

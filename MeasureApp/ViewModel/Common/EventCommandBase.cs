@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
-namespace MeasureApp.ViewModel
+namespace MeasureApp.ViewModel.Common
 {
     public class EventCommandBase : TriggerAction<DependencyObject>
     {

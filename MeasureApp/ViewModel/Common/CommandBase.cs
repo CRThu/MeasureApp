@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace MeasureApp.ViewModel
+namespace MeasureApp.ViewModel.Common
 {
     public class CommandBase : ICommand
     {

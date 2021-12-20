@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MeasureApp.Model
+namespace MeasureApp.Model.Common
 {
     public class ObservableTValue<T> : NotificationObjectBase
     {
@@ -16,7 +16,7 @@ namespace MeasureApp.Model
             {
                 this.value = value;
                 RaisePropertyChanged(() => Value);
-                if (OnValueChanged is not null)
+                if (OnValueChanged != null)
                     OnValueChanged(this, new EventArgs());
             }
         }

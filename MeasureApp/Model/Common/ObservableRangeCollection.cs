@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 
-namespace MeasureApp.Model
+namespace MeasureApp.Model.Common
 {
     /// <summary> 
     /// Represents a dynamic data collection that provides notifications when items get added, removed, or when the whole list is refreshed. 
@@ -64,7 +64,7 @@ namespace MeasureApp.Model
         /// Initializes a new instance of the System.Collections.ObjectModel.ObservableCollection(Of T) class that contains elements copied from the specified collection. 
         /// </summary> 
         /// <param name="collection">collection: The collection from which the elements are copied.</param> 
-        /// <exception cref="System.ArgumentNullException">The collection parameter cannot be null.</exception> 
+        /// <exception cref="ArgumentNullException">The collection parameter cannot be null.</exception> 
         public ObservableRangeCollection(IEnumerable<T> collection)
             : base(collection) { }
     }

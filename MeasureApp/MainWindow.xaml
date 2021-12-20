@@ -6,17 +6,18 @@
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:local="clr-namespace:MeasureApp"
         xmlns:viewmodel="clr-namespace:MeasureApp.ViewModel"
-        xmlns:view="clr-namespace:MeasureApp.View"
+        xmlns:vmc="clr-namespace:MeasureApp.ViewModel.Common"
+        xmlns:view="clr-namespace:MeasureApp.View.Common"
         xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         xmlns:geared="clr-namespace:LiveCharts.Geared;assembly=LiveCharts.Geared"
         mc:Ignorable="d"
         Title="MeasureApp" Height="600" Width="1000">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
-            <viewmodel:EventCommandBase Command="{Binding MainWindowLoadedEvent}"/>
+            <vmc:EventCommandBase Command="{Binding MainWindowLoadedEvent}"/>
         </i:EventTrigger>
         <i:EventTrigger EventName="Closed">
-            <viewmodel:EventCommandBase Command="{Binding MainWindowClosedEvent}"/>
+            <vmc:EventCommandBase Command="{Binding MainWindowClosedEvent}"/>
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <Window.DataContext>
@@ -34,6 +35,7 @@
         <viewmodel:BoolInverter2ControlVisibilityConverter x:Key="BoolInverter2ControlVisibilityConverter"/>
         <viewmodel:DateTimeToStringConverter x:Key="DateTimeToStringConverter"/>
         <viewmodel:IsNotNullConverter x:Key="IsNotNullConverter"/>
+        <viewmodel:Num2HexConverter x:Key="Num2HexConverter"/>
     </Window.Resources>
     <DockPanel>
         <Grid>
@@ -52,21 +54,21 @@
                 </Grid>
             </StatusBar>
             <TabControl Margin="10,10,9.6,24.8">
-                <TabItem Header="设备连接调试">
+                <TabItem Header="设备连接">
                     <Grid>
                         <GroupBox Header="GPIB设备发现" HorizontalAlignment="Left" Height="166" Margin="10,10,0,0" VerticalAlignment="Top" Width="407">
                             <Grid>
                                 <Button x:Name="SearchGPIBDevicesButton" Content="搜索GPIB设备" HorizontalAlignment="Left" Margin="227,83,0,0" VerticalAlignment="Top" Width="158" Height="23">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
-                                            <viewmodel:EventCommandBase Command="{Binding GpibDeviceSearchEvent}"/>
+                                            <vmc:EventCommandBase Command="{Binding GpibDeviceSearchEvent}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
                                 <Button x:Name="OpenGPIBDeviceButton" Content="打开GPIB设备" HorizontalAlignment="Left" Margin="227,111,0,0" VerticalAlignment="Top" Width="158" Height="23">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
-                                            <viewmodel:EventCommandBase Command="{Binding GpibDeviceOpenEvent}"/>
+                                            <vmc:EventCommandBase Command="{Binding GpibDeviceOpenEvent}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
@@ -79,21 +81,21 @@
                                 <Button x:Name="SearchSerialPortButton" Content="搜索串口设备" Margin="231,0,10,0" VerticalAlignment="Center" Height="23">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
-                                            <viewmodel:EventCommandBase Command="{Binding SerialPortDeviceSearchEvent}"/>
+                                            <vmc:EventCommandBase Command="{Binding SerialPortDeviceSearchEvent}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
                                 <Button x:Name="OpenSerialPortButton" Content="打开串口设备" Margin="231,88,10,0" VerticalAlignment="Top" Height="23">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
-                                            <viewmodel:EventCommandBase Command="{Binding SerialPortDeviceOpenEvent}"/>
+                                            <vmc:EventCommandBase Command="{Binding SerialPortDeviceOpenEvent}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
                                 <Button x:Name="CloseSerialPortButton" Content="关闭串口设备" Margin="231,116,10,0" VerticalAlignment="Top" Height="23">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
-                                            <viewmodel:EventCommandBase Command="{Binding SerialPortDeviceCloseEvent}"/>
+                                            <vmc:EventCommandBase Command="{Binding SerialPortDeviceCloseEvent}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
@@ -118,21 +120,21 @@
                                 <Button x:Name="QueryCmdButton" Content="Query" HorizontalAlignment="Left" Margin="227,61,0,0" VerticalAlignment="Top" Width="158" Height="51">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
-                                            <viewmodel:EventCommandBase Command="{Binding GPIBDebugCommandEvent}" CommandParameter="Query"/>
+                                            <vmc:EventCommandBase Command="{Binding GpibDebugCommandOperationEvent}" CommandParameter="Query"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
                                 <Button x:Name="WriteCmdButton" Content="Write" HorizontalAlignment="Left" Margin="227,137,0,0" VerticalAlignment="Top" Width="158" Height="23">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
-                                            <viewmodel:EventCommandBase Command="{Binding GPIBDebugCommandEvent}" CommandParameter="Write"/>
+                                            <vmc:EventCommandBase Command="{Binding GpibDebugCommandOperationEvent}" CommandParameter="Write"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
                                 <Button x:Name="ReadCmdButton" Content="Read" HorizontalAlignment="Left" Margin="227,165,0,0" VerticalAlignment="Top" Width="158" Height="23">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
-                                            <viewmodel:EventCommandBase Command="{Binding GPIBDebugCommandEvent}" CommandParameter="Read"/>
+                                            <vmc:EventCommandBase Command="{Binding GpibDebugCommandOperationEvent}" CommandParameter="Read"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
@@ -146,14 +148,14 @@
                                 <Button x:Name="SerialPortWriteCmdButton" Content="Write" HorizontalAlignment="Left" Margin="227,61,0,0" VerticalAlignment="Top" Width="158" Height="51">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
-                                            <viewmodel:EventCommandBase Command="{Binding SerialPortDebugWriteCmdEvent}"/>
+                                            <vmc:EventCommandBase Command="{Binding SerialPortDebugWriteCmdEvent}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
                                 <Button x:Name="SerialPortReadCmdButton" Content="Read" HorizontalAlignment="Left" Margin="227,137,0,0" VerticalAlignment="Top" Width="158" Height="51">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
-                                            <viewmodel:EventCommandBase Command="{Binding SerialPortDebugReadCmdEvent}"/>
+                                            <vmc:EventCommandBase Command="{Binding SerialPortDebugReadCmdEvent}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
@@ -173,42 +175,42 @@
                                 <Button Tag="RESET" Content="复位" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="80">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
-                                            <viewmodel:EventCommandBase Command="{Binding M3458ABasicConfigEvent}" CommandParameter="RESET"/>
+                                            <vmc:EventCommandBase Command="{Binding M3458ABasicConfigEvent}" CommandParameter="RESET"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
                                 <Button Tag="ID" Content="ID" HorizontalAlignment="Left" Margin="10,33,0,0" VerticalAlignment="Top" Width="80">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
-                                            <viewmodel:EventCommandBase Command="{Binding M3458ABasicConfigEvent}" CommandParameter="ID"/>
+                                            <vmc:EventCommandBase Command="{Binding M3458ABasicConfigEvent}" CommandParameter="ID"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
                                 <Button Tag="ERR" Content="错误信息" HorizontalAlignment="Left" Margin="107,10,0,0" VerticalAlignment="Top" Width="80">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
-                                            <viewmodel:EventCommandBase Command="{Binding M3458ABasicConfigEvent}" CommandParameter="ERR"/>
+                                            <vmc:EventCommandBase Command="{Binding M3458ABasicConfigEvent}" CommandParameter="ERR"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
                                 <Button Tag="STB" Content="状态位" HorizontalAlignment="Left" Margin="107,33,0,0" VerticalAlignment="Top" Width="80">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
-                                            <viewmodel:EventCommandBase Command="{Binding M3458ABasicConfigEvent}" CommandParameter="STB"/>
+                                            <vmc:EventCommandBase Command="{Binding M3458ABasicConfigEvent}" CommandParameter="STB"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
                                 <Button Tag="TEMP" Content="机器温度" HorizontalAlignment="Left" Margin="207,10,0,0" VerticalAlignment="Top" Width="80">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
-                                            <viewmodel:EventCommandBase Command="{Binding M3458ABasicConfigEvent}" CommandParameter="TEMP"/>
+                                            <vmc:EventCommandBase Command="{Binding M3458ABasicConfigEvent}" CommandParameter="TEMP"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
                                 <Button Tag="LINE" Content="工频频率" HorizontalAlignment="Left" Margin="207,33,0,0" VerticalAlignment="Top" Width="80">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
-                                            <viewmodel:EventCommandBase Command="{Binding M3458ABasicConfigEvent}" CommandParameter="LINE"/>
+                                            <vmc:EventCommandBase Command="{Binding M3458ABasicConfigEvent}" CommandParameter="LINE"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
@@ -216,7 +218,7 @@
                                 <Button Tag="NDIG" Content="显示位数" HorizontalAlignment="Left" Margin="207,66,0,0" VerticalAlignment="Top" Width="80">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
-                                            <viewmodel:EventCommandBase Command="{Binding M3458ABasicConfigEvent}" CommandParameter="NDIG"/>
+                                            <vmc:EventCommandBase Command="{Binding M3458ABasicConfigEvent}" CommandParameter="NDIG"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
@@ -225,7 +227,7 @@
                                 <Button Tag="ACAL" Content="执行自动校准" HorizontalAlignment="Left" Margin="178,110,0,0" VerticalAlignment="Top" Width="130" Height="22">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
-                                            <viewmodel:EventCommandBase Command="{Binding M3458ABasicConfigEvent}" CommandParameter="ACAL"/>
+                                            <vmc:EventCommandBase Command="{Binding M3458ABasicConfigEvent}" CommandParameter="ACAL"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
@@ -234,7 +236,7 @@
                                 <Button Tag="RANGE" Content="设置量程/精度" HorizontalAlignment="Left" Margin="178,146,0,0" VerticalAlignment="Top" Width="130" Height="22">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
-                                            <viewmodel:EventCommandBase Command="{Binding M3458ABasicConfigEvent}" CommandParameter="RANGE"/>
+                                            <vmc:EventCommandBase Command="{Binding M3458ABasicConfigEvent}" CommandParameter="RANGE"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
@@ -242,21 +244,21 @@
                                 <Button Tag="NPLC" Content="设置速率(NPLC)" HorizontalAlignment="Left" Margin="178,183,0,0" VerticalAlignment="Top" Width="130" Height="22">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
-                                            <viewmodel:EventCommandBase Command="{Binding M3458ABasicConfigEvent}" CommandParameter="NPLC"/>
+                                            <vmc:EventCommandBase Command="{Binding M3458ABasicConfigEvent}" CommandParameter="NPLC"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
                                 <Button Tag="RANGE?" Content="读量程/精度" HorizontalAlignment="Left" Margin="16,220,0,0" VerticalAlignment="Top" Width="130" Height="22">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
-                                            <viewmodel:EventCommandBase Command="{Binding M3458ABasicConfigEvent}" CommandParameter="RANGE?"/>
+                                            <vmc:EventCommandBase Command="{Binding M3458ABasicConfigEvent}" CommandParameter="RANGE?"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
                                 <Button Tag="NPLC?" Content="读输出速率(NPLC)" HorizontalAlignment="Left" Margin="170,220,0,0" VerticalAlignment="Top" Width="130" Height="22">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
-                                            <viewmodel:EventCommandBase Command="{Binding M3458ABasicConfigEvent}" CommandParameter="NPLC?"/>
+                                            <vmc:EventCommandBase Command="{Binding M3458ABasicConfigEvent}" CommandParameter="NPLC?"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
@@ -272,7 +274,7 @@
                                         <Button x:Name="SyncDCVDisplayButton" Content="{Binding M3458AIsSyncMeasureOpen, Converter={StaticResource M3458ASyncMeasureButtonContentConverter}}" HorizontalAlignment="Left" Margin="218,30,0,0" VerticalAlignment="Top" Width="145" Height="57">
                                             <i:Interaction.Triggers>
                                                 <i:EventTrigger EventName="Click">
-                                                    <viewmodel:EventCommandBase Command="{Binding M3458ASyncMeasureEvent}" CommandParameter="{Binding ElementName=SyncDCVDisplayStorageCheckBox, Path=IsChecked}"/>
+                                                    <vmc:EventCommandBase Command="{Binding M3458ASyncMeasureEvent}" CommandParameter="{Binding ElementName=SyncDCVDisplayStorageCheckBox, Path=IsChecked}"/>
                                                 </i:EventTrigger>
                                             </i:Interaction.Triggers>
                                         </Button>
@@ -287,14 +289,14 @@
                                         <Button x:Name="SetMinNPLCButton" Content="高速度(0 NPLC)" Height="22" Margin="86,40,0,0" HorizontalAlignment="Left" Width="130" VerticalAlignment="Top">
                                             <i:Interaction.Triggers>
                                                 <i:EventTrigger EventName="Click">
-                                                    <viewmodel:EventCommandBase Command="{Binding M3458ASetNPLCEvent}" CommandParameter="0"/>
+                                                    <vmc:EventCommandBase Command="{Binding M3458ASetNPLCEvent}" CommandParameter="0"/>
                                                 </i:EventTrigger>
                                             </i:Interaction.Triggers>
                                         </Button>
                                         <Button x:Name="SetMaxNPLCButton" Content="高精度(100 NPLC)" Height="22" Margin="221,40,0,0" HorizontalAlignment="Left" Width="130" VerticalAlignment="Top">
                                             <i:Interaction.Triggers>
                                                 <i:EventTrigger EventName="Click">
-                                                    <viewmodel:EventCommandBase Command="{Binding M3458ASetNPLCEvent}" CommandParameter="100"/>
+                                                    <vmc:EventCommandBase Command="{Binding M3458ASetNPLCEvent}" CommandParameter="100"/>
                                                 </i:EventTrigger>
                                             </i:Interaction.Triggers>
                                         </Button>
@@ -305,7 +307,7 @@
                                         <Button x:Name="ManualReadDCVButton" Content="手动读取电压" HorizontalAlignment="Left" Margin="218,94,0,0" VerticalAlignment="Top" Width="144" Height="41">
                                             <i:Interaction.Triggers>
                                                 <i:EventTrigger EventName="Click">
-                                                    <viewmodel:EventCommandBase Command="{Binding M3458AManualMeasureEvent}" CommandParameter="{Binding ElementName=ManualStorageDCVCheckBox, Path=IsChecked}"/>
+                                                    <vmc:EventCommandBase Command="{Binding M3458AManualMeasureEvent}" CommandParameter="{Binding ElementName=ManualStorageDCVCheckBox, Path=IsChecked}"/>
                                                 </i:EventTrigger>
                                             </i:Interaction.Triggers>
                                         </Button>
@@ -323,21 +325,21 @@
                         <Button Content="{Binding SerialPortCommandIsListeningDataReceived,Converter={StaticResource SerialPortCommandIsListeningButtonContentConverter}}" Margin="447,10,0,0" HorizontalAlignment="Left" Width="106" Height="23" VerticalAlignment="Top">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="Click">
-                                    <viewmodel:EventCommandBase Command="{Binding SerialPortCommandListenEvent}"/>
+                                    <vmc:EventCommandBase Command="{Binding SerialPortCommandListenEvent}"/>
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </Button>
                         <Button Content="清空记录" Margin="558,10,0,0" HorizontalAlignment="Left" Width="106" Height="23" VerticalAlignment="Top">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="Click">
-                                    <viewmodel:EventCommandBase Command="{Binding SerialPortCommandCleanLogEvent}"/>
+                                    <vmc:EventCommandBase Command="{Binding SerialPortCommandCleanLogEvent}"/>
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </Button>
                         <Button Content="导出记录" Margin="669,10,0,0" HorizontalAlignment="Left" Width="106" Height="23" VerticalAlignment="Top">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="Click">
-                                    <viewmodel:EventCommandBase Command="{Binding SerialPortCommandSaveLogEvent}"/>
+                                    <vmc:EventCommandBase Command="{Binding SerialPortCommandSaveLogEvent}"/>
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </Button>
@@ -348,35 +350,35 @@
                                 <Button Content="加载" Margin="294,10,0,0" VerticalAlignment="Top" Height="28" HorizontalAlignment="Left" Width="60">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
-                                            <viewmodel:EventCommandBase Command="{Binding SerialPortCommandScriptLoadFileEvent}"/>
+                                            <vmc:EventCommandBase Command="{Binding SerialPortCommandScriptLoadFileEvent}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
                                 <Button Content="保存" Margin="359,10,0,0" VerticalAlignment="Top" Height="28" HorizontalAlignment="Left" Width="60">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
-                                            <viewmodel:EventCommandBase Command="{Binding SerialPortCommandScriptSaveFileEvent}"/>
+                                            <vmc:EventCommandBase Command="{Binding SerialPortCommandScriptSaveFileEvent}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
                                 <Button Content="运行" Margin="294,43,0,0" VerticalAlignment="Top" Height="28" HorizontalAlignment="Left" Width="60">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
-                                            <viewmodel:EventCommandBase Command="{Binding SerialPortCommandScriptRunEvent}" CommandParameter="Run"/>
+                                            <vmc:EventCommandBase Command="{Binding SerialPortCommandScriptRunEvent}" CommandParameter="Run"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
                                 <Button Content="单步" Margin="294,76,0,0" VerticalAlignment="Top" Height="28" HorizontalAlignment="Left" Width="60">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
-                                            <viewmodel:EventCommandBase Command="{Binding SerialPortCommandScriptRunEvent}" CommandParameter="RunOnce"/>
+                                            <vmc:EventCommandBase Command="{Binding SerialPortCommandScriptRunEvent}" CommandParameter="RunOnce"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
                                 <Button Content="行数重置" Margin="359,76,0,0" VerticalAlignment="Top" Height="28" HorizontalAlignment="Left" Width="60">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
-                                            <viewmodel:EventCommandBase Command="{Binding SerialPortCommandScriptRunEvent}" CommandParameter="ClearCursor"/>
+                                            <vmc:EventCommandBase Command="{Binding SerialPortCommandScriptRunEvent}" CommandParameter="ClearCursor"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
@@ -450,14 +452,14 @@
                                     <Button Margin="5,5,5,5" Content="{Binding SerialportCommandModels[0].CommandText}" Grid.Row="0" Grid.Column="3">
                                         <i:Interaction.Triggers>
                                             <i:EventTrigger EventName="Click">
-                                                <viewmodel:EventCommandBase Command="{Binding SerialPortCommandSendEvent}" CommandParameter="0"/>
+                                                <vmc:EventCommandBase Command="{Binding SerialPortCommandSendEvent}" CommandParameter="0"/>
                                             </i:EventTrigger>
                                         </i:Interaction.Triggers>
                                     </Button>
                                     <Button Margin="5,5,5,5" Content="{Binding SerialportCommandModels[1].CommandText}" Grid.Row="0" Grid.Column="4">
                                         <i:Interaction.Triggers>
                                             <i:EventTrigger EventName="Click">
-                                                <viewmodel:EventCommandBase Command="{Binding SerialPortCommandSendEvent}" CommandParameter="1"/>
+                                                <vmc:EventCommandBase Command="{Binding SerialPortCommandSendEvent}" CommandParameter="1"/>
                                             </i:EventTrigger>
                                         </i:Interaction.Triggers>
                                     </Button>
@@ -479,7 +481,7 @@
                                     <Button Margin="5,5,5,5" Content="{Binding SerialportCommandModels[2].CommandText}" Grid.Row="1" Grid.Column="4">
                                         <i:Interaction.Triggers>
                                             <i:EventTrigger EventName="Click">
-                                                <viewmodel:EventCommandBase Command="{Binding SerialPortCommandSendEvent}" CommandParameter="2"/>
+                                                <vmc:EventCommandBase Command="{Binding SerialPortCommandSendEvent}" CommandParameter="2"/>
                                             </i:EventTrigger>
                                         </i:Interaction.Triggers>
                                     </Button>
@@ -487,7 +489,7 @@
                                     <Button Margin="5,5,5,5" Content="{Binding SerialportCommandModels[3].CommandText}" Grid.Row="2" Grid.Column="4">
                                         <i:Interaction.Triggers>
                                             <i:EventTrigger EventName="Click">
-                                                <viewmodel:EventCommandBase Command="{Binding SerialPortCommandSendEvent}" CommandParameter="3"/>
+                                                <vmc:EventCommandBase Command="{Binding SerialPortCommandSendEvent}" CommandParameter="3"/>
                                             </i:EventTrigger>
                                         </i:Interaction.Triggers>
                                     </Button>
@@ -523,7 +525,7 @@
                                     <Button Margin="5,5,5,5" Content="{Binding SerialportCommandModels[4].CommandText}" Grid.Row="3" Grid.Column="4">
                                         <i:Interaction.Triggers>
                                             <i:EventTrigger EventName="Click">
-                                                <viewmodel:EventCommandBase Command="{Binding SerialPortCommandSendEvent}" CommandParameter="4"/>
+                                                <vmc:EventCommandBase Command="{Binding SerialPortCommandSendEvent}" CommandParameter="4"/>
                                             </i:EventTrigger>
                                         </i:Interaction.Triggers>
                                     </Button>
@@ -545,7 +547,7 @@
                                     <Button Margin="5,5,5,5" Content="{Binding SerialportCommandModels[5].CommandText}" Grid.Row="4" Grid.Column="4">
                                         <i:Interaction.Triggers>
                                             <i:EventTrigger EventName="Click">
-                                                <viewmodel:EventCommandBase Command="{Binding SerialPortCommandSendEvent}" CommandParameter="5"/>
+                                                <vmc:EventCommandBase Command="{Binding SerialPortCommandSendEvent}" CommandParameter="5"/>
                                             </i:EventTrigger>
                                         </i:Interaction.Triggers>
                                     </Button>
@@ -595,7 +597,7 @@
                                     <Button Margin="5,5,5,5" Content="{Binding SerialportCommandModels[6].CommandText}" Grid.Row="5" Grid.Column="4">
                                         <i:Interaction.Triggers>
                                             <i:EventTrigger EventName="Click">
-                                                <viewmodel:EventCommandBase Command="{Binding SerialPortCommandSendEvent}" CommandParameter="6"/>
+                                                <vmc:EventCommandBase Command="{Binding SerialPortCommandSendEvent}" CommandParameter="6"/>
                                             </i:EventTrigger>
                                         </i:Interaction.Triggers>
                                     </Button>
@@ -631,7 +633,7 @@
                                     <Button Margin="5,5,5,5" Content="{Binding SerialportCommandModels[7].CommandText}" Grid.Row="6" Grid.Column="4">
                                         <i:Interaction.Triggers>
                                             <i:EventTrigger EventName="Click">
-                                                <viewmodel:EventCommandBase Command="{Binding SerialPortCommandSendEvent}" CommandParameter="7"/>
+                                                <vmc:EventCommandBase Command="{Binding SerialPortCommandSendEvent}" CommandParameter="7"/>
                                             </i:EventTrigger>
                                         </i:Interaction.Triggers>
                                     </Button>
@@ -683,21 +685,21 @@
                                     <Button Content="加载" Margin="317,10,0,0" VerticalAlignment="Top" Height="28" Width="61" HorizontalAlignment="Left">
                                         <i:Interaction.Triggers>
                                             <i:EventTrigger EventName="Click">
-                                                <viewmodel:EventCommandBase Command="{Binding SerialPortCommandPresetLoadEvent}"/>
+                                                <vmc:EventCommandBase Command="{Binding SerialPortCommandPresetLoadEvent}"/>
                                             </i:EventTrigger>
                                         </i:Interaction.Triggers>
                                     </Button>
                                     <Button Content="发送" Margin="317,43,0,0" VerticalAlignment="Top" Height="28" Width="61" HorizontalAlignment="Left" IsEnabled="{Binding ElementName=SerialPortPresetCommandsListView,Path=SelectedItem,Converter={StaticResource IsNotNullConverter}}">
                                         <i:Interaction.Triggers>
                                             <i:EventTrigger EventName="Click">
-                                                <viewmodel:EventCommandBase Command="{Binding SerialPortCommandPresetSendEvent}"/>
+                                                <vmc:EventCommandBase Command="{Binding SerialPortCommandPresetSendEvent}"/>
                                             </i:EventTrigger>
                                         </i:Interaction.Triggers>
                                     </Button>
                                     <Button Content="添加" Margin="317,76,0,0" VerticalAlignment="Top" Height="28" Width="61" HorizontalAlignment="Left" IsEnabled="{Binding ElementName=SerialPortPresetCommandsListView,Path=SelectedItem,Converter={StaticResource IsNotNullConverter}}">
                                         <i:Interaction.Triggers>
                                             <i:EventTrigger EventName="Click">
-                                                <viewmodel:EventCommandBase Command="{Binding SerialportCommandPresetAddCodeEvent}"/>
+                                                <vmc:EventCommandBase Command="{Binding SerialportCommandPresetAddCodeEvent}"/>
                                             </i:EventTrigger>
                                         </i:Interaction.Triggers>
                                     </Button>
@@ -715,7 +717,7 @@
                                 <ComboBox x:Name="SerialPortSendCmdSerialPortNameComboBox" ItemsSource="{Binding SerialPortsInstance.SerialPortsDict, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Key" SelectedValue="{Binding SerialPortSendCmdSerialPortNameSelectedValue, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Key" HorizontalAlignment="Left" Margin="328,20,0,0" VerticalAlignment="Top" Width="110" Height="23">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="SelectionChanged">
-                                            <viewmodel:EventCommandBase Command="{Binding SerialPortSendCmdChangedEvent}"/>
+                                            <vmc:EventCommandBase Command="{Binding SerialPortSendCmdChangedEvent}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </ComboBox>
@@ -748,14 +750,14 @@
                                                 </TextBox.Style>
                                                 <i:Interaction.Triggers>
                                                     <i:EventTrigger EventName="TextChanged">
-                                                        <viewmodel:EventCommandBase Command="{Binding SerialPortSendCmdChangedEvent}"/>
+                                                        <vmc:EventCommandBase Command="{Binding SerialPortSendCmdChangedEvent}"/>
                                                     </i:EventTrigger>
                                                 </i:Interaction.Triggers>
                                             </TextBox>
                                         </ComboBoxItem>
                                         <i:Interaction.Triggers>
                                             <i:EventTrigger EventName="SelectionChanged">
-                                                <viewmodel:EventCommandBase Command="{Binding SerialPortSendCmdChangedEvent}"/>
+                                                <vmc:EventCommandBase Command="{Binding SerialPortSendCmdChangedEvent}"/>
                                             </i:EventTrigger>
                                         </i:Interaction.Triggers>
                                     </ComboBox>
@@ -782,7 +784,7 @@
                                         </TextBox.Style>
                                         <i:Interaction.Triggers>
                                             <i:EventTrigger EventName="TextChanged">
-                                                <viewmodel:EventCommandBase Command="{Binding SerialPortSendCmdChangedEvent}"/>
+                                                <vmc:EventCommandBase Command="{Binding SerialPortSendCmdChangedEvent}"/>
                                             </i:EventTrigger>
                                         </i:Interaction.Triggers>
                                     </TextBox>
@@ -796,7 +798,7 @@
                                 <Button Name="SerialPortSendCmdButton" Content="发送命令" HorizontalAlignment="Left" Margin="328,48,0,0" VerticalAlignment="Top" Width="110" Height="46">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
-                                            <viewmodel:EventCommandBase Command="{Binding SerialPortSendCmdEvent}"/>
+                                            <vmc:EventCommandBase Command="{Binding SerialPortSendCmdEvent}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
@@ -817,14 +819,14 @@
                                 <Button Name="SerialPortRecvDataButton" Content="接收数据" HorizontalAlignment="Left" Margin="195,208,0,0" VerticalAlignment="Top" Width="110" Height="32">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
-                                            <viewmodel:EventCommandBase Command="{Binding SerialPortRecvDataEvent}"/>
+                                            <vmc:EventCommandBase Command="{Binding SerialPortRecvDataEvent}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
                                 <Button Name="SerialPortRecvDataStorageButton" Content="存储数据" HorizontalAlignment="Left" Margin="328,208,0,0" VerticalAlignment="Top" Width="110" Height="32">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
-                                            <viewmodel:EventCommandBase Command="{Binding SerialPortRecvDataStorageEvent}"/>
+                                            <vmc:EventCommandBase Command="{Binding SerialPortRecvDataStorageEvent}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
@@ -839,7 +841,7 @@
                                 </DataGrid.Columns>
                                 <i:Interaction.Triggers>
                                     <i:EventTrigger EventName="LoadingRow">
-                                        <viewmodel:EventCommandBase Command="{Binding DataGridLoadingRowAddRowIndexEvent}"/>
+                                        <vmc:EventCommandBase Command="{Binding DataGridLoadingRowAddRowIndexEvent}"/>
                                     </i:EventTrigger>
                                 </i:Interaction.Triggers>
                             </DataGrid>
@@ -854,7 +856,7 @@
                                 <ListBox Name="DataStorageSelectListBox" ItemsSource="{Binding DataStorageInstance.DataStorageDictionary,UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Key" SelectedValue="{Binding DataStorageSelectedValue}" SelectedValuePath="Key" HorizontalAlignment="Left" Height="106" Margin="10,30,0,0" VerticalAlignment="Top" Width="230">
                                     <!--<i:Interaction.Triggers>
                                         <i:EventTrigger EventName="SelectionChanged">
-                                            <viewmodel:EventCommandBase Command="{Binding DataStorageSelectionChangedEvent}"/>
+                                            <vmc:EventCommandBase Command="{Binding DataStorageSelectionChangedEvent}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>-->
                                 </ListBox>
@@ -864,21 +866,21 @@
                                     </DataGrid.Columns>
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="LoadingRow">
-                                            <viewmodel:EventCommandBase Command="{Binding DataGridLoadingRowAddRowIndexEvent}"/>
+                                            <vmc:EventCommandBase Command="{Binding DataGridLoadingRowAddRowIndexEvent}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </DataGrid>
                                 <Button Name="DataStorageExportListDataButton" Content="导出选中数据" HorizontalAlignment="Left" Margin="10,191,0,0" VerticalAlignment="Top" Width="107" Height="32">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
-                                            <viewmodel:EventCommandBase Command="{Binding DataStorageStoreEvent}"/>
+                                            <vmc:EventCommandBase Command="{Binding DataStorageStoreEvent}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
                                 <Button Name="DataStorageClearListDataButton" Content="清空选中数据" HorizontalAlignment="Left" Margin="133,191,0,0" VerticalAlignment="Top" Width="107" Height="32">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
-                                            <viewmodel:EventCommandBase Command="{Binding DataStorageDeleteEvent}"/>
+                                            <vmc:EventCommandBase Command="{Binding DataStorageDeleteEvent}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
@@ -886,28 +888,28 @@
                                 <Button Content="添加键值对" HorizontalAlignment="Left" Margin="133,228,0,0" VerticalAlignment="Top" Width="107" Height="32">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
-                                            <viewmodel:EventCommandBase Command="{Binding DataStorageAddKeyValuePairEvent}"/>
+                                            <vmc:EventCommandBase Command="{Binding DataStorageAddKeyValuePairEvent}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
                                 <Button Content="删除键值对" HorizontalAlignment="Left" Margin="133,265,0,0" VerticalAlignment="Top" Width="107" Height="32">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
-                                            <viewmodel:EventCommandBase Command="{Binding DataStorageRemoveKeyValuePairEvent}"/>
+                                            <vmc:EventCommandBase Command="{Binding DataStorageRemoveKeyValuePairEvent}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
                                 <Button Content="加载数据文件" HorizontalAlignment="Left" Margin="10,154,0,0" VerticalAlignment="Top" Width="107" Height="32">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
-                                            <viewmodel:EventCommandBase Command="{Binding DataStorageLoadEvent}"/>
+                                            <vmc:EventCommandBase Command="{Binding DataStorageLoadEvent}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
                                 <Button Content="保存数据文件" HorizontalAlignment="Left" Margin="133,154,0,0" VerticalAlignment="Top" Width="107" Height="32">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
-                                            <viewmodel:EventCommandBase Command="{Binding DataStorageSaveEvent}"/>
+                                            <vmc:EventCommandBase Command="{Binding DataStorageSaveEvent}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
@@ -920,14 +922,14 @@
                         <Button Content="刷新选中数据" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="107" Height="32">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="Click">
-                                    <viewmodel:EventCommandBase Command="{Binding PlotViewPlotRefreshEvent}"/>
+                                    <vmc:EventCommandBase Command="{Binding PlotViewPlotRefreshEvent}"/>
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </Button>
                         <Button Content="大数据量测试" HorizontalAlignment="Left" Margin="10,47,0,0" VerticalAlignment="Top" Width="107" Height="32">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="Click">
-                                    <viewmodel:EventCommandBase Command="{Binding PlotViewTestEvent}"/>
+                                    <vmc:EventCommandBase Command="{Binding PlotViewTestEvent}"/>
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </Button>
@@ -1000,21 +1002,21 @@
                                 <Button Content="加载" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="30" Width="68">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
-                                            <viewmodel:EventCommandBase Command="{Binding AutomationCodeLoadFileEvent}"/>
+                                            <vmc:EventCommandBase Command="{Binding AutomationCodeLoadFileEvent}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
                                 <Button Content="保存" HorizontalAlignment="Left" Margin="83,10,0,0" VerticalAlignment="Top" Height="30" Width="68">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
-                                            <viewmodel:EventCommandBase Command="{Binding AutomationCodeSaveFileEvent}"/>
+                                            <vmc:EventCommandBase Command="{Binding AutomationCodeSaveFileEvent}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
                                 <Button Content="{Binding AutomationIsRun, Converter={StaticResource AutomationTaskRunButtonConverter}}" HorizontalAlignment="Left" Margin="10,45,0,0" VerticalAlignment="Top" Height="30" Width="141">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
-                                            <viewmodel:EventCommandBase Command="{Binding AutomationCodeRunEvent}"/>
+                                            <vmc:EventCommandBase Command="{Binding AutomationCodeRunEvent}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
@@ -1029,9 +1031,9 @@
                     <Grid>
                         <GroupBox Header="位计算" Margin="10,10,0,243" HorizontalAlignment="Left" Width="446">
                             <Grid>
-                                <TextBox Text="{Binding BitsModel.Num, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="50" Margin="20,10,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                                <Grid Height="70" Width="320" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,40,0,0">
+                                <Grid Height="70" Width="340" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,20,0,0">
                                     <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="20"/>
                                         <ColumnDefinition Width="20"/>
                                         <ColumnDefinition Width="20"/>
                                         <ColumnDefinition Width="20"/>
@@ -1063,14 +1065,14 @@
                                     <TextBlock Text="26" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="5" Grid.Row="0"/>
                                     <TextBlock Text="25" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="6" Grid.Row="0"/>
                                     <TextBlock Text="24" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="7" Grid.Row="0"/>
-                                    <TextBlock Text="23" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="8" Grid.Row="0"/>
-                                    <TextBlock Text="22" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="9" Grid.Row="0"/>
-                                    <TextBlock Text="21" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="10" Grid.Row="0"/>
-                                    <TextBlock Text="20" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="11" Grid.Row="0"/>
-                                    <TextBlock Text="19" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="12" Grid.Row="0"/>
-                                    <TextBlock Text="18" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="13" Grid.Row="0"/>
-                                    <TextBlock Text="17" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="14" Grid.Row="0"/>
-                                    <TextBlock Text="16" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="15" Grid.Row="0"/>
+                                    <TextBlock Text="23" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="9" Grid.Row="0"/>
+                                    <TextBlock Text="22" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="10" Grid.Row="0"/>
+                                    <TextBlock Text="21" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="11" Grid.Row="0"/>
+                                    <TextBlock Text="20" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="12" Grid.Row="0"/>
+                                    <TextBlock Text="19" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="13" Grid.Row="0"/>
+                                    <TextBlock Text="18" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="14" Grid.Row="0"/>
+                                    <TextBlock Text="17" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="15" Grid.Row="0"/>
+                                    <TextBlock Text="16" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="16" Grid.Row="0"/>
                                     <TextBlock Text="15" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="2"/>
                                     <TextBlock Text="14" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="1" Grid.Row="2"/>
                                     <TextBlock Text="13" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="2" Grid.Row="2"/>
@@ -1079,14 +1081,14 @@
                                     <TextBlock Text="10" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="5" Grid.Row="2"/>
                                     <TextBlock Text="9" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="6" Grid.Row="2"/>
                                     <TextBlock Text="8" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="7" Grid.Row="2"/>
-                                    <TextBlock Text="7" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="8" Grid.Row="2"/>
-                                    <TextBlock Text="6" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="9" Grid.Row="2"/>
-                                    <TextBlock Text="5" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="10" Grid.Row="2"/>
-                                    <TextBlock Text="4" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="11" Grid.Row="2"/>
-                                    <TextBlock Text="3" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="12" Grid.Row="2"/>
-                                    <TextBlock Text="2" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="13" Grid.Row="2"/>
-                                    <TextBlock Text="1" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="14" Grid.Row="2"/>
-                                    <TextBlock Text="0" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="15" Grid.Row="2"/>
+                                    <TextBlock Text="7" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="9" Grid.Row="2"/>
+                                    <TextBlock Text="6" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="10" Grid.Row="2"/>
+                                    <TextBlock Text="5" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="11" Grid.Row="2"/>
+                                    <TextBlock Text="4" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="12" Grid.Row="2"/>
+                                    <TextBlock Text="3" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="13" Grid.Row="2"/>
+                                    <TextBlock Text="2" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="14" Grid.Row="2"/>
+                                    <TextBlock Text="1" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="15" Grid.Row="2"/>
+                                    <TextBlock Text="0" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="16" Grid.Row="2"/>
                                     <CheckBox IsChecked="{Binding BitsModel.Bits[31].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="0" Grid.Row="1"/>
                                     <CheckBox IsChecked="{Binding BitsModel.Bits[30].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" Grid.Row="1"/>
                                     <CheckBox IsChecked="{Binding BitsModel.Bits[29].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="2" Grid.Row="1"/>
@@ -1095,14 +1097,14 @@
                                     <CheckBox IsChecked="{Binding BitsModel.Bits[26].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="5" Grid.Row="1"/>
                                     <CheckBox IsChecked="{Binding BitsModel.Bits[25].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="6" Grid.Row="1"/>
                                     <CheckBox IsChecked="{Binding BitsModel.Bits[24].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="7" Grid.Row="1"/>
-                                    <CheckBox IsChecked="{Binding BitsModel.Bits[23].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="8" Grid.Row="1"/>
-                                    <CheckBox IsChecked="{Binding BitsModel.Bits[22].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="9" Grid.Row="1"/>
-                                    <CheckBox IsChecked="{Binding BitsModel.Bits[21].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="10" Grid.Row="1"/>
-                                    <CheckBox IsChecked="{Binding BitsModel.Bits[20].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="11" Grid.Row="1"/>
-                                    <CheckBox IsChecked="{Binding BitsModel.Bits[19].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="12" Grid.Row="1"/>
-                                    <CheckBox IsChecked="{Binding BitsModel.Bits[18].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="13" Grid.Row="1"/>
-                                    <CheckBox IsChecked="{Binding BitsModel.Bits[17].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="14" Grid.Row="1"/>
-                                    <CheckBox IsChecked="{Binding BitsModel.Bits[16].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="15" Grid.Row="1"/>
+                                    <CheckBox IsChecked="{Binding BitsModel.Bits[23].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="9" Grid.Row="1"/>
+                                    <CheckBox IsChecked="{Binding BitsModel.Bits[22].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="10" Grid.Row="1"/>
+                                    <CheckBox IsChecked="{Binding BitsModel.Bits[21].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="11" Grid.Row="1"/>
+                                    <CheckBox IsChecked="{Binding BitsModel.Bits[20].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="12" Grid.Row="1"/>
+                                    <CheckBox IsChecked="{Binding BitsModel.Bits[19].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="13" Grid.Row="1"/>
+                                    <CheckBox IsChecked="{Binding BitsModel.Bits[18].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="14" Grid.Row="1"/>
+                                    <CheckBox IsChecked="{Binding BitsModel.Bits[17].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="15" Grid.Row="1"/>
+                                    <CheckBox IsChecked="{Binding BitsModel.Bits[16].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="16" Grid.Row="1"/>
                                     <CheckBox IsChecked="{Binding BitsModel.Bits[15].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="0" Grid.Row="3"/>
                                     <CheckBox IsChecked="{Binding BitsModel.Bits[14].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" Grid.Row="3"/>
                                     <CheckBox IsChecked="{Binding BitsModel.Bits[13].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="2" Grid.Row="3"/>
@@ -1111,15 +1113,19 @@
                                     <CheckBox IsChecked="{Binding BitsModel.Bits[10].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="5" Grid.Row="3"/>
                                     <CheckBox IsChecked="{Binding BitsModel.Bits[9].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="6" Grid.Row="3"/>
                                     <CheckBox IsChecked="{Binding BitsModel.Bits[8].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="7" Grid.Row="3"/>
-                                    <CheckBox IsChecked="{Binding BitsModel.Bits[7].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="8" Grid.Row="3"/>
-                                    <CheckBox IsChecked="{Binding BitsModel.Bits[6].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="9" Grid.Row="3"/>
-                                    <CheckBox IsChecked="{Binding BitsModel.Bits[5].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="10" Grid.Row="3"/>
-                                    <CheckBox IsChecked="{Binding BitsModel.Bits[4].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="11" Grid.Row="3"/>
-                                    <CheckBox IsChecked="{Binding BitsModel.Bits[3].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="12" Grid.Row="3"/>
-                                    <CheckBox IsChecked="{Binding BitsModel.Bits[2].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="13" Grid.Row="3"/>
-                                    <CheckBox IsChecked="{Binding BitsModel.Bits[1].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="14" Grid.Row="3"/>
-                                    <CheckBox IsChecked="{Binding BitsModel.Bits[0].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="15" Grid.Row="3"/>
+                                    <CheckBox IsChecked="{Binding BitsModel.Bits[7].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="9" Grid.Row="3"/>
+                                    <CheckBox IsChecked="{Binding BitsModel.Bits[6].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="10" Grid.Row="3"/>
+                                    <CheckBox IsChecked="{Binding BitsModel.Bits[5].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="11" Grid.Row="3"/>
+                                    <CheckBox IsChecked="{Binding BitsModel.Bits[4].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="12" Grid.Row="3"/>
+                                    <CheckBox IsChecked="{Binding BitsModel.Bits[3].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="13" Grid.Row="3"/>
+                                    <CheckBox IsChecked="{Binding BitsModel.Bits[2].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="14" Grid.Row="3"/>
+                                    <CheckBox IsChecked="{Binding BitsModel.Bits[1].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="15" Grid.Row="3"/>
+                                    <CheckBox IsChecked="{Binding BitsModel.Bits[0].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="16" Grid.Row="3"/>
                                 </Grid>
+                                <TextBlock Text="10进制:" Margin="20,110,0,0" Width="48" Height="17" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                <TextBox Text="{Binding BitsModel.Num, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100" Margin="73,110,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                <TextBlock Text="16进制:" Margin="20,132,0,0" Width="48" Height="17" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                <TextBox Text="{Binding BitsModel.Num, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource Num2HexConverter}}" Width="100" Margin="73,132,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                             </Grid>
                         </GroupBox>
                     </Grid>

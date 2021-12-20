@@ -1,6 +1,6 @@
 ﻿using LiveCharts.Geared;
 using MeasureApp.Model;
-using MeasureApp.Model.Common;
+using MeasureApp.Model.Converter;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -190,6 +190,27 @@ namespace MeasureApp.ViewModel
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
+        }
+    }
+
+    public class Num2HexConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return BaseConverter.BaseConverterInt64((uint)value, 16);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            try
+            {
+                return BaseConverter.BaseConverterInt64((string)value, 16);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+                return 0x0;
+            }
         }
     }
 }

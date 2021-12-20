@@ -35,7 +35,7 @@ using System.ComponentModel;
 using System.Runtime.Serialization;
 using System.Runtime.InteropServices;
 
-namespace MeasureApp.Model
+namespace MeasureApp.Model.Common
 {
     [Serializable]
     public class ObservableDictionary<TKey, TValue> :

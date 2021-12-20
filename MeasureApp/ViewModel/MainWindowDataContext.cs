@@ -9,6 +9,8 @@ using System.Windows.Media;
 using System.Diagnostics;
 using System.Windows.Data;
 using System.IO;
+using MeasureApp.Model.Common;
+using MeasureApp.ViewModel.Common;
 
 namespace MeasureApp.ViewModel
 {

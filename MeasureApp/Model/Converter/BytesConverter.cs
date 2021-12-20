@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MeasureApp.Model.Common
+namespace MeasureApp.Model.Converter
 {
     public static class BytesConverter
     {

@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace MeasureApp.View
+namespace MeasureApp.View.Common
 {
     public class BindableAvalonEditor : TextEditor, INotifyPropertyChanged
     {

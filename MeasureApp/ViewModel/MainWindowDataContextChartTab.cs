@@ -11,6 +11,8 @@ using LiveCharts.Definitions.Series;
 using LiveCharts.Geared;
 using LiveCharts.Wpf;
 using MeasureApp.Model;
+using MeasureApp.Model.Common;
+using MeasureApp.ViewModel.Common;
 
 namespace MeasureApp.ViewModel
 {

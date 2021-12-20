@@ -1,11 +1,13 @@
 ﻿using MeasureApp.Model;
 using MeasureApp.Model.Common;
+using MeasureApp.Model.Converter;
 using System;
 using System.Collections.ObjectModel;
 using System.IO.Ports;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using MeasureApp.ViewModel.Common;
 
 namespace MeasureApp.ViewModel
 {
@@ -66,43 +68,19 @@ namespace MeasureApp.ViewModel
             }
         }
 
-        private CommandBase gpibDeviceSearchEvent;
-        public CommandBase GpibDeviceSearchEvent
-        {
-            get
-            {
-                if (gpibDeviceSearchEvent == null)
-                {
-                    gpibDeviceSearchEvent = new CommandBase(new Action<object>(param => GpibSearchDevice()));
-                }
-                return gpibDeviceSearchEvent;
-            }
-        }
-
         // 打开GPIB设备事件
-        private CommandBase gpibDeviceOpenEvent;
-        public CommandBase GpibDeviceOpenEvent
+        public void GpibDeviceOpen()
         {
-            get
+            try
             {
-                if (gpibDeviceOpenEvent == null)
-                {
-                    gpibDeviceOpenEvent = new CommandBase(new Action<object>(param =>
-                    {
-                        try
-                        {
-                            gpibDeviceConnectStatusText = $"No Device Connected.";
-                            Measure3458AInstance.Dispose();
-                            GpibDeviceConnectStatusText = $"{Measure3458AInstance.Open(GpibDevicesSelectedName)} Connected.";
-                            Measure3458AInstance.Timeout = Properties.Settings.Default.GPIBTimeout;
-                        }
-                        catch (Exception ex)
-                        {
-                            _ = MessageBox.Show(ex.ToString());
-                        }
-                    }));
-                }
-                return gpibDeviceOpenEvent;
+                gpibDeviceConnectStatusText = $"No Device Connected.";
+                Measure3458AInstance.Dispose();
+                GpibDeviceConnectStatusText = $"{Measure3458AInstance.Open(GpibDevicesSelectedName)} Connected.";
+                Measure3458AInstance.Timeout = Properties.Settings.Default.GPIBTimeout;
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
             }
         }
 
@@ -210,94 +188,72 @@ namespace MeasureApp.ViewModel
         }
 
         // 打开串口设备事件
-        private CommandBase serialPortDeviceOpenEvent;
-        public CommandBase SerialPortDeviceOpenEvent
+        public void SerialPortDeviceOpen()
         {
-            get
+            try
             {
-                if (serialPortDeviceOpenEvent == null)
+                string portName = SerialportDevicesNameSelectedValue.Split('|')[0];
+                int baudRate = SerialportDeviceBaudRate;
+                Parity parity = (Parity)Enum.Parse(typeof(Parity), SerialportDeviceParitySelectedValue);
+                int dataBits = serialportDeviceDataBitsSelectItem;
+                StopBits stopBits = serialportDeviceStopBitsSelectedValue switch
                 {
-                    serialPortDeviceOpenEvent = new CommandBase(new Action<object>(param =>
-                    {
-                        try
-                        {
-                            string portName = SerialportDevicesNameSelectedValue.Split('|')[0];
-                            int baudRate = SerialportDeviceBaudRate;
-                            Parity parity = (Parity)Enum.Parse(typeof(Parity), SerialportDeviceParitySelectedValue);
-                            int dataBits = serialportDeviceDataBitsSelectItem;
-                            StopBits stopBits = serialportDeviceStopBitsSelectedValue switch
-                            {
-                                1.0F => StopBits.One,
-                                1.5F => StopBits.OnePointFive,
-                                2.0F => StopBits.Two,
-                                _ => throw new NotImplementedException(),
-                            };
-                            if (!SerialPortsInstance.Open(portName, baudRate, parity, dataBits, stopBits))
-                            {
-                                _ = MessageBox.Show("串口已被打开.");
-                            }
-
-                            // 更新串口默认选择
-                            if (SerialPortsInstance.SerialPortNames.Any() && SerialportDebugPortNameSelectedValue is null)
-                                SerialportDebugPortNameSelectedValue = SerialPortsInstance.SerialPortsDict.Keys.First();
-                            if (SerialPortsInstance.SerialPortNames.Any() && SerialPortSendCmdSerialPortNameSelectedValue is null)
-                                SerialPortSendCmdSerialPortNameSelectedValue = SerialPortsInstance.SerialPortsDict.Keys.First();
-                            if (SerialPortsInstance.SerialPortNames.Any() && SerialPortRecvDataSerialPortNameSelectedValue is null)
-                                SerialPortRecvDataSerialPortNameSelectedValue = SerialPortsInstance.SerialPortsDict.Keys.First();
-                            if (SerialPortsInstance.SerialPortNames.Any() && SerialportCommandPortNameSelectedValue is null)
-                                SerialportCommandPortNameSelectedValue = SerialPortsInstance.SerialPortsDict.Keys.First();
-
-                        }
-                        catch (Exception ex)
-                        {
-                            _ = MessageBox.Show(ex.ToString());
-                        }
-                    }));
+                    1.0F => StopBits.One,
+                    1.5F => StopBits.OnePointFive,
+                    2.0F => StopBits.Two,
+                    _ => throw new NotImplementedException(),
+                };
+                if (!SerialPortsInstance.Open(portName, baudRate, parity, dataBits, stopBits))
+                {
+                    _ = MessageBox.Show("串口已被打开.");
                 }
-                return serialPortDeviceOpenEvent;
+
+                // 更新串口默认选择
+                if (SerialPortsInstance.SerialPortNames.Any() && SerialportDebugPortNameSelectedValue is null)
+                    SerialportDebugPortNameSelectedValue = SerialPortsInstance.SerialPortsDict.Keys.First();
+                if (SerialPortsInstance.SerialPortNames.Any() && SerialPortSendCmdSerialPortNameSelectedValue is null)
+                    SerialPortSendCmdSerialPortNameSelectedValue = SerialPortsInstance.SerialPortsDict.Keys.First();
+                if (SerialPortsInstance.SerialPortNames.Any() && SerialPortRecvDataSerialPortNameSelectedValue is null)
+                    SerialPortRecvDataSerialPortNameSelectedValue = SerialPortsInstance.SerialPortsDict.Keys.First();
+                if (SerialPortsInstance.SerialPortNames.Any() && SerialportCommandPortNameSelectedValue is null)
+                    SerialportCommandPortNameSelectedValue = SerialPortsInstance.SerialPortsDict.Keys.First();
+
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
             }
         }
 
         // 关闭串口设备事件
-        private CommandBase serialPortDeviceCloseEvent;
-        public CommandBase SerialPortDeviceCloseEvent
+        public void SerialPortDeviceClose()
         {
-            get
+            try
             {
-                if (serialPortDeviceCloseEvent == null)
+                string portName = SerialportDevicesNameSelectedValue.Split('|')[0];
+                if (!SerialPortsInstance.Close(portName))
                 {
-                    serialPortDeviceCloseEvent = new CommandBase(new Action<object>(param =>
-                    {
-                        try
-                        {
-                            string portName = SerialportDevicesNameSelectedValue.Split('|')[0];
-                            if (!SerialPortsInstance.Close(portName))
-                            {
-                                _ = MessageBox.Show("串口已被关闭.");
-                            }
-
-                            // 更新串口默认选择
-                            if (SerialPortsInstance.SerialPortNames.Any() && SerialportDebugPortNameSelectedValue is null)
-                                SerialportDebugPortNameSelectedValue = SerialPortsInstance.SerialPortsDict.Keys.First();
-                            if (SerialPortsInstance.SerialPortNames.Any() && SerialPortSendCmdSerialPortNameSelectedValue is null)
-                                SerialPortSendCmdSerialPortNameSelectedValue = SerialPortsInstance.SerialPortsDict.Keys.First();
-                            if (SerialPortsInstance.SerialPortNames.Any() && SerialPortRecvDataSerialPortNameSelectedValue is null)
-                                SerialPortRecvDataSerialPortNameSelectedValue = SerialPortsInstance.SerialPortsDict.Keys.First();
-                            if (SerialPortsInstance.SerialPortNames.Any() && SerialportCommandPortNameSelectedValue is null)
-                                SerialportCommandPortNameSelectedValue = SerialPortsInstance.SerialPortsDict.Keys.First();
-                        }
-                        catch (Exception ex)
-                        {
-                            _ = MessageBox.Show(ex.ToString());
-                        }
-                    }));
+                    _ = MessageBox.Show("串口已被关闭.");
                 }
-                return serialPortDeviceCloseEvent;
+
+                // 更新串口默认选择
+                if (SerialPortsInstance.SerialPortNames.Any() && SerialportDebugPortNameSelectedValue is null)
+                    SerialportDebugPortNameSelectedValue = SerialPortsInstance.SerialPortsDict.Keys.First();
+                if (SerialPortsInstance.SerialPortNames.Any() && SerialPortSendCmdSerialPortNameSelectedValue is null)
+                    SerialPortSendCmdSerialPortNameSelectedValue = SerialPortsInstance.SerialPortsDict.Keys.First();
+                if (SerialPortsInstance.SerialPortNames.Any() && SerialPortRecvDataSerialPortNameSelectedValue is null)
+                    SerialPortRecvDataSerialPortNameSelectedValue = SerialPortsInstance.SerialPortsDict.Keys.First();
+                if (SerialPortsInstance.SerialPortNames.Any() && SerialportCommandPortNameSelectedValue is null)
+                    SerialportCommandPortNameSelectedValue = SerialPortsInstance.SerialPortsDict.Keys.First();
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
             }
         }
 
         // GPIB调试写指令TextBox
-        private string gPIBDebugWriteCommandText = $"";
+        private string gPIBDebugWriteCommandText;
         public string GPIBDebugWriteCommandText
         {
             get => gPIBDebugWriteCommandText;
@@ -309,7 +265,7 @@ namespace MeasureApp.ViewModel
         }
 
         // GPIB调试读指令TextBox
-        private string gPIBDebugReadCommandText = $"";
+        private string gPIBDebugReadCommandText;
         public string GPIBDebugReadCommandText
         {
             get => gPIBDebugReadCommandText;
@@ -321,46 +277,36 @@ namespace MeasureApp.ViewModel
         }
 
         // GPIB调试查询事件
-        private CommandBase gPIBDebugCommandEvent;
-        public CommandBase GPIBDebugCommandEvent
+        public void GpibDebugCommandOperation(object param)
         {
-            get
+
+            if (Measure3458AInstance.IsOpen)
             {
-                if (gPIBDebugCommandEvent == null)
+                try
                 {
-                    gPIBDebugCommandEvent = new CommandBase(new Action<object>(param =>
+                    switch (param as string)
                     {
-                        if (Measure3458AInstance.IsOpen)
-                        {
-                            try
-                            {
-                                switch (param as string)
-                                {
-                                    case "Query":
-                                        GPIBDebugReadCommandText = Measure3458AInstance.QueryCommand(GPIBDebugWriteCommandText);
-                                        break;
-                                    case "Write":
-                                        Measure3458AInstance.WriteCommand(GPIBDebugWriteCommandText);
-                                        break;
-                                    case "Read":
-                                        GPIBDebugReadCommandText = Measure3458AInstance.ReadString();
-                                        break;
-                                    default:
-                                        throw new NotImplementedException();
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                _ = MessageBox.Show(ex.ToString());
-                            }
-                        }
-                        else
-                        {
-                            _ = MessageBox.Show("GPIB is not open.");
-                        }
-                    }));
+                        case "Query":
+                            GPIBDebugReadCommandText = Measure3458AInstance.QueryCommand(GPIBDebugWriteCommandText);
+                            break;
+                        case "Write":
+                            Measure3458AInstance.WriteCommand(GPIBDebugWriteCommandText);
+                            break;
+                        case "Read":
+                            GPIBDebugReadCommandText = Measure3458AInstance.ReadString();
+                            break;
+                        default:
+                            throw new NotImplementedException();
+                    }
                 }
-                return gPIBDebugCommandEvent;
+                catch (Exception ex)
+                {
+                    _ = MessageBox.Show(ex.ToString());
+                }
+            }
+            else
+            {
+                _ = MessageBox.Show("GPIB is not open.");
             }
         }
 
@@ -424,63 +370,67 @@ namespace MeasureApp.ViewModel
 
 
         // 串口调试模块发送命令事件
-        private CommandBase serialPortDebugWriteCmdEvent;
-        public CommandBase SerialPortDebugWriteCmdEvent
+        public void SerialPortDebugWriteCmd()
         {
-            get
+            try
             {
-                if (serialPortDebugWriteCmdEvent == null)
+                if (SerialPortDebugWriteIsHex)
                 {
-                    serialPortDebugWriteCmdEvent = new CommandBase(new Action<object>(param =>
-                    {
-                        try
-                        {
-                            if (SerialPortDebugWriteIsHex)
-                            {
-                                SerialPortsInstance.WriteBytes(SerialportDebugPortNameSelectedValue, BytesConverter.Hex2Bytes(SerialPortDebugWriteCommandText));
-                            }
-                            else
-                            {
-                                SerialPortsInstance.WriteString(SerialportDebugPortNameSelectedValue, SerialPortDebugWriteCommandText);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            _ = MessageBox.Show(ex.ToString());
-                        }
-                    }));
+                    SerialPortsInstance.WriteBytes(SerialportDebugPortNameSelectedValue, BytesConverter.Hex2Bytes(SerialPortDebugWriteCommandText));
                 }
-                return serialPortDebugWriteCmdEvent;
+                else
+                {
+                    SerialPortsInstance.WriteString(SerialportDebugPortNameSelectedValue, SerialPortDebugWriteCommandText);
+                }
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
             }
         }
 
         // 串口调试模块接收命令事件
-        private CommandBase serialPortDebugReadCmdEvent;
-        public CommandBase SerialPortDebugReadCmdEvent
+        public void SerialPortDebugReadCmd()
         {
-            get
+            try
             {
-                if (serialPortDebugReadCmdEvent == null)
-                {
-                    serialPortDebugReadCmdEvent = new CommandBase(new Action<object>(param =>
-                    {
-                        try
-                        {
-                            SerialPortDebugReadCommandText = SerialPortDebugReadIsHex
-                                ? BytesConverter.Bytes2Hex(SerialPortsInstance.ReadExistingBytes(SerialportDebugPortNameSelectedValue))
-                                : SerialPortsInstance.ReadExistingString(SerialportDebugPortNameSelectedValue);
-                        }
-                        catch (Exception ex)
-                        {
-                            _ = MessageBox.Show(ex.ToString());
-                        }
-                    }));
-                }
-                return serialPortDebugReadCmdEvent;
+                SerialPortDebugReadCommandText = SerialPortDebugReadIsHex
+                    ? BytesConverter.Bytes2Hex(SerialPortsInstance.ReadExistingBytes(SerialportDebugPortNameSelectedValue))
+                    : SerialPortsInstance.ReadExistingString(SerialportDebugPortNameSelectedValue);
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
             }
         }
 
         // CommandBase
+        private CommandBase gpibDeviceSearchEvent;
+        public CommandBase GpibDeviceSearchEvent
+        {
+            get
+            {
+                if (gpibDeviceSearchEvent == null)
+                {
+                    gpibDeviceSearchEvent = new CommandBase(new Action<object>(param => GpibSearchDevice()));
+                }
+                return gpibDeviceSearchEvent;
+            }
+        }
+
+        private CommandBase gpibDeviceOpenEvent;
+        public CommandBase GpibDeviceOpenEvent
+        {
+            get
+            {
+                if (gpibDeviceOpenEvent == null)
+                {
+                    gpibDeviceOpenEvent = new CommandBase(new Action<object>(param => GpibDeviceOpen()));
+                }
+                return gpibDeviceOpenEvent;
+            }
+        }
+
         private CommandBase serialPortDeviceSearchEvent;
         public CommandBase SerialPortDeviceSearchEvent
         {
@@ -494,5 +444,69 @@ namespace MeasureApp.ViewModel
             }
         }
 
+        private CommandBase serialPortDeviceOpenEvent;
+        public CommandBase SerialPortDeviceOpenEvent
+        {
+            get
+            {
+                if (serialPortDeviceOpenEvent == null)
+                {
+                    serialPortDeviceOpenEvent = new CommandBase(new Action<object>(param => SerialPortDeviceOpen()));
+                }
+                return serialPortDeviceOpenEvent;
+            }
+        }
+
+        private CommandBase serialPortDeviceCloseEvent;
+        public CommandBase SerialPortDeviceCloseEvent
+        {
+            get
+            {
+                if (serialPortDeviceCloseEvent == null)
+                {
+                    serialPortDeviceCloseEvent = new CommandBase(new Action<object>(param => SerialPortDeviceClose()));
+                }
+                return serialPortDeviceCloseEvent;
+            }
+        }
+
+        private CommandBase gpibDebugCommandOperationEvent;
+        public CommandBase GpibDebugCommandOperationEvent
+        {
+            get
+            {
+                if (gpibDebugCommandOperationEvent == null)
+                {
+                    gpibDebugCommandOperationEvent = new CommandBase(new Action<object>(param => GpibDebugCommandOperation(param)));
+                }
+                return gpibDebugCommandOperationEvent;
+            }
+        }
+
+        private CommandBase serialPortDebugWriteCmdEvent;
+        public CommandBase SerialPortDebugWriteCmdEvent
+        {
+            get
+            {
+                if (serialPortDebugWriteCmdEvent == null)
+                {
+                    serialPortDebugWriteCmdEvent = new CommandBase(new Action<object>(param => SerialPortDebugWriteCmd()));
+                }
+                return serialPortDebugWriteCmdEvent;
+            }
+        }
+
+        private CommandBase serialPortDebugReadCmdEvent;
+        public CommandBase SerialPortDebugReadCmdEvent
+        {
+            get
+            {
+                if (serialPortDebugReadCmdEvent == null)
+                {
+                    serialPortDebugReadCmdEvent = new CommandBase(new Action<object>(param => SerialPortDebugReadCmd()));
+                }
+                return serialPortDebugReadCmdEvent;
+            }
+        }
     }
 }

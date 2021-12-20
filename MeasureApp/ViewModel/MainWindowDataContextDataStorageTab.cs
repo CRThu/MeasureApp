@@ -11,6 +11,8 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using MeasureApp.Model.Common;
+using MeasureApp.ViewModel.Common;
 
 namespace MeasureApp.ViewModel
 {

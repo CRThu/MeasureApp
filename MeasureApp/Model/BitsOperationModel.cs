@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MeasureApp.Model.Common;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -17,14 +18,18 @@ namespace MeasureApp.Model
             set
             {
                 bits = value;
-                RaisePropertyChanged(() => Bits);
+                BitsOperationModel_PropertyChanged(null, null);
             }
         }
 
         public uint Num
         {
-            get => GetUInt32(Bits);
-            set => SetUInt32(value);
+            get => GetUInt32();
+            set
+            {
+                SetUInt32(value);
+                BitsOperationModel_PropertyChanged(null, null);
+            }
         }
 
         public BitsOperationModel()
@@ -43,14 +48,14 @@ namespace MeasureApp.Model
             RaisePropertyChanged(() => Num);
         }
 
-        public static uint GetUInt32(ObservableCollection<ObservableTValue<bool>> bitsCollection)
+        public uint GetUInt32()
         {
             try
             {
                 uint sum = 0;
                 for (int i = 0; i < 32; i++)
                 {
-                    sum += bitsCollection[i].Value ? (1U << i) : 0U;
+                    sum += Bits[i].Value ? (1U << i) : 0U;
                 }
                 return sum;
 
@@ -58,7 +63,7 @@ namespace MeasureApp.Model
             catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
-                return 0xcccccc;
+                return 0xcccccccc;
             }
         }
 

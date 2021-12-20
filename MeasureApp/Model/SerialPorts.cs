@@ -1,4 +1,5 @@
-﻿using MeasureApp.ViewModel;
+﻿using MeasureApp.Model.Common;
+using MeasureApp.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
