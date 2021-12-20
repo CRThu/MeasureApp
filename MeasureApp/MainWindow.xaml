@@ -34,7 +34,6 @@
         <viewmodel:BoolInverter2ControlVisibilityConverter x:Key="BoolInverter2ControlVisibilityConverter"/>
         <viewmodel:DateTimeToStringConverter x:Key="DateTimeToStringConverter"/>
         <viewmodel:IsNotNullConverter x:Key="IsNotNullConverter"/>
-        <viewmodel:IntToBitBoolConverter x:Key="IntToBitBoolConverter"/>
     </Window.Resources>
     <DockPanel>
         <Grid>
@@ -1028,9 +1027,9 @@
                 </TabItem>
                 <TabItem Header="实用工具">
                     <Grid>
-                        <GroupBox Header="比特位计算" Margin="10,10,0,243" HorizontalAlignment="Left" Width="446">
+                        <GroupBox Header="位计算" Margin="10,10,0,243" HorizontalAlignment="Left" Width="446">
                             <Grid>
-                                <TextBox Text="{Binding Bits, UpdateSourceTrigger=PropertyChanged}" Width="50" Margin="20,10,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                <TextBox Text="{Binding BitsModel.Num, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="50" Margin="20,10,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                                 <Grid Height="70" Width="320" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,40,0,0">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="20"/>
@@ -1088,38 +1087,38 @@
                                     <TextBlock Text="2" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="13" Grid.Row="2"/>
                                     <TextBlock Text="1" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="14" Grid.Row="2"/>
                                     <TextBlock Text="0" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="15" Grid.Row="2"/>
-                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=31}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="0" Grid.Row="1"/>
-                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=30}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" Grid.Row="1"/>
-                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=29}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="2" Grid.Row="1"/>
-                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=28}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="3" Grid.Row="1"/>
-                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=27}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="4" Grid.Row="1"/>
-                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=26}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="5" Grid.Row="1"/>
-                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=25}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="6" Grid.Row="1"/>
-                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=24}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="7" Grid.Row="1"/>
-                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=23}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="8" Grid.Row="1"/>
-                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=22}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="9" Grid.Row="1"/>
-                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=21}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="10" Grid.Row="1"/>
-                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=20}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="11" Grid.Row="1"/>
-                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=19}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="12" Grid.Row="1"/>
-                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=18}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="13" Grid.Row="1"/>
-                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=17}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="14" Grid.Row="1"/>
-                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=16}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="15" Grid.Row="1"/>
-                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=15}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="0" Grid.Row="3"/>
-                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=14}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" Grid.Row="3"/>
-                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=13}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="2" Grid.Row="3"/>
-                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=12}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="3" Grid.Row="3"/>
-                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=11}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="4" Grid.Row="3"/>
-                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=10}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="5" Grid.Row="3"/>
-                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=9}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="6" Grid.Row="3"/>
-                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=8}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="7" Grid.Row="3"/>
-                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=7}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="8" Grid.Row="3"/>
-                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=6}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="9" Grid.Row="3"/>
-                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=5}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="10" Grid.Row="3"/>
-                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=4}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="11" Grid.Row="3"/>
-                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=3}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="12" Grid.Row="3"/>
-                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=2}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="13" Grid.Row="3"/>
-                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=1}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="14" Grid.Row="3"/>
-                                    <CheckBox IsChecked="{Binding Bits, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IntToBitBoolConverter},ConverterParameter=0}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="15" Grid.Row="3"/>
+                                    <CheckBox IsChecked="{Binding BitsModel.Bits[31].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="0" Grid.Row="1"/>
+                                    <CheckBox IsChecked="{Binding BitsModel.Bits[30].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" Grid.Row="1"/>
+                                    <CheckBox IsChecked="{Binding BitsModel.Bits[29].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="2" Grid.Row="1"/>
+                                    <CheckBox IsChecked="{Binding BitsModel.Bits[28].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="3" Grid.Row="1"/>
+                                    <CheckBox IsChecked="{Binding BitsModel.Bits[27].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="4" Grid.Row="1"/>
+                                    <CheckBox IsChecked="{Binding BitsModel.Bits[26].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="5" Grid.Row="1"/>
+                                    <CheckBox IsChecked="{Binding BitsModel.Bits[25].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="6" Grid.Row="1"/>
+                                    <CheckBox IsChecked="{Binding BitsModel.Bits[24].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="7" Grid.Row="1"/>
+                                    <CheckBox IsChecked="{Binding BitsModel.Bits[23].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="8" Grid.Row="1"/>
+                                    <CheckBox IsChecked="{Binding BitsModel.Bits[22].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="9" Grid.Row="1"/>
+                                    <CheckBox IsChecked="{Binding BitsModel.Bits[21].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="10" Grid.Row="1"/>
+                                    <CheckBox IsChecked="{Binding BitsModel.Bits[20].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="11" Grid.Row="1"/>
+                                    <CheckBox IsChecked="{Binding BitsModel.Bits[19].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="12" Grid.Row="1"/>
+                                    <CheckBox IsChecked="{Binding BitsModel.Bits[18].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="13" Grid.Row="1"/>
+                                    <CheckBox IsChecked="{Binding BitsModel.Bits[17].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="14" Grid.Row="1"/>
+                                    <CheckBox IsChecked="{Binding BitsModel.Bits[16].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="15" Grid.Row="1"/>
+                                    <CheckBox IsChecked="{Binding BitsModel.Bits[15].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="0" Grid.Row="3"/>
+                                    <CheckBox IsChecked="{Binding BitsModel.Bits[14].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" Grid.Row="3"/>
+                                    <CheckBox IsChecked="{Binding BitsModel.Bits[13].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="2" Grid.Row="3"/>
+                                    <CheckBox IsChecked="{Binding BitsModel.Bits[12].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="3" Grid.Row="3"/>
+                                    <CheckBox IsChecked="{Binding BitsModel.Bits[11].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="4" Grid.Row="3"/>
+                                    <CheckBox IsChecked="{Binding BitsModel.Bits[10].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="5" Grid.Row="3"/>
+                                    <CheckBox IsChecked="{Binding BitsModel.Bits[9].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="6" Grid.Row="3"/>
+                                    <CheckBox IsChecked="{Binding BitsModel.Bits[8].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="7" Grid.Row="3"/>
+                                    <CheckBox IsChecked="{Binding BitsModel.Bits[7].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="8" Grid.Row="3"/>
+                                    <CheckBox IsChecked="{Binding BitsModel.Bits[6].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="9" Grid.Row="3"/>
+                                    <CheckBox IsChecked="{Binding BitsModel.Bits[5].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="10" Grid.Row="3"/>
+                                    <CheckBox IsChecked="{Binding BitsModel.Bits[4].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="11" Grid.Row="3"/>
+                                    <CheckBox IsChecked="{Binding BitsModel.Bits[3].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="12" Grid.Row="3"/>
+                                    <CheckBox IsChecked="{Binding BitsModel.Bits[2].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="13" Grid.Row="3"/>
+                                    <CheckBox IsChecked="{Binding BitsModel.Bits[1].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="14" Grid.Row="3"/>
+                                    <CheckBox IsChecked="{Binding BitsModel.Bits[0].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="15" Grid.Row="3"/>
                                 </Grid>
                             </Grid>
                         </GroupBox>

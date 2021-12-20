@@ -1,4 +1,5 @@
 ﻿using MeasureApp.Model;
+using MeasureApp.Model.Common;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -276,7 +277,7 @@ namespace MeasureApp.ViewModel
                         {
                             if(SerialPortSendCmdIsHex)
                             {
-                                SerialPortsInstance.WriteBytes(SerialPortSendCmdSerialPortNameSelectedValue, Utility.Hex2Bytes(SerialPortSendCmdHexText));
+                                SerialPortsInstance.WriteBytes(SerialPortSendCmdSerialPortNameSelectedValue, BytesConverter.Hex2Bytes(SerialPortSendCmdHexText));
                             }
                             else
                             {
@@ -350,7 +351,7 @@ namespace MeasureApp.ViewModel
                                     if (recvBytesLen != recvBytes.Length)
                                     {
                                         _ = MessageBox.Show($"读取超时, RecvLength = {recvBytesLen}/{recvBytes.Length}!");
-                                        SerialPortRecvDataDisplayText = Utility.Bytes2Hex(recvBytes);
+                                        SerialPortRecvDataDisplayText = BytesConverter.Bytes2Hex(recvBytes);
                                         return;
                                     }
                                     switch (SerialPortRecvDataTypeEnum)

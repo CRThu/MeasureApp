@@ -1,4 +1,5 @@
 ﻿using MeasureApp.Model;
+using MeasureApp.Model.Common;
 using System;
 using System.Collections.ObjectModel;
 using System.IO.Ports;
@@ -436,7 +437,7 @@ namespace MeasureApp.ViewModel
                         {
                             if (SerialPortDebugWriteIsHex)
                             {
-                                SerialPortsInstance.WriteBytes(SerialportDebugPortNameSelectedValue, Utility.Hex2Bytes(SerialPortDebugWriteCommandText));
+                                SerialPortsInstance.WriteBytes(SerialportDebugPortNameSelectedValue, BytesConverter.Hex2Bytes(SerialPortDebugWriteCommandText));
                             }
                             else
                             {
@@ -466,7 +467,7 @@ namespace MeasureApp.ViewModel
                         try
                         {
                             SerialPortDebugReadCommandText = SerialPortDebugReadIsHex
-                                ? Utility.Bytes2Hex(SerialPortsInstance.ReadExistingBytes(SerialportDebugPortNameSelectedValue))
+                                ? BytesConverter.Bytes2Hex(SerialPortsInstance.ReadExistingBytes(SerialportDebugPortNameSelectedValue))
                                 : SerialPortsInstance.ReadExistingString(SerialportDebugPortNameSelectedValue);
                         }
                         catch (Exception ex)

@@ -1,7 +1,9 @@
 ﻿using LiveCharts.Geared;
 using MeasureApp.Model;
+using MeasureApp.Model.Common;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO.Ports;
 using System.Linq;
@@ -190,17 +192,4 @@ namespace MeasureApp.ViewModel
             throw new NotImplementedException();
         }
     }
-    public class IntToBitBoolConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return (int)value & (int)Math.Pow(2, System.Convert.ToInt32(parameter));
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
 }
