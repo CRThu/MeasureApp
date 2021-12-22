@@ -320,9 +320,17 @@ namespace MeasureApp.ViewModel
                         //MessageBox.Show(SerialPortLogger.IsLastLogContains("COM", "[COMMAND]") ? "[COMMAND]" : "Nothing");
                         bool result = Utility.TimeoutCheck(Convert.ToInt32(TagAttrs.ContainsKey("timeout") ? TagAttrs["timeout"] : "1000"), () =>
                         {
-                            while (!SerialPortLogger.IsLastLogContains("COM", TagAttrs.ContainsKey("keyword") ? TagAttrs["keyword"] : "[COMMAND]"))
-                                ;
-                            return true;
+                            try
+                            {
+                                while (!SerialPortLogger.IsLastLogContains("COM", TagAttrs.ContainsKey("keyword") ? TagAttrs["keyword"] : "[COMMAND]"))
+                                    Thread.Sleep(20);
+                                return true;
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show(ex.ToString());
+                                return false;
+                            }
                         });
                         if (!result)
                         {
