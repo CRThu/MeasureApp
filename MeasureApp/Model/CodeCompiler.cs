@@ -19,14 +19,6 @@ namespace MeasureApp.Model
 {
     public static class CodeCompiler
     {
-        // 删除Location为空的Assembly?测试程序多次运行
-        private static readonly IEnumerable<PortableExecutableReference> Assemblies = AppDomain.CurrentDomain.GetAssemblies()
-            .Select<Assembly, PortableExecutableReference>(
-            (x) =>
-        {
-            return MetadataReference.CreateFromFile(x.Location);
-        }
-        );
         // 测试函数
         public static string SayHello()
         {
@@ -44,8 +36,11 @@ namespace MeasureApp.Model
         {
             // 指定编译选项。
             var assemblyName = $"{originalClassName}.g";
-            // BUG:多次执行Assemblies数量不同
             //var Assemblies = AppDomain.CurrentDomain.GetAssemblies().Select(x => MetadataReference.CreateFromFile(x.Location));
+            var Assemblies = Assembly.GetExecutingAssembly().GetReferencedAssemblies().Select(Assembly.Load)
+            .Select(x => MetadataReference.CreateFromFile(x.Location)).ToList();
+            Assemblies.Add(MetadataReference.CreateFromFile(typeof(object).Assembly.Location));
+            Assemblies.Add(MetadataReference.CreateFromFile(typeof(ViewModel.MainWindowDataContext).Assembly.Location));
             Debug.WriteLine($"Assemblies Count={Assemblies.Count()}");
             CSharpCompilation compilation = CSharpCompilation.Create(assemblyName, new[] { syntaxTree },
                     options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary))

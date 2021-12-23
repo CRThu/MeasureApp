@@ -48,9 +48,9 @@
                         <ColumnDefinition Width="60"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Column="0" Margin="5,0,5,0" Text="{Binding StatusBarText}"></TextBlock>
-                    <TextBlock Grid.Column="1" Margin="3,0,3,0" HorizontalAlignment="Right" Text="{Binding StatusBarProgressElapsedTime, Converter={StaticResource SecondsToTimeFormatConverter}}"></TextBlock>
-                    <ProgressBar Grid.Column="2" Margin="5,0,5,0" Minimum="{Binding StatusBarProgressBarMin}" Maximum="{Binding StatusBarProgressBarMax}" Value="{Binding StatusBarProgressBarValue}"/>
-                    <TextBlock Grid.Column="3" Margin="3,0,3,0" HorizontalAlignment="Left" Text="{Binding StatusBarProgressETATime, Converter={StaticResource SecondsToTimeFormatConverter}}"></TextBlock>
+                    <TextBlock Grid.Column="1" Margin="3,0,3,0" HorizontalAlignment="Right" Text="{Binding TaskProgressInstance.TaskProgressElapsedTime, Converter={StaticResource SecondsToTimeFormatConverter}}"></TextBlock>
+                    <ProgressBar Grid.Column="2" Margin="5,0,5,0" Minimum="{Binding TaskProgressInstance.TaskProgressStart}" Maximum="{Binding TaskProgressInstance.TaskProgressEnd}" Value="{Binding TaskProgressInstance.TaskProgressValue}"/>
+                    <TextBlock Grid.Column="3" Margin="3,0,3,0" HorizontalAlignment="Left" Text="{Binding TaskProgressInstance.TaskProgressETATime, Converter={StaticResource SecondsToTimeFormatConverter}}"></TextBlock>
                 </Grid>
             </StatusBar>
             <TabControl Margin="10,10,9.6,24.8">
@@ -1025,6 +1025,48 @@
                                 <Grid Width="141" HorizontalAlignment="Left" Margin="10,153,0,10"/>
                             </Grid>
                         </GroupBox>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="预设测试项">
+                    <Grid>
+                        <Button Content="加载" IsEnabled="False" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="60"/>
+                        <GroupBox Header="NB2005测试" Height="298" Width="379" HorizontalAlignment="Left" Margin="10,44,0,0" VerticalAlignment="Top">
+                            <Grid>
+                                <TextBlock Text="测试项" HorizontalAlignment="Left" Margin="50,72,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                                <TextBlock Text="返回值" HorizontalAlignment="Left" Margin="158,73,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                                <TextBlock Text="芯片ID" HorizontalAlignment="Left" Margin="114,54,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                                <TextBox Text="{Binding Nb2005ChipId,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="156,53,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="78"/>
+                                <Button Content="已有配置加载" HorizontalAlignment="Left" Margin="248,52,0,0" VerticalAlignment="Top" Width="87"/>
+
+                                <TextBlock Text="1" HorizontalAlignment="Left" Margin="27,94,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                                <TextBlock Text="2" HorizontalAlignment="Left" Margin="27,118,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                                <TextBlock Text="3" HorizontalAlignment="Left" Margin="27,142,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                                <TextBlock Text="4" HorizontalAlignment="Left" Margin="27,166,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                                <Button Content="测试A" HorizontalAlignment="Left" Margin="39,92,0,0" VerticalAlignment="Top" Width="70">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <vmc:EventCommandBase Command="{Binding Nb2005TestTaskEvent}" CommandParameter="1"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Button>
+                                <Button Content="测试B" HorizontalAlignment="Left" Margin="39,116,0,0" VerticalAlignment="Top" Width="70"/>
+                                <Button Content="测试C" HorizontalAlignment="Left" Margin="39,140,0,0" VerticalAlignment="Top" Width="70"/>
+                                <Button Content="测试D" HorizontalAlignment="Left" Margin="39,164,0,0" VerticalAlignment="Top" Width="70"/>
+                                <TextBox Text="{Binding Nb2005TestTaskResult1,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="114,93,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+                                <TextBox Text="{Binding Nb2005TestTaskResult2,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="114,117,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+                                <TextBox Text="{Binding Nb2005TestTaskResult3,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="114,141,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+                                <TextBox Text="{Binding Nb2005TestTaskResult4,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="114,165,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+                                <Button Content="配置写入" HorizontalAlignment="Left" Margin="248,92,0,0" VerticalAlignment="Top" Width="87"/>
+                                <Button Content="配置写入" HorizontalAlignment="Left" Margin="248,116,0,0" VerticalAlignment="Top" Width="87"/>
+                                <Button Content="配置写入" HorizontalAlignment="Left" Margin="248,140,0,0" VerticalAlignment="Top" Width="87"/>
+                                <Button Content="配置写入" HorizontalAlignment="Left" Margin="248,164,0,0" VerticalAlignment="Top" Width="87"/>
+
+                                <Button Content="配置文件加载" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="100"/>
+                                <Button Content="配置保存" HorizontalAlignment="Left" Margin="124,220,0,0" VerticalAlignment="Top" Width="100"/>
+                                <Button Content="一键写入" HorizontalAlignment="Left" Margin="248,220,0,0" VerticalAlignment="Top" Width="87"/>
+                            </Grid>
+                        </GroupBox>
+
                     </Grid>
                 </TabItem>
                 <TabItem Header="实用工具">

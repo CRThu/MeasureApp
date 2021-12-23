@@ -79,6 +79,19 @@ namespace MeasureApp.ViewModel
             }
         }
 
+        // 任务进度类
+        private TaskProgress taskProgressInstance = new();
+        public TaskProgress TaskProgressInstance
+        {
+            get => taskProgressInstance;
+            set
+            {
+                taskProgressInstance = value;
+                RaisePropertyChanged(() => TaskProgressInstance);
+            }
+        }
+
+
         // MainWindow加载事件
         public void MainWindowLoaded()
         {
@@ -118,85 +131,6 @@ namespace MeasureApp.ViewModel
                 statusBarText = value;
                 RaisePropertyChanged(() => StatusBarText);
             }
-        }
-
-        // 状态栏已用时间
-        private int statusBarProgressElapsedTime = 0;
-        public int StatusBarProgressElapsedTime
-        {
-            get => statusBarProgressElapsedTime;
-            set
-            {
-                statusBarProgressElapsedTime = value;
-                RaisePropertyChanged(() => StatusBarProgressElapsedTime);
-            }
-        }
-
-        // 状态栏预计时间
-        private int statusBarProgressETATime = 0;
-        public int StatusBarProgressETATime
-        {
-            get => statusBarProgressETATime;
-            set
-            {
-                statusBarProgressETATime = value;
-                RaisePropertyChanged(() => StatusBarProgressETATime);
-            }
-        }
-
-        //状态栏进度条
-        private int statusBarProgressBarMin = 0;
-        public int StatusBarProgressBarMin
-        {
-            get => statusBarProgressBarMin;
-            set
-            {
-                statusBarProgressBarMin = value;
-                RaisePropertyChanged(() => StatusBarProgressBarMin);
-            }
-        }
-
-        private int statusBarProgressBarMax = 100;
-        public int StatusBarProgressBarMax
-        {
-            get => statusBarProgressBarMax;
-            set
-            {
-                statusBarProgressBarMax = value;
-                RaisePropertyChanged(() => StatusBarProgressBarMax);
-            }
-        }
-
-        private int statusBarProgressBarValue = 0;
-        public int StatusBarProgressBarValue
-        {
-            get => statusBarProgressBarValue;
-            set
-            {
-                statusBarProgressBarValue = value;
-                RaisePropertyChanged(() => StatusBarProgressBarValue);
-            }
-        }
-
-        // 进度显示函数
-        public Stopwatch progressStopWatch = new();
-        public void ProgressStopWatchStart(int count, int start = 0)
-        {
-            StatusBarProgressBarMin = start;
-            StatusBarProgressBarMax = count - 1;
-            progressStopWatch.Restart();
-        }
-
-        public void ProgressStopWatchStop()
-        {
-            progressStopWatch.Stop();
-        }
-
-        public void ProgressStopWatchUpdate(int value)
-        {
-            StatusBarProgressBarValue = value;
-            StatusBarProgressElapsedTime = (int)((double)progressStopWatch.ElapsedMilliseconds / 1000);
-            StatusBarProgressETATime = (int)(((double)progressStopWatch.ElapsedMilliseconds / (value + 1) * (StatusBarProgressBarMax + 1) - progressStopWatch.ElapsedMilliseconds) / 1000);
         }
 
         // 通用DataGrid自动添加行号
