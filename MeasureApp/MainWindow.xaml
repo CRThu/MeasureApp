@@ -36,6 +36,7 @@
         <viewmodel:DateTimeToStringConverter x:Key="DateTimeToStringConverter"/>
         <viewmodel:IsNotNullConverter x:Key="IsNotNullConverter"/>
         <viewmodel:Num2HexConverter x:Key="Num2HexConverter"/>
+        <viewmodel:String2NullableDecimalConverter x:Key="String2NullableDecimalConverter"/>
     </Window.Resources>
     <DockPanel>
         <Grid>
@@ -1036,7 +1037,6 @@
                                 <TextBlock Text="返回值" HorizontalAlignment="Left" Margin="158,73,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
                                 <TextBlock Text="芯片ID" HorizontalAlignment="Left" Margin="114,54,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
                                 <TextBox Text="{Binding Nb2005ChipId,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="156,53,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="78"/>
-                                <Button Content="已有配置加载" HorizontalAlignment="Left" Margin="248,52,0,0" VerticalAlignment="Top" Width="87"/>
 
                                 <TextBlock Text="1" HorizontalAlignment="Left" Margin="27,94,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
                                 <TextBlock Text="2" HorizontalAlignment="Left" Margin="27,118,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
@@ -1049,21 +1049,89 @@
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
-                                <Button Content="测试B" HorizontalAlignment="Left" Margin="39,116,0,0" VerticalAlignment="Top" Width="70"/>
-                                <Button Content="测试C" HorizontalAlignment="Left" Margin="39,140,0,0" VerticalAlignment="Top" Width="70"/>
-                                <Button Content="测试D" HorizontalAlignment="Left" Margin="39,164,0,0" VerticalAlignment="Top" Width="70"/>
-                                <TextBox Text="{Binding Nb2005TestTaskResult1,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="114,93,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-                                <TextBox Text="{Binding Nb2005TestTaskResult2,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="114,117,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-                                <TextBox Text="{Binding Nb2005TestTaskResult3,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="114,141,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-                                <TextBox Text="{Binding Nb2005TestTaskResult4,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="114,165,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-                                <Button Content="配置写入" HorizontalAlignment="Left" Margin="248,92,0,0" VerticalAlignment="Top" Width="87"/>
-                                <Button Content="配置写入" HorizontalAlignment="Left" Margin="248,116,0,0" VerticalAlignment="Top" Width="87"/>
-                                <Button Content="配置写入" HorizontalAlignment="Left" Margin="248,140,0,0" VerticalAlignment="Top" Width="87"/>
-                                <Button Content="配置写入" HorizontalAlignment="Left" Margin="248,164,0,0" VerticalAlignment="Top" Width="87"/>
+                                <Button Content="测试B" HorizontalAlignment="Left" Margin="39,116,0,0" VerticalAlignment="Top" Width="70">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <vmc:EventCommandBase Command="{Binding Nb2005TestTaskEvent}" CommandParameter="2"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Button>
+                                <Button Content="测试C" HorizontalAlignment="Left" Margin="39,140,0,0" VerticalAlignment="Top" Width="70">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <vmc:EventCommandBase Command="{Binding Nb2005TestTaskEvent}" CommandParameter="3"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Button>
+                                <Button Content="测试D" HorizontalAlignment="Left" Margin="39,164,0,0" VerticalAlignment="Top" Width="70">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <vmc:EventCommandBase Command="{Binding Nb2005TestTaskEvent}" CommandParameter="4"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Button>
+                                <TextBox Text="{Binding Nb2005TestTaskResult1,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource String2NullableDecimalConverter}}" HorizontalAlignment="Left" Margin="114,93,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+                                <TextBox Text="{Binding Nb2005TestTaskResult2,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource String2NullableDecimalConverter}}" HorizontalAlignment="Left" Margin="114,117,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+                                <TextBox Text="{Binding Nb2005TestTaskResult3,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource String2NullableDecimalConverter}}" HorizontalAlignment="Left" Margin="114,141,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+                                <TextBox Text="{Binding Nb2005TestTaskResult4,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource String2NullableDecimalConverter}}" HorizontalAlignment="Left" Margin="114,165,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+                                <Button Content="写入" HorizontalAlignment="Left" Margin="248,92,0,0" VerticalAlignment="Top" Width="87">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <vmc:EventCommandBase Command="{Binding Nb2005TestResultWriteEvent}" CommandParameter="1"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Button>
+                                <Button Content="写入" HorizontalAlignment="Left" Margin="248,116,0,0" VerticalAlignment="Top" Width="87">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <vmc:EventCommandBase Command="{Binding Nb2005TestResultWriteEvent}" CommandParameter="2"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Button>
+                                <Button Content="写入" HorizontalAlignment="Left" Margin="248,140,0,0" VerticalAlignment="Top" Width="87">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <vmc:EventCommandBase Command="{Binding Nb2005TestResultWriteEvent}" CommandParameter="3"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Button>
+                                <Button Content="写入" HorizontalAlignment="Left" Margin="248,164,0,0" VerticalAlignment="Top" Width="87">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <vmc:EventCommandBase Command="{Binding Nb2005TestResultWriteEvent}" CommandParameter="4"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Button>
 
-                                <Button Content="配置文件加载" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="100"/>
-                                <Button Content="配置保存" HorizontalAlignment="Left" Margin="124,220,0,0" VerticalAlignment="Top" Width="100"/>
-                                <Button Content="一键写入" HorizontalAlignment="Left" Margin="248,220,0,0" VerticalAlignment="Top" Width="87"/>
+                                <TextBlock Text="{Binding Nb2005ChipsConfigFilePath}" HorizontalAlignment="Left" Margin="128,12,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                                <Button Content="从文件读取" HorizontalAlignment="Left" Margin="248,52,0,0" VerticalAlignment="Top" Width="87">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <vmc:EventCommandBase Command="{Binding Nb2005LoadChipConfigEvent}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Button>
+                                <Button Content="配置文件加载" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="100">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <vmc:EventCommandBase Command="{Binding Nb2005LoadChipsConfigFileEvent}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Button>
+                                <Button Content="更新至文件" HorizontalAlignment="Left" Margin="124,220,0,0" VerticalAlignment="Top" Width="100">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <vmc:EventCommandBase Command="{Binding Nb2005UpdateChipConfigEvent}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Button>
+                                <Button Content="一键写入" HorizontalAlignment="Left" Margin="248,220,0,0" VerticalAlignment="Top" Width="87">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <vmc:EventCommandBase Command="{Binding Nb2005TestResultWriteAllEvent}" CommandParameter="4"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Button>
                             </Grid>
                         </GroupBox>
 
