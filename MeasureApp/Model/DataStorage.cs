@@ -56,12 +56,11 @@ namespace MeasureApp.Model
 
         public void AddKey(string key)
         {
-            DataStorageDictionary.Add(key, new ObservableRangeCollection<ObservableValue>());
-
             // async
             Application.Current.Dispatcher.Invoke(() =>
             {
                 lockers.Add(key, new object());
+                DataStorageDictionary.Add(key, new ObservableRangeCollection<ObservableValue>());
                 BindingOperations.EnableCollectionSynchronization(DataStorageDictionary[key], lockers[key]);
             });
         }

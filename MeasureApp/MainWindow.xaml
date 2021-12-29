@@ -43,7 +43,7 @@
             <StatusBar DockPanel.Dock="Bottom" MaxHeight="20" VerticalAlignment="Bottom">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="500"/>
                         <ColumnDefinition Width="60"/>
                         <ColumnDefinition Width="160"/>
                         <ColumnDefinition Width="60"/>
