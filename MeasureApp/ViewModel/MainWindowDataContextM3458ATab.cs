@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using MeasureApp.Model.Common;
 using MeasureApp.ViewModel.Common;
+using System.Collections.Generic;
 
 namespace MeasureApp.ViewModel
 {
@@ -26,14 +27,8 @@ namespace MeasureApp.ViewModel
         }
 
         // 3458A设置显示位数
-        private ComboBoxItem[] m3458ANdigComboBoxItems = new[] {
-            new ComboBoxItem { Content = "3", Tag = "3" } ,
-            new ComboBoxItem { Content = "4", Tag = "4" } ,
-            new ComboBoxItem { Content = "5", Tag = "5" } ,
-            new ComboBoxItem { Content = "6", Tag = "6" } ,
-            new ComboBoxItem { Content = "7", Tag = "7" } ,
-            new ComboBoxItem { Content = "8", Tag = "8" }};
-        public ComboBoxItem[] M3458ANdigComboBoxItems
+        private int[] m3458ANdigComboBoxItems = new[] { 3, 4, 5, 6, 7, 8 };
+        public int[] M3458ANdigComboBoxItems
         {
             get => m3458ANdigComboBoxItems;
             set
@@ -43,8 +38,8 @@ namespace MeasureApp.ViewModel
             }
         }
 
-        private string m3458ANdigSelectedValue = "8";
-        public string M3458ANdigSelectedValue
+        private int m3458ANdigSelectedValue = 8;
+        public int M3458ANdigSelectedValue
         {
             get => m3458ANdigSelectedValue;
             set
@@ -55,18 +50,20 @@ namespace MeasureApp.ViewModel
         }
 
         // 3458A设置自动校准
-        private ComboBoxItem[] m3458AAcalComboBoxItems = new[] {
-            new ComboBoxItem { Content = "ALL (11 minutes)", Tag = "ALL" } ,
-            new ComboBoxItem { Content = "DCV (1 minute)", Tag = "DCV" } ,
-            new ComboBoxItem { Content = "AC (1 minute)", Tag = "AC" } ,
-            new ComboBoxItem { Content = "OHMS (10 minutes)", Tag = "OHMS" }};
-        public ComboBoxItem[] M3458AAcalComboBoxItems
+        private Dictionary<string, string> m3458AAcalItems = new()
         {
-            get => m3458AAcalComboBoxItems;
+            { "ALL", "ALL (11 minutes)" },
+            { "DCV", "DCV (1 minute)" },
+            { "AC", "AC (1 minute)" },
+            { "OHMS", "OHMS (10 minutes)" }
+        };
+        public Dictionary<string, string> M3458AAcalItems
+        {
+            get => m3458AAcalItems;
             set
             {
-                m3458AAcalComboBoxItems = value;
-                RaisePropertyChanged(() => M3458AAcalComboBoxItems);
+                m3458AAcalItems = value;
+                RaisePropertyChanged(() => M3458AAcalItems);
             }
         }
 
@@ -82,20 +79,22 @@ namespace MeasureApp.ViewModel
         }
 
         // 3458A设置量程精度
-        private ComboBoxItem[] m3458ASetRangeComboBoxItems = new[] {
-            new ComboBoxItem { Content = "Auto", Tag = "AUTO" } ,
-            new ComboBoxItem { Content = "100mV", Tag = "0.1" } ,
-            new ComboBoxItem { Content = "1V", Tag = "1" } ,
-            new ComboBoxItem { Content = "10V", Tag = "10" } ,
-            new ComboBoxItem { Content = "100V", Tag = "100" } ,
-            new ComboBoxItem { Content = "1kV", Tag = "1000" }};
-        public ComboBoxItem[] M3458ASetRangeComboBoxItems
+        private Dictionary<string, string> m3458ASetRangeItems = new()
         {
-            get => m3458ASetRangeComboBoxItems;
+            { "AUTO", "Auto" },
+            { "0.1", "100mV" },
+            { "1", "1V" },
+            { "10", "10V" },
+            { "100", "100V" },
+            { "1000", "1kV" },
+        };
+        public Dictionary<string, string> M3458ASetRangeItems
+        {
+            get => m3458ASetRangeItems;
             set
             {
-                m3458ASetRangeComboBoxItems = value;
-                RaisePropertyChanged(() => M3458ASetRangeComboBoxItems);
+                m3458ASetRangeItems = value;
+                RaisePropertyChanged(() => M3458ASetRangeItems);
             }
         }
 
@@ -110,22 +109,25 @@ namespace MeasureApp.ViewModel
             }
         }
 
-        private ComboBoxItem[] m3458ASetResolutionComboBoxItems = new[] {
-            new ComboBoxItem { Content = "Default", Tag = "DEFAULT" } ,
-            new ComboBoxItem { Content = "1nV", Tag = "0.001" } ,
-            new ComboBoxItem { Content = "10nV", Tag = "0.01" } ,
-            new ComboBoxItem { Content = "100nV", Tag = "0.1" } ,
-            new ComboBoxItem { Content = "1uV", Tag = "1" } ,
-            new ComboBoxItem { Content = "10uV", Tag = "10" } ,
-            new ComboBoxItem { Content = "100uV", Tag = "100" } ,
-            new ComboBoxItem { Content = "1mV", Tag = "1000" }};
-        public ComboBoxItem[] M3458ASetResolutionComboBoxItems
+        private Dictionary<string, string> m3458ASetResolutionItems = new()
         {
-            get => m3458ASetResolutionComboBoxItems;
+            { "DEFAULT", "Default" },
+            { "0.001", "1nV" },
+            { "0.01", "10nV" },
+            { "0.1", "100nV" },
+            { "1", "1uV" },
+            { "10", "10uV" },
+            { "100", "100uV" },
+            { "1000", "1mV" },
+        };
+
+        public Dictionary<string, string> M3458ASetResolutionItems
+        {
+            get => m3458ASetResolutionItems;
             set
             {
-                m3458ASetResolutionComboBoxItems = value;
-                RaisePropertyChanged(() => M3458ASetResolutionComboBoxItems);
+                m3458ASetResolutionItems = value;
+                RaisePropertyChanged(() => M3458ASetResolutionItems);
             }
         }
 
@@ -413,7 +415,7 @@ namespace MeasureApp.ViewModel
                                         M3458ABasicConfigCommandLogText = $"Query: LINE?\nReturn: {Measure3458AInstance.GetLineFreq()} Hz";
                                         break;
                                     case "NDIG":
-                                        string setNdig = M3458ANdigSelectedValue;
+                                        int setNdig = M3458ANdigSelectedValue;
                                         Measure3458AInstance.WriteCommand($"NDIG {setNdig}");
                                         M3458ABasicConfigCommandLogText = $"Write: NDIG {setNdig}";
                                         break;

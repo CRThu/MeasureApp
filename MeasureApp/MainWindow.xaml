@@ -215,7 +215,7 @@
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
-                                <ComboBox Name="NdigComboBox" ItemsSource="{Binding M3458ANdigComboBoxItems}" SelectedValue="{Binding M3458ANdigSelectedValue}" SelectedValuePath="Tag" Margin="107,66,0,0" Width="80" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top"/>
+                                <ComboBox Name="NdigComboBox" ItemsSource="{Binding M3458ANdigComboBoxItems}" SelectedValue="{Binding M3458ANdigSelectedValue}" Margin="107,66,0,0" Width="80" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top"/>
                                 <Button Tag="NDIG" Content="显示位数" HorizontalAlignment="Left" Margin="207,66,0,0" VerticalAlignment="Top" Width="80">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
@@ -224,7 +224,7 @@
                                     </i:Interaction.Triggers>
                                 </Button>
 
-                                <ComboBox Name="AcalComboBox" ItemsSource="{Binding M3458AAcalComboBoxItems}" SelectedValue="{Binding M3458AAcalSelectedValue}" SelectedValuePath="Tag" HorizontalAlignment="Left" Margin="10,110,0,0" VerticalAlignment="Top" Width="163" Height="22"/>
+                                <ComboBox Name="AcalComboBox" ItemsSource="{Binding M3458AAcalItems}" DisplayMemberPath="Value" SelectedValue="{Binding M3458AAcalSelectedValue}" SelectedValuePath="Key" HorizontalAlignment="Left" Margin="10,110,0,0" VerticalAlignment="Top" Width="163" Height="22"/>
                                 <Button Tag="ACAL" Content="执行自动校准" HorizontalAlignment="Left" Margin="178,110,0,0" VerticalAlignment="Top" Width="130" Height="22">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
@@ -232,8 +232,8 @@
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
-                                <ComboBox Name="RangeComboBox" ItemsSource="{Binding M3458ASetRangeComboBoxItems}" SelectedValue="{Binding M3458ASetRangeSelectedValue}" SelectedValuePath="Tag" HorizontalAlignment="Left" Margin="10,146,0,0" VerticalAlignment="Top" Width="79" Height="22"/>
-                                <ComboBox Name="ResComboBox" ItemsSource="{Binding M3458ASetResolutionComboBoxItems}" SelectedValue="{Binding M3458ASetResolutionSelectedValue}" SelectedValuePath="Tag" HorizontalAlignment="Left" Margin="94,146,0,0" VerticalAlignment="Top" Width="79" Height="22"/>
+                                <ComboBox Name="RangeComboBox" ItemsSource="{Binding M3458ASetRangeItems}" DisplayMemberPath="Value" SelectedValue="{Binding M3458ASetRangeSelectedValue}" SelectedValuePath="Key" HorizontalAlignment="Left" Margin="10,146,0,0" VerticalAlignment="Top" Width="79" Height="22"/>
+                                <ComboBox Name="ResComboBox" ItemsSource="{Binding M3458ASetResolutionItems}" DisplayMemberPath="Value" SelectedValue="{Binding M3458ASetResolutionSelectedValue}" SelectedValuePath="Key" HorizontalAlignment="Left" Margin="94,146,0,0" VerticalAlignment="Top" Width="79" Height="22"/>
                                 <Button Tag="RANGE" Content="设置量程/精度" HorizontalAlignment="Left" Margin="178,146,0,0" VerticalAlignment="Top" Width="130" Height="22">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
@@ -287,23 +287,23 @@
                                     <Grid>
                                         <TextBlock Text="手动测量电压" Margin="10,10,10,0" VerticalAlignment="Top"/>
                                         <TextBlock Text="速度选择:" Margin="10,43,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="71"/>
-                                        <Button x:Name="SetMinNPLCButton" Content="高速度(0 NPLC)" Height="22" Margin="86,40,0,0" HorizontalAlignment="Left" Width="130" VerticalAlignment="Top">
+                                        <Button x:Name="SetMinNPLCButton" Content="高速度(1 NPLC)" Height="22" Margin="86,40,0,0" HorizontalAlignment="Left" Width="130" VerticalAlignment="Top">
                                             <i:Interaction.Triggers>
                                                 <i:EventTrigger EventName="Click">
-                                                    <vmc:EventCommandBase Command="{Binding M3458ASetNPLCEvent}" CommandParameter="0"/>
+                                                    <vmc:EventCommandBase Command="{Binding M3458ASetNPLCEvent}" CommandParameter="1"/>
                                                 </i:EventTrigger>
                                             </i:Interaction.Triggers>
                                         </Button>
-                                        <Button x:Name="SetMaxNPLCButton" Content="高精度(100 NPLC)" Height="22" Margin="221,40,0,0" HorizontalAlignment="Left" Width="130" VerticalAlignment="Top">
+                                        <Button x:Name="SetMaxNPLCButton" Content="高精度(10 NPLC)" Height="22" Margin="221,40,0,0" HorizontalAlignment="Left" Width="130" VerticalAlignment="Top">
                                             <i:Interaction.Triggers>
                                                 <i:EventTrigger EventName="Click">
-                                                    <vmc:EventCommandBase Command="{Binding M3458ASetNPLCEvent}" CommandParameter="100"/>
+                                                    <vmc:EventCommandBase Command="{Binding M3458ASetNPLCEvent}" CommandParameter="10"/>
                                                 </i:EventTrigger>
                                             </i:Interaction.Triggers>
                                         </Button>
                                         <TextBlock Text="量程选择:" Margin="10,70,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="71"/>
-                                        <ComboBox x:Name="ManualReadDCVRangeComboBox" ItemsSource="{Binding M3458ASetRangeComboBoxItems}" SelectedValue="{Binding M3458AManualMeasureRangeSelectedValue}" SelectedValuePath="Tag" HorizontalAlignment="Left" Margin="86,67,0,0" VerticalAlignment="Top" Width="79" Height="22"/>
-                                        <ComboBox x:Name="ManualReadDCVResComboBox" ItemsSource="{Binding M3458ASetResolutionComboBoxItems}" SelectedValue="{Binding M3458AManualMeasureResolutionSelectedValue}" SelectedValuePath="Tag" HorizontalAlignment="Left" Margin="170,67,0,0" VerticalAlignment="Top" Width="79" Height="22"/>
+                                        <ComboBox x:Name="ManualReadDCVRangeComboBox" ItemsSource="{Binding M3458ASetRangeItems}" DisplayMemberPath="Value" SelectedValue="{Binding M3458AManualMeasureRangeSelectedValue}" SelectedValuePath="Key" HorizontalAlignment="Left" Margin="86,67,0,0" VerticalAlignment="Top" Width="79" Height="22"/>
+                                        <ComboBox x:Name="ManualReadDCVResComboBox" ItemsSource="{Binding M3458ASetResolutionItems}" DisplayMemberPath="Value" SelectedValue="{Binding M3458AManualMeasureResolutionSelectedValue}" SelectedValuePath="Key" HorizontalAlignment="Left" Margin="170,67,0,0" VerticalAlignment="Top" Width="79" Height="22"/>
                                         <TextBlock x:Name="ManualReadDCVTextBlock" Text="{Binding M3458AManualMeasureText}" TextWrapping="Wrap" Margin="10,98,159,0" TextAlignment="Center" VerticalAlignment="Top" FontSize="24" Height="34"/>
                                         <Button x:Name="ManualReadDCVButton" Content="手动读取电压" HorizontalAlignment="Left" Margin="218,94,0,0" VerticalAlignment="Top" Width="144" Height="41">
                                             <i:Interaction.Triggers>
@@ -846,6 +846,33 @@
                                     </i:EventTrigger>
                                 </i:Interaction.Triggers>
                             </DataGrid>
+                        </GroupBox>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="串口数据包通信">
+                    <Grid>
+                        <GroupBox Header="读数据包" HorizontalAlignment="Left" VerticalAlignment="Top" Height="193" Width="500" Margin="10,10,0,0">
+                            <Grid>
+                                <TextBlock Text="串口选择：" TextWrapping="Wrap" Margin="10,14,0,0" TextAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                                <ComboBox ItemsSource="{Binding SerialPortsInstance.SerialPortsDict, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Key" SelectedValue="{Binding SpPktCommTabSerialPortName, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Key" HorizontalAlignment="Left" Margin="75,12,0,0" VerticalAlignment="Top" Width="97" Height="20"/>
+
+                                <TextBlock Text="ASCII" HorizontalAlignment="Left" Margin="108,54,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                                <TextBlock Text="Bytes" HorizontalAlignment="Left" Margin="168,54,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                                <TextBlock Text="包长度(字节)" HorizontalAlignment="Left" Margin="268,54,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+
+                                <TextBlock Text="读取单字" HorizontalAlignment="Left" Margin="32,78,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                                <TextBlock Text="PKT;" HorizontalAlignment="Left" Margin="108,78,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                                <TextBlock Text="0x50 4B 54 3B" HorizontalAlignment="Left" Margin="168,78,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+
+                                <TextBox Text="{Binding SpPktCommTabReadWordPktLen}" HorizontalAlignment="Left" Margin="268,77,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="68"/>
+                                <Button Content="读取数据包" HorizontalAlignment="Left" Margin="358,0,0,0" VerticalAlignment="Center" Width="80">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <vmc:EventCommandBase Command="{Binding SpPktCommTabReadWordPktEvent}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Button>
+                            </Grid>
                         </GroupBox>
                     </Grid>
                 </TabItem>
