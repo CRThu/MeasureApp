@@ -217,6 +217,8 @@ namespace MeasureApp.ViewModel
                     SerialPortRecvDataSerialPortNameSelectedValue = SerialPortsInstance.SerialPortsDict.Keys.First();
                 if (SerialPortsInstance.SerialPortNames.Any() && SerialportCommandPortNameSelectedValue is null)
                     SerialportCommandPortNameSelectedValue = SerialPortsInstance.SerialPortsDict.Keys.First();
+                if (SerialPortsInstance.SerialPortNames.Any() && SpPktCommTabSerialPortName is null)
+                    SpPktCommTabSerialPortName = SerialPortsInstance.SerialPortsDict.Keys.First();
 
             }
             catch (Exception ex)
@@ -245,6 +247,9 @@ namespace MeasureApp.ViewModel
                     SerialPortRecvDataSerialPortNameSelectedValue = SerialPortsInstance.SerialPortsDict.Keys.First();
                 if (SerialPortsInstance.SerialPortNames.Any() && SerialportCommandPortNameSelectedValue is null)
                     SerialportCommandPortNameSelectedValue = SerialPortsInstance.SerialPortsDict.Keys.First();
+                if (SerialPortsInstance.SerialPortNames.Any() && SpPktCommTabSerialPortName is null)
+                    SpPktCommTabSerialPortName = SerialPortsInstance.SerialPortsDict.Keys.First();
+                
             }
             catch (Exception ex)
             {

@@ -218,17 +218,6 @@ namespace MeasureApp.ViewModel
             }
         }
 
-        public static T[] FromBytes<T>(byte[] bytes) where T : struct
-        {
-            if (bytes == null)
-            {
-                throw new ArgumentNullException("Bytes");
-            }
-            T[] array = new T[bytes.Length / System.Runtime.InteropServices.Marshal.SizeOf(typeof(T))];
-            Buffer.BlockCopy(bytes, 0, array, 0, bytes.Length);
-            return array;
-        }
-
         public static T ConvertObject<T>(object asObject) where T : new()
         {
             string json = JsonConvert.SerializeObject(asObject);
@@ -365,10 +354,10 @@ namespace MeasureApp.ViewModel
                                             RecvDataPraseTemp = recvBytes;
                                             break;
                                         case SerialPortRecvDataTypeEnum.UInt16:
-                                            RecvDataPraseTemp = FromBytes<UInt16>(recvBytes);
+                                            RecvDataPraseTemp = BytesConverter.FromBytes<UInt16>(recvBytes);
                                             break;
                                         case SerialPortRecvDataTypeEnum.UInt32:
-                                            RecvDataPraseTemp = FromBytes<UInt32>(recvBytes);
+                                            RecvDataPraseTemp =BytesConverter.FromBytes<UInt32>(recvBytes);
                                             break;
                                         default:
                                             throw new NotImplementedException();

@@ -1,4 +1,5 @@
 ﻿using MeasureApp.Model.Common;
+using MeasureApp.Model.Converter;
 using MeasureApp.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -100,12 +101,30 @@ namespace MeasureApp.Model
             return Encoding.Default.GetString(ReadExistingBytes(serialPort));
         }
 
-
         public byte[] ReadExistingBytes(string serialPort)
         {
             int len = SerialPortsDict[serialPort].BytesToRead;
             byte[] buf = new byte[len];
             ReadBytes(serialPort, buf, len);
+            return buf;
+        }
+
+        public byte[] GetDataPacket(string serialPort, string cmd, int pktLen)
+        {
+            byte[] cmdBytes = BytesConverter.String2Bytes(cmd);
+            return GetDataPacket(serialPort, cmdBytes, pktLen);
+        }
+
+        public byte[] GetDataPacket(string serialPort, byte[] cmd, int pktLen)
+        {
+            WriteBytes(serialPort, cmd);
+
+            byte[] buf = new byte[pktLen];
+            int pktBytesRead = ReadBytes(serialPort, buf, pktLen);
+
+            if (pktBytesRead != pktLen)
+                throw new Exception($"GetDataPacket() Received: {pktBytesRead}/{pktLen}.");
+
             return buf;
         }
 

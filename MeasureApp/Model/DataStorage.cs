@@ -82,7 +82,17 @@ namespace MeasureApp.Model
             {
                 AddKey(key);
             }
-            DataStorageDictionary[key].Add(new ObservableValue() { Value = value });
+            if (value is not Array)
+            {
+                DataStorageDictionary[key].Add(new ObservableValue() { Value = value });
+            }
+            else
+            {
+                foreach (object obj in (Array)value)
+                {
+                    DataStorageDictionary[key].Add(new ObservableValue() { Value = obj });
+                }
+            }
         }
 
         public void AddDataCollection(string key, IEnumerable<dynamic> values)
