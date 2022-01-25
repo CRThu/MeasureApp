@@ -1,4 +1,5 @@
-﻿using Microsoft.Web.WebView2.Wpf;
+﻿using MeasureApp.Model;
+using Microsoft.Web.WebView2.Wpf;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -14,9 +15,9 @@ namespace MeasureApp.View.Control
 {
     public class EChartsLine : WebView2
     {
-        public static readonly DependencyProperty TextProperty = DependencyProperty.Register("Data", typeof(string), typeof(EChartsLine), new PropertyMetadata(null, DataChangedCallback));
+        public static readonly DependencyProperty TextProperty = DependencyProperty.Register("Data", typeof(EChartsLineData), typeof(EChartsLine), new PropertyMetadata(null, DataChangedCallback));
 
-        public string Data
+        public EChartsLineData Data
         {
             set
             {
@@ -24,15 +25,15 @@ namespace MeasureApp.View.Control
             }
             get
             {
-                return (string)GetValue(TextProperty);
+                return (EChartsLineData)GetValue(TextProperty);
             }
         }
         private static void DataChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            ((EChartsLine)d).DataChangedCallback(e.NewValue as string, e.OldValue as string);
+            ((EChartsLine)d).DataChangedCallback(e.NewValue as EChartsLineData, e.OldValue as EChartsLineData);
         }
 
-        private void DataChangedCallback(string newvalue, string oldvalue)
+        private void DataChangedCallback(EChartsLineData newvalue, EChartsLineData oldvalue)
         {
             UpdateChart();
         }
@@ -42,7 +43,7 @@ namespace MeasureApp.View.Control
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start(); //  开始监视代码运行时间
 
-            string jsons = Data;
+            string jsons = Data.ToJson();
             string js = $"UpdateData({jsons});";
 
             stopwatch.Stop(); //  停止监视
