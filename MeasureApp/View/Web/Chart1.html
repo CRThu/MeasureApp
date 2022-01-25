@@ -1,0 +1,144 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8">
+    <title>ECharts实例</title>
+    <script src="echarts.js"></script>
+</head>
+
+<body>
+    <style type="text/css">
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            margin: 0;
+        }
+    </style>
+    <div id="main" style="width:100%;height:100%;" />
+    <script type="text/javascript">
+        myChart = echarts.init(document.getElementById('main'), opts = { useDirtyRect: true });
+        window.onresize = function () {
+            myChart.resize();
+        };
+
+        function UpdateData(data) {
+            // console.log(JSON.stringify(data));
+
+            // 图表配置对象
+            option = {
+                // 图表标题
+                title: {
+                    text: data.Title,
+                    textStyle: {
+                        color: '#ccc'
+                    }
+                },
+                // 光标位置提示
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'cross',
+                        label: {
+                            backgroundColor: '#6a7985'
+                        }
+                    },
+                    position: function (pos, params, el, elRect, size) {
+                        const obj = {
+                            top: 10
+                        };
+                        obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 30;
+                        return obj;
+                    }
+                },
+                // 指标图例
+                legend: {
+                    // data: data.LegendData,
+                    textStyle: {
+                        color: '#ccc'
+                    }
+                },
+                // 数据缩放
+                dataZoom: [
+                    {
+                        bottom: "3%",
+                        type: 'slider',
+                        textStyle: {
+                            color: '#8392A5'
+                        },
+                        dataBackground: {
+                            areaStyle: {
+                                color: '#8392A5'
+                            },
+                            lineStyle: {
+                                opacity: 0.8,
+                                color: '#8392A5'
+                            }
+                        },
+                        xAxisIndex: 'all',
+                    },
+                    {
+                        type: 'inside',
+                        xAxisIndex: 'all',
+                    }
+                ],
+                // 坐标轴同步
+                axisPointer: {
+                    link: { xAxisIndex: 'all' },
+                    label: {
+                        backgroundColor: '#777'
+                    }
+                },
+                // 数据源
+                dataset: [
+                    {
+                        dimensions: Object.keys(data.Data),
+                        source: Object.values(data.Data)
+                    },
+                ],
+                // 坐标系网格位置
+                grid: [
+                    {
+                        left: '3%',
+                        right: '4%',
+                        top: '40',
+                        bottom: '13%',
+                        containLabel: 'true'
+                    }
+                ],
+                // 坐标轴
+                xAxis: [
+                    {
+                        type: 'category'
+                    }
+                ],
+                yAxis: [
+                    {
+                        type: 'value'
+                    }
+                ],
+                // 图表
+                series: [
+                    {
+                        name: data.Series.Name,
+                        type: data.Series.Type,
+                        encode: {
+                            x: data.Series.DataXColumnsName,
+                            y: data.Series.DataYColumnsName
+                        },
+                        seriesLayoutBy: "row"
+                    }
+                ],
+            };
+
+            // replaceMerge删除更新中不存在的线
+            option && myChart.setOption(option, { replaceMerge: ['series'] });
+        }
+    </script>
+</body>
+
+</html>
