@@ -1,6 +1,7 @@
 ﻿using MeasureApp.Model.Common;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace MeasureApp.Model
 {
-    public class EChartsLineData : NotificationObjectBase
+    public class EChartsLineData : NotificationObjectBase, INotifyCollectionChanged
     {
         // 图表标题
         private string title;
@@ -32,6 +33,11 @@ namespace MeasureApp.Model
                 data = value;
                 RaisePropertyChanged(() => Data);
             }
+        }
+
+        public int Count
+        {
+            get => Data["x"].Count;
         }
 
         // 图表配置
@@ -88,6 +94,27 @@ namespace MeasureApp.Model
             Series["Step"] = option;
         }
 
+        public void ClearData()
+        {
+            Data["x"].Clear();
+            Data["y"].Clear();
+            FireCollectionResetNotification();
+        }
+
+        public void AddData(double x, double y)
+        {
+            Data["x"].Add(x);
+            Data["y"].Add(y);
+            FireCollectionResetNotification();
+        }
+
+        public void AddData(IEnumerable<double> x, IEnumerable<double> y)
+        {
+            Data["x"].AddRange(x);
+            Data["y"].AddRange(y);
+            FireCollectionResetNotification();
+        }
+
         public EChartsLineData(bool showSymbol = false, bool smooth = false, EChartsStepLine stepLine = EChartsStepLine.False)
         {
             Data = new()
@@ -112,8 +139,7 @@ namespace MeasureApp.Model
 
         public EChartsLineData(double[] x, double[] y, bool showSymbol = false, bool smooth = false, EChartsStepLine stepLine = EChartsStepLine.False) : this(showSymbol, smooth, stepLine)
         {
-            Data["x"] = new ObservableRangeCollection<double>(x);
-            Data["y"] = new ObservableRangeCollection<double>(y);
+            AddData(x, y);
         }
 
         public string ToJson()

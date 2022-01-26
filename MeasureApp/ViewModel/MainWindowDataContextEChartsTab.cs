@@ -15,7 +15,7 @@ namespace MeasureApp.ViewModel
     public partial class MainWindowDataContext : NotificationObjectBase
     {
         // 串口选择
-        private EChartsLineData chartData1;
+        private EChartsLineData chartData1 = new();
         public EChartsLineData ChartData1
         {
             get => chartData1;
@@ -26,7 +26,7 @@ namespace MeasureApp.ViewModel
             }
         }
 
-        private EChartsLineData chartData2;
+        private EChartsLineData chartData2 = new();
         public EChartsLineData ChartData2
         {
             get => chartData2;
@@ -37,22 +37,16 @@ namespace MeasureApp.ViewModel
             }
         }
 
-        List<double> x = new();
-        List<double> y1 = new();
-        List<double> y2 = new();
         public void UpdateEChartsTest(object param)
         {
-            int cnt = 500000;
-            x.AddRange(Enumerable.Range(x.Count, cnt).Select(n => (double)n).ToList());
-            y1 = new(x.Select(x => x * x));
-            y2 = new(x.Select(x => Math.Sqrt(x)));
             switch ((string)param)
             {
                 case "0":
-                    ChartData1 = new(x.ToArray(), y1.ToArray());
+                    ChartData1.AddData(ChartData1.Count, (random.NextDouble() - 0.5) * 5 + ChartData1.Count);
                     break;
                 case "1":
-                    ChartData2 = new(x.ToArray(), y2.ToArray());
+                    List<double> l = Enumerable.Range(ChartData2.Count, 1000).Select(n => (double)n).ToList();
+                    ChartData2.AddData(l, l.Select(lx => (random.NextDouble() - 0.5) * 50 + lx));
                     break;
                 default:
                     throw new NotImplementedException();

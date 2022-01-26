@@ -28,12 +28,22 @@ namespace MeasureApp.View.Control
                 return (EChartsLineData)GetValue(TextProperty);
             }
         }
+
         private static void DataChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             ((EChartsLine)d).DataChangedCallback(e.NewValue as EChartsLineData, e.OldValue as EChartsLineData);
         }
 
         private void DataChangedCallback(EChartsLineData newvalue, EChartsLineData oldvalue)
+        {
+            if (oldvalue != null)
+                oldvalue.CollectionChanged -= Changed;
+            if (newvalue != null)
+                newvalue.CollectionChanged += Changed;
+            // UpdateChart();
+        }
+
+        private void Changed(object sender, NotifyCollectionChangedEventArgs e)
         {
             UpdateChart();
         }
