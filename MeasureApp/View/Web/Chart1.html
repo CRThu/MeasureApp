@@ -113,7 +113,13 @@
                 // 坐标轴
                 xAxis: [
                     {
-                        type: 'category'
+                        // type: 'category'
+                        type: 'log',
+                        minorSplitLine: {
+                            show: true
+                        },
+                        min: 1,
+                        max:"dataMax"
                     }
                 ],
                 yAxis: [

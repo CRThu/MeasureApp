@@ -14,45 +14,55 @@ namespace MeasureApp.ViewModel
 {
     public partial class MainWindowDataContext : NotificationObjectBase
     {
-        // 串口选择
-        private EChartsLineData chartData1 = new();
-        public EChartsLineData ChartData1
+        // ECharts数据绑定
+        private EChartsLineData chartData = new();
+        public EChartsLineData ChartData
         {
-            get => chartData1;
+            get => chartData;
             set
             {
-                chartData1 = value;
-                RaisePropertyChanged(() => ChartData1);
-            }
-        }
-
-        private EChartsLineData chartData2 = new();
-        public EChartsLineData ChartData2
-        {
-            get => chartData2;
-            set
-            {
-                chartData2 = value;
-                RaisePropertyChanged(() => ChartData2);
+                chartData = value;
+                RaisePropertyChanged(() => ChartData);
             }
         }
 
         public void UpdateEChartsTest(object param)
         {
+            int N = 2048;
+            double fin = 997.89;
+            double fs = 48000;
+            double phase = random.NextDouble() * Math.PI * 2;
+            ChartData.ClearData();
+            List<double> t = Enumerable.Range(0, N).Select(tx => (double)tx).ToList();
+            List<double> sine = t.Select(tx => Math.Sin(2 * Math.PI * fin * tx / fs + phase) + (random.NextDouble() - 0.5) * 0.05).ToList();
+
+            var rfft = new NWaves.Transforms.RealFft64(N);
+            double[] real = sine.ToArray();
+            double[] imag = new double[N];
+
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start(); //  开始监视代码运行时间
+            rfft.Direct(real, real, imag);
+            stopwatch.Stop(); //  停止监视
+            Debug.WriteLine($"FFT:{stopwatch.ElapsedMilliseconds}ms.");
+
+            List<double> f = t.Select(t => t / N * fs).Take(N/2+1).ToList();
+            List<double> mag = new();
+            for (int i = 0; i < N / 2 + 1; i++)
+                mag.Add(Math.Sqrt(real[i] * real[i] + imag[i] * imag[i]));
+
             switch ((string)param)
             {
                 case "0":
-                    ChartData1.AddData(ChartData1.Count, (random.NextDouble() - 0.5) * 5 + ChartData1.Count);
+                    ChartData.AddData(t, sine);
                     break;
                 case "1":
-                    List<double> l = Enumerable.Range(ChartData2.Count, 1000).Select(n => (double)n).ToList();
-                    ChartData2.AddData(l, l.Select(lx => (random.NextDouble() - 0.5) * 50 + lx));
+                    ChartData.AddData(f, mag);
                     break;
                 default:
                     throw new NotImplementedException();
             }
         }
-
 
         // CommandBase
         private CommandBase updateEChartsTestEvent;
