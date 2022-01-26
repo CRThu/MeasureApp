@@ -35,8 +35,8 @@ namespace MeasureApp.Model
         }
 
         // 图表配置
-        private Dictionary<string, string> series;
-        public Dictionary<string, string> Series
+        private Dictionary<string, object> series;
+        public Dictionary<string, object> Series
         {
             get => series;
             set
@@ -46,7 +46,49 @@ namespace MeasureApp.Model
             }
         }
 
-        public EChartsLineData()
+        public void SetShowSymbol(bool showSymbol)
+        {
+            Series["ShowSymbol"] = showSymbol;
+        }
+
+        public void SetSmooth(bool smooth)
+        {
+            Series["Smooth"] = smooth;
+        }
+
+        public void SetStepLine(bool stepLine)
+        {
+            if (!stepLine)
+                SetStepLine(EChartsStepLine.False);
+            else
+                SetStepLine(EChartsStepLine.Middle);
+        }
+
+        public void SetStepLine(EChartsStepLine stepLine)
+        {
+            object option;
+            switch (stepLine)
+            {
+                case EChartsStepLine.False:
+                    option = false;
+                    break;
+                case EChartsStepLine.Start:
+                    option = "start";
+                    break;
+                case EChartsStepLine.Middle:
+                    option = "middle";
+                    break;
+                case EChartsStepLine.End:
+                    option = "end";
+                    break;
+                default:
+                    option = false;
+                    break;
+            }
+            Series["Step"] = option;
+        }
+
+        public EChartsLineData(bool showSymbol = false, bool smooth = false, EChartsStepLine stepLine = EChartsStepLine.False)
         {
             Data = new()
             {
@@ -58,11 +100,17 @@ namespace MeasureApp.Model
                 { "Name", "Data" },
                 { "Type", "line" },
                 { "DataXColumnsName", "x" },
-                { "DataYColumnsName", "y" }
+                { "DataYColumnsName", "y" },
+                { "ShowSymbol", null },
+                { "Smooth", null },
+                { "Step", null },
             };
+            SetShowSymbol(showSymbol);
+            SetSmooth(smooth);
+            SetStepLine(stepLine);
         }
 
-        public EChartsLineData(double[] x, double[] y) : this()
+        public EChartsLineData(double[] x, double[] y, bool showSymbol = false, bool smooth = false, EChartsStepLine stepLine = EChartsStepLine.False) : this(showSymbol, smooth, stepLine)
         {
             Data["x"] = new ObservableRangeCollection<double>(x);
             Data["y"] = new ObservableRangeCollection<double>(y);
@@ -72,5 +120,13 @@ namespace MeasureApp.Model
         {
             return JsonSerializer.Serialize(this);
         }
+    }
+
+    public enum EChartsStepLine
+    {
+        False = 0,
+        Start = 1,
+        Middle = 2,
+        End = 3
     }
 }

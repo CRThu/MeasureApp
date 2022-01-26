@@ -37,15 +37,22 @@ namespace MeasureApp.ViewModel
             }
         }
 
+        List<double> x = new();
+        List<double> y1 = new();
+        List<double> y2 = new();
         public void UpdateEChartsTest(object param)
         {
+            int cnt = 500000;
+            x.AddRange(Enumerable.Range(x.Count, cnt).Select(n => (double)n).ToList());
+            y1 = new(x.Select(x => x * x));
+            y2 = new(x.Select(x => Math.Sqrt(x)));
             switch ((string)param)
             {
                 case "0":
-                    ChartData1 = new(new double[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, new double[] { 1, 4, 9, 16, 25, 36, 49, 64, 81, 100 });
+                    ChartData1 = new(x.ToArray(), y1.ToArray());
                     break;
                 case "1":
-                    ChartData2 = new(new double[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, new double[] { 1, 0.5, 0.33, 0.25, 0.2, 0.17, 0.14, 0.13, 0.11, 0.1 });
+                    ChartData2 = new(x.ToArray(), y2.ToArray());
                     break;
                 default:
                     throw new NotImplementedException();

@@ -1192,15 +1192,15 @@
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </Button>
-                        <Button Content="B" HorizontalAlignment="Left" Margin="568,26,0,0" VerticalAlignment="Top" Width="70">
+                        <Button Content="B" HorizontalAlignment="Left" Margin="505,26,0,0" VerticalAlignment="Top" Width="70">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="Click">
                                     <vmc:EventCommandBase Command="{Binding UpdateEChartsTestEvent}" CommandParameter="1"/>
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </Button>
-                        <view:EChartsLine Margin="10,67,0,0" Data="{Binding ChartData1,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" HorizontalAlignment="Left" VerticalAlignment="Top" Height="270" Width="378"/>
-                        <view:EChartsLine Margin="568,67,0,0" Data="{Binding ChartData2,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" HorizontalAlignment="Left" VerticalAlignment="Top" Height="270" Width="378"/>
+                        <view:EChartsLine Margin="10,67,0,0" Data="{Binding ChartData1,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" HorizontalAlignment="Left" VerticalAlignment="Top" Height="446" Width="459"/>
+                        <view:EChartsLine Margin="505,67,0,0" Data="{Binding ChartData2,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" HorizontalAlignment="Left" VerticalAlignment="Top" Height="446" Width="459"/>
                     </Grid>
                 </TabItem>
                 <TabItem Header="实用工具">

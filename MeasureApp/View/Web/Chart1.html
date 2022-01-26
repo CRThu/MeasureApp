@@ -130,13 +130,17 @@
                             x: data.Series.DataXColumnsName,
                             y: data.Series.DataYColumnsName
                         },
-                        seriesLayoutBy: "row"
+                        seriesLayoutBy: "row",
+                        sampling: "lttb",
+                        showSymbol: data.Series.ShowSymbol,
+                        smooth: data.Series.Smooth,
+                        step: data.Series.Step
                     }
                 ],
             };
 
             // replaceMerge删除更新中不存在的线
-            option && myChart.setOption(option, { replaceMerge: ['series'] });
+            option && myChart.setOption(option);
         }
     </script>
 </body>
