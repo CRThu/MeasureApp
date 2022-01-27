@@ -33,7 +33,6 @@
 	<ItemGroup>
 		<PackageReference Include="AvalonEdit" Version="6.1.2.30" />
 		<PackageReference Include="LiveCharts.Geared" Version="1.2.9" />
-		<PackageReference Include="MathNet.Numerics" Version="4.15.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.11.0" />
 		<PackageReference Include="Microsoft.CSharp" Version="4.0.1" />
 		<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1133-prerelease" />
@@ -85,7 +84,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Model\FFT\" />
 	  <Folder Include="View\Web\" />
 	</ItemGroup>
 

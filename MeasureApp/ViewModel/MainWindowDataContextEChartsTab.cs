@@ -1,6 +1,7 @@
 ﻿using MeasureApp.Model;
 using MeasureApp.Model.Common;
 using MeasureApp.Model.Converter;
+using MeasureApp.Model.FftAnalysis;
 using MeasureApp.ViewModel.Common;
 using System;
 using System.Collections.Generic;
@@ -29,35 +30,35 @@ namespace MeasureApp.ViewModel
         public void UpdateEChartsTest(object param)
         {
             int N = 2048;
+            int fftN = (int)Math.Pow(2, Math.Ceiling(Math.Log2(N)));
             double fin = 997.89;
             double fs = 48000;
             double phase = random.NextDouble() * Math.PI * 2;
             ChartData.ClearData();
-            List<double> t = Enumerable.Range(0, N).Select(tx => (double)tx).ToList();
-            List<double> sine = t.Select(tx => Math.Sin(2 * Math.PI * fin * tx / fs + phase) + (random.NextDouble() - 0.5) * 0.05).ToList();
-
-            var rfft = new NWaves.Transforms.RealFft64(N);
-            double[] real = sine.ToArray();
-            double[] imag = new double[N];
+            double[] t = Enumerable.Range(0, N).Select(tx => (double)tx).ToArray();
+            double[] sine = t.Select(tx => Math.Sin(2 * Math.PI * fin * tx / fs + phase) + (random.NextDouble() - 0.5) * 0.05).ToArray();
 
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start(); //  开始监视代码运行时间
-            rfft.Direct(real, real, imag);
+
+            double[] win = FftWindow.BlackmanHarrisWindow(sine.Length);
+            double[] sineWithWin = new double[sine.Length];
+            for (int i = 0; i < sine.Length; i++)
+                sineWithWin[i] = sine[i] * win[i];
+
+            (double[] freq, double[] mag) = FftAnalysis.FftMag(sineWithWin, fs);
+
             stopwatch.Stop(); //  停止监视
             Debug.WriteLine($"FFT:{stopwatch.ElapsedMilliseconds}ms.");
 
-            List<double> f = t.Select(t => t / N * fs).Take(N/2+1).ToList();
-            List<double> mag = new();
-            for (int i = 0; i < N / 2 + 1; i++)
-                mag.Add(Math.Sqrt(real[i] * real[i] + imag[i] * imag[i]));
 
             switch ((string)param)
             {
                 case "0":
-                    ChartData.AddData(t, sine);
+                    ChartData.AddData(t, sineWithWin);
                     break;
                 case "1":
-                    ChartData.AddData(f, mag);
+                    ChartData.AddData(freq, mag);
                     break;
                 default:
                     throw new NotImplementedException();
