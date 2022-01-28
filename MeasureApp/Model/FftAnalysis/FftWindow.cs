@@ -17,6 +17,24 @@ namespace MeasureApp.Model.FftAnalysis
             { "flattop", new double[] { 0.21557895, 0.41663158, 0.277263158, 0.083578947, 0.006947368 } },
         };
 
+        public delegate double[] WindowFuncHandler(int winN);
+        public static Dictionary<string, WindowFuncHandler> WindowFunc = new()
+        {
+            { "rectangular", RectangularWindow },
+            { "hanning", HanningWindow },
+            { "hamming", HammingWindow },
+            { "blackmanharris", BlackmanHarrisWindow },
+            { "flattop", FlattopWindow },
+        };
+
+        public static double[] AddWindow(double[] vt, string winName)
+        {
+            double[] win = WindowFunc[winName](vt.Length);
+            for (int i = 0; i < win.Length; i++)
+                win[i] *= vt[i];
+            return win;
+        }
+
         public static double[] GenerateWindow(Func<int, double> winGenFunc, int winN)
         {
             double[] win = new double[winN];

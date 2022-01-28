@@ -29,36 +29,35 @@ namespace MeasureApp.ViewModel
 
         public void UpdateEChartsTest(object param)
         {
-            int N = 2048;
+            int N = 262144;
             int fftN = (int)Math.Pow(2, Math.Ceiling(Math.Log2(N)));
             double fin = 997.89;
             double fs = 48000;
+            double dc = 0.2;
             double phase = random.NextDouble() * Math.PI * 2;
-            ChartData.ClearData();
             double[] t = Enumerable.Range(0, N).Select(tx => (double)tx).ToArray();
-            double[] sine = t.Select(tx => Math.Sin(2 * Math.PI * fin * tx / fs + phase) + (random.NextDouble() - 0.5) * 0.05).ToArray();
+            double[] sine = t.Select(tx => dc + Math.Sin(2 * Math.PI * fin * tx / fs + phase) + (random.NextDouble() - 0.5) * 0.05).ToArray();
 
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start(); //  开始监视代码运行时间
 
-            double[] win = FftWindow.BlackmanHarrisWindow(sine.Length);
-            double[] sineWithWin = new double[sine.Length];
-            for (int i = 0; i < sine.Length; i++)
-                sineWithWin[i] = sine[i] * win[i];
-
-            (double[] freq, double[] mag) = FftAnalysis.FftMag(sineWithWin, fs);
+            (double[] freq, double[] mag) = FftAnalysis.FftMag(sine, fs, "flattop");
+            double[] magNorm = FftAnalysis.NormalizedTo0dB(mag);
 
             stopwatch.Stop(); //  停止监视
             Debug.WriteLine($"FFT:{stopwatch.ElapsedMilliseconds}ms.");
 
+            (double fc, double yMax) baseSignal = DynamicPerfAnalysis.FindMax(freq, magNorm);
+            Debug.WriteLine($"Base Signal: {baseSignal.fc}Hz | {baseSignal.yMax} dB.");
 
+            ChartData.ClearData();
             switch ((string)param)
             {
                 case "0":
-                    ChartData.AddData(t, sineWithWin);
+                    ChartData.AddData(t, sine);
                     break;
                 case "1":
-                    ChartData.AddData(freq, mag);
+                    ChartData.AddData(freq, magNorm);
                     break;
                 default:
                     throw new NotImplementedException();
