@@ -9,10 +9,17 @@ namespace MeasureApp.Model.FftAnalysis
 {
     public static class FftAnalysis
     {
-        public static int GetFftN(int sampleN)
+        public static double[] GetFftArray(double[] vt)
         {
             // NWaves FFT Count must be 2^N
-            return (int)Math.Pow(2, Math.Ceiling(Math.Log2(sampleN)));
+            int fftN = (int)Math.Pow(2, Math.Ceiling(Math.Log2(vt.Length)));
+            if (fftN != vt.Length)
+            {
+                double[] vt_new = new double[fftN];
+                vt.CopyTo(vt_new, 0);
+                vt = vt_new;
+            }
+            return vt;
         }
 
         public static double[] FftFreq(int fftN, double fs)
@@ -25,14 +32,15 @@ namespace MeasureApp.Model.FftAnalysis
             if (winName != null)
                 vt = FftWindow.AddWindow(vt, winName);
 
-            int fftN = GetFftN(vt.Count());
-            var rfft = new NWaves.Transforms.RealFft64(fftN);
-            double[] real = new double[fftN / 2 + 1];
-            double[] imag = new double[fftN / 2 + 1];
+            //vt= GetFftArray(vt);
+
+            var rfft = new NWaves.Transforms.RealFft64(vt.Length);
+            double[] real = new double[vt.Length / 2 + 1];
+            double[] imag = new double[vt.Length / 2 + 1];
 
             rfft.Direct(vt, real, imag);
 
-            return (FftFreq(fftN, fs), real, imag);
+            return (FftFreq(vt.Length, fs), real, imag);
         }
 
         public static (double[] freq, double[] mag) FftMag(double[] vt, double fs = 1, string winName = null, bool removeDc = true)
@@ -50,10 +58,7 @@ namespace MeasureApp.Model.FftAnalysis
         public static double[] RemoveDc(double[] v)
         {
             double avg = v.Average();
-            double[] removeDc = new double[v.Length];
-            for (int i = 0; i < v.Length; i++)
-                removeDc[i] = v[i] - avg;
-            return removeDc;
+            return v.Select(s => s - avg).ToArray();
         }
 
         public static double[] NormalizedTo0dB(double[] mag)

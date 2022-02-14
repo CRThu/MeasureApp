@@ -15,16 +15,20 @@ namespace MeasureApp.Model.FftAnalysis
             { "hamming", new double[] { 0.53836, 0.46164 } },
             { "blackmanharris", new double[] { 0.35875, 0.48829, 0.14128, 0.01168 } },
             { "flattop", new double[] { 0.21557895, 0.41663158, 0.277263158, 0.083578947, 0.006947368 } },
+            { "HFT90D", new double[] { 1, 1.942604, 1.340318, 0.440811, 0.043097 } },
+            { "HFT144D", new double[] { 1, 1.96760033, 1.57983607, 0.81123644, 0.22583558, 0.02773848, 0.00090360 } },
         };
 
         public delegate double[] WindowFuncHandler(int winN);
         public static Dictionary<string, WindowFuncHandler> WindowFunc = new()
         {
             { "rectangular", RectangularWindow },
-            { "hanning", HanningWindow },
-            { "hamming", HammingWindow },
-            { "blackmanharris", BlackmanHarrisWindow },
-            { "flattop", FlattopWindow },
+            { "hanning", (winN) => GenerateGeneralizedCosineWindow(winN, GeneralizedCosineWindowCoefficient["hanning"]) },
+            { "hamming", (winN) => GenerateGeneralizedCosineWindow(winN, GeneralizedCosineWindowCoefficient["hamming"]) },
+            { "blackmanharris", (winN) => GenerateGeneralizedCosineWindow(winN, GeneralizedCosineWindowCoefficient["blackmanharris"]) },
+            { "flattop", (winN) => GenerateGeneralizedCosineWindow(winN, GeneralizedCosineWindowCoefficient["flattop"]) },
+            { "HFT90D", (winN) => GenerateGeneralizedCosineWindow(winN, GeneralizedCosineWindowCoefficient["HFT90D"]) },
+            { "HFT144D", (winN) => GenerateGeneralizedCosineWindow(winN, GeneralizedCosineWindowCoefficient["HFT144D"]) },
         };
 
         public static double[] AddWindow(double[] vt, string winName)
@@ -55,26 +59,6 @@ namespace MeasureApp.Model.FftAnalysis
         public static double[] RectangularWindow(int winN)
         {
             return GenerateWindow(x => 1, winN);
-        }
-
-        public static double[] HanningWindow(int winN)
-        {
-            return GenerateGeneralizedCosineWindow(winN, GeneralizedCosineWindowCoefficient["hanning"]);
-        }
-
-        public static double[] HammingWindow(int winN)
-        {
-            return GenerateGeneralizedCosineWindow(winN, GeneralizedCosineWindowCoefficient["hamming"]);
-        }
-
-        public static double[] BlackmanHarrisWindow(int winN)
-        {
-            return GenerateGeneralizedCosineWindow(winN, GeneralizedCosineWindowCoefficient["blackmanharris"]);
-        }
-
-        public static double[] FlattopWindow(int winN)
-        {
-            return GenerateGeneralizedCosineWindow(winN, GeneralizedCosineWindowCoefficient["flattop"]);
         }
     }
 }

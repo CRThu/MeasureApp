@@ -9,7 +9,7 @@ VIN = 9.530;%实际输入电压
 Voffset =0;
 
 
-filename = 'File_AdDataConvert.txt';             %'File_AdDataConvert.txt';File_AdDataConvert
+filename = 'AD7606_TestData_88d69.txt';             %'File_AdDataConvert.txt';File_AdDataConvert
 
 fid = fopen(filename);
 

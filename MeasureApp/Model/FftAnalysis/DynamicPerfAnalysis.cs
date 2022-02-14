@@ -31,15 +31,22 @@ namespace MeasureApp.Model.FftAnalysis
             return (xInRange, yInRange);
         }
 
-        public static (double fc, double yMax) FindMax(double[] f, double[] y)
+        public static (double fc, int yIndex, double yMax) FindMax(double[] f, double[] y)
         {
             double ymax = y.Max();
             int yIndex = Array.IndexOf(y, ymax);
             double fc = f[yIndex];
-            return (fc, ymax);
+            return (fc, yIndex, ymax);
         }
 
-        public static (double fc, double yMax) FindMax(double[] f, double[] y, double fmin = -1, double fmax = -1)
+        public static (double fc, int yIndex, double yMax) FindMax(double[] f, double[] y, int fminIndex, int fmaxIndex)
+        {
+            (double[] fInRange, double[] yInRange) data = SubArray(f, y, fminIndex, fmaxIndex);
+            (double fc, int yIndex, double yMax) = FindMax(data.fInRange, data.yInRange);
+            return (fc, yIndex + fminIndex, yMax);
+        }
+
+        public static (double fc, int yIndex, double yMax) FindMaxClose(double[] f, double[] y, double fmin = -1, double fmax = -1)
         {
             (int index, double value) fminRange, fmaxRange;
 
@@ -52,9 +59,7 @@ namespace MeasureApp.Model.FftAnalysis
             else
                 fmaxRange.index = -1;
 
-            (double[] fInRange, double[] yInRange) data = SubArray(f, y, fminRange.index, fmaxRange.index);
-
-            return FindMax(data.fInRange, data.yInRange);
+            return FindMax(f, y, fminRange.index, fmaxRange.index);
         }
     }
 }
