@@ -94,6 +94,11 @@ namespace MeasureApp.Model
             Series["Step"] = option;
         }
 
+        public void SetSampling(bool isLttbOn)
+        {
+            Series["Sampling"] = isLttbOn ? "lttb" : null;
+        }
+
         public void ClearData()
         {
             Data["x"].Clear();
@@ -115,7 +120,7 @@ namespace MeasureApp.Model
             FireCollectionResetNotification();
         }
 
-        public EChartsLineData(bool showSymbol = false, bool smooth = false, EChartsStepLine stepLine = EChartsStepLine.False)
+        public EChartsLineData(bool showSymbol = false, bool smooth = false, EChartsStepLine stepLine = EChartsStepLine.False, bool sampling = true)
         {
             Data = new()
             {
@@ -131,13 +136,15 @@ namespace MeasureApp.Model
                 { "ShowSymbol", null },
                 { "Smooth", null },
                 { "Step", null },
+                { "Sampling", null },
             };
             SetShowSymbol(showSymbol);
             SetSmooth(smooth);
             SetStepLine(stepLine);
+            SetSampling(sampling);
         }
 
-        public EChartsLineData(double[] x, double[] y, bool showSymbol = false, bool smooth = false, EChartsStepLine stepLine = EChartsStepLine.False) : this(showSymbol, smooth, stepLine)
+        public EChartsLineData(double[] x, double[] y, bool showSymbol = false, bool smooth = false, EChartsStepLine stepLine = EChartsStepLine.False, bool sampling = true) : this(showSymbol, smooth, stepLine, sampling)
         {
             AddData(x, y);
         }

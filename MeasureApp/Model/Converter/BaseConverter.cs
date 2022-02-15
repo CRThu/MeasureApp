@@ -25,9 +25,9 @@ namespace MeasureApp.Model.Converter
             return Convert.ToInt64(string.IsNullOrWhiteSpace(number) ? "0" : number, fromBase);
         }
 
-        public static UInt16 BaseConverterUInt16(string number, int fromBase)
+        public static ulong BaseConverterUInt64(string number, int fromBase)
         {
-            return Convert.ToUInt16(string.IsNullOrWhiteSpace(number) ? "0" : number, fromBase);
+            return Convert.ToUInt64(string.IsNullOrWhiteSpace(number) ? "0" : number, fromBase);
         }
     }
 }
