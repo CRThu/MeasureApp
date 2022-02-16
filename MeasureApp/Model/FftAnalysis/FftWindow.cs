@@ -23,12 +23,12 @@ namespace MeasureApp.Model.FftAnalysis
         public static Dictionary<string, WindowFuncHandler> WindowFunc = new()
         {
             { "rectangular", RectangularWindow },
-            { "hanning", (winN) => GenerateGeneralizedCosineWindow(winN, GeneralizedCosineWindowCoefficient["hanning"]) },
-            { "hamming", (winN) => GenerateGeneralizedCosineWindow(winN, GeneralizedCosineWindowCoefficient["hamming"]) },
-            { "blackmanharris", (winN) => GenerateGeneralizedCosineWindow(winN, GeneralizedCosineWindowCoefficient["blackmanharris"]) },
-            { "flattop", (winN) => GenerateGeneralizedCosineWindow(winN, GeneralizedCosineWindowCoefficient["flattop"]) },
-            { "HFT90D", (winN) => GenerateGeneralizedCosineWindow(winN, GeneralizedCosineWindowCoefficient["HFT90D"]) },
-            { "HFT144D", (winN) => GenerateGeneralizedCosineWindow(winN, GeneralizedCosineWindowCoefficient["HFT144D"]) },
+            { "hanning", (winN) => GenerateGeneralizedCosineWindow(winN, "hanning") },
+            { "hamming", (winN) => GenerateGeneralizedCosineWindow(winN, "hamming") },
+            { "blackmanharris", (winN) => GenerateGeneralizedCosineWindow(winN, "blackmanharris") },
+            { "flattop", (winN) => GenerateGeneralizedCosineWindow(winN, "flattop") },
+            { "HFT90D", (winN) => GenerateGeneralizedCosineWindow(winN, "HFT90D") },
+            { "HFT144D", (winN) => GenerateGeneralizedCosineWindow(winN, "HFT144D") },
         };
 
         public static double[] AddWindow(double[] vt, string winName)
@@ -45,6 +45,11 @@ namespace MeasureApp.Model.FftAnalysis
             for (int n = 0; n < winN; n++)
                 win[n] = winGenFunc(n);
             return win;
+        }
+
+        public static double[] GenerateGeneralizedCosineWindow(int winN, string winName)
+        {
+            return GenerateGeneralizedCosineWindow(winN, GeneralizedCosineWindowCoefficient[winName]);
         }
 
         public static double[] GenerateGeneralizedCosineWindow(int winN, double[] an)

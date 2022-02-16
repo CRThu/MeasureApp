@@ -91,85 +91,27 @@ namespace MeasureApp.ViewModel
             try
             {
                 double[] sine = File.ReadAllLines(FftAnalysisSampleFileName).Select(v => (double)BaseConverter.BaseConverterUInt64(v, 16)).ToArray();
-                //FftAnalysisPropertyConfig.FftN = (int)Math.Pow(2, Math.Floor(Math.Log2(sine.Length)));
-                sine = sine.Take(FftAnalysisPropertyConfig.FftN).ToArray();
-                double[] t = Enumerable.Range(0, sine.Length).Select(t => t / FftAnalysisPropertyConfig.Fs).ToArray();
 
-                Stopwatch stopwatch = new();
-                stopwatch.Start(); //  开始监视代码运行时间
+                (double[] t, double[] v, double[] f, double[] p,
+                    Dictionary<string, (double v1, string s1)> perfInfo,
+                    Dictionary<string, (double v1, string s1, double v2, string s2)> sgnInfo)
+                    = FftAnalysis.FftAnalysisEnergyCorrection(sine, FftAnalysisPropertyConfig);
+
                 FftAnalysisReports.Clear();
-
-                (double[] freq, double[] mag) = FftAnalysis.FftMag(sine, FftAnalysisPropertyConfig.Fs, FftAnalysisPropertyConfig.Window);
-                double[] magNorm = FftAnalysis.NormalizedTo0dB(mag);
-                double[] powerNorm = mag.Select(m => m * m).ToArray();
-
-                stopwatch.Stop(); //  停止监视
-                Debug.WriteLine($"FFT:{stopwatch.ElapsedMilliseconds}ms.");
-
-                (double fc, int yIndex, double yMax) baseSignal = DynamicPerfAnalysis.FindMax(freq, magNorm);
-                FftAnalysisReports.Add(new FftAnalysisReport("信号", "基频", string.Format("{0:F3} Hz", baseSignal.fc), string.Format("{0:F3} dB", baseSignal.yMax)));
-
-                //int span = 6; // 信号中心频点-span点至+span点计算相加信号功率
-                //int spanH1 = 3; // 谐波计算频点-spanH1点至+spanH1点寻找谐波中心频点
-                //int spanH2 = 1; // 谐波中心频点-spanH2点至+spanH2点计算相加信号功率
-                //int nHarmonic = 5; // 计算到nHarmonic次谐波
-
-                double pDc = DynamicPerfAnalysis.SubArray(powerNorm, 0, FftAnalysisPropertyConfig.SpanSignalEnergy - 1).Sum();
-                double pSignal = DynamicPerfAnalysis.SubArray(powerNorm,
-                    baseSignal.yIndex - FftAnalysisPropertyConfig.SpanSignalEnergy,
-                    baseSignal.yIndex + FftAnalysisPropertyConfig.SpanSignalEnergy).Sum();
-
-                double[] fHarmonic = new double[FftAnalysisPropertyConfig.NHarmonic];
-                int[] fHarmonicIndex = new int[FftAnalysisPropertyConfig.NHarmonic];
-                double[] pHarmonic = new double[FftAnalysisPropertyConfig.NHarmonic];
-                double[] dBHarmonic = new double[FftAnalysisPropertyConfig.NHarmonic];
-
-                for (int i = 1; i <= FftAnalysisPropertyConfig.NHarmonic; i++)
-                {
-                    fHarmonic[i - 1] = i * baseSignal.fc;
-                    fHarmonicIndex[i - 1] = i * (baseSignal.yIndex - 1) + 1;
-
-                    (double fc, int yIndex, double yMax) harmonic = DynamicPerfAnalysis.FindMax(freq, powerNorm,
-                        fHarmonicIndex[i - 1] - FftAnalysisPropertyConfig.SpanHarmonicPeak,
-                        fHarmonicIndex[i - 1] + FftAnalysisPropertyConfig.SpanHarmonicPeak);
-
-                    fHarmonic[i - 1] = harmonic.fc;
-                    fHarmonicIndex[i - 1] = harmonic.yIndex;
-                    pHarmonic[i - 1] = DynamicPerfAnalysis.SubArray(powerNorm,
-                        harmonic.yIndex - FftAnalysisPropertyConfig.SpanHarmonicEnergy,
-                        harmonic.yIndex + FftAnalysisPropertyConfig.SpanHarmonicEnergy).Sum();
-
-                    if (i != 1)
-                    {
-                        dBHarmonic[i - 1] = 10 * Math.Log10(pHarmonic[i - 1] / pHarmonic[0]);
-                        FftAnalysisReports.Add(new FftAnalysisReport("信号", "谐波" + i, string.Format("{0:F3} Hz", fHarmonic[i - 1]), string.Format("{0:F3} dB", dBHarmonic[i - 1])));
-                    }
-                }
-
-                pHarmonic[0] = 0;
-
-                double pDistortion = pHarmonic.Sum();
-                double pNoise = powerNorm.Sum() - pDc - pSignal - pDistortion;
-
-                double SNR = 10 * Math.Log10(pSignal / pNoise);
-                double THD = 10 * Math.Log10(pDistortion / pSignal);
-                double SINAD = 10 * Math.Log10(pSignal / (pNoise + pDistortion));
-                double ENOB = (SINAD - 1.76) / 6.02;
-
-                FftAnalysisReports.Add(new FftAnalysisReport("性能", "SNR", string.Format("{0:F3} dB",SNR)));
-                FftAnalysisReports.Add(new FftAnalysisReport("性能", "THD", string.Format("{0:F3} dB", THD)));
-                FftAnalysisReports.Add(new FftAnalysisReport("性能", "SINAD", string.Format("{0:F3} dB", SINAD)));
-                FftAnalysisReports.Add(new FftAnalysisReport("性能", "ENOB", string.Format("{0:F3} Bits", ENOB)));
+                foreach (var info in perfInfo)
+                    FftAnalysisReports.Add(new FftAnalysisReport("性能", info.Key, $"{info.Value.v1:F3} {info.Value.s1}"));
+                foreach (var info in sgnInfo)
+                    FftAnalysisReports.Add(new FftAnalysisReport("信号", info.Key, $"{info.Value.v1:F3} {info.Value.s1}", $"{info.Value.v2:F3} {info.Value.s2}"));
 
                 ChartData.SetSampling(FftAnalysisPropertyConfig.IsSampling || FftAnalysisPropertyConfig.FftN >= FftAnalysisPropertyConfig.AutoSamplingOnDataLength);
                 ChartData.ClearData();
                 switch ((string)param)
                 {
                     case "0":
-                        ChartData.AddData(t, sine);
+                        ChartData.AddData(t, v);
                         break;
                     case "1":
-                        ChartData.AddData(freq, magNorm);
+                        ChartData.AddData(f, p);
                         break;
                     default:
                         throw new NotImplementedException();

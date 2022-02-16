@@ -1193,7 +1193,7 @@
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </Button>
-                        <TextBlock Text="{Binding FftAnalysisSampleFileName}" HorizontalAlignment="Left" Margin="12,44,0,0" VerticalAlignment="Top" Height="35" Width="218" TextWrapping="Wrap"/>
+                        <TextBlock Text="{Binding FftAnalysisSampleFileName}" HorizontalAlignment="Left" Margin="12,44,0,0" VerticalAlignment="Top" Height="45" Width="291" TextWrapping="Wrap"/>
                         <Button Content="时域" HorizontalAlignment="Left" Margin="16,94,0,0" VerticalAlignment="Top" Width="70">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="Click">
