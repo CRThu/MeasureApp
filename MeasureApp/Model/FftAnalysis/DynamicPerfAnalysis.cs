@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,58 +9,260 @@ namespace MeasureApp.Model.FftAnalysis
 {
     public static class DynamicPerfAnalysis
     {
-        public static (int index, double value) FindCloseValue(double[] v, double vTarget)
+        public static double[] GetFftArray(double[] vt)
         {
-            double closestVal = v.Aggregate((x, y) => Math.Abs(x - vTarget) < Math.Abs(y - vTarget) ? x : y);
-            int closestIndex = Array.IndexOf(v, closestVal);
-            return (closestIndex, closestVal);
+            // NWaves FFT Count must be 2^N
+            int fftN = (int)Math.Pow(2, Math.Ceiling(Math.Log2(vt.Length)));
+            if (fftN != vt.Length)
+            {
+                double[] vt_new = new double[fftN];
+                vt.CopyTo(vt_new, 0);
+                vt = vt_new;
+            }
+            return vt;
         }
 
-        public static double[] SubArray(double[] x, int minIndex = -1, int maxIndex = -1)
+        public static double[] FftFreq(int fftN, double fs)
         {
-            if (minIndex < 0)
-                minIndex = 0;
-            if (maxIndex < 0)
-                maxIndex = x.Length - 1;
-            return x.Skip(minIndex).Take(maxIndex - minIndex + 1).ToArray();
+            return Enumerable.Range(0, fftN / 2 + 1).Select(k => (double)k / fftN * fs).ToArray();
         }
 
-        public static (double[] xInRange, double[] yInRange) SubArray(double[] x, double[] y, int minIndex = -1, int maxIndex = -1)
+        public static (double[] freq, double[] real, double[] imag) Fft(double[] vt, double fs = 1, string winName = null)
         {
-            double[] xInRange = SubArray(x, minIndex, maxIndex);
-            double[] yInRange = SubArray(y, minIndex, maxIndex);
-            return (xInRange, yInRange);
+            if (winName != null)
+                vt = FftWindow.AddWindow(vt, winName);
+
+            var rfft = new NWaves.Transforms.RealFft64(vt.Length);
+            double[] real = new double[vt.Length / 2 + 1];
+            double[] imag = new double[vt.Length / 2 + 1];
+
+            Stopwatch sw = new();
+            sw.Start();
+            rfft.Direct(vt, real, imag);
+            sw.Stop();
+            Debug.WriteLine($"FFT:{sw.ElapsedMilliseconds}ms.");
+            return (FftFreq(vt.Length, fs), real, imag);
         }
 
-        public static (double fc, int yIndex, double yMax) FindMax(double[] f, double[] y)
+        public static (double[] freq, double[] mag) FftMag(double[] vt, double fs = 1, string winName = null, bool removeDc = true)
         {
-            double ymax = y.Max();
-            int yIndex = Array.IndexOf(y, ymax);
-            double fc = f[yIndex];
-            return (fc, yIndex, ymax);
+            if (removeDc)
+                vt = RemoveDc(vt);
+            (double[] freq, double[] real, double[] imag) = Fft(vt, fs, winName);
+
+            for (int i = 0; i < real.Length; i++)
+                real[i] = Math.Sqrt(real[i] * real[i] + imag[i] * imag[i]);
+
+            return (freq, real);
         }
 
-        public static (double fc, int yIndex, double yMax) FindMax(double[] f, double[] y, int fminIndex, int fmaxIndex)
+        public static double[] RemoveDc(double[] v)
         {
-            (double[] fInRange, double[] yInRange) data = SubArray(f, y, fminIndex, fmaxIndex);
-            (double fc, int yIndex, double yMax) = FindMax(data.fInRange, data.yInRange);
-            return (fc, yIndex + fminIndex, yMax);
+            double avg = v.Average();
+            return v.Select(s => s - avg).ToArray();
         }
 
-        public static (double fc, int yIndex, double yMax) FindMaxClose(double[] f, double[] y, double fmin = -1, double fmax = -1)
+        public static double[] NormalizedTo0dB(double[] mag)
         {
-            (int index, double value) fminRange, fmaxRange;
+            double[] magNorm = new double[mag.Length];
 
-            if (fmin > 0)
-                fminRange = FindCloseValue(f, fmin);
+            for (int i = 0; i < mag.Length; i++)
+                magNorm[i] = 20 * Math.Log10(mag[i]);
+
+            double maxdB = magNorm.Max();
+            for (int i = 0; i < magNorm.Length; i++)
+                magNorm[i] -= maxdB;
+
+            return magNorm;
+        }
+
+        public static Dictionary<string, (double, string)> CalcPerfP(double pSignal, double pNoise, double pDistortion)
+        {
+            double SNR = 10 * Math.Log10(pSignal / pNoise);
+            double THD = 10 * Math.Log10(pDistortion / pSignal);
+            double SINAD = 10 * Math.Log10(pSignal / (pNoise + pDistortion));
+            double ENOB = (SINAD - 1.76) / 6.02;
+
+            Dictionary<string, (double, string)> perfInfo = new()
+            {
+                { "SNR", (SNR, "dB") },
+                { "THD", (THD, "dB") },
+                { "SINAD", (SINAD, "dB") },
+                { "ENOB", (ENOB, "Bits") },
+            };
+
+            return perfInfo;
+        }
+
+        public static Dictionary<string, (double, string)> CalcPerfV(double vSignal, double vNoise, double vDistortion)
+        {
+            double SNR = 10 * Math.Log10(vSignal / vNoise);
+            double THD = 10 * Math.Log10(vDistortion / vSignal);
+            double SINAD = 10 * Math.Log10(vSignal / (vNoise + vDistortion));
+            double ENOB = (SINAD - 1.76) / 6.02;
+
+            Dictionary<string, (double, string)> perfInfo = new()
+            {
+                { "SNR", (SNR, "dB") },
+                { "THD", (THD, "dB") },
+                { "SINAD", (SINAD, "dB") },
+                { "ENOB", (ENOB, "Bits") },
+            };
+
+            return perfInfo;
+        }
+
+        // 能量校正法分析动态性能
+        // 时域: t, v
+        // 频域: f, p
+        // 性能: perfInfo, 信号: sgnInfo
+
+        public static (double[] t, double[] v, double[] f, double[] p,
+            Dictionary<string, (double, string)> perfInfo,
+            Dictionary<string, (double, string, double, string)> sgnInfo)
+            FftAnalysisEnergyCorrection(double[] samples, FftAnalysisPropertyConfigs cfg)
+        {
+            return FftAnalysisEnergyCorrection(samples,
+                    cfg.Fs,
+                    cfg.Window,
+                    cfg.FftN,
+                    cfg.NHarmonic,
+                    cfg.SpanSignalEnergy,
+                    cfg.SpanHarmonicPeak,
+                    cfg.SpanHarmonicEnergy);
+        }
+
+        public static (double[] t, double[] v, double[] f, double[] p,
+            Dictionary<string, (double, string)> perfInfo,
+            Dictionary<string, (double, string, double, string)> sgnInfo)
+            FftAnalysisEnergyCorrection(double[] samples, double fs, string window, int? fftN = null,
+            int nHarmonic = 5, int spanSignalEnergy = 5, int spanHarmonicPeak = 2, int spanHarmonicEnergy = 1)
+        {
+            Dictionary<string, (double, string, double, string)> sgnInfo = new();
+
+            double[] v = samples.Take(fftN ?? samples.Length).ToArray();
+            double[] t = Enumerable.Range(0, v.Length).Select(t => t / fs).ToArray();
+
+            (double[] freq, double[] mag) = FftMag(v, fs, window);
+            double[] magNorm = NormalizedTo0dB(mag);
+            double[] powerNorm = mag.Select(m => m * m).ToArray();
+
+            (double fc, int yIndex, double yMax) baseSignal = DynamicPerfAnalysisUtility.FindMax(freq, magNorm);
+            sgnInfo.Add("Base", (baseSignal.fc, "Hz", baseSignal.yMax, "dB"));
+
+            double pDc = DynamicPerfAnalysisUtility.SubArray(powerNorm, 0, spanSignalEnergy - 1).Sum();
+            double pSignal = DynamicPerfAnalysisUtility.SubArray(powerNorm,
+                baseSignal.yIndex - spanSignalEnergy,
+                baseSignal.yIndex + spanSignalEnergy).Sum();
+
+            double[] fHarmonic = new double[nHarmonic];
+            int[] fHarmonicIndex = new int[nHarmonic];
+            double[] pHarmonic = new double[nHarmonic];
+            double[] dBHarmonic = new double[nHarmonic];
+
+            for (int i = 1; i <= nHarmonic; i++)
+            {
+                fHarmonic[i - 1] = i * baseSignal.fc;
+                fHarmonicIndex[i - 1] = i * (baseSignal.yIndex - 1) + 1;
+
+                (double fc, int yIndex, double yMax) harmonic = DynamicPerfAnalysisUtility.FindMax(freq, powerNorm,
+                    fHarmonicIndex[i - 1] - spanHarmonicPeak,
+                    fHarmonicIndex[i - 1] + spanHarmonicPeak);
+
+                fHarmonic[i - 1] = harmonic.fc;
+                fHarmonicIndex[i - 1] = harmonic.yIndex;
+                pHarmonic[i - 1] = DynamicPerfAnalysisUtility.SubArray(powerNorm,
+                    harmonic.yIndex - spanHarmonicEnergy,
+                    harmonic.yIndex + spanHarmonicEnergy).Sum();
+
+                if (i != 1)
+                {
+                    dBHarmonic[i - 1] = 10 * Math.Log10(pHarmonic[i - 1] / pHarmonic[0]);
+                    sgnInfo.Add("HD" + i, (fHarmonic[i - 1], "Hz", dBHarmonic[i - 1], "dB"));
+                }
+            }
+
+            pHarmonic[0] = 0;
+
+            double pDistortion = pHarmonic.Sum();
+            double pNoise = powerNorm.Sum() - pDc - pSignal - pDistortion;
+
+            var perfInfo = CalcPerfP(pSignal, pNoise, pDistortion);
+
+            return (t, v, freq, magNorm, perfInfo, sgnInfo);
+        }
+
+        // 幅值校正法分析动态性能
+        public static (double[] t, double[] v, double[] f, double[] p,
+            Dictionary<string, (double, string)> perfInfo,
+            Dictionary<string, (double, string, double, string)> sgnInfo)
+            FftAnalysisAmplitudeCorrection(double[] samples, FftAnalysisPropertyConfigs cfg)
+        {
+            return FftAnalysisAmplitudeCorrection(samples,
+                    cfg.Fs,
+                    cfg.Window,
+                    cfg.FftN,
+                    cfg.NHarmonic,
+                    cfg.FullScale,
+                    cfg.SpanHarmonicPeak);
+        }
+
+        public static (double[] t, double[] v, double[] f, double[] p,
+            Dictionary<string, (double, string)> perfInfo,
+            Dictionary<string, (double, string, double, string)> sgnInfo)
+            FftAnalysisAmplitudeCorrection(double[] samples, double fs, string window, int? fftN = null,
+            int nHarmonic = 5, double fullScale = 1, int spanHarmonicPeak = 2)
+        {
+            double fullScaleVamp = fullScale / 2;
+            double[] v = samples.Take(fftN ?? samples.Length).ToArray();
+            double[] t = Enumerable.Range(0, v.Length).Select(t => t / fs).ToArray();
+
+            (double[] freq, double[] mag) = FftMag(v, fs, window);
+            // mag = mag * 2 / N;
+            // mag = mag / fullScaleVamp;
+            // magdB = 20Log10(mag);
+            double[] magNorm = mag.Select(m => 20 * Math.Log10(m * 2 / v.Length / fullScaleVamp)).ToArray();
+
+            int spanWidth = (int)Math.Ceiling(FftWindow.WindowMainlobeWidth[window] ?? -1) - 1;
+            if (spanWidth < 0)
+                throw new NotImplementedException($"Mainlode width of window: '{window}' is error.");
+
+            // DC Center = 0, Mask = [DC : DC + L]
+            (int L, int R) maskDc = DynamicPerfAnalysisUtility.GenMaskBins(0, spanWidth, magNorm.Length);
+
+            // Signal Center = SGN, Mask = [SGN - L : SGN + L]
+            double[] maskMagNormExDc = DynamicPerfAnalysisUtility.MaskArray(magNorm, maskDc);
+            (double fc, int yIndex, double yMax) sgn = DynamicPerfAnalysisUtility.FindMax(freq, maskMagNormExDc);
+            (int L, int R) maskSgn = DynamicPerfAnalysisUtility.GenMaskBins(sgn.yIndex, spanWidth, magNorm.Length);
+
+            // Harmonic Center = HD, Mask = [HD - L : HD + L]
+            int[] hdIndexCalc = Enumerable.Range(2, nHarmonic).Select(i => (sgn.yIndex + 1) * i - 1).ToArray();
+            (double fc, int yIndex, double yMax)[] hd = new (double fc, int yIndex, double yMax)[hdIndexCalc.Length];
+            for (int i = 0; i < hdIndexCalc.Length; i++)
+                hd[i] = DynamicPerfAnalysisUtility.FindMax(freq, magNorm,
+                    hdIndexCalc[i] - spanHarmonicPeak, hdIndexCalc[i] + spanHarmonicPeak);
+            (int L, int R)[] maskHd = DynamicPerfAnalysisUtility.GenMaskBins(hd.Select(hdx => hdx.yIndex).ToArray(), spanWidth, magNorm.Length);
+
+            // Spur = Max Except Dc & Signal
+            double[] maskMagNormExDcSgn = DynamicPerfAnalysisUtility.MaskArray(magNorm, new (int L, int R)[] { maskDc, maskSgn });
+            (double fc, int yIndex, double yMax) spur = DynamicPerfAnalysisUtility.FindMax(freq, maskMagNormExDcSgn);
+
+            // Noise = Max Except Dc & Signal & Hd
+            double[] maskMagNormExDcSgnHd = DynamicPerfAnalysisUtility.MaskArray(magNorm, maskHd.Concat(new (int L, int R)[] { maskDc, maskSgn }).ToArray());
+            // TODO noise corr, inband
+            double noiseVamp = Math.Sqrt(maskMagNormExDcSgnHd.Select(v => v * v).Sum());
+
+            // PnTrue = Pn - ENBW
+            if (FftWindow.WindowEnbw[window] != null)
+                noiseVamp /= Math.Sqrt((double)FftWindow.WindowEnbw[window]);
             else
-                fminRange.index = -1;
-            if (fmax > 0)
-                fmaxRange = FindCloseValue(f, fmax);
-            else
-                fmaxRange.index = -1;
+                throw new NotImplementedException($"ENBW of window: '{window}' is error.");
 
-            return FindMax(f, y, fminRange.index, fmaxRange.index);
+            // TODO
+            //var perfInfo = CalcPerfV(pSignal, pNoise, pDistortion);
+
+
+            return (t, v, freq, magNorm, new(), new());
         }
     }
 }

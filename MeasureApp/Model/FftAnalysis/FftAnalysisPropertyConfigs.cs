@@ -49,6 +49,7 @@ namespace MeasureApp.Model.FftAnalysis
         private int spanSignalEnergy;
         private int spanHarmonicPeak;
         private int spanHarmonicEnergy;
+        private double fullScale;
 
         [Category("基础设置"), Description("分析模式"), DisplayName("分析模式"), ItemsSource(typeof(FftAnalysisModesSource))]
         public string Mode
@@ -105,6 +106,17 @@ namespace MeasureApp.Model.FftAnalysis
             }
         }
 
+        [Category("基础设置"), Description("满幅电平(正负轨电压差)"), DisplayName("满幅电平(正负轨电压差)")]
+        public double FullScale
+        {
+            get => fullScale;
+            set
+            {
+                fullScale = value;
+                RaisePropertyChanged(() => FullScale);
+            }
+        }
+
         [Category("渲染设置"), Description("抽样渲染(提高渲染速度)"), DisplayName("抽样渲染")]
         public bool IsSampling
         {
@@ -127,7 +139,7 @@ namespace MeasureApp.Model.FftAnalysis
             }
         }
 
-        [Category("能量校正设置"), Description("单边信号能量测量跨度"), DisplayName("单边信号能量测量跨度")]
+        [Category("信号设置"), Description("单边信号能量测量跨度"), DisplayName("单边信号能量测量跨度")]
         public int SpanSignalEnergy
         {
             get => spanSignalEnergy;
@@ -138,7 +150,7 @@ namespace MeasureApp.Model.FftAnalysis
             }
         }
 
-        [Category("能量校正设置"), Description("单边谐波峰值测量跨度"), DisplayName("单边谐波峰值测量跨度")]
+        [Category("信号设置"), Description("单边谐波峰值测量跨度"), DisplayName("单边谐波峰值测量跨度")]
         public int SpanHarmonicPeak
         {
             get => spanHarmonicPeak;
@@ -149,7 +161,7 @@ namespace MeasureApp.Model.FftAnalysis
             }
         }
 
-        [Category("能量校正设置"), Description("单边谐波能量测量跨度"), DisplayName("单边谐波能量测量跨度")]
+        [Category("信号设置"), Description("单边谐波能量测量跨度"), DisplayName("单边谐波能量测量跨度")]
         public int SpanHarmonicEnergy
         {
             get => spanHarmonicEnergy;
@@ -169,7 +181,8 @@ namespace MeasureApp.Model.FftAnalysis
             int autoSamplingOnDataLength = 65536,
             int spanSignalEnergy = 6,
             int spanHarmonicPeak = 3,
-            int spanHarmonicEnergy = 1)
+            int spanHarmonicEnergy = 1,
+            double fullScale = 1)
         {
             Mode = mode;
             Fs = fs;
@@ -181,6 +194,7 @@ namespace MeasureApp.Model.FftAnalysis
             SpanSignalEnergy = spanSignalEnergy;
             SpanHarmonicPeak = spanHarmonicPeak;
             SpanHarmonicEnergy = spanHarmonicEnergy;
+            FullScale = fullScale;
         }
     }
 }

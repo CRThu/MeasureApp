@@ -94,13 +94,20 @@ namespace MeasureApp.ViewModel
 
                 (double[] t, double[] v, double[] f, double[] p,
                     Dictionary<string, (double v1, string s1)> perfInfo,
-                    Dictionary<string, (double v1, string s1, double v2, string s2)> sgnInfo)
-                    = FftAnalysis.FftAnalysisEnergyCorrection(sine, FftAnalysisPropertyConfig);
+                    Dictionary<string, (double v1, string s1, double v2, string s2)> sgnInfo) fftAnaylsisResult;
+
+                // todo
+                if (FftAnalysisPropertyConfig.Mode == "EnergyCorrection")
+                    fftAnaylsisResult = DynamicPerfAnalysis.FftAnalysisEnergyCorrection(sine, FftAnalysisPropertyConfig);
+                else if (FftAnalysisPropertyConfig.Mode == "AmplitudeCorrection")
+                    fftAnaylsisResult = DynamicPerfAnalysis.FftAnalysisAmplitudeCorrection(sine, FftAnalysisPropertyConfig);
+                else
+                    throw new NotImplementedException(FftAnalysisPropertyConfig.Mode);
 
                 FftAnalysisReports.Clear();
-                foreach (var info in perfInfo)
+                foreach (var info in fftAnaylsisResult.perfInfo)
                     FftAnalysisReports.Add(new FftAnalysisReport("性能", info.Key, $"{info.Value.v1:F3} {info.Value.s1}"));
-                foreach (var info in sgnInfo)
+                foreach (var info in fftAnaylsisResult.sgnInfo)
                     FftAnalysisReports.Add(new FftAnalysisReport("信号", info.Key, $"{info.Value.v1:F3} {info.Value.s1}", $"{info.Value.v2:F3} {info.Value.s2}"));
 
                 ChartData.SetSampling(FftAnalysisPropertyConfig.IsSampling || FftAnalysisPropertyConfig.FftN >= FftAnalysisPropertyConfig.AutoSamplingOnDataLength);
@@ -108,10 +115,10 @@ namespace MeasureApp.ViewModel
                 switch ((string)param)
                 {
                     case "0":
-                        ChartData.AddData(t, v);
+                        ChartData.AddData(fftAnaylsisResult.t, fftAnaylsisResult.v);
                         break;
                     case "1":
-                        ChartData.AddData(f, p);
+                        ChartData.AddData(fftAnaylsisResult.f, fftAnaylsisResult.p);
                         break;
                     default:
                         throw new NotImplementedException();
