@@ -32,13 +32,21 @@ namespace MeasureApp.Model.FftAnalysis
             if (winName != null)
                 vt = FftWindow.AddWindow(vt, winName);
 
-            //vt= GetFftArray(vt);
-
             var rfft = new NWaves.Transforms.RealFft64(vt.Length);
             double[] real = new double[vt.Length / 2 + 1];
             double[] imag = new double[vt.Length / 2 + 1];
 
+            Stopwatch sw = new();
+            sw.Start();
             rfft.Direct(vt, real, imag);
+            sw.Stop();
+            Debug.WriteLine($"FFT:{sw.ElapsedMilliseconds}ms.");
+            Debug.WriteLine($"FFT:{string.Join(' ', real)};{string.Join(' ', imag)}");
+            sw.Restart();
+            DFT.DFTDirect(vt, real, imag);
+            sw.Stop();
+            Debug.WriteLine($"DFT:{sw.ElapsedMilliseconds}ms.");
+            Debug.WriteLine($"DFT:{string.Join(' ', real)};{string.Join(' ', imag)}");
 
             return (FftFreq(vt.Length, fs), real, imag);
         }
