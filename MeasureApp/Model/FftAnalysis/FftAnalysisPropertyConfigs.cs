@@ -181,8 +181,8 @@ namespace MeasureApp.Model.FftAnalysis
             int autoSamplingOnDataLength = 65536,
             int spanSignalEnergy = 6,
             int spanHarmonicPeak = 3,
-            int spanHarmonicEnergy = 1,
-            double fullScale = 1)
+            int spanHarmonicEnergy = 6,
+            double fullScale = 10)
         {
             Mode = mode;
             Fs = fs;
