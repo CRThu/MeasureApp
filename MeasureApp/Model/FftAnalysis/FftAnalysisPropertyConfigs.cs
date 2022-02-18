@@ -39,6 +39,10 @@ namespace MeasureApp.Model.FftAnalysis
 
     public class FftAnalysisPropertyConfigs : NotificationObjectBase
     {
+        private int fromBase;
+        private int bits;
+        private double vBias;
+        private bool hasOffset;
         private string mode;
         private double fs;
         private int fftN;
@@ -50,6 +54,50 @@ namespace MeasureApp.Model.FftAnalysis
         private int spanHarmonicPeak;
         private int spanHarmonicEnergy;
         private double fullScale;
+
+        [Category("样本设置"), Description("数据进制"), DisplayName("数据进制")]
+        public int FromBase
+        {
+            get => fromBase;
+            set
+            {
+                fromBase = value;
+                RaisePropertyChanged(() => FromBase);
+            }
+        }
+
+        [Category("样本设置"), Description("字长(Bits)"), DisplayName("字长(Bits)")]
+        public int Bits
+        {
+            get => bits;
+            set
+            {
+                bits = value;
+                RaisePropertyChanged(() => Bits);
+            }
+        }
+
+        [Category("样本设置"), Description("偏置电压"), DisplayName("偏置电压")]
+        public double VBias
+        {
+            get => vBias;
+            set
+            {
+                vBias = value;
+                RaisePropertyChanged(() => VBias);
+            }
+        }
+
+        [Category("样本设置"), Description("偏移零为中间码字"), DisplayName("偏移零为中间码字")]
+        public bool HasCodeOffset
+        {
+            get => hasOffset;
+            set
+            {
+                hasOffset = value;
+                RaisePropertyChanged(() => HasCodeOffset);
+            }
+        }
 
         [Category("基础设置"), Description("分析模式"), DisplayName("分析模式"), ItemsSource(typeof(FftAnalysisModesSource))]
         public string Mode
@@ -172,7 +220,12 @@ namespace MeasureApp.Model.FftAnalysis
             }
         }
 
-        public FftAnalysisPropertyConfigs(string mode = "EnergyCorrection",
+        public FftAnalysisPropertyConfigs(
+            int fromBase = 16,
+            int bits = 16,
+            double vBias = 0,
+            bool hasCodeOffset = true,
+            string mode = "EnergyCorrection",
             double fs = 200000,
             int fftN = 32768,
             string window = "HFT144D",
@@ -184,6 +237,10 @@ namespace MeasureApp.Model.FftAnalysis
             int spanHarmonicEnergy = 6,
             double fullScale = 10)
         {
+            FromBase = fromBase;
+            Bits = bits;
+            VBias = vBias;
+            HasCodeOffset = hasCodeOffset;
             Mode = mode;
             Fs = fs;
             FftN = fftN;

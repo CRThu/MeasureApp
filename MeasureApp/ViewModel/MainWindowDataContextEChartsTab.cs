@@ -90,7 +90,8 @@ namespace MeasureApp.ViewModel
         {
             try
             {
-                double[] sine = File.ReadAllLines(FftAnalysisSampleFileName).Select(v => (double)BaseConverter.BaseConverterUInt64(v, 16)).ToArray();
+                string[] samplesStr = File.ReadAllLines(FftAnalysisSampleFileName);
+                double[] samples = DataDecode.Decode(samplesStr, FftAnalysisPropertyConfig);
 
                 (double[] t, double[] v, double[] f, double[] p,
                     Dictionary<string, (double v1, string s1)> perfInfo,
@@ -98,9 +99,9 @@ namespace MeasureApp.ViewModel
 
                 // todo
                 if (FftAnalysisPropertyConfig.Mode == "EnergyCorrection")
-                    fftAnaylsisResult = DynamicPerfAnalysis.FftAnalysisEnergyCorrection(sine, FftAnalysisPropertyConfig);
+                    fftAnaylsisResult = DynamicPerfAnalysis.FftAnalysisEnergyCorrection(samples, FftAnalysisPropertyConfig);
                 else if (FftAnalysisPropertyConfig.Mode == "AmplitudeCorrection")
-                    fftAnaylsisResult = DynamicPerfAnalysis.FftAnalysisAmplitudeCorrection(sine, FftAnalysisPropertyConfig);
+                    fftAnaylsisResult = DynamicPerfAnalysis.FftAnalysisAmplitudeCorrection(samples, FftAnalysisPropertyConfig);
                 else
                     throw new NotImplementedException(FftAnalysisPropertyConfig.Mode);
 

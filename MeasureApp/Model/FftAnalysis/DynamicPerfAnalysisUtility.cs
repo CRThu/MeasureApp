@@ -100,5 +100,38 @@ namespace MeasureApp.Model.FftAnalysis
                 Array.Fill(maskedVals, fill, maskBin.L, maskBin.R - maskBin.L + 1);
             return maskedVals;
         }
+
+        public static double[] GetFftArray(double[] vt)
+        {
+            // NWaves FFT Count must be 2^N
+            int fftN = (int)Math.Pow(2, Math.Ceiling(Math.Log2(vt.Length)));
+            if (fftN != vt.Length)
+            {
+                double[] vt_new = new double[fftN];
+                vt.CopyTo(vt_new, 0);
+                vt = vt_new;
+            }
+            return vt;
+        }
+
+        public static double[] RemoveDc(double[] v)
+        {
+            double avg = v.Average();
+            return v.Select(s => s - avg).ToArray();
+        }
+
+        public static double[] NormalizedMaxTo0dB(double[] mag)
+        {
+            double[] magNorm = new double[mag.Length];
+
+            for (int i = 0; i < mag.Length; i++)
+                magNorm[i] = 20 * Math.Log10(mag[i]);
+
+            double maxdB = magNorm.Max();
+            for (int i = 0; i < magNorm.Length; i++)
+                magNorm[i] -= maxdB;
+
+            return magNorm;
+        }
     }
 }

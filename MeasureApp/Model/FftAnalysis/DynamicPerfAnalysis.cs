@@ -9,19 +9,6 @@ namespace MeasureApp.Model.FftAnalysis
 {
     public static class DynamicPerfAnalysis
     {
-        public static double[] GetFftArray(double[] vt)
-        {
-            // NWaves FFT Count must be 2^N
-            int fftN = (int)Math.Pow(2, Math.Ceiling(Math.Log2(vt.Length)));
-            if (fftN != vt.Length)
-            {
-                double[] vt_new = new double[fftN];
-                vt.CopyTo(vt_new, 0);
-                vt = vt_new;
-            }
-            return vt;
-        }
-
         public static double[] FftFreq(int fftN, double fs)
         {
             return Enumerable.Range(0, fftN / 2 + 1).Select(k => (double)k / fftN * fs).ToArray();
@@ -47,33 +34,13 @@ namespace MeasureApp.Model.FftAnalysis
         public static (double[] freq, double[] mag) FftMag(double[] vt, double fs = 1, string winName = null, bool removeDc = true)
         {
             if (removeDc)
-                vt = RemoveDc(vt);
+                vt = DynamicPerfAnalysisUtility.RemoveDc(vt);
             (double[] freq, double[] real, double[] imag) = Fft(vt, fs, winName);
 
             for (int i = 0; i < real.Length; i++)
                 real[i] = Math.Sqrt(real[i] * real[i] + imag[i] * imag[i]);
 
             return (freq, real);
-        }
-
-        public static double[] RemoveDc(double[] v)
-        {
-            double avg = v.Average();
-            return v.Select(s => s - avg).ToArray();
-        }
-
-        public static double[] NormalizedTo0dB(double[] mag)
-        {
-            double[] magNorm = new double[mag.Length];
-
-            for (int i = 0; i < mag.Length; i++)
-                magNorm[i] = 20 * Math.Log10(mag[i]);
-
-            double maxdB = magNorm.Max();
-            for (int i = 0; i < magNorm.Length; i++)
-                magNorm[i] -= maxdB;
-
-            return magNorm;
         }
 
         public static Dictionary<string, (double, string)> CalcPerfP(double pSignal, double pNoise, double pDistortion)
@@ -94,21 +61,22 @@ namespace MeasureApp.Model.FftAnalysis
             return perfInfo;
         }
 
-        public static Dictionary<string, (double, string)> CalcPerfV(double vSignal, double vNoise, double vDistortion)
+        public static Dictionary<string, (double, string)> CalcPerfV(double vSignal, double vNoise, double vDistortion, double? fullScale = null, double? vSpur = null)
         {
-            double SNR = 20 * Math.Log10(vSignal / vNoise);
-            double THD = 20 * Math.Log10(vDistortion / vSignal);
-            double SINAD = 20 * Math.Log10(vSignal / (vNoise + vDistortion));
-            double ENOB = (SINAD - 1.76) / 6.02;
-
-            Dictionary<string, (double, string)> perfInfo = new()
-            {
-                { "SNR", (SNR, "dB") },
-                { "THD", (THD, "dB") },
-                { "SINAD", (SINAD, "dB") },
-                { "ENOB", (ENOB, "Bits") },
-            };
-
+            Dictionary<string, (double, string)> perfInfo = new();
+            double FS = (fullScale ?? 0) / 2;
+            if (fullScale != null)
+                perfInfo.Add("DR", (20 * Math.Log10(FS / vNoise), "dB"));
+            perfInfo.Add("SNR", (20 * Math.Log10(vSignal / vNoise), "dB"));
+            perfInfo.Add("THD", (20 * Math.Log10(vDistortion / vSignal), "dB"));
+            perfInfo.Add("THD+N", (-20 * Math.Log10(vSignal / (vNoise + vDistortion)), "dB"));
+            perfInfo.Add("SINAD", (20 * Math.Log10(vSignal / (vNoise + vDistortion)), "dB"));
+            if (vSpur != null)
+                perfInfo.Add("SFDR", (-20 * Math.Log10(vSignal / (double)vSpur), "dB"));
+            if (fullScale != null && vSpur != null)
+                perfInfo.Add("SFDRFS", (-20 * Math.Log10(FS / (double)vSpur), "dB"));
+            if (fullScale != null)
+                perfInfo.Add("ENOB", ((20 * Math.Log10(vSignal / (vNoise + vDistortion)) - 1.76 + 20 * Math.Log10(FS / vSignal)) / 6.02, "Bits"));
             return perfInfo;
         }
 
@@ -116,7 +84,6 @@ namespace MeasureApp.Model.FftAnalysis
         // 时域: t, v
         // 频域: f, p
         // 性能: perfInfo, 信号: sgnInfo
-
         public static (double[] t, double[] v, double[] f, double[] p,
             Dictionary<string, (double, string)> perfInfo,
             Dictionary<string, (double, string, double, string)> sgnInfo)
@@ -144,7 +111,7 @@ namespace MeasureApp.Model.FftAnalysis
             double[] t = Enumerable.Range(0, v.Length).Select(t => t / fs).ToArray();
 
             (double[] freq, double[] mag) = FftMag(v, fs, window);
-            double[] magNorm = NormalizedTo0dB(mag);
+            double[] magNorm = DynamicPerfAnalysisUtility.NormalizedMaxTo0dB(mag);
             double[] powerNorm = mag.Select(m => m * m).ToArray();
 
             (double fc, int yIndex, double yMax) baseSignal = DynamicPerfAnalysisUtility.FindMax(freq, magNorm);
@@ -218,8 +185,8 @@ namespace MeasureApp.Model.FftAnalysis
             // mag = mag * 2 / N;
             // mag = mag / fullScaleVamp;
             // magdB = 20Log10(mag);
-            double[] magNorm = mag.Select(m => m * 2 / v.Length / fullScaleVamp).ToArray();
-            double[] magNormDb = magNorm.Select(m => 20 * Math.Log10(m)).ToArray();
+            double[] magNorm = mag.Select(m => m * 2 / v.Length).ToArray();
+            double[] magNormDb = magNorm.Select(m => 20 * Math.Log10(m / fullScaleVamp)).ToArray();
 
             int spanWidth = (int)Math.Ceiling(FftWindow.WindowMainlobeWidth[window] ?? -1) - 1;
             if (spanWidth < 0)
@@ -261,7 +228,7 @@ namespace MeasureApp.Model.FftAnalysis
             else
                 throw new NotImplementedException($"ENBW of window: '{window}' is error.");
 
-            var perfInfo = CalcPerfV(sgn.yMax, noiseVamp, Math.Sqrt(hd.Select(m => m.yMax * m.yMax).Sum()));
+            var perfInfo = CalcPerfV(sgn.yMax, noiseVamp, Math.Sqrt(hd.Select(m => m.yMax * m.yMax).Sum()), fullScale, spur.yMax);
 
             return (t, v, freq, magNormDb, perfInfo, sgnInfo);
         }
