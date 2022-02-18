@@ -181,11 +181,21 @@ namespace MeasureApp.Model.FftAnalysis
             double[] v = samples.Take(fftN ?? samples.Length).ToArray();
             double[] t = Enumerable.Range(0, v.Length).Select(t => t / fs).ToArray();
 
-            (double[] freq, double[] mag) = FftMag(v, fs, window);
+            //////////////////////////////////
+            //////////////////////////////////
+            //////////////////////////////////
+            // TEMP TODO
+            //(double[] freq, double[] mag) = FftMag(v, fs, window);
+            (double[] freq, double[] mag) = OverlappedAveragedFftMag(v, 16384, 0.9, fs, window);
+
             // mag = mag * 2 / N;
             // mag = mag / fullScaleVamp;
             // magdB = 20Log10(mag);
-            double[] magNorm = mag.Select(m => m * 2 / v.Length).ToArray();
+            //double[] magNorm = mag.Select(m => m * 2 / v.Length).ToArray();
+            double[] magNorm = mag.Select(m => m * 2 / 16384).ToArray();
+            //////////////////////////////////
+            //////////////////////////////////
+            //////////////////////////////////
             double[] magNormDb = magNorm.Select(m => 20 * Math.Log10(m / fullScaleVamp)).ToArray();
 
             int spanWidth = (int)Math.Ceiling(FftWindow.WindowMainlobeWidth[window] ?? -1) - 1;
@@ -231,6 +241,38 @@ namespace MeasureApp.Model.FftAnalysis
             var perfInfo = CalcPerfV(sgn.yMax, noiseVamp, Math.Sqrt(hd.Select(m => m.yMax * m.yMax).Sum()), fullScale, spur.yMax);
 
             return (t, v, freq, magNormDb, perfInfo, sgnInfo);
+        }
+
+        // overlap: 0%-100%
+        public static double[][] OverlappedSamples(double[] v, int nFft, double overlap)
+        {
+            int nOverlap = (int)(nFft * (1 - overlap));
+            int[] splitIndexes = Enumerable.Range(0, ((v.Length - nFft) / nOverlap + 1)).Select(n => nOverlap * n).ToArray();
+            double[][] vs = new double[splitIndexes.Length][];
+            for (int i = 0; i < splitIndexes.Length; i++)
+            {
+                vs[i] = new double[nFft];
+                Array.Copy(v, splitIndexes[i], vs[i], 0, nFft);
+            }
+            return vs;
+        }
+
+        public static (double[] freq, double[] mag) OverlappedAveragedFftMag(double[] v, int nFft, double overlap, double fs = 1, string winName = null)
+        {
+            double[][] os = OverlappedSamples(v, nFft, overlap);
+            double[] freq = new double[nFft / 2 + 1];
+            double[] magArraySum = new double[nFft / 2 + 1];
+            for (int i = 0; i < os.Length; i++)
+            {
+                double[] magArray;
+                (freq, magArray) = FftMag(os[i], fs, winName);
+
+                for (int j = 0; j < freq.Length; j++)
+                    magArraySum[j] += magArray[j];
+            }
+
+            magArraySum = magArraySum.Select(m => m / os.Length).ToArray();
+            return (freq, magArraySum);
         }
     }
 }
