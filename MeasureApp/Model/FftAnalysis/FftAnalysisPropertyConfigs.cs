@@ -58,6 +58,9 @@ namespace MeasureApp.Model.FftAnalysis
         private int spanHarmonicEnergy;
         private double fullScale;
         private bool isNoiseCorrection;
+        private bool isTestCosineWave;
+        private double testCosineWaveFreq;
+        private double? testCosineWaveSnr;
 
         [Category("样本设置"), Description("数据进制"), DisplayName("数据进制")]
         public int FromBase
@@ -103,7 +106,7 @@ namespace MeasureApp.Model.FftAnalysis
             }
         }
 
-        [Category("切片设置"), Description("使用平均FFT"), DisplayName("使用平均FFT")]
+        [Category("切片设置"), Description("使用平均FFT(Alpha)"), DisplayName("使用平均FFT(Alpha)")]
         public bool IsAveragedFft
         {
             get => isAveragedFft;
@@ -268,6 +271,39 @@ namespace MeasureApp.Model.FftAnalysis
             }
         }
 
+        [Category("基准测试"), Description("基准波形自测试"), DisplayName("基准波形自测试")]
+        public bool IsTestCosineWave
+        {
+            get => isTestCosineWave;
+            set
+            {
+                isTestCosineWave = value;
+                RaisePropertyChanged(() => IsTestCosineWave);
+            }
+        }
+
+        [Category("基准测试"), Description("基准波形频率"), DisplayName("基准波形频率")]
+        public double TestCosineWaveFreq
+        {
+            get => testCosineWaveFreq;
+            set
+            {
+                testCosineWaveFreq = value;
+                RaisePropertyChanged(() => TestCosineWaveFreq);
+            }
+        }
+
+        [Category("基准测试"), Description("基准波形信噪比"), DisplayName("基准波形信噪比")]
+        public double? TestCosineWaveSnr
+        {
+            get => testCosineWaveSnr;
+            set
+            {
+                testCosineWaveSnr = value;
+                RaisePropertyChanged(() => TestCosineWaveSnr);
+            }
+        }
+
         public FftAnalysisPropertyConfigs(
             int fromBase = 16,
             int bits = 16,
@@ -287,7 +323,10 @@ namespace MeasureApp.Model.FftAnalysis
             int spanHarmonicPeak = 3,
             int spanHarmonicEnergy = 6,
             double fullScale = 10,
-            bool isNoiseCorrection = false)
+            bool isNoiseCorrection = false,
+            bool isTestCosineWave = false,
+            double testCosineWaveFreq = 1000,
+            double? testCosineWaveSnr = null)
         {
             FromBase = fromBase;
             Bits = bits;
@@ -308,6 +347,9 @@ namespace MeasureApp.Model.FftAnalysis
             SpanHarmonicEnergy = spanHarmonicEnergy;
             FullScale = fullScale;
             IsNoiseCorrection = isNoiseCorrection;
+            IsTestCosineWave = isTestCosineWave;
+            TestCosineWaveFreq = testCosineWaveFreq;
+            TestCosineWaveSnr = testCosineWaveSnr;
         }
     }
 }

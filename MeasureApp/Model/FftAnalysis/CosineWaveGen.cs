@@ -13,9 +13,15 @@ namespace MeasureApp.Model.FftAnalysis
             double[] t = Enumerable.Range(0, n).Select(tx => (double)tx).ToArray();
             double k = 2 * Math.PI * fc / fs;
             double[] wave = t.Select(tx => vAmp * Math.Cos(k * tx + phase) + dc).ToArray();
-
-            // todo snr
-            return wave;
+            if (snr == null)
+                return wave;
+            else
+            {
+                double[] noise = wgn(wave, (double)snr);
+                for (int i = 0; i < wave.Length; i++)
+                    wave[i] += noise[i];
+                return wave;
+            }
         }
 
         public static double[] GenRandn(int n)

@@ -63,20 +63,26 @@ namespace MeasureApp.Model.FftAnalysis
 
         public static Dictionary<string, (double, string)> CalcPerfV(double vSignal, double vNoise, double vDistortion, double? fullScale = null, double? vSpur = null)
         {
+            vSignal *= vSignal;
+            vNoise *= vNoise;
+            vDistortion *= vDistortion;
+            vSpur *= vSpur;
+
             Dictionary<string, (double, string)> perfInfo = new();
             double FS = (fullScale ?? 0) / 2;
+            FS *= FS;
             if (fullScale != null)
-                perfInfo.Add("DR", (20 * Math.Log10(FS / vNoise), "dB"));
-            perfInfo.Add("SNR", (20 * Math.Log10(vSignal / vNoise), "dB"));
-            perfInfo.Add("THD", (20 * Math.Log10(vDistortion / vSignal), "dB"));
-            perfInfo.Add("THD+N", (-20 * Math.Log10(vSignal / (vNoise + vDistortion)), "dB"));
-            perfInfo.Add("SINAD", (20 * Math.Log10(vSignal / (vNoise + vDistortion)), "dB"));
+                perfInfo.Add("DR", (10 * Math.Log10(FS / vNoise), "dB"));
+            perfInfo.Add("SNR", (10 * Math.Log10(vSignal / vNoise), "dB"));
+            perfInfo.Add("THD", (10 * Math.Log10(vDistortion / vSignal), "dB"));
+            perfInfo.Add("THD+N", (-10 * Math.Log10(vSignal / (vNoise + vDistortion)), "dB"));
+            perfInfo.Add("SINAD", (10 * Math.Log10(vSignal / (vNoise + vDistortion)), "dB"));
             if (vSpur != null)
-                perfInfo.Add("SFDR", (-20 * Math.Log10(vSignal / (double)vSpur), "dB"));
+                perfInfo.Add("SFDR", (-10 * Math.Log10(vSignal / (double)vSpur), "dB"));
             if (fullScale != null && vSpur != null)
-                perfInfo.Add("SFDRFS", (-20 * Math.Log10(FS / (double)vSpur), "dB"));
+                perfInfo.Add("SFDRFS", (-10 * Math.Log10(FS / (double)vSpur), "dB"));
             if (fullScale != null)
-                perfInfo.Add("ENOB", ((20 * Math.Log10(vSignal / (vNoise + vDistortion)) - 1.76 + 20 * Math.Log10(FS / vSignal)) / 6.02, "Bits"));
+                perfInfo.Add("ENOB", ((10 * Math.Log10(vSignal / (vNoise + vDistortion)) - 1.76 + 10 * Math.Log10(FS / vSignal)) / 6.02, "Bits"));
             return perfInfo;
         }
 
