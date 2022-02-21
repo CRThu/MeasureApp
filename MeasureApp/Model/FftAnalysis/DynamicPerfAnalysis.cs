@@ -23,11 +23,11 @@ namespace MeasureApp.Model.FftAnalysis
             double[] real = new double[vt.Length / 2 + 1];
             double[] imag = new double[vt.Length / 2 + 1];
 
-            Stopwatch sw = new();
-            sw.Start();
+            //Stopwatch sw = new();
+            //sw.Start();
             rfft.Direct(vt, real, imag);
-            sw.Stop();
-            Debug.WriteLine($"FFT:{sw.ElapsedMilliseconds}ms.");
+            //sw.Stop();
+            //Debug.WriteLine($"FFT:{sw.ElapsedMilliseconds}ms.");
             return (FftFreq(vt.Length, fs), real, imag);
         }
 
@@ -166,14 +166,20 @@ namespace MeasureApp.Model.FftAnalysis
                     cfg.FftN,
                     cfg.NHarmonic,
                     cfg.FullScale,
-                    cfg.SpanHarmonicPeak);
+                    cfg.SpanHarmonicPeak,
+                    cfg.IsAveragedFft,
+                    cfg.AveragedFftLength,
+                    cfg.AveragedFftOverlap,
+                    cfg.IsNoiseCorrection);
         }
 
         public static (double[] t, double[] v, double[] f, double[] p,
             Dictionary<string, (double, string)> perfInfo,
             Dictionary<string, (double, string, double, string)> sgnInfo)
             FftAnalysisAmplitudeCorrection(double[] samples, double fs, string window, int? fftN = null,
-            int nHarmonic = 5, double fullScale = 1, int spanHarmonicPeak = 2)
+            int nHarmonic = 5, double fullScale = 1, int spanHarmonicPeak = 2,
+            bool isAveragedFft = false, int averagedFftLength = 16384, double averagedFftOverlap = 0.9,
+            bool isNoiseCorrection = false)
         {
             Dictionary<string, (double, string, double, string)> sgnInfo = new();
 
@@ -181,21 +187,22 @@ namespace MeasureApp.Model.FftAnalysis
             double[] v = samples.Take(fftN ?? samples.Length).ToArray();
             double[] t = Enumerable.Range(0, v.Length).Select(t => t / fs).ToArray();
 
-            //////////////////////////////////
-            //////////////////////////////////
-            //////////////////////////////////
-            // TEMP TODO
-            //(double[] freq, double[] mag) = FftMag(v, fs, window);
-            (double[] freq, double[] mag) = OverlappedAveragedFftMag(v, 16384, 0.9, fs, window);
-
+            (double[] freq, double[] mag) fftResult;
             // mag = mag * 2 / N;
             // mag = mag / fullScaleVamp;
             // magdB = 20Log10(mag);
-            //double[] magNorm = mag.Select(m => m * 2 / v.Length).ToArray();
-            double[] magNorm = mag.Select(m => m * 2 / 16384).ToArray();
-            //////////////////////////////////
-            //////////////////////////////////
-            //////////////////////////////////
+            double[] magNorm;
+            if (!isAveragedFft)
+            {
+                fftResult = FftMag(v, fs, window);
+                magNorm = fftResult.mag.Select(m => m * 2 / v.Length).ToArray();
+            }
+            else
+            {
+                fftResult = OverlappedAveragedFftMag(v, averagedFftLength, averagedFftOverlap, fs, window);
+                magNorm = fftResult.mag.Select(m => m * 2 / averagedFftLength).ToArray();
+            }
+
             double[] magNormDb = magNorm.Select(m => 20 * Math.Log10(m / fullScaleVamp)).ToArray();
 
             int spanWidth = (int)Math.Ceiling(FftWindow.WindowMainlobeWidth[window] ?? -1) - 1;
@@ -207,7 +214,7 @@ namespace MeasureApp.Model.FftAnalysis
 
             // Signal Center = SGN, Mask = [SGN - L : SGN + L]
             double[] maskMagNormExDc = DynamicPerfAnalysisUtility.MaskArray(magNorm, maskDc);
-            (double fc, int yIndex, double yMax) sgn = DynamicPerfAnalysisUtility.FindMax(freq, maskMagNormExDc);
+            (double fc, int yIndex, double yMax) sgn = DynamicPerfAnalysisUtility.FindMax(fftResult.freq, maskMagNormExDc);
             (int L, int R) maskSgn = DynamicPerfAnalysisUtility.GenMaskBins(sgn.yIndex, spanWidth, magNorm.Length);
             sgnInfo.Add("Base", (sgn.fc, "Hz", sgn.yMax / Math.Sqrt(2), "Vrms"));
 
@@ -215,7 +222,7 @@ namespace MeasureApp.Model.FftAnalysis
             int[] hdIndexCalc = Enumerable.Range(2, nHarmonic - 1).Select(i => (sgn.yIndex + 1) * i - 1).ToArray();
             (double fc, int yIndex, double yMax)[] hd = new (double fc, int yIndex, double yMax)[hdIndexCalc.Length];
             for (int i = 0; i < hdIndexCalc.Length; i++)
-                hd[i] = DynamicPerfAnalysisUtility.FindMax(freq, magNorm,
+                hd[i] = DynamicPerfAnalysisUtility.FindMax(fftResult.freq, magNorm,
                     hdIndexCalc[i] - spanHarmonicPeak, hdIndexCalc[i] + spanHarmonicPeak);
             (int L, int R)[] maskHd = DynamicPerfAnalysisUtility.GenMaskBins(hd.Select(hdx => hdx.yIndex).ToArray(), spanWidth, magNorm.Length);
 
@@ -224,12 +231,19 @@ namespace MeasureApp.Model.FftAnalysis
 
             // Spur = Max Except Dc & Signal
             double[] maskMagNormExDcSgn = DynamicPerfAnalysisUtility.MaskArray(magNorm, new (int L, int R)[] { maskDc, maskSgn });
-            (double fc, int yIndex, double yMax) spur = DynamicPerfAnalysisUtility.FindMax(freq, maskMagNormExDcSgn);
+            (double fc, int yIndex, double yMax) spur = DynamicPerfAnalysisUtility.FindMax(fftResult.freq, maskMagNormExDcSgn);
             sgnInfo.Add("SPUR", (spur.fc, "Hz", spur.yMax / Math.Sqrt(2), "Vrms"));
 
             // Noise = Max Except Dc & Signal & Hd
             double[] maskMagNormExDcSgnHd = DynamicPerfAnalysisUtility.MaskArray(magNorm, maskHd.Concat(new (int L, int R)[] { maskDc, maskSgn }).ToArray());
-            // TODO noise corr, inband
+            // TODO noise inband
+            if (isNoiseCorrection)
+            {
+                double mid;
+                Array.Sort(maskMagNormExDcSgnHd);
+                mid = maskMagNormExDcSgnHd[maskMagNormExDcSgnHd.Length / 2 - 1];
+                maskMagNormExDcSgnHd = maskMagNormExDcSgnHd.Select(v => v == 0 ? mid : v).ToArray();
+            }
             double noiseVamp = Math.Sqrt(maskMagNormExDcSgnHd.Select(v => v * v).Sum());
 
             // PnTrue = Pn - ENBW
@@ -240,7 +254,7 @@ namespace MeasureApp.Model.FftAnalysis
 
             var perfInfo = CalcPerfV(sgn.yMax, noiseVamp, Math.Sqrt(hd.Select(m => m.yMax * m.yMax).Sum()), fullScale, spur.yMax);
 
-            return (t, v, freq, magNormDb, perfInfo, sgnInfo);
+            return (t, v, fftResult.freq, magNormDb, perfInfo, sgnInfo);
         }
 
         // overlap: 0%-100%

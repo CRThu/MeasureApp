@@ -42,7 +42,10 @@ namespace MeasureApp.Model.FftAnalysis
         private int fromBase;
         private int bits;
         private double vBias;
-        private bool hasOffset;
+        private bool hasCodeOffset;
+        private bool isAveragedFft;
+        private int averagedFftLength;
+        private double averagedFftOverlap;
         private string mode;
         private double fs;
         private int fftN;
@@ -54,6 +57,7 @@ namespace MeasureApp.Model.FftAnalysis
         private int spanHarmonicPeak;
         private int spanHarmonicEnergy;
         private double fullScale;
+        private bool isNoiseCorrection;
 
         [Category("样本设置"), Description("数据进制"), DisplayName("数据进制")]
         public int FromBase
@@ -91,11 +95,44 @@ namespace MeasureApp.Model.FftAnalysis
         [Category("样本设置"), Description("偏移零为中间码字"), DisplayName("偏移零为中间码字")]
         public bool HasCodeOffset
         {
-            get => hasOffset;
+            get => hasCodeOffset;
             set
             {
-                hasOffset = value;
+                hasCodeOffset = value;
                 RaisePropertyChanged(() => HasCodeOffset);
+            }
+        }
+
+        [Category("切片设置"), Description("使用平均FFT"), DisplayName("使用平均FFT")]
+        public bool IsAveragedFft
+        {
+            get => isAveragedFft;
+            set
+            {
+                isAveragedFft = value;
+                RaisePropertyChanged(() => IsAveragedFft);
+            }
+        }
+
+        [Category("切片设置"), Description("平均FFT点数"), DisplayName("平均FFT点数")]
+        public int AveragedFftLength
+        {
+            get => averagedFftLength;
+            set
+            {
+                averagedFftLength = value;
+                RaisePropertyChanged(() => AveragedFftLength);
+            }
+        }
+
+        [Category("切片设置"), Description("平均FFT重叠率"), DisplayName("平均FFT重叠率")]
+        public double AveragedFftOverlap
+        {
+            get => averagedFftOverlap;
+            set
+            {
+                averagedFftOverlap = value;
+                RaisePropertyChanged(() => AveragedFftOverlap);
             }
         }
 
@@ -220,11 +257,25 @@ namespace MeasureApp.Model.FftAnalysis
             }
         }
 
+        [Category("噪声设置"), Description("噪声补偿"), DisplayName("噪声补偿")]
+        public bool IsNoiseCorrection
+        {
+            get => isNoiseCorrection;
+            set
+            {
+                isNoiseCorrection = value;
+                RaisePropertyChanged(() => IsNoiseCorrection);
+            }
+        }
+
         public FftAnalysisPropertyConfigs(
             int fromBase = 16,
             int bits = 16,
             double vBias = 0,
             bool hasCodeOffset = true,
+            bool isAveragedFft = false,
+            int averagedFftLength = 16384,
+            double averagedFftOverlap = 0.9,
             string mode = "EnergyCorrection",
             double fs = 200000,
             int fftN = 32768,
@@ -235,12 +286,16 @@ namespace MeasureApp.Model.FftAnalysis
             int spanSignalEnergy = 6,
             int spanHarmonicPeak = 3,
             int spanHarmonicEnergy = 6,
-            double fullScale = 10)
+            double fullScale = 10,
+            bool isNoiseCorrection = false)
         {
             FromBase = fromBase;
             Bits = bits;
             VBias = vBias;
             HasCodeOffset = hasCodeOffset;
+            IsAveragedFft = isAveragedFft;
+            AveragedFftLength = averagedFftLength;
+            AveragedFftOverlap = averagedFftOverlap;
             Mode = mode;
             Fs = fs;
             FftN = fftN;
@@ -252,6 +307,7 @@ namespace MeasureApp.Model.FftAnalysis
             SpanHarmonicPeak = spanHarmonicPeak;
             SpanHarmonicEnergy = spanHarmonicEnergy;
             FullScale = fullScale;
+            IsNoiseCorrection = isNoiseCorrection;
         }
     }
 }
