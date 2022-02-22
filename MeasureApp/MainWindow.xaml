@@ -1384,29 +1384,12 @@
                     </Grid>
                 </TabItem>
                 <TabItem Header="测试页">
-                    <ScrollViewer Background="#eee">
-                        <ItemsControl Name="Items">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <StackPanel>
-                                        <editor:RoslynCodeEditor Margin="5" ShowLineNumbers="True"
-                                            IsReadOnly="{Binding IsReadOnly}"
-                                            HorizontalScrollBarVisibility="Disabled"
-                                            VerticalScrollBarVisibility="Disabled"
-                                            Loaded="OnItemLoaded"
-                                            PreviewKeyDown="OnEditorKeyDown">
-                                            <!--<i:Interaction.Triggers>
-                                                <i:EventTrigger EventName="OnItemLoaded">
-                                                    <vmc:EventCommandBase Command="{Binding }"/>
-                                                </i:EventTrigger>
-                                            </i:Interaction.Triggers>-->
-                                        </editor:RoslynCodeEditor>
-                                        <TextBlock Text="{Binding Result}" TextWrapping="Wrap"/>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </ScrollViewer>
+                    <Grid>
+                        <view:BindableRoslynCodeEditor Margin="5,5,0,0" ShowLineNumbers="True"
+                                                       Text="{Binding RoslynCodeEditorText}"
+                                                       HorizontalAlignment="Left" VerticalAlignment="Top" Width="597" Height="300"/>
+                        <TextBlock Text="{Binding RoslynCodeEditorText}" TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Left" Width="357" Height="300" Margin="607,5,0,0"/>
+                    </Grid>
                 </TabItem>
             </TabControl>
         </Grid>
