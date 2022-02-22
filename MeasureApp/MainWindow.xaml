@@ -11,6 +11,7 @@
         xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         xmlns:geared="clr-namespace:LiveCharts.Geared;assembly=LiveCharts.Geared" xmlns:webview="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:editor="clr-namespace:RoslynPad.Editor;assembly=RoslynPad.Editor.Windows"
         mc:Ignorable="d"
         Title="MeasureApp" Height="600" Width="1000">
     <i:Interaction.Triggers>
@@ -1381,6 +1382,31 @@
                             <TextBlock Text="{Binding SettingsVersionText}" Margin="5,5,5,5" TextWrapping="Wrap"/>
                         </Border>
                     </Grid>
+                </TabItem>
+                <TabItem Header="测试页">
+                    <ScrollViewer Background="#eee">
+                        <ItemsControl Name="Items">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel>
+                                        <editor:RoslynCodeEditor Margin="5" ShowLineNumbers="True"
+                                            IsReadOnly="{Binding IsReadOnly}"
+                                            HorizontalScrollBarVisibility="Disabled"
+                                            VerticalScrollBarVisibility="Disabled"
+                                            Loaded="OnItemLoaded"
+                                            PreviewKeyDown="OnEditorKeyDown">
+                                            <!--<i:Interaction.Triggers>
+                                                <i:EventTrigger EventName="OnItemLoaded">
+                                                    <vmc:EventCommandBase Command="{Binding }"/>
+                                                </i:EventTrigger>
+                                            </i:Interaction.Triggers>-->
+                                        </editor:RoslynCodeEditor>
+                                        <TextBlock Text="{Binding Result}" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
                 </TabItem>
             </TabControl>
         </Grid>
