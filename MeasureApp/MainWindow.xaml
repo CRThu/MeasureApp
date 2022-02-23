@@ -1046,7 +1046,8 @@
                         <GroupBox Header="自动化脚本" Margin="10,10,10.2,10">
                             <Grid>
                                 <Border Margin="156,10,10,10" BorderBrush="Gray" BorderThickness="1.5">
-                                    <view:BindableAvalonEditor x:Name="AutomationCodeEditor" Text="{Binding AutomationCodeEditorText}" SyntaxHighlighting="C#" ShowLineNumbers="True" FontFamily="Consolas" FontSize="10pt"/>
+                                    <!--<view:BindableAvalonEditor x:Name="AutomationCodeEditor" Text="{Binding AutomationCodeEditorText}" SyntaxHighlighting="C#" ShowLineNumbers="True" FontFamily="Consolas" FontSize="10pt"/>-->
+                                    <view:BindableRoslynCodeEditor Text="{Binding AutomationCodeEditorText}" ShowLineNumbers="True" FontFamily="Consolas" FontSize="10pt"/>
                                 </Border>
                                 <Button Content="加载" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="30" Width="68">
                                     <i:Interaction.Triggers>
@@ -1384,12 +1385,7 @@
                     </Grid>
                 </TabItem>
                 <TabItem Header="测试页">
-                    <Grid>
-                        <view:BindableRoslynCodeEditor Margin="5,5,0,0" ShowLineNumbers="True"
-                                                       Text="{Binding RoslynCodeEditorText}"
-                                                       HorizontalAlignment="Left" VerticalAlignment="Top" Width="597" Height="300"/>
-                        <TextBlock Text="{Binding RoslynCodeEditorText}" TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Left" Width="357" Height="300" Margin="607,5,0,0"/>
-                    </Grid>
+                    <Grid/>
                 </TabItem>
             </TabControl>
         </Grid>

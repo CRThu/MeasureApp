@@ -16,15 +16,5 @@ namespace MeasureApp.ViewModel
 {
     public partial class MainWindowDataContext : NotificationObjectBase
     {
-        private string roslynCodeEditorText;
-        public string RoslynCodeEditorText
-        {
-            get => roslynCodeEditorText;
-            set
-            {
-                roslynCodeEditorText = value;
-                RaisePropertyChanged(() => RoslynCodeEditorText);
-            }
-        }
     }
 }
