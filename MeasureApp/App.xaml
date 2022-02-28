@@ -6,11 +6,14 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <!--<ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/SkinDefault.xaml"/>
-                <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/Theme.xaml"/>-->
-                <!--<ResourceDictionary Source="pack://application:,,,/Mahapps.Metro;component/Styles/Controls.xaml"/>
-                <ResourceDictionary Source="pack://application:,,,/Mahapps.Metro;component/Styles/Fonts.xaml"/>
-                <ResourceDictionary Source="pack://application:,,,/Mahapps.Metro;component/Styles/Themes/Light.Blue.xaml"/>-->
+                <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/SkinDefault.xaml"/>
+                <!--<ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/SkinDark.xaml"/>-->
+                <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/Theme.xaml"/>
+                <!--<ResourceDictionary Source="pack://application:,,,/Mahapps.Metro;component/Styles/Controls.xaml"/>-->
+                <!--<ResourceDictionary Source="pack://application:,,,/Mahapps.Metro;component/Styles/Fonts.xaml"/>-->
+                <!--<ResourceDictionary Source="pack://application:,,,/Mahapps.Metro;component/Styles/Themes/Dark.Blue.xaml"/>-->
+                <ResourceDictionary Source="/AvalonDock.Themes.VS2013;component/LightBrushs.xaml"/>
+                <!--<ResourceDictionary Source="/AvalonDock.Themes.VS2013;component/DarkBrushs.xaml"/>-->
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
