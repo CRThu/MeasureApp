@@ -1,0 +1,84 @@
+﻿<Page x:Class="MeasureApp.View.Pages.FftAnalysisPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:MeasureApp.View.Pages" xmlns:i="http://schemas.microsoft.com/xaml/behaviors" xmlns:vmc="clr-namespace:MeasureApp.ViewModel.Common" xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" xmlns:view="clr-namespace:MeasureApp.View.Control" xmlns:viewmodel="clr-namespace:MeasureApp.ViewModel"
+      mc:Ignorable="d"
+      Title="FftAnalysisPage">
+    <Page.Resources>
+        <viewmodel:Bool2ControlVisibilityConverter x:Key="Bool2ControlVisibilityConverter"/>
+        <viewmodel:BoolInverter2ControlVisibilityConverter x:Key="BoolInverter2ControlVisibilityConverter"/>
+    </Page.Resources>
+    <Grid>
+        <Button Content="加载现有采样文件" HorizontalAlignment="Left" Margin="12,20,0,0" VerticalAlignment="Top" Width="122">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="Click">
+                    <vmc:EventCommandBase Command="{Binding FftAnalysisLoadSampleFileEvent}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </Button>
+        <TextBlock Text="{Binding FftAnalysisSampleFileName}" HorizontalAlignment="Left" Margin="12,44,0,0" VerticalAlignment="Top" Height="45" Width="291" TextWrapping="Wrap"/>
+        <Button Content="时域" HorizontalAlignment="Left" Margin="16,94,0,0" VerticalAlignment="Top" Width="70">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="Click">
+                    <vmc:EventCommandBase Command="{Binding UpdateEChartsTestEvent}" CommandParameter="0"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </Button>
+        <Button Content="频域" HorizontalAlignment="Left" Margin="104,94,0,0" VerticalAlignment="Top" Width="70">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="Click">
+                    <vmc:EventCommandBase Command="{Binding UpdateEChartsTestEvent}" CommandParameter="1"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </Button>
+        <CheckBox Name="FftAnalysisPropertyConfigVisibleCheckBox" Content="FFT分析设置" HorizontalAlignment="Left" Margin="200,96,0,0" VerticalAlignment="Top"/>
+        <Grid Margin="10,118,0,10" HorizontalAlignment="Left" Width="293" Visibility="{Binding ElementName=FftAnalysisPropertyConfigVisibleCheckBox,Path=IsChecked,Converter={StaticResource Bool2ControlVisibilityConverter}}">
+            <xctk:PropertyGrid SelectedObject="{Binding FftAnalysisPropertyConfig}" Margin="3,3,3,3"/>
+        </Grid>
+        <Grid Margin="10,118,0,10" HorizontalAlignment="Left" Width="293" Visibility="{Binding ElementName=FftAnalysisPropertyConfigVisibleCheckBox,Path=IsChecked,Converter={StaticResource BoolInverter2ControlVisibilityConverter}}">
+            <Grid.Resources>
+                <CollectionViewSource x:Key="FftAnalysisReportGroupView" Source="{Binding FftAnalysisReports}">
+                    <CollectionViewSource.GroupDescriptions>
+                        <PropertyGroupDescription PropertyName="GroupName"/>
+                    </CollectionViewSource.GroupDescriptions>
+                </CollectionViewSource>
+            </Grid.Resources>
+            <ListView ItemsSource="{Binding Source={StaticResource FftAnalysisReportGroupView}}" Margin="3,3,3,50">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="分析项" DisplayMemberBinding="{Binding Name}" Width="90"/>
+                        <GridViewColumn Header="结果项1" DisplayMemberBinding="{Binding Result1}" Width="90"/>
+                        <GridViewColumn Header="结果项2" DisplayMemberBinding="{Binding Result2}" Width="90"/>
+                    </GridView>
+                </ListView.View>
+                <ListView.GroupStyle>
+                    <GroupStyle>
+                        <GroupStyle.ContainerStyle>
+                            <Style TargetType="{x:Type GroupItem}">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type GroupItem}">
+                                            <Expander IsExpanded="True" BorderBrush="Gray" BorderThickness="1">
+                                                <Expander.Header>
+                                                    <DockPanel>
+                                                        <TextBlock FontWeight="Bold" Text="{Binding Name}" Margin="5,0,0,0" Width="auto"/>
+                                                    </DockPanel>
+                                                </Expander.Header>
+                                                <Expander.Content>
+                                                    <ItemsPresenter/>
+                                                </Expander.Content>
+                                            </Expander>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </GroupStyle.ContainerStyle>
+                    </GroupStyle>
+                </ListView.GroupStyle>
+            </ListView>
+        </Grid>
+        <view:EChartsLine Margin="308,20,10,10" Data="{Binding ChartData,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"/>
+    </Grid>
+</Page>

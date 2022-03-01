@@ -62,7 +62,7 @@
                 </ad:DockingManager.Theme>
                 <ad:LayoutRoot>
                     <ad:LayoutPanel Orientation="Horizontal" DockHeight="Auto" DockWidth="Auto">
-                        <ad:LayoutAnchorablePaneGroup DockMinWidth="240" FloatingWidth="240">
+                        <ad:LayoutAnchorablePaneGroup DockMinWidth="120" FloatingWidth="240">
                             <ad:LayoutAnchorablePane Name="panelLeft" DockHeight="*" DockWidth="*">
                                 <ad:LayoutAnchorable Title="Left1" CanHide="False">
                                 </ad:LayoutAnchorable>
@@ -70,8 +70,8 @@
                                 </ad:LayoutAnchorable>
                             </ad:LayoutAnchorablePane>
                         </ad:LayoutAnchorablePaneGroup>
-                        <ad:LayoutDocumentPaneGroup>
-                            <ad:LayoutDocumentPane x:Name="panelTop">
+                        <ad:LayoutDocumentPaneGroup DockHeight="Auto" DockWidth="Auto">
+                            <ad:LayoutDocumentPane x:Name="panelTop" DockHeight="*" DockWidth="*">
                                 <ad:LayoutAnchorable Title="设备连接" CanHide="False">
                                     <ad:LayoutAnchorable.Content>
                                         <Frame Content="{Binding Pages.DevicesConnectionPage}"/>
@@ -83,396 +83,340 @@
                                     </ad:LayoutAnchorable.Content>
                                 </ad:LayoutAnchorable>
                                 <ad:LayoutAnchorable Title="串口指令通信" CanHide="False">
+                                    <ad:LayoutAnchorable.Content>
+                                        <Frame Content="{Binding Pages.SerialPortInstructionPage}"/>
+                                    </ad:LayoutAnchorable.Content>
+                                </ad:LayoutAnchorable>
+                                <ad:LayoutAnchorable Title="串口数据包通信" CanHide="False">
+                                    <ad:LayoutAnchorable.Content>
+                                        <Frame Content="{Binding Pages.SerialPortPacketPage}"/>
+                                    </ad:LayoutAnchorable.Content>
+                                </ad:LayoutAnchorable>
+                                <ad:LayoutAnchorable Title="可视化" CanHide="False">
+                                    <ad:LayoutAnchorable.Content>
+                                        <Frame Content="{Binding Pages.DataStorageVisualizationPage}"/>
+                                    </ad:LayoutAnchorable.Content>
+                                </ad:LayoutAnchorable>
+                                <ad:LayoutAnchorable Title="自动化" CanHide="False">
+                                    <ad:LayoutAnchorable.Content>
+                                        <Frame Content="{Binding Pages.AutomationPage}"/>
+                                    </ad:LayoutAnchorable.Content>
+                                </ad:LayoutAnchorable>
+                                <ad:LayoutAnchorable Title="FFT分析" CanHide="False">
+                                    <ad:LayoutAnchorable.Content>
+                                        <Frame Content="{Binding Pages.FftAnalysisPage}"/>
+                                    </ad:LayoutAnchorable.Content>
+                                </ad:LayoutAnchorable>
+                                <ad:LayoutAnchorable Title="实用工具" CanHide="False">
                                     <Grid>
-                                        <TextBlock Text="串口选择：" TextWrapping="Wrap" Margin="10,14,0,0" TextAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Left"/>
-                                        <ComboBox ItemsSource="{Binding SerialPortsInstance.SerialPortsDict, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Key" SelectedValue="{Binding SerialportCommandPortNameSelectedValue, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Key" HorizontalAlignment="Left" Margin="75,10,0,0" VerticalAlignment="Top" Width="97" Height="23"/>
-                                        <Button Content="{Binding SerialPortCommandIsListeningDataReceived,Converter={StaticResource SerialPortCommandIsListeningButtonContentConverter}}" Margin="447,10,0,0" HorizontalAlignment="Left" Width="106" Height="23" VerticalAlignment="Top">
-                                            <i:Interaction.Triggers>
-                                                <i:EventTrigger EventName="Click">
-                                                    <vmc:EventCommandBase Command="{Binding SerialPortCommandListenEvent}"/>
-                                                </i:EventTrigger>
-                                            </i:Interaction.Triggers>
-                                        </Button>
-                                        <Button Content="清空记录" Margin="558,10,0,0" HorizontalAlignment="Left" Width="106" Height="23" VerticalAlignment="Top">
-                                            <i:Interaction.Triggers>
-                                                <i:EventTrigger EventName="Click">
-                                                    <vmc:EventCommandBase Command="{Binding SerialPortCommandCleanLogEvent}"/>
-                                                </i:EventTrigger>
-                                            </i:Interaction.Triggers>
-                                        </Button>
-                                        <Button Content="导出记录" Margin="669,10,0,0" HorizontalAlignment="Left" Width="106" Height="23" VerticalAlignment="Top">
-                                            <i:Interaction.Triggers>
-                                                <i:EventTrigger EventName="Click">
-                                                    <vmc:EventCommandBase Command="{Binding SerialPortCommandSaveLogEvent}"/>
-                                                </i:EventTrigger>
-                                            </i:Interaction.Triggers>
-                                        </Button>
-                                        <CheckBox Name="SerialPortCommandLogIsAutoScrollCheckBox" IsChecked="True" Content="自动滚动" VerticalAlignment="Top" Margin="780,14,0,0" HorizontalAlignment="Left" Width="68"/>
-                                        <Border Margin="10,261,0,10" HorizontalAlignment="Left" Width="432" BorderBrush="Gray" BorderThickness="1.5">
+                                        <GroupBox Header="位计算" Margin="10,10,0,243" HorizontalAlignment="Left" Width="446">
                                             <Grid>
-                                                <view:BindableAvalonEditor Document="{Binding SerialportCommandScriptEditorDocument}" Margin="5,5,0,5" ShowLineNumbers="True" FontFamily="Consolas" FontSize="10pt" HorizontalAlignment="Left" Width="284"/>
-                                                <Button Content="加载" Margin="294,10,0,0" VerticalAlignment="Top" Height="28" HorizontalAlignment="Left" Width="60">
-                                                    <i:Interaction.Triggers>
-                                                        <i:EventTrigger EventName="Click">
-                                                            <vmc:EventCommandBase Command="{Binding SerialPortCommandScriptLoadFileEvent}"/>
-                                                        </i:EventTrigger>
-                                                    </i:Interaction.Triggers>
-                                                </Button>
-                                                <Button Content="保存" Margin="359,10,0,0" VerticalAlignment="Top" Height="28" HorizontalAlignment="Left" Width="60">
-                                                    <i:Interaction.Triggers>
-                                                        <i:EventTrigger EventName="Click">
-                                                            <vmc:EventCommandBase Command="{Binding SerialPortCommandScriptSaveFileEvent}"/>
-                                                        </i:EventTrigger>
-                                                    </i:Interaction.Triggers>
-                                                </Button>
-                                                <Button Content="运行" Margin="294,43,0,0" VerticalAlignment="Top" Height="28" HorizontalAlignment="Left" Width="60">
-                                                    <i:Interaction.Triggers>
-                                                        <i:EventTrigger EventName="Click">
-                                                            <vmc:EventCommandBase Command="{Binding SerialPortCommandScriptRunEvent}" CommandParameter="Run"/>
-                                                        </i:EventTrigger>
-                                                    </i:Interaction.Triggers>
-                                                </Button>
-                                                <Button Content="单步" Margin="294,76,0,0" VerticalAlignment="Top" Height="28" HorizontalAlignment="Left" Width="60">
-                                                    <i:Interaction.Triggers>
-                                                        <i:EventTrigger EventName="Click">
-                                                            <vmc:EventCommandBase Command="{Binding SerialPortCommandScriptRunEvent}" CommandParameter="RunOnce"/>
-                                                        </i:EventTrigger>
-                                                    </i:Interaction.Triggers>
-                                                </Button>
-                                                <Button Content="行数重置" Margin="359,76,0,0" VerticalAlignment="Top" Height="28" HorizontalAlignment="Left" Width="60">
-                                                    <i:Interaction.Triggers>
-                                                        <i:EventTrigger EventName="Click">
-                                                            <vmc:EventCommandBase Command="{Binding SerialPortCommandScriptRunEvent}" CommandParameter="ClearCursor"/>
-                                                        </i:EventTrigger>
-                                                    </i:Interaction.Triggers>
-                                                </Button>
-                                                <CheckBox Content="至STOP" IsChecked="{Binding SerialportCommandScriptIsRunToStop}" Margin="359,49,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="70"/>
-                                                <TextBlock Text="运行延时" Margin="294,113,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="48"/>
-                                                <TextBox Text="{Binding SerialportCommandScriptRunDelayMilliSecound, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="347,112,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="37" Height="18"/>
-                                                <TextBlock Text="毫秒" Margin="389,113,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="30"/>
-                                                <TextBlock Text="行数" Margin="294,136,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="30"/>
-                                                <TextBox Text="{Binding SerialportCommandScriptCurruntLineCursor}" HorizontalAlignment="Left" Margin="329,135,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="37" Height="18"/>
-                                                <TextBlock Text="/" Margin="371,136,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="10"/>
-                                                <TextBlock Text="{Binding SerialportCommandScriptEditorDocument.LineCount}" Margin="386,136,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="33"/>
-                                            </Grid>
-                                        </Border>
-                                        <ListView Margin="447,38,10,10" ItemsSource="{Binding SerialPortLogger.LogCollection}">
-                                            <ListView.ItemContainerStyle>
-                                                <Style TargetType="{x:Type ListViewItem}">
-                                                    <Setter Property="Foreground" Value="{Binding Color}"/>
-                                                </Style>
-                                            </ListView.ItemContainerStyle>
-                                            <ListView.View>
-                                                <GridView>
-                                                    <GridViewColumn Header="时间" DisplayMemberBinding="{Binding Time, Converter={StaticResource DateTimeToStringConverter}}" Width="160"/>
-                                                    <GridViewColumn Header="发送方" DisplayMemberBinding="{Binding Host}" Width="50"/>
-                                                    <GridViewColumn Header="消息" DisplayMemberBinding="{Binding Message}" Width="300"/>
-                                                </GridView>
-                                            </ListView.View>
-                                            <i:Interaction.Behaviors>
-                                                <viewmodel:AutoScrollBehavior IsAutoScroll="{Binding ElementName=SerialPortCommandLogIsAutoScrollCheckBox, Path=IsChecked}"/>
-                                            </i:Interaction.Behaviors>
-                                        </ListView>
-                                        <TabControl Margin="10,38,0,0" HorizontalAlignment="Left" Width="432" Height="218" VerticalAlignment="Top" TabStripPlacement="Left">
-                                            <TabItem Header="基本">
-                                                <Grid>
-                                                    <!--ShowGridLines="True"-->
+                                                <Grid Height="70" Width="340" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,20,0,0">
                                                     <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="1*"/>
-                                                        <ColumnDefinition Width="1*"/>
-                                                        <ColumnDefinition Width="1*"/>
-                                                        <ColumnDefinition Width="1*"/>
-                                                        <ColumnDefinition Width="1*"/>
+                                                        <ColumnDefinition Width="20"/>
+                                                        <ColumnDefinition Width="20"/>
+                                                        <ColumnDefinition Width="20"/>
+                                                        <ColumnDefinition Width="20"/>
+                                                        <ColumnDefinition Width="20"/>
+                                                        <ColumnDefinition Width="20"/>
+                                                        <ColumnDefinition Width="20"/>
+                                                        <ColumnDefinition Width="20"/>
+                                                        <ColumnDefinition Width="20"/>
+                                                        <ColumnDefinition Width="20"/>
+                                                        <ColumnDefinition Width="20"/>
+                                                        <ColumnDefinition Width="20"/>
+                                                        <ColumnDefinition Width="20"/>
+                                                        <ColumnDefinition Width="20"/>
+                                                        <ColumnDefinition Width="20"/>
+                                                        <ColumnDefinition Width="20"/>
+                                                        <ColumnDefinition Width="20"/>
                                                     </Grid.ColumnDefinitions>
                                                     <Grid.RowDefinitions>
-                                                        <RowDefinition Height="30"/>
-                                                        <RowDefinition Height="30"/>
-                                                        <RowDefinition Height="30"/>
-                                                        <RowDefinition Height="30"/>
-                                                        <RowDefinition Height="30"/>
-                                                        <RowDefinition Height="30"/>
-                                                        <RowDefinition Height="30"/>
-                                                        <RowDefinition Height="1*"/>
+                                                        <RowDefinition Height="15"/>
+                                                        <RowDefinition Height="20"/>
+                                                        <RowDefinition Height="15"/>
+                                                        <RowDefinition Height="20"/>
                                                     </Grid.RowDefinitions>
-                                                    <Grid.Resources>
-                                                        <VisualBrush x:Key="HintTextRegisterAddress" TileMode="None" Opacity="0.5" Stretch="None" AlignmentX="Left">
-                                                            <VisualBrush.Visual>
-                                                                <TextBlock FontStyle="Italic" Text="Address"/>
-                                                            </VisualBrush.Visual>
-                                                        </VisualBrush>
-                                                        <VisualBrush x:Key="HintTextRegisterData" TileMode="None" Opacity="0.5" Stretch="None" AlignmentX="Left">
-                                                            <VisualBrush.Visual>
-                                                                <TextBlock FontStyle="Italic" Text="Data"/>
-                                                            </VisualBrush.Visual>
-                                                        </VisualBrush>
-                                                        <VisualBrush x:Key="HintTextRegisterBits" TileMode="None" Opacity="0.5" Stretch="None" AlignmentX="Left">
-                                                            <VisualBrush.Visual>
-                                                                <TextBlock FontStyle="Italic" Text="Start:End"/>
-                                                            </VisualBrush.Visual>
-                                                        </VisualBrush>
-                                                    </Grid.Resources>
-                                                    <!--TODO-->
-                                                    <TextBlock Margin="5,5,5,5" Text="{Binding SerialportCommandModels[0].CommandInfo}" Grid.Row="0" Grid.Column="0"/>
-                                                    <Button Margin="5,5,5,5" Content="{Binding SerialportCommandModels[0].CommandText}" Grid.Row="0" Grid.Column="3">
-                                                        <i:Interaction.Triggers>
-                                                            <i:EventTrigger EventName="Click">
-                                                                <vmc:EventCommandBase Command="{Binding SerialPortCommandSendEvent}" CommandParameter="0"/>
-                                                            </i:EventTrigger>
-                                                        </i:Interaction.Triggers>
-                                                    </Button>
-                                                    <Button Margin="5,5,5,5" Content="{Binding SerialportCommandModels[1].CommandText}" Grid.Row="0" Grid.Column="4">
-                                                        <i:Interaction.Triggers>
-                                                            <i:EventTrigger EventName="Click">
-                                                                <vmc:EventCommandBase Command="{Binding SerialPortCommandSendEvent}" CommandParameter="1"/>
-                                                            </i:EventTrigger>
-                                                        </i:Interaction.Triggers>
-                                                    </Button>
-                                                    <TextBlock Margin="5,5,5,5" Text="{Binding SerialportCommandModels[2].CommandInfo}" Grid.Row="1" Grid.Column="0"/>
-                                                    <TextBox Margin="5,5,5,5" Text="{Binding SerialportCommandModels[2].ParamTexts[0]}" Grid.Row="1" Grid.Column="1">
-                                                        <TextBox.Style>
-                                                            <Style TargetType="{x:Type TextBox}">
-                                                                <Style.Triggers>
-                                                                    <Trigger Property="Text" Value="{x:Null}">
-                                                                        <Setter Property="Background" Value="{StaticResource HintTextRegisterAddress}"/>
-                                                                    </Trigger>
-                                                                    <Trigger Property="Text" Value="">
-                                                                        <Setter Property="Background" Value="{StaticResource HintTextRegisterAddress}"/>
-                                                                    </Trigger>
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </TextBox.Style>
-                                                    </TextBox>
-                                                    <Button Margin="5,5,5,5" Content="{Binding SerialportCommandModels[2].CommandText}" Grid.Row="1" Grid.Column="4">
-                                                        <i:Interaction.Triggers>
-                                                            <i:EventTrigger EventName="Click">
-                                                                <vmc:EventCommandBase Command="{Binding SerialPortCommandSendEvent}" CommandParameter="2"/>
-                                                            </i:EventTrigger>
-                                                        </i:Interaction.Triggers>
-                                                    </Button>
-                                                    <TextBlock Margin="5,5,5,5" Text="{Binding SerialportCommandModels[3].CommandInfo}" Grid.Row="2" Grid.Column="0"/>
-                                                    <Button Margin="5,5,5,5" Content="{Binding SerialportCommandModels[3].CommandText}" Grid.Row="2" Grid.Column="4">
-                                                        <i:Interaction.Triggers>
-                                                            <i:EventTrigger EventName="Click">
-                                                                <vmc:EventCommandBase Command="{Binding SerialPortCommandSendEvent}" CommandParameter="3"/>
-                                                            </i:EventTrigger>
-                                                        </i:Interaction.Triggers>
-                                                    </Button>
-                                                    <TextBlock Margin="5,5,5,5" Text="{Binding SerialportCommandModels[4].CommandInfo}" Grid.Row="3" Grid.Column="0"/>
-                                                    <TextBox Margin="5,5,5,5" Text="{Binding SerialportCommandModels[4].ParamTexts[0]}" Grid.Row="3" Grid.Column="1">
-                                                        <TextBox.Style>
-                                                            <Style TargetType="{x:Type TextBox}">
-                                                                <Style.Triggers>
-                                                                    <Trigger Property="Text" Value="{x:Null}">
-                                                                        <Setter Property="Background" Value="{StaticResource HintTextRegisterAddress}"/>
-                                                                    </Trigger>
-                                                                    <Trigger Property="Text" Value="">
-                                                                        <Setter Property="Background" Value="{StaticResource HintTextRegisterAddress}"/>
-                                                                    </Trigger>
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </TextBox.Style>
-                                                    </TextBox>
-                                                    <TextBox Margin="5,5,5,5" Text="{Binding SerialportCommandModels[4].ParamTexts[1]}" Grid.Row="3" Grid.Column="2">
-                                                        <TextBox.Style>
-                                                            <Style TargetType="{x:Type TextBox}">
-                                                                <Style.Triggers>
-                                                                    <Trigger Property="Text" Value="{x:Null}">
-                                                                        <Setter Property="Background" Value="{StaticResource HintTextRegisterData}"/>
-                                                                    </Trigger>
-                                                                    <Trigger Property="Text" Value="">
-                                                                        <Setter Property="Background" Value="{StaticResource HintTextRegisterData}"/>
-                                                                    </Trigger>
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </TextBox.Style>
-                                                    </TextBox>
-                                                    <Button Margin="5,5,5,5" Content="{Binding SerialportCommandModels[4].CommandText}" Grid.Row="3" Grid.Column="4">
-                                                        <i:Interaction.Triggers>
-                                                            <i:EventTrigger EventName="Click">
-                                                                <vmc:EventCommandBase Command="{Binding SerialPortCommandSendEvent}" CommandParameter="4"/>
-                                                            </i:EventTrigger>
-                                                        </i:Interaction.Triggers>
-                                                    </Button>
-                                                    <TextBlock Margin="5,5,5,5" Text="{Binding SerialportCommandModels[5].CommandInfo}" Grid.Row="4" Grid.Column="0"/>
-                                                    <TextBox Margin="5,5,5,5" Text="{Binding SerialportCommandModels[5].ParamTexts[0]}" Grid.Row="4" Grid.Column="1">
-                                                        <TextBox.Style>
-                                                            <Style TargetType="{x:Type TextBox}">
-                                                                <Style.Triggers>
-                                                                    <Trigger Property="Text" Value="{x:Null}">
-                                                                        <Setter Property="Background" Value="{StaticResource HintTextRegisterAddress}"/>
-                                                                    </Trigger>
-                                                                    <Trigger Property="Text" Value="">
-                                                                        <Setter Property="Background" Value="{StaticResource HintTextRegisterAddress}"/>
-                                                                    </Trigger>
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </TextBox.Style>
-                                                    </TextBox>
-                                                    <Button Margin="5,5,5,5" Content="{Binding SerialportCommandModels[5].CommandText}" Grid.Row="4" Grid.Column="4">
-                                                        <i:Interaction.Triggers>
-                                                            <i:EventTrigger EventName="Click">
-                                                                <vmc:EventCommandBase Command="{Binding SerialPortCommandSendEvent}" CommandParameter="5"/>
-                                                            </i:EventTrigger>
-                                                        </i:Interaction.Triggers>
-                                                    </Button>
-                                                    <TextBlock Margin="5,5,5,5" Text="{Binding SerialportCommandModels[6].CommandInfo}" Grid.Row="5" Grid.Column="0"/>
-                                                    <TextBox Margin="5,5,5,5" Text="{Binding SerialportCommandModels[6].ParamTexts[0]}" Grid.Row="5" Grid.Column="1">
-                                                        <TextBox.Style>
-                                                            <Style TargetType="{x:Type TextBox}">
-                                                                <Style.Triggers>
-                                                                    <Trigger Property="Text" Value="{x:Null}">
-                                                                        <Setter Property="Background" Value="{StaticResource HintTextRegisterAddress}"/>
-                                                                    </Trigger>
-                                                                    <Trigger Property="Text" Value="">
-                                                                        <Setter Property="Background" Value="{StaticResource HintTextRegisterAddress}"/>
-                                                                    </Trigger>
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </TextBox.Style>
-                                                    </TextBox>
-                                                    <TextBox Margin="5,5,5,5" Text="{Binding SerialportCommandModels[6].ParamTexts[1]}" Grid.Row="5" Grid.Column="2">
-                                                        <TextBox.Style>
-                                                            <Style TargetType="{x:Type TextBox}">
-                                                                <Style.Triggers>
-                                                                    <Trigger Property="Text" Value="{x:Null}">
-                                                                        <Setter Property="Background" Value="{StaticResource HintTextRegisterBits}"/>
-                                                                    </Trigger>
-                                                                    <Trigger Property="Text" Value="">
-                                                                        <Setter Property="Background" Value="{StaticResource HintTextRegisterBits}"/>
-                                                                    </Trigger>
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </TextBox.Style>
-                                                    </TextBox>
-                                                    <TextBox Margin="5,5,5,5" Text="{Binding SerialportCommandModels[6].ParamTexts[2]}" Grid.Row="5" Grid.Column="3">
-                                                        <TextBox.Style>
-                                                            <Style TargetType="{x:Type TextBox}">
-                                                                <Style.Triggers>
-                                                                    <Trigger Property="Text" Value="{x:Null}">
-                                                                        <Setter Property="Background" Value="{StaticResource HintTextRegisterData}"/>
-                                                                    </Trigger>
-                                                                    <Trigger Property="Text" Value="">
-                                                                        <Setter Property="Background" Value="{StaticResource HintTextRegisterData}"/>
-                                                                    </Trigger>
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </TextBox.Style>
-                                                    </TextBox>
-                                                    <Button Margin="5,5,5,5" Content="{Binding SerialportCommandModels[6].CommandText}" Grid.Row="5" Grid.Column="4">
-                                                        <i:Interaction.Triggers>
-                                                            <i:EventTrigger EventName="Click">
-                                                                <vmc:EventCommandBase Command="{Binding SerialPortCommandSendEvent}" CommandParameter="6"/>
-                                                            </i:EventTrigger>
-                                                        </i:Interaction.Triggers>
-                                                    </Button>
-                                                    <TextBlock Margin="5,5,5,5" Text="{Binding SerialportCommandModels[7].CommandInfo}" Grid.Row="6" Grid.Column="0"/>
-                                                    <TextBox Margin="5,5,5,5" Text="{Binding SerialportCommandModels[7].ParamTexts[0]}" Grid.Row="6" Grid.Column="1">
-                                                        <TextBox.Style>
-                                                            <Style TargetType="{x:Type TextBox}">
-                                                                <Style.Triggers>
-                                                                    <Trigger Property="Text" Value="{x:Null}">
-                                                                        <Setter Property="Background" Value="{StaticResource HintTextRegisterAddress}"/>
-                                                                    </Trigger>
-                                                                    <Trigger Property="Text" Value="">
-                                                                        <Setter Property="Background" Value="{StaticResource HintTextRegisterAddress}"/>
-                                                                    </Trigger>
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </TextBox.Style>
-                                                    </TextBox>
-                                                    <TextBox Margin="5,5,5,5" Text="{Binding SerialportCommandModels[7].ParamTexts[1]}" Grid.Row="6" Grid.Column="2">
-                                                        <TextBox.Style>
-                                                            <Style TargetType="{x:Type TextBox}">
-                                                                <Style.Triggers>
-                                                                    <Trigger Property="Text" Value="{x:Null}">
-                                                                        <Setter Property="Background" Value="{StaticResource HintTextRegisterBits}"/>
-                                                                    </Trigger>
-                                                                    <Trigger Property="Text" Value="">
-                                                                        <Setter Property="Background" Value="{StaticResource HintTextRegisterBits}"/>
-                                                                    </Trigger>
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </TextBox.Style>
-                                                    </TextBox>
-                                                    <Button Margin="5,5,5,5" Content="{Binding SerialportCommandModels[7].CommandText}" Grid.Row="6" Grid.Column="4">
-                                                        <i:Interaction.Triggers>
-                                                            <i:EventTrigger EventName="Click">
-                                                                <vmc:EventCommandBase Command="{Binding SerialPortCommandSendEvent}" CommandParameter="7"/>
-                                                            </i:EventTrigger>
-                                                        </i:Interaction.Triggers>
-                                                    </Button>
+                                                    <TextBlock Text="31" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="0"/>
+                                                    <TextBlock Text="30" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="1" Grid.Row="0"/>
+                                                    <TextBlock Text="29" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="2" Grid.Row="0"/>
+                                                    <TextBlock Text="28" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="3" Grid.Row="0"/>
+                                                    <TextBlock Text="27" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="4" Grid.Row="0"/>
+                                                    <TextBlock Text="26" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="5" Grid.Row="0"/>
+                                                    <TextBlock Text="25" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="6" Grid.Row="0"/>
+                                                    <TextBlock Text="24" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="7" Grid.Row="0"/>
+                                                    <TextBlock Text="23" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="9" Grid.Row="0"/>
+                                                    <TextBlock Text="22" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="10" Grid.Row="0"/>
+                                                    <TextBlock Text="21" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="11" Grid.Row="0"/>
+                                                    <TextBlock Text="20" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="12" Grid.Row="0"/>
+                                                    <TextBlock Text="19" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="13" Grid.Row="0"/>
+                                                    <TextBlock Text="18" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="14" Grid.Row="0"/>
+                                                    <TextBlock Text="17" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="15" Grid.Row="0"/>
+                                                    <TextBlock Text="16" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="16" Grid.Row="0"/>
+                                                    <TextBlock Text="15" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="2"/>
+                                                    <TextBlock Text="14" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="1" Grid.Row="2"/>
+                                                    <TextBlock Text="13" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="2" Grid.Row="2"/>
+                                                    <TextBlock Text="12" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="3" Grid.Row="2"/>
+                                                    <TextBlock Text="11" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="4" Grid.Row="2"/>
+                                                    <TextBlock Text="10" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="5" Grid.Row="2"/>
+                                                    <TextBlock Text="9" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="6" Grid.Row="2"/>
+                                                    <TextBlock Text="8" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="7" Grid.Row="2"/>
+                                                    <TextBlock Text="7" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="9" Grid.Row="2"/>
+                                                    <TextBlock Text="6" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="10" Grid.Row="2"/>
+                                                    <TextBlock Text="5" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="11" Grid.Row="2"/>
+                                                    <TextBlock Text="4" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="12" Grid.Row="2"/>
+                                                    <TextBlock Text="3" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="13" Grid.Row="2"/>
+                                                    <TextBlock Text="2" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="14" Grid.Row="2"/>
+                                                    <TextBlock Text="1" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="15" Grid.Row="2"/>
+                                                    <TextBlock Text="0" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="16" Grid.Row="2"/>
+                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[31].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="0" Grid.Row="1"/>
+                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[30].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" Grid.Row="1"/>
+                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[29].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="2" Grid.Row="1"/>
+                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[28].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="3" Grid.Row="1"/>
+                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[27].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="4" Grid.Row="1"/>
+                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[26].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="5" Grid.Row="1"/>
+                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[25].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="6" Grid.Row="1"/>
+                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[24].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="7" Grid.Row="1"/>
+                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[23].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="9" Grid.Row="1"/>
+                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[22].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="10" Grid.Row="1"/>
+                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[21].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="11" Grid.Row="1"/>
+                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[20].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="12" Grid.Row="1"/>
+                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[19].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="13" Grid.Row="1"/>
+                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[18].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="14" Grid.Row="1"/>
+                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[17].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="15" Grid.Row="1"/>
+                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[16].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="16" Grid.Row="1"/>
+                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[15].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="0" Grid.Row="3"/>
+                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[14].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" Grid.Row="3"/>
+                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[13].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="2" Grid.Row="3"/>
+                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[12].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="3" Grid.Row="3"/>
+                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[11].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="4" Grid.Row="3"/>
+                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[10].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="5" Grid.Row="3"/>
+                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[9].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="6" Grid.Row="3"/>
+                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[8].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="7" Grid.Row="3"/>
+                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[7].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="9" Grid.Row="3"/>
+                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[6].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="10" Grid.Row="3"/>
+                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[5].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="11" Grid.Row="3"/>
+                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[4].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="12" Grid.Row="3"/>
+                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[3].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="13" Grid.Row="3"/>
+                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[2].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="14" Grid.Row="3"/>
+                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[1].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="15" Grid.Row="3"/>
+                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[0].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="16" Grid.Row="3"/>
                                                 </Grid>
-                                            </TabItem>
-                                            <TabItem Header="预设">
-                                                <Grid>
-                                                    <Grid.Resources>
-                                                        <CollectionViewSource x:Key="SerialPortPresetCommandsGroupView" Source="{Binding SerialPortPresetCommands}">
-                                                            <CollectionViewSource.GroupDescriptions>
-                                                                <PropertyGroupDescription PropertyName="GroupName"/>
-                                                            </CollectionViewSource.GroupDescriptions>
-                                                        </CollectionViewSource>
-                                                    </Grid.Resources>
-                                                    <ListView Name="SerialPortPresetCommandsListView" ItemsSource="{Binding Source={StaticResource SerialPortPresetCommandsGroupView}}" SelectedItem="{Binding SerialportPresetCommandSelectedItem}" Margin="0,2,76,-2">
-                                                        <ListView.View>
-                                                            <GridView>
-                                                                <!--<GridViewColumn Header="命令组" DisplayMemberBinding="{Binding GroupName}" Width="80"/>-->
-                                                                <GridViewColumn Header="命令配置" DisplayMemberBinding="{Binding Name}" Width="120"/>
-                                                                <!--<GridViewColumn Header="命令描述" DisplayMemberBinding="{Binding Description}" Width="100"/>-->
-                                                                <GridViewColumn Header="命令脚本" DisplayMemberBinding="{Binding Command}" Width="150"/>
-                                                            </GridView>
-                                                        </ListView.View>
-                                                        <ListView.GroupStyle>
-                                                            <GroupStyle>
-                                                                <GroupStyle.ContainerStyle>
-                                                                    <Style TargetType="{x:Type GroupItem}">
-                                                                        <Setter Property="Template">
-                                                                            <Setter.Value>
-                                                                                <ControlTemplate TargetType="{x:Type GroupItem}">
-                                                                                    <Expander IsExpanded="True" BorderBrush="Gray" BorderThickness="1">
-                                                                                        <Expander.Header>
-                                                                                            <DockPanel>
-                                                                                                <TextBlock FontWeight="Bold" Text="{Binding Name}" Margin="5,0,0,0" Width="auto"/>
-                                                                                            </DockPanel>
-                                                                                        </Expander.Header>
-                                                                                        <Expander.Content>
-                                                                                            <ItemsPresenter/>
-                                                                                        </Expander.Content>
-                                                                                    </Expander>
-                                                                                </ControlTemplate>
-                                                                            </Setter.Value>
-                                                                        </Setter>
-                                                                    </Style>
-                                                                </GroupStyle.ContainerStyle>
-                                                            </GroupStyle>
-                                                        </ListView.GroupStyle>
-                                                    </ListView>
-                                                    <Button Content="加载" Margin="317,10,0,0" VerticalAlignment="Top" Height="28" Width="61" HorizontalAlignment="Left">
-                                                        <i:Interaction.Triggers>
-                                                            <i:EventTrigger EventName="Click">
-                                                                <vmc:EventCommandBase Command="{Binding SerialPortCommandPresetLoadEvent}"/>
-                                                            </i:EventTrigger>
-                                                        </i:Interaction.Triggers>
-                                                    </Button>
-                                                    <Button Content="发送" Margin="317,43,0,0" VerticalAlignment="Top" Height="28" Width="61" HorizontalAlignment="Left" IsEnabled="{Binding ElementName=SerialPortPresetCommandsListView,Path=SelectedItem,Converter={StaticResource IsNotNullConverter}}">
-                                                        <i:Interaction.Triggers>
-                                                            <i:EventTrigger EventName="Click">
-                                                                <vmc:EventCommandBase Command="{Binding SerialPortCommandPresetSendEvent}"/>
-                                                            </i:EventTrigger>
-                                                        </i:Interaction.Triggers>
-                                                    </Button>
-                                                    <Button Content="添加" Margin="317,76,0,0" VerticalAlignment="Top" Height="28" Width="61" HorizontalAlignment="Left" IsEnabled="{Binding ElementName=SerialPortPresetCommandsListView,Path=SelectedItem,Converter={StaticResource IsNotNullConverter}}">
-                                                        <i:Interaction.Triggers>
-                                                            <i:EventTrigger EventName="Click">
-                                                                <vmc:EventCommandBase Command="{Binding SerialportCommandPresetAddCodeEvent}"/>
-                                                            </i:EventTrigger>
-                                                        </i:Interaction.Triggers>
-                                                    </Button>
-                                                </Grid>
-                                            </TabItem>
-                                        </TabControl>
+                                                <TextBlock Text="10进制:" Margin="20,110,0,0" Width="48" Height="17" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                                <TextBox Text="{Binding BitsModel.Num, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100" Margin="73,110,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                                <TextBlock Text="16进制:" Margin="20,132,0,0" Width="48" Height="17" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                                <TextBox Text="{Binding BitsModel.Num, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource Num2HexConverter}}" Width="100" Margin="73,132,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                            </Grid>
+                                        </GroupBox>
                                     </Grid>
                                 </ad:LayoutAnchorable>
-                                <ad:LayoutAnchorable Title="串口数据通信" CanHide="False">
+                                <ad:LayoutAnchorable Title="设置" CanHide="False">
+                                    <Grid>
+                                        <Border BorderBrush="Gray" BorderThickness="0.5" CornerRadius="3" Margin="10,10,0,10" HorizontalAlignment="Left" Width="405">
+                                            <Grid Name="SettingsGrid">
+                                                <TextBlock Text="GPIB超时" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Width="120" Margin="10,10,0,0"/>
+                                                <TextBox Text="{Binding GPIBTimeoutSetting, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Width="98" Height="20" VerticalAlignment="Top" Margin="135,10,0,0"/>
+                                                <TextBlock Text="毫秒" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Width="40" Margin="238,10,0,0"/>
+                                                <TextBlock Text="串口超时" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Width="120" Margin="10,35,0,0"/>
+                                                <TextBox Text="{Binding SerialPortTimeoutSetting, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Width="98" Height="20" VerticalAlignment="Top" Margin="135,35,0,0"/>
+                                                <TextBlock Text="毫秒" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Width="40" Margin="238,35,0,0"/>
+                                                <TextBlock Text="串口缓冲区大小" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Width="120" Margin="10,60,0,0"/>
+                                                <TextBox Text="{Binding SerialPortBufferSetting, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Width="98" Height="20" VerticalAlignment="Top" Margin="135,60,0,0"/>
+                                                <TextBlock Text="字节" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Width="40" Margin="238,60,0,0"/>
+                                                <TextBlock Text="串口日志关键词高亮" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Width="120" Margin="10,85,0,0"/>
+                                                <CheckBox IsChecked="{Binding SerialPortLogKeywordHighlightSetting,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="135,87,0,0" VerticalAlignment="Top"/>
+                                            </Grid>
+                                        </Border>
+                                        <Border BorderBrush="Gray" BorderThickness="0.5" CornerRadius="3" Margin="420,10,10,10">
+                                            <TextBlock Text="{Binding SettingsVersionText}" Margin="5,5,5,5" TextWrapping="Wrap"/>
+                                        </Border>
+                                    </Grid>
+                                </ad:LayoutAnchorable>
+                                <ad:LayoutAnchorable Title="预设测试项(TODO)" CanHide="False">
+                                    <Grid>
+                                        <Button Content="加载" IsEnabled="False" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="60"/>
+                                        <GroupBox Header="NB2005测试" Height="298" Width="379" HorizontalAlignment="Left" Margin="10,44,0,0" VerticalAlignment="Top">
+                                            <Grid>
+                                                <TextBlock Text="测试项" HorizontalAlignment="Left" Margin="50,72,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                                                <TextBlock Text="返回值" HorizontalAlignment="Left" Margin="158,73,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                                                <TextBlock Text="芯片ID" HorizontalAlignment="Left" Margin="114,54,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                                                <TextBox Text="{Binding Nb2005ChipId,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="156,53,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="78"/>
+
+                                                <TextBlock Text="1" HorizontalAlignment="Left" Margin="27,94,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                                                <TextBlock Text="2" HorizontalAlignment="Left" Margin="27,118,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                                                <TextBlock Text="3" HorizontalAlignment="Left" Margin="27,142,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                                                <TextBlock Text="4" HorizontalAlignment="Left" Margin="27,166,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                                                <Button Content="测试A" HorizontalAlignment="Left" Margin="39,92,0,0" VerticalAlignment="Top" Width="70">
+                                                    <i:Interaction.Triggers>
+                                                        <i:EventTrigger EventName="Click">
+                                                            <vmc:EventCommandBase Command="{Binding Nb2005TestTaskEvent}" CommandParameter="1"/>
+                                                        </i:EventTrigger>
+                                                    </i:Interaction.Triggers>
+                                                </Button>
+                                                <Button Content="测试B" HorizontalAlignment="Left" Margin="39,116,0,0" VerticalAlignment="Top" Width="70">
+                                                    <i:Interaction.Triggers>
+                                                        <i:EventTrigger EventName="Click">
+                                                            <vmc:EventCommandBase Command="{Binding Nb2005TestTaskEvent}" CommandParameter="2"/>
+                                                        </i:EventTrigger>
+                                                    </i:Interaction.Triggers>
+                                                </Button>
+                                                <Button Content="测试C" HorizontalAlignment="Left" Margin="39,140,0,0" VerticalAlignment="Top" Width="70">
+                                                    <i:Interaction.Triggers>
+                                                        <i:EventTrigger EventName="Click">
+                                                            <vmc:EventCommandBase Command="{Binding Nb2005TestTaskEvent}" CommandParameter="3"/>
+                                                        </i:EventTrigger>
+                                                    </i:Interaction.Triggers>
+                                                </Button>
+                                                <Button Content="测试D" HorizontalAlignment="Left" Margin="39,164,0,0" VerticalAlignment="Top" Width="70">
+                                                    <i:Interaction.Triggers>
+                                                        <i:EventTrigger EventName="Click">
+                                                            <vmc:EventCommandBase Command="{Binding Nb2005TestTaskEvent}" CommandParameter="4"/>
+                                                        </i:EventTrigger>
+                                                    </i:Interaction.Triggers>
+                                                </Button>
+                                                <TextBox Text="{Binding Nb2005TestTaskResult1,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource String2NullableDecimalConverter}}" HorizontalAlignment="Left" Margin="114,93,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+                                                <TextBox Text="{Binding Nb2005TestTaskResult2,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource String2NullableDecimalConverter}}" HorizontalAlignment="Left" Margin="114,117,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+                                                <TextBox Text="{Binding Nb2005TestTaskResult3,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource String2NullableDecimalConverter}}" HorizontalAlignment="Left" Margin="114,141,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+                                                <TextBox Text="{Binding Nb2005TestTaskResult4,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource String2NullableDecimalConverter}}" HorizontalAlignment="Left" Margin="114,165,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+                                                <Button Content="写入" HorizontalAlignment="Left" Margin="248,92,0,0" VerticalAlignment="Top" Width="87">
+                                                    <i:Interaction.Triggers>
+                                                        <i:EventTrigger EventName="Click">
+                                                            <vmc:EventCommandBase Command="{Binding Nb2005TestResultWriteEvent}" CommandParameter="1"/>
+                                                        </i:EventTrigger>
+                                                    </i:Interaction.Triggers>
+                                                </Button>
+                                                <Button Content="写入" HorizontalAlignment="Left" Margin="248,116,0,0" VerticalAlignment="Top" Width="87">
+                                                    <i:Interaction.Triggers>
+                                                        <i:EventTrigger EventName="Click">
+                                                            <vmc:EventCommandBase Command="{Binding Nb2005TestResultWriteEvent}" CommandParameter="2"/>
+                                                        </i:EventTrigger>
+                                                    </i:Interaction.Triggers>
+                                                </Button>
+                                                <Button Content="写入" HorizontalAlignment="Left" Margin="248,140,0,0" VerticalAlignment="Top" Width="87">
+                                                    <i:Interaction.Triggers>
+                                                        <i:EventTrigger EventName="Click">
+                                                            <vmc:EventCommandBase Command="{Binding Nb2005TestResultWriteEvent}" CommandParameter="3"/>
+                                                        </i:EventTrigger>
+                                                    </i:Interaction.Triggers>
+                                                </Button>
+                                                <Button Content="写入" HorizontalAlignment="Left" Margin="248,164,0,0" VerticalAlignment="Top" Width="87">
+                                                    <i:Interaction.Triggers>
+                                                        <i:EventTrigger EventName="Click">
+                                                            <vmc:EventCommandBase Command="{Binding Nb2005TestResultWriteEvent}" CommandParameter="4"/>
+                                                        </i:EventTrigger>
+                                                    </i:Interaction.Triggers>
+                                                </Button>
+
+                                                <TextBlock Text="{Binding Nb2005ChipsConfigFilePath}" HorizontalAlignment="Left" Margin="128,12,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                                                <Button Content="从文件读取" HorizontalAlignment="Left" Margin="248,52,0,0" VerticalAlignment="Top" Width="87">
+                                                    <i:Interaction.Triggers>
+                                                        <i:EventTrigger EventName="Click">
+                                                            <vmc:EventCommandBase Command="{Binding Nb2005LoadChipConfigEvent}"/>
+                                                        </i:EventTrigger>
+                                                    </i:Interaction.Triggers>
+                                                </Button>
+                                                <Button Content="配置文件加载" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="100">
+                                                    <i:Interaction.Triggers>
+                                                        <i:EventTrigger EventName="Click">
+                                                            <vmc:EventCommandBase Command="{Binding Nb2005LoadChipsConfigFileEvent}"/>
+                                                        </i:EventTrigger>
+                                                    </i:Interaction.Triggers>
+                                                </Button>
+                                                <Button Content="更新至文件" HorizontalAlignment="Left" Margin="124,220,0,0" VerticalAlignment="Top" Width="100">
+                                                    <i:Interaction.Triggers>
+                                                        <i:EventTrigger EventName="Click">
+                                                            <vmc:EventCommandBase Command="{Binding Nb2005UpdateChipConfigEvent}"/>
+                                                        </i:EventTrigger>
+                                                    </i:Interaction.Triggers>
+                                                </Button>
+                                                <Button Content="一键写入" HorizontalAlignment="Left" Margin="248,220,0,0" VerticalAlignment="Top" Width="87">
+                                                    <i:Interaction.Triggers>
+                                                        <i:EventTrigger EventName="Click">
+                                                            <vmc:EventCommandBase Command="{Binding Nb2005TestResultWriteAllEvent}" CommandParameter="4"/>
+                                                        </i:EventTrigger>
+                                                    </i:Interaction.Triggers>
+                                                </Button>
+                                            </Grid>
+                                        </GroupBox>
+
+                                    </Grid>
+                                </ad:LayoutAnchorable>
+                                <ad:LayoutAnchorable Title="可视化(废弃)" CanHide="False">
+                                    <Grid>
+                                        <Button Content="刷新选中数据" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="107" Height="32">
+                                            <i:Interaction.Triggers>
+                                                <i:EventTrigger EventName="Click">
+                                                    <vmc:EventCommandBase Command="{Binding PlotViewPlotRefreshEvent}"/>
+                                                </i:EventTrigger>
+                                            </i:Interaction.Triggers>
+                                        </Button>
+                                        <Button Content="大数据量测试" HorizontalAlignment="Left" Margin="10,47,0,0" VerticalAlignment="Top" Width="107" Height="32">
+                                            <i:Interaction.Triggers>
+                                                <i:EventTrigger EventName="Click">
+                                                    <vmc:EventCommandBase Command="{Binding PlotViewTestEvent}"/>
+                                                </i:EventTrigger>
+                                            </i:Interaction.Triggers>
+                                        </Button>
+                                        <Border Margin="205,10,10,10" BorderBrush="Gray" BorderThickness="1.5">
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="*"></RowDefinition>
+                                                    <RowDefinition Height="100"></RowDefinition>
+                                                </Grid.RowDefinitions>
+                                                <lvc:CartesianChart Grid.Row="0" Zoom="X" DisableAnimations="True" Hoverable="False" DataTooltip="{x:Null}">
+                                                    <lvc:CartesianChart.Resources>
+                                                        <Style TargetType="lvc:Separator">
+                                                            <Setter Property="StrokeThickness" Value="2.5"></Setter>
+                                                            <Setter Property="Stroke" Value="#E7E7E7"></Setter>
+                                                            <Style.Triggers>
+                                                                <Trigger Property="AxisOrientation" Value="X">
+                                                                    <Setter Property="IsEnabled" Value="False"></Setter>
+                                                                </Trigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </lvc:CartesianChart.Resources>
+                                                    <lvc:CartesianChart.Series>
+                                                        <geared:GLineSeries Values="{Binding PlotViewLineValues}" Fill="Transparent" PointGeometry="{x:Null}" LineSmoothness="0"/>
+                                                    </lvc:CartesianChart.Series>
+                                                    <lvc:CartesianChart.AxisX>
+                                                        <lvc:Axis MinValue="{Binding PlotViewFrom, Mode=TwoWay}" MaxValue="{Binding PlotViewTo, Mode=TwoWay}" Separator="{x:Static lvc:DefaultAxes.CleanSeparator}"/>
+                                                    </lvc:CartesianChart.AxisX>
+                                                </lvc:CartesianChart>
+                                                <lvc:CartesianChart Grid.Row="1" DisableAnimations="True" 
+                                        ScrollMode="X"
+                                        ScrollHorizontalFrom="{Binding PlotViewFrom, Mode=TwoWay}"
+                                        ScrollHorizontalTo="{Binding PlotViewTo, Mode=TwoWay}"
+                                        ScrollBarFill="#25303030"
+                                        DataTooltip="{x:Null}"
+                                        Hoverable="False"
+                                        Margin="20 10">
+                                                    <lvc:CartesianChart.Resources>
+                                                        <Style TargetType="lvc:Separator">
+                                                            <Setter Property="IsEnabled" Value="False"></Setter>
+                                                        </Style>
+                                                    </lvc:CartesianChart.Resources>
+                                                    <lvc:CartesianChart.Series>
+                                                        <geared:GLineSeries Values="{Binding PlotViewLineValues}"
+                                        Fill="Silver"
+                                        StrokeThickness="0"
+                                        PointGeometry="{x:Null}"
+                                        AreaLimit="0"/>
+                                                    </lvc:CartesianChart.Series>
+                                                    <lvc:CartesianChart.AxisX>
+                                                        <lvc:Axis IsMerged="True" 
+                                              Foreground="#98000000"
+                                              FontSize="22"
+                                              FontWeight="UltraBold"/>
+                                                    </lvc:CartesianChart.AxisX>
+                                                    <lvc:CartesianChart.AxisY>
+                                                        <lvc:Axis ShowLabels="False" />
+                                                    </lvc:CartesianChart.AxisY>
+                                                </lvc:CartesianChart>
+                                            </Grid>
+                                        </Border>
+                                    </Grid>
+                                </ad:LayoutAnchorable>
+                                <ad:LayoutAnchorable Title="串口数据通信(废弃)" CanHide="False">
                                     <Grid>
                                         <GroupBox Header="传输" HorizontalAlignment="Left" Margin="10,10,0,0" Width="460" Height="392" VerticalAlignment="Top">
                                             <Grid>
@@ -610,539 +554,6 @@
                                                 </i:Interaction.Triggers>
                                             </DataGrid>
                                         </GroupBox>
-                                    </Grid>
-                                </ad:LayoutAnchorable>
-                                <ad:LayoutAnchorable Title="串口数据包通信" CanHide="False">
-                                    <Grid>
-                                        <GroupBox Header="读数据包" HorizontalAlignment="Left" VerticalAlignment="Top" Height="193" Width="500" Margin="10,10,0,0">
-                                            <Grid>
-                                                <TextBlock Text="串口选择：" TextWrapping="Wrap" Margin="10,14,0,0" TextAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Left"/>
-                                                <ComboBox ItemsSource="{Binding SerialPortsInstance.SerialPortsDict, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Key" SelectedValue="{Binding SpPktCommTabSerialPortName, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Key" HorizontalAlignment="Left" Margin="75,12,0,0" VerticalAlignment="Top" Width="97" Height="20"/>
-
-                                                <TextBlock Text="字长(Byte)" HorizontalAlignment="Left" Margin="193,15,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-                                                <TextBox Text="{Binding SpPktCommTabWordLen}" HorizontalAlignment="Left" Margin="254,15,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="45"/>
-
-                                                <TextBlock Text="数据包长(Word)" HorizontalAlignment="Left" Margin="316,16,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-                                                <TextBox Text="{Binding SpPktCommTabPktLen}" HorizontalAlignment="Left" Margin="409,16,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="68"/>
-
-                                                <TextBlock Text="数据类型" HorizontalAlignment="Left" Margin="272,41,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-                                                <ComboBox ItemsSource="{Binding PktCvtTypes, UpdateSourceTrigger=PropertyChanged}" SelectedValue="{Binding SpPktCommTabSelectedPktCvtType, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="335,39,0,0" VerticalAlignment="Top" Width="142" Height="20"/>
-
-                                                <TextBlock Text="ASCII" HorizontalAlignment="Left" Margin="108,54,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-                                                <TextBlock Text="Bytes" HorizontalAlignment="Left" Margin="168,54,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-
-                                                <TextBlock Text="读取单字" HorizontalAlignment="Left" Margin="32,78,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-                                                <TextBlock Text="PKT;0;" HorizontalAlignment="Left" Margin="108,78,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-                                                <TextBlock Text="0x50 4B 54 3B 30 3B" HorizontalAlignment="Left" Margin="168,78,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-
-                                                <TextBlock Text="读取数据包" HorizontalAlignment="Left" Margin="32,102,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-                                                <TextBlock Text="PKT;1;" HorizontalAlignment="Left" Margin="108,102,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-                                                <TextBlock Text="0x50 4B 54 3B 31 3B" HorizontalAlignment="Left" Margin="168,102,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-
-                                                <Button Content="读取单字" HorizontalAlignment="Left" Margin="295,0,0,0" VerticalAlignment="Center" Width="80">
-                                                    <i:Interaction.Triggers>
-                                                        <i:EventTrigger EventName="Click">
-                                                            <vmc:EventCommandBase Command="{Binding SpPktCommTabReadPktEvent}" CommandParameter="word"/>
-                                                        </i:EventTrigger>
-                                                    </i:Interaction.Triggers>
-                                                </Button>
-
-                                                <Button Content="读取数据包" HorizontalAlignment="Left" Margin="295,100,0,0" VerticalAlignment="Top" Width="80">
-                                                    <i:Interaction.Triggers>
-                                                        <i:EventTrigger EventName="Click">
-                                                            <vmc:EventCommandBase Command="{Binding SpPktCommTabReadPktEvent}" CommandParameter="packet"/>
-                                                        </i:EventTrigger>
-                                                    </i:Interaction.Triggers>
-                                                </Button>
-                                            </Grid>
-                                        </GroupBox>
-                                    </Grid>
-                                </ad:LayoutAnchorable>
-                                <ad:LayoutAnchorable Title="数据存储" CanHide="False">
-                                    <Grid>
-                                        <GroupBox Header="存储" Margin="10,10,10.2,10">
-                                            <Grid>
-                                                <TextBlock Text="选择数据源：" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="230"/>
-                                                <ListBox Name="DataStorageSelectListBox" ItemsSource="{Binding DataStorageInstance.DataStorageDictionary,UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Key" SelectedValue="{Binding DataStorageSelectedValue}" SelectedValuePath="Key" HorizontalAlignment="Left" Height="106" Margin="10,30,0,0" VerticalAlignment="Top" Width="230">
-                                                    <!--<i:Interaction.Triggers>
-                                                        <i:EventTrigger EventName="SelectionChanged">
-                                                            <vmc:EventCommandBase Command="{Binding DataStorageSelectionChangedEvent}"/>
-                                                        </i:EventTrigger>
-                                                    </i:Interaction.Triggers>-->
-                                                </ListBox>
-                                                <DataGrid Name="DataStorageDataGrid" ItemsSource="{Binding DataStorageDataGridBinding}" AutoGenerateColumns="False" IsReadOnly="True" Margin="245,25,6,5">
-                                                    <DataGrid.Columns>
-                                                        <DataGridTextColumn CanUserSort="False" Width="1*" Header="数据" Binding="{Binding Value}"/>
-                                                    </DataGrid.Columns>
-                                                    <i:Interaction.Triggers>
-                                                        <i:EventTrigger EventName="LoadingRow">
-                                                            <vmc:EventCommandBase Command="{Binding DataGridLoadingRowAddRowIndexEvent}"/>
-                                                        </i:EventTrigger>
-                                                    </i:Interaction.Triggers>
-                                                </DataGrid>
-                                                <Button Name="DataStorageExportListDataButton" Content="导出选中数据" HorizontalAlignment="Left" Margin="10,191,0,0" VerticalAlignment="Top" Width="107" Height="32">
-                                                    <i:Interaction.Triggers>
-                                                        <i:EventTrigger EventName="Click">
-                                                            <vmc:EventCommandBase Command="{Binding DataStorageStoreEvent}"/>
-                                                        </i:EventTrigger>
-                                                    </i:Interaction.Triggers>
-                                                </Button>
-                                                <Button Name="DataStorageClearListDataButton" Content="清空选中数据" HorizontalAlignment="Left" Margin="133,191,0,0" VerticalAlignment="Top" Width="107" Height="32">
-                                                    <i:Interaction.Triggers>
-                                                        <i:EventTrigger EventName="Click">
-                                                            <vmc:EventCommandBase Command="{Binding DataStorageDeleteEvent}"/>
-                                                        </i:EventTrigger>
-                                                    </i:Interaction.Triggers>
-                                                </Button>
-                                                <TextBox HorizontalAlignment="Left" VerticalContentAlignment="Center" Margin="10,228,0,0" Text="{Binding DataStorageAddKeyNameText}" TextWrapping="Wrap" VerticalAlignment="Top" Width="107" Height="32"/>
-                                                <Button Content="添加键值对" HorizontalAlignment="Left" Margin="133,228,0,0" VerticalAlignment="Top" Width="107" Height="32">
-                                                    <i:Interaction.Triggers>
-                                                        <i:EventTrigger EventName="Click">
-                                                            <vmc:EventCommandBase Command="{Binding DataStorageAddKeyValuePairEvent}"/>
-                                                        </i:EventTrigger>
-                                                    </i:Interaction.Triggers>
-                                                </Button>
-                                                <Button Content="删除键值对" HorizontalAlignment="Left" Margin="133,265,0,0" VerticalAlignment="Top" Width="107" Height="32">
-                                                    <i:Interaction.Triggers>
-                                                        <i:EventTrigger EventName="Click">
-                                                            <vmc:EventCommandBase Command="{Binding DataStorageRemoveKeyValuePairEvent}"/>
-                                                        </i:EventTrigger>
-                                                    </i:Interaction.Triggers>
-                                                </Button>
-                                                <Button Content="加载数据文件" HorizontalAlignment="Left" Margin="10,154,0,0" VerticalAlignment="Top" Width="107" Height="32">
-                                                    <i:Interaction.Triggers>
-                                                        <i:EventTrigger EventName="Click">
-                                                            <vmc:EventCommandBase Command="{Binding DataStorageLoadEvent}"/>
-                                                        </i:EventTrigger>
-                                                    </i:Interaction.Triggers>
-                                                </Button>
-                                                <Button Content="保存数据文件" HorizontalAlignment="Left" Margin="133,154,0,0" VerticalAlignment="Top" Width="107" Height="32">
-                                                    <i:Interaction.Triggers>
-                                                        <i:EventTrigger EventName="Click">
-                                                            <vmc:EventCommandBase Command="{Binding DataStorageSaveEvent}"/>
-                                                        </i:EventTrigger>
-                                                    </i:Interaction.Triggers>
-                                                </Button>
-                                            </Grid>
-                                        </GroupBox>
-                                    </Grid>
-                                </ad:LayoutAnchorable>
-                                <ad:LayoutAnchorable Title="可视化" CanHide="False">
-                                    <Grid>
-                                        <Button Content="刷新选中数据" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="107" Height="32">
-                                            <i:Interaction.Triggers>
-                                                <i:EventTrigger EventName="Click">
-                                                    <vmc:EventCommandBase Command="{Binding PlotViewPlotRefreshEvent}"/>
-                                                </i:EventTrigger>
-                                            </i:Interaction.Triggers>
-                                        </Button>
-                                        <Button Content="大数据量测试" HorizontalAlignment="Left" Margin="10,47,0,0" VerticalAlignment="Top" Width="107" Height="32">
-                                            <i:Interaction.Triggers>
-                                                <i:EventTrigger EventName="Click">
-                                                    <vmc:EventCommandBase Command="{Binding PlotViewTestEvent}"/>
-                                                </i:EventTrigger>
-                                            </i:Interaction.Triggers>
-                                        </Button>
-                                        <Border Margin="205,10,10,10" BorderBrush="Gray" BorderThickness="1.5">
-                                            <Grid>
-                                                <Grid.RowDefinitions>
-                                                    <RowDefinition Height="*"></RowDefinition>
-                                                    <RowDefinition Height="100"></RowDefinition>
-                                                </Grid.RowDefinitions>
-                                                <lvc:CartesianChart Grid.Row="0" Zoom="X" DisableAnimations="True" Hoverable="False" DataTooltip="{x:Null}">
-                                                    <lvc:CartesianChart.Resources>
-                                                        <Style TargetType="lvc:Separator">
-                                                            <Setter Property="StrokeThickness" Value="2.5"></Setter>
-                                                            <Setter Property="Stroke" Value="#E7E7E7"></Setter>
-                                                            <Style.Triggers>
-                                                                <Trigger Property="AxisOrientation" Value="X">
-                                                                    <Setter Property="IsEnabled" Value="False"></Setter>
-                                                                </Trigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </lvc:CartesianChart.Resources>
-                                                    <lvc:CartesianChart.Series>
-                                                        <geared:GLineSeries Values="{Binding PlotViewLineValues}" Fill="Transparent" PointGeometry="{x:Null}" LineSmoothness="0"/>
-                                                    </lvc:CartesianChart.Series>
-                                                    <lvc:CartesianChart.AxisX>
-                                                        <lvc:Axis MinValue="{Binding PlotViewFrom, Mode=TwoWay}" MaxValue="{Binding PlotViewTo, Mode=TwoWay}" Separator="{x:Static lvc:DefaultAxes.CleanSeparator}"/>
-                                                    </lvc:CartesianChart.AxisX>
-                                                </lvc:CartesianChart>
-                                                <lvc:CartesianChart Grid.Row="1" DisableAnimations="True" 
-                                        ScrollMode="X"
-                                        ScrollHorizontalFrom="{Binding PlotViewFrom, Mode=TwoWay}"
-                                        ScrollHorizontalTo="{Binding PlotViewTo, Mode=TwoWay}"
-                                        ScrollBarFill="#25303030"
-                                        DataTooltip="{x:Null}"
-                                        Hoverable="False"
-                                        Margin="20 10">
-                                                    <lvc:CartesianChart.Resources>
-                                                        <Style TargetType="lvc:Separator">
-                                                            <Setter Property="IsEnabled" Value="False"></Setter>
-                                                        </Style>
-                                                    </lvc:CartesianChart.Resources>
-                                                    <lvc:CartesianChart.Series>
-                                                        <geared:GLineSeries Values="{Binding PlotViewLineValues}"
-                                        Fill="Silver"
-                                        StrokeThickness="0"
-                                        PointGeometry="{x:Null}"
-                                        AreaLimit="0"/>
-                                                    </lvc:CartesianChart.Series>
-                                                    <lvc:CartesianChart.AxisX>
-                                                        <lvc:Axis IsMerged="True" 
-                                              Foreground="#98000000"
-                                              FontSize="22"
-                                              FontWeight="UltraBold"/>
-                                                    </lvc:CartesianChart.AxisX>
-                                                    <lvc:CartesianChart.AxisY>
-                                                        <lvc:Axis ShowLabels="False" />
-                                                    </lvc:CartesianChart.AxisY>
-                                                </lvc:CartesianChart>
-                                            </Grid>
-                                        </Border>
-                                    </Grid>
-                                </ad:LayoutAnchorable>
-                                <ad:LayoutAnchorable Title="自动化" CanHide="False">
-                                    <Grid>
-                                        <GroupBox Header="自动化脚本" Margin="10,10,10.2,10">
-                                            <Grid>
-                                                <Border Margin="156,10,10,10" BorderBrush="Gray" BorderThickness="1.5">
-                                                    <!--<view:BindableAvalonEditor x:Name="AutomationCodeEditor" Text="{Binding AutomationCodeEditorText}" SyntaxHighlighting="C#" ShowLineNumbers="True" FontFamily="Consolas" FontSize="10pt"/>-->
-                                                    <view:BindableRoslynCodeEditor Text="{Binding AutomationCodeEditorText}" ShowLineNumbers="True" FontFamily="Consolas" FontSize="10pt"/>
-                                                </Border>
-                                                <Button Content="加载" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="30" Width="68">
-                                                    <i:Interaction.Triggers>
-                                                        <i:EventTrigger EventName="Click">
-                                                            <vmc:EventCommandBase Command="{Binding AutomationCodeLoadFileEvent}"/>
-                                                        </i:EventTrigger>
-                                                    </i:Interaction.Triggers>
-                                                </Button>
-                                                <Button Content="保存" HorizontalAlignment="Left" Margin="83,10,0,0" VerticalAlignment="Top" Height="30" Width="68">
-                                                    <i:Interaction.Triggers>
-                                                        <i:EventTrigger EventName="Click">
-                                                            <vmc:EventCommandBase Command="{Binding AutomationCodeSaveFileEvent}"/>
-                                                        </i:EventTrigger>
-                                                    </i:Interaction.Triggers>
-                                                </Button>
-                                                <Button Content="{Binding AutomationIsRun, Converter={StaticResource AutomationTaskRunButtonConverter}}" HorizontalAlignment="Left" Margin="10,45,0,0" VerticalAlignment="Top" Height="30" Width="141">
-                                                    <i:Interaction.Triggers>
-                                                        <i:EventTrigger EventName="Click">
-                                                            <vmc:EventCommandBase Command="{Binding AutomationCodeRunEvent}"/>
-                                                        </i:EventTrigger>
-                                                    </i:Interaction.Triggers>
-                                                </Button>
-                                                <Label Content="返回值" HorizontalAlignment="Left" Margin="10,80,0,0" VerticalAlignment="Top" Height="25"/>
-                                                <TextBox Text="{Binding AutomationCodeReturnData}" HorizontalAlignment="Left" Margin="10,110,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="141" Height="38"/>
-                                                <Grid Width="141" HorizontalAlignment="Left" Margin="10,153,0,10"/>
-                                            </Grid>
-                                        </GroupBox>
-                                    </Grid>
-                                </ad:LayoutAnchorable>
-                                <ad:LayoutAnchorable Title="预设测试项" CanHide="False">
-                                    <Grid>
-                                        <Button Content="加载" IsEnabled="False" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="60"/>
-                                        <GroupBox Header="NB2005测试" Height="298" Width="379" HorizontalAlignment="Left" Margin="10,44,0,0" VerticalAlignment="Top">
-                                            <Grid>
-                                                <TextBlock Text="测试项" HorizontalAlignment="Left" Margin="50,72,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-                                                <TextBlock Text="返回值" HorizontalAlignment="Left" Margin="158,73,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-                                                <TextBlock Text="芯片ID" HorizontalAlignment="Left" Margin="114,54,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-                                                <TextBox Text="{Binding Nb2005ChipId,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="156,53,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="78"/>
-
-                                                <TextBlock Text="1" HorizontalAlignment="Left" Margin="27,94,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-                                                <TextBlock Text="2" HorizontalAlignment="Left" Margin="27,118,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-                                                <TextBlock Text="3" HorizontalAlignment="Left" Margin="27,142,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-                                                <TextBlock Text="4" HorizontalAlignment="Left" Margin="27,166,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-                                                <Button Content="测试A" HorizontalAlignment="Left" Margin="39,92,0,0" VerticalAlignment="Top" Width="70">
-                                                    <i:Interaction.Triggers>
-                                                        <i:EventTrigger EventName="Click">
-                                                            <vmc:EventCommandBase Command="{Binding Nb2005TestTaskEvent}" CommandParameter="1"/>
-                                                        </i:EventTrigger>
-                                                    </i:Interaction.Triggers>
-                                                </Button>
-                                                <Button Content="测试B" HorizontalAlignment="Left" Margin="39,116,0,0" VerticalAlignment="Top" Width="70">
-                                                    <i:Interaction.Triggers>
-                                                        <i:EventTrigger EventName="Click">
-                                                            <vmc:EventCommandBase Command="{Binding Nb2005TestTaskEvent}" CommandParameter="2"/>
-                                                        </i:EventTrigger>
-                                                    </i:Interaction.Triggers>
-                                                </Button>
-                                                <Button Content="测试C" HorizontalAlignment="Left" Margin="39,140,0,0" VerticalAlignment="Top" Width="70">
-                                                    <i:Interaction.Triggers>
-                                                        <i:EventTrigger EventName="Click">
-                                                            <vmc:EventCommandBase Command="{Binding Nb2005TestTaskEvent}" CommandParameter="3"/>
-                                                        </i:EventTrigger>
-                                                    </i:Interaction.Triggers>
-                                                </Button>
-                                                <Button Content="测试D" HorizontalAlignment="Left" Margin="39,164,0,0" VerticalAlignment="Top" Width="70">
-                                                    <i:Interaction.Triggers>
-                                                        <i:EventTrigger EventName="Click">
-                                                            <vmc:EventCommandBase Command="{Binding Nb2005TestTaskEvent}" CommandParameter="4"/>
-                                                        </i:EventTrigger>
-                                                    </i:Interaction.Triggers>
-                                                </Button>
-                                                <TextBox Text="{Binding Nb2005TestTaskResult1,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource String2NullableDecimalConverter}}" HorizontalAlignment="Left" Margin="114,93,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-                                                <TextBox Text="{Binding Nb2005TestTaskResult2,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource String2NullableDecimalConverter}}" HorizontalAlignment="Left" Margin="114,117,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-                                                <TextBox Text="{Binding Nb2005TestTaskResult3,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource String2NullableDecimalConverter}}" HorizontalAlignment="Left" Margin="114,141,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-                                                <TextBox Text="{Binding Nb2005TestTaskResult4,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource String2NullableDecimalConverter}}" HorizontalAlignment="Left" Margin="114,165,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-                                                <Button Content="写入" HorizontalAlignment="Left" Margin="248,92,0,0" VerticalAlignment="Top" Width="87">
-                                                    <i:Interaction.Triggers>
-                                                        <i:EventTrigger EventName="Click">
-                                                            <vmc:EventCommandBase Command="{Binding Nb2005TestResultWriteEvent}" CommandParameter="1"/>
-                                                        </i:EventTrigger>
-                                                    </i:Interaction.Triggers>
-                                                </Button>
-                                                <Button Content="写入" HorizontalAlignment="Left" Margin="248,116,0,0" VerticalAlignment="Top" Width="87">
-                                                    <i:Interaction.Triggers>
-                                                        <i:EventTrigger EventName="Click">
-                                                            <vmc:EventCommandBase Command="{Binding Nb2005TestResultWriteEvent}" CommandParameter="2"/>
-                                                        </i:EventTrigger>
-                                                    </i:Interaction.Triggers>
-                                                </Button>
-                                                <Button Content="写入" HorizontalAlignment="Left" Margin="248,140,0,0" VerticalAlignment="Top" Width="87">
-                                                    <i:Interaction.Triggers>
-                                                        <i:EventTrigger EventName="Click">
-                                                            <vmc:EventCommandBase Command="{Binding Nb2005TestResultWriteEvent}" CommandParameter="3"/>
-                                                        </i:EventTrigger>
-                                                    </i:Interaction.Triggers>
-                                                </Button>
-                                                <Button Content="写入" HorizontalAlignment="Left" Margin="248,164,0,0" VerticalAlignment="Top" Width="87">
-                                                    <i:Interaction.Triggers>
-                                                        <i:EventTrigger EventName="Click">
-                                                            <vmc:EventCommandBase Command="{Binding Nb2005TestResultWriteEvent}" CommandParameter="4"/>
-                                                        </i:EventTrigger>
-                                                    </i:Interaction.Triggers>
-                                                </Button>
-
-                                                <TextBlock Text="{Binding Nb2005ChipsConfigFilePath}" HorizontalAlignment="Left" Margin="128,12,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-                                                <Button Content="从文件读取" HorizontalAlignment="Left" Margin="248,52,0,0" VerticalAlignment="Top" Width="87">
-                                                    <i:Interaction.Triggers>
-                                                        <i:EventTrigger EventName="Click">
-                                                            <vmc:EventCommandBase Command="{Binding Nb2005LoadChipConfigEvent}"/>
-                                                        </i:EventTrigger>
-                                                    </i:Interaction.Triggers>
-                                                </Button>
-                                                <Button Content="配置文件加载" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="100">
-                                                    <i:Interaction.Triggers>
-                                                        <i:EventTrigger EventName="Click">
-                                                            <vmc:EventCommandBase Command="{Binding Nb2005LoadChipsConfigFileEvent}"/>
-                                                        </i:EventTrigger>
-                                                    </i:Interaction.Triggers>
-                                                </Button>
-                                                <Button Content="更新至文件" HorizontalAlignment="Left" Margin="124,220,0,0" VerticalAlignment="Top" Width="100">
-                                                    <i:Interaction.Triggers>
-                                                        <i:EventTrigger EventName="Click">
-                                                            <vmc:EventCommandBase Command="{Binding Nb2005UpdateChipConfigEvent}"/>
-                                                        </i:EventTrigger>
-                                                    </i:Interaction.Triggers>
-                                                </Button>
-                                                <Button Content="一键写入" HorizontalAlignment="Left" Margin="248,220,0,0" VerticalAlignment="Top" Width="87">
-                                                    <i:Interaction.Triggers>
-                                                        <i:EventTrigger EventName="Click">
-                                                            <vmc:EventCommandBase Command="{Binding Nb2005TestResultWriteAllEvent}" CommandParameter="4"/>
-                                                        </i:EventTrigger>
-                                                    </i:Interaction.Triggers>
-                                                </Button>
-                                            </Grid>
-                                        </GroupBox>
-
-                                    </Grid>
-                                </ad:LayoutAnchorable>
-                                <ad:LayoutAnchorable Title="FFT分析" CanHide="False">
-                                    <Grid>
-                                        <Button Content="加载现有采样文件" HorizontalAlignment="Left" Margin="12,20,0,0" VerticalAlignment="Top" Width="122">
-                                            <i:Interaction.Triggers>
-                                                <i:EventTrigger EventName="Click">
-                                                    <vmc:EventCommandBase Command="{Binding FftAnalysisLoadSampleFileEvent}"/>
-                                                </i:EventTrigger>
-                                            </i:Interaction.Triggers>
-                                        </Button>
-                                        <TextBlock Text="{Binding FftAnalysisSampleFileName}" HorizontalAlignment="Left" Margin="12,44,0,0" VerticalAlignment="Top" Height="45" Width="291" TextWrapping="Wrap"/>
-                                        <Button Content="时域" HorizontalAlignment="Left" Margin="16,94,0,0" VerticalAlignment="Top" Width="70">
-                                            <i:Interaction.Triggers>
-                                                <i:EventTrigger EventName="Click">
-                                                    <vmc:EventCommandBase Command="{Binding UpdateEChartsTestEvent}" CommandParameter="0"/>
-                                                </i:EventTrigger>
-                                            </i:Interaction.Triggers>
-                                        </Button>
-                                        <Button Content="频域" HorizontalAlignment="Left" Margin="104,94,0,0" VerticalAlignment="Top" Width="70">
-                                            <i:Interaction.Triggers>
-                                                <i:EventTrigger EventName="Click">
-                                                    <vmc:EventCommandBase Command="{Binding UpdateEChartsTestEvent}" CommandParameter="1"/>
-                                                </i:EventTrigger>
-                                            </i:Interaction.Triggers>
-                                        </Button>
-                                        <CheckBox Name="FftAnalysisPropertyConfigVisibleCheckBox" Content="FFT分析设置" HorizontalAlignment="Left" Margin="200,96,0,0" VerticalAlignment="Top"/>
-                                        <Grid Margin="10,118,0,10" HorizontalAlignment="Left" Width="293" Visibility="{Binding ElementName=FftAnalysisPropertyConfigVisibleCheckBox,Path=IsChecked,Converter={StaticResource Bool2ControlVisibilityConverter}}">
-                                            <xctk:PropertyGrid SelectedObject="{Binding FftAnalysisPropertyConfig}" Margin="3,3,3,3"/>
-                                        </Grid>
-                                        <Grid Margin="10,118,0,10" HorizontalAlignment="Left" Width="293" Visibility="{Binding ElementName=FftAnalysisPropertyConfigVisibleCheckBox,Path=IsChecked,Converter={StaticResource BoolInverter2ControlVisibilityConverter}}">
-                                            <Grid.Resources>
-                                                <CollectionViewSource x:Key="FftAnalysisReportGroupView" Source="{Binding FftAnalysisReports}">
-                                                    <CollectionViewSource.GroupDescriptions>
-                                                        <PropertyGroupDescription PropertyName="GroupName"/>
-                                                    </CollectionViewSource.GroupDescriptions>
-                                                </CollectionViewSource>
-                                            </Grid.Resources>
-                                            <ListView ItemsSource="{Binding Source={StaticResource FftAnalysisReportGroupView}}" Margin="3,3,3,50">
-                                                <ListView.View>
-                                                    <GridView>
-                                                        <GridViewColumn Header="分析项" DisplayMemberBinding="{Binding Name}" Width="90"/>
-                                                        <GridViewColumn Header="结果项1" DisplayMemberBinding="{Binding Result1}" Width="90"/>
-                                                        <GridViewColumn Header="结果项2" DisplayMemberBinding="{Binding Result2}" Width="90"/>
-                                                    </GridView>
-                                                </ListView.View>
-                                                <ListView.GroupStyle>
-                                                    <GroupStyle>
-                                                        <GroupStyle.ContainerStyle>
-                                                            <Style TargetType="{x:Type GroupItem}">
-                                                                <Setter Property="Template">
-                                                                    <Setter.Value>
-                                                                        <ControlTemplate TargetType="{x:Type GroupItem}">
-                                                                            <Expander IsExpanded="True" BorderBrush="Gray" BorderThickness="1">
-                                                                                <Expander.Header>
-                                                                                    <DockPanel>
-                                                                                        <TextBlock FontWeight="Bold" Text="{Binding Name}" Margin="5,0,0,0" Width="auto"/>
-                                                                                    </DockPanel>
-                                                                                </Expander.Header>
-                                                                                <Expander.Content>
-                                                                                    <ItemsPresenter/>
-                                                                                </Expander.Content>
-                                                                            </Expander>
-                                                                        </ControlTemplate>
-                                                                    </Setter.Value>
-                                                                </Setter>
-                                                            </Style>
-                                                        </GroupStyle.ContainerStyle>
-                                                    </GroupStyle>
-                                                </ListView.GroupStyle>
-                                            </ListView>
-                                        </Grid>
-                                        <view:EChartsLine Margin="308,20,10,10" Data="{Binding ChartData,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"/>
-                                    </Grid>
-                                </ad:LayoutAnchorable>
-                                <ad:LayoutAnchorable Title="实用工具" CanHide="False">
-                                    <Grid>
-                                        <GroupBox Header="位计算" Margin="10,10,0,243" HorizontalAlignment="Left" Width="446">
-                                            <Grid>
-                                                <Grid Height="70" Width="340" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,20,0,0">
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="20"/>
-                                                        <ColumnDefinition Width="20"/>
-                                                        <ColumnDefinition Width="20"/>
-                                                        <ColumnDefinition Width="20"/>
-                                                        <ColumnDefinition Width="20"/>
-                                                        <ColumnDefinition Width="20"/>
-                                                        <ColumnDefinition Width="20"/>
-                                                        <ColumnDefinition Width="20"/>
-                                                        <ColumnDefinition Width="20"/>
-                                                        <ColumnDefinition Width="20"/>
-                                                        <ColumnDefinition Width="20"/>
-                                                        <ColumnDefinition Width="20"/>
-                                                        <ColumnDefinition Width="20"/>
-                                                        <ColumnDefinition Width="20"/>
-                                                        <ColumnDefinition Width="20"/>
-                                                        <ColumnDefinition Width="20"/>
-                                                        <ColumnDefinition Width="20"/>
-                                                    </Grid.ColumnDefinitions>
-                                                    <Grid.RowDefinitions>
-                                                        <RowDefinition Height="15"/>
-                                                        <RowDefinition Height="20"/>
-                                                        <RowDefinition Height="15"/>
-                                                        <RowDefinition Height="20"/>
-                                                    </Grid.RowDefinitions>
-                                                    <TextBlock Text="31" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="0"/>
-                                                    <TextBlock Text="30" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="1" Grid.Row="0"/>
-                                                    <TextBlock Text="29" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="2" Grid.Row="0"/>
-                                                    <TextBlock Text="28" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="3" Grid.Row="0"/>
-                                                    <TextBlock Text="27" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="4" Grid.Row="0"/>
-                                                    <TextBlock Text="26" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="5" Grid.Row="0"/>
-                                                    <TextBlock Text="25" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="6" Grid.Row="0"/>
-                                                    <TextBlock Text="24" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="7" Grid.Row="0"/>
-                                                    <TextBlock Text="23" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="9" Grid.Row="0"/>
-                                                    <TextBlock Text="22" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="10" Grid.Row="0"/>
-                                                    <TextBlock Text="21" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="11" Grid.Row="0"/>
-                                                    <TextBlock Text="20" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="12" Grid.Row="0"/>
-                                                    <TextBlock Text="19" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="13" Grid.Row="0"/>
-                                                    <TextBlock Text="18" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="14" Grid.Row="0"/>
-                                                    <TextBlock Text="17" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="15" Grid.Row="0"/>
-                                                    <TextBlock Text="16" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="16" Grid.Row="0"/>
-                                                    <TextBlock Text="15" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="2"/>
-                                                    <TextBlock Text="14" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="1" Grid.Row="2"/>
-                                                    <TextBlock Text="13" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="2" Grid.Row="2"/>
-                                                    <TextBlock Text="12" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="3" Grid.Row="2"/>
-                                                    <TextBlock Text="11" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="4" Grid.Row="2"/>
-                                                    <TextBlock Text="10" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="5" Grid.Row="2"/>
-                                                    <TextBlock Text="9" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="6" Grid.Row="2"/>
-                                                    <TextBlock Text="8" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="7" Grid.Row="2"/>
-                                                    <TextBlock Text="7" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="9" Grid.Row="2"/>
-                                                    <TextBlock Text="6" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="10" Grid.Row="2"/>
-                                                    <TextBlock Text="5" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="11" Grid.Row="2"/>
-                                                    <TextBlock Text="4" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="12" Grid.Row="2"/>
-                                                    <TextBlock Text="3" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="13" Grid.Row="2"/>
-                                                    <TextBlock Text="2" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="14" Grid.Row="2"/>
-                                                    <TextBlock Text="1" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="15" Grid.Row="2"/>
-                                                    <TextBlock Text="0" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="16" Grid.Row="2"/>
-                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[31].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="0" Grid.Row="1"/>
-                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[30].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" Grid.Row="1"/>
-                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[29].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="2" Grid.Row="1"/>
-                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[28].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="3" Grid.Row="1"/>
-                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[27].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="4" Grid.Row="1"/>
-                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[26].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="5" Grid.Row="1"/>
-                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[25].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="6" Grid.Row="1"/>
-                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[24].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="7" Grid.Row="1"/>
-                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[23].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="9" Grid.Row="1"/>
-                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[22].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="10" Grid.Row="1"/>
-                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[21].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="11" Grid.Row="1"/>
-                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[20].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="12" Grid.Row="1"/>
-                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[19].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="13" Grid.Row="1"/>
-                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[18].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="14" Grid.Row="1"/>
-                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[17].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="15" Grid.Row="1"/>
-                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[16].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="16" Grid.Row="1"/>
-                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[15].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="0" Grid.Row="3"/>
-                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[14].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" Grid.Row="3"/>
-                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[13].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="2" Grid.Row="3"/>
-                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[12].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="3" Grid.Row="3"/>
-                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[11].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="4" Grid.Row="3"/>
-                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[10].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="5" Grid.Row="3"/>
-                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[9].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="6" Grid.Row="3"/>
-                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[8].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="7" Grid.Row="3"/>
-                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[7].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="9" Grid.Row="3"/>
-                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[6].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="10" Grid.Row="3"/>
-                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[5].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="11" Grid.Row="3"/>
-                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[4].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="12" Grid.Row="3"/>
-                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[3].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="13" Grid.Row="3"/>
-                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[2].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="14" Grid.Row="3"/>
-                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[1].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="15" Grid.Row="3"/>
-                                                    <CheckBox IsChecked="{Binding BitsModel.Bits[0].Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="16" Grid.Row="3"/>
-                                                </Grid>
-                                                <TextBlock Text="10进制:" Margin="20,110,0,0" Width="48" Height="17" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                                                <TextBox Text="{Binding BitsModel.Num, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100" Margin="73,110,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                                                <TextBlock Text="16进制:" Margin="20,132,0,0" Width="48" Height="17" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                                                <TextBox Text="{Binding BitsModel.Num, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource Num2HexConverter}}" Width="100" Margin="73,132,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                                            </Grid>
-                                        </GroupBox>
-                                    </Grid>
-                                </ad:LayoutAnchorable>
-                                <ad:LayoutAnchorable Title="设置" CanHide="False">
-                                    <Grid>
-                                        <Border BorderBrush="Gray" BorderThickness="0.5" CornerRadius="3" Margin="10,10,0,10" HorizontalAlignment="Left" Width="405">
-                                            <Grid Name="SettingsGrid">
-                                                <TextBlock Text="GPIB超时" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Width="120" Margin="10,10,0,0"/>
-                                                <TextBox Text="{Binding GPIBTimeoutSetting, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Width="98" Height="20" VerticalAlignment="Top" Margin="135,10,0,0"/>
-                                                <TextBlock Text="毫秒" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Width="40" Margin="238,10,0,0"/>
-                                                <TextBlock Text="串口超时" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Width="120" Margin="10,35,0,0"/>
-                                                <TextBox Text="{Binding SerialPortTimeoutSetting, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Width="98" Height="20" VerticalAlignment="Top" Margin="135,35,0,0"/>
-                                                <TextBlock Text="毫秒" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Width="40" Margin="238,35,0,0"/>
-                                                <TextBlock Text="串口缓冲区大小" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Width="120" Margin="10,60,0,0"/>
-                                                <TextBox Text="{Binding SerialPortBufferSetting, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Width="98" Height="20" VerticalAlignment="Top" Margin="135,60,0,0"/>
-                                                <TextBlock Text="字节" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Width="40" Margin="238,60,0,0"/>
-                                                <TextBlock Text="串口日志关键词高亮" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Width="120" Margin="10,85,0,0"/>
-                                                <CheckBox IsChecked="{Binding SerialPortLogKeywordHighlightSetting,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="135,87,0,0" VerticalAlignment="Top"/>
-                                            </Grid>
-                                        </Border>
-                                        <Border BorderBrush="Gray" BorderThickness="0.5" CornerRadius="3" Margin="420,10,10,10">
-                                            <TextBlock Text="{Binding SettingsVersionText}" Margin="5,5,5,5" TextWrapping="Wrap"/>
-                                        </Border>
                                     </Grid>
                                 </ad:LayoutAnchorable>
                                 <ad:LayoutAnchorable Title="开发测试页" CanHide="False">

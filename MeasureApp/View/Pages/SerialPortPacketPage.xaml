@@ -1,0 +1,55 @@
+﻿<Page x:Class="MeasureApp.View.Pages.SerialPortPacketPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:MeasureApp.View.Pages"
+      xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+      xmlns:vmc="clr-namespace:MeasureApp.ViewModel.Common"
+      mc:Ignorable="d" 
+      Title="SerialPortPacketPage">
+    <Grid>
+        <GroupBox Header="读数据包" HorizontalAlignment="Left" VerticalAlignment="Top" Height="193" Width="500" Margin="10,10,0,0">
+            <Grid>
+                <TextBlock Text="串口选择：" TextWrapping="Wrap" Margin="10,14,0,0" TextAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                <ComboBox ItemsSource="{Binding SerialPortsInstance.SerialPortsDict, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Key" SelectedValue="{Binding SpPktCommTabSerialPortName, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Key" HorizontalAlignment="Left" Margin="75,12,0,0" VerticalAlignment="Top" Width="97" Height="20"/>
+
+                <TextBlock Text="字长(Byte)" HorizontalAlignment="Left" Margin="193,15,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                <TextBox Text="{Binding SpPktCommTabWordLen}" HorizontalAlignment="Left" Margin="254,15,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="45"/>
+
+                <TextBlock Text="数据包长(Word)" HorizontalAlignment="Left" Margin="316,16,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                <TextBox Text="{Binding SpPktCommTabPktLen}" HorizontalAlignment="Left" Margin="409,16,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="68"/>
+
+                <TextBlock Text="数据类型" HorizontalAlignment="Left" Margin="272,41,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                <ComboBox ItemsSource="{Binding PktCvtTypes, UpdateSourceTrigger=PropertyChanged}" SelectedValue="{Binding SpPktCommTabSelectedPktCvtType, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="335,39,0,0" VerticalAlignment="Top" Width="142" Height="20"/>
+
+                <TextBlock Text="ASCII" HorizontalAlignment="Left" Margin="108,54,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                <TextBlock Text="Bytes" HorizontalAlignment="Left" Margin="168,54,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+
+                <TextBlock Text="读取单字" HorizontalAlignment="Left" Margin="32,78,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                <TextBlock Text="PKT;0;" HorizontalAlignment="Left" Margin="108,78,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                <TextBlock Text="0x50 4B 54 3B 30 3B" HorizontalAlignment="Left" Margin="168,78,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+
+                <TextBlock Text="读取数据包" HorizontalAlignment="Left" Margin="32,102,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                <TextBlock Text="PKT;1;" HorizontalAlignment="Left" Margin="108,102,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                <TextBlock Text="0x50 4B 54 3B 31 3B" HorizontalAlignment="Left" Margin="168,102,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+
+                <Button Content="读取单字" HorizontalAlignment="Left" Margin="295,0,0,0" VerticalAlignment="Center" Width="80">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Click">
+                            <vmc:EventCommandBase Command="{Binding SpPktCommTabReadPktEvent}" CommandParameter="word"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </Button>
+
+                <Button Content="读取数据包" HorizontalAlignment="Left" Margin="295,100,0,0" VerticalAlignment="Top" Width="80">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Click">
+                            <vmc:EventCommandBase Command="{Binding SpPktCommTabReadPktEvent}" CommandParameter="packet"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </Button>
+            </Grid>
+        </GroupBox>
+    </Grid>
+</Page>

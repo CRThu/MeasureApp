@@ -32,12 +32,70 @@ namespace MeasureApp.ViewModel
             }
         }
 
+        private SerialPortInstructionPage serialPortInstructionPage;
+        public SerialPortInstructionPage SerialPortInstructionPage
+        {
+            get => serialPortInstructionPage;
+            set
+            {
+                serialPortInstructionPage = value;
+                RaisePropertyChanged(() => SerialPortInstructionPage);
+            }
+        }
 
+        private SerialPortPacketPage serialPortPacketPage;
+        public SerialPortPacketPage SerialPortPacketPage
+        {
+            get => serialPortPacketPage;
+            set
+            {
+                serialPortPacketPage = value;
+                RaisePropertyChanged(() => SerialPortPacketPage);
+            }
+        }
+
+        private DataStorageVisualizationPage dataStorageVisualizationPage;
+        public DataStorageVisualizationPage DataStorageVisualizationPage
+        {
+            get => dataStorageVisualizationPage;
+            set
+            {
+                dataStorageVisualizationPage = value;
+                RaisePropertyChanged(() => DataStorageVisualizationPage);
+            }
+        }
+
+        private AutomationPage automationPage;
+        public AutomationPage AutomationPage
+        {
+            get => automationPage;
+            set
+            {
+                automationPage = value;
+                RaisePropertyChanged(() => AutomationPage);
+            }
+        }
+
+        private FftAnalysisPage fftAnalysisPage;
+        public FftAnalysisPage FftAnalysisPage
+        {
+            get => fftAnalysisPage;
+            set
+            {
+                fftAnalysisPage = value;
+                RaisePropertyChanged(() => FftAnalysisPage);
+            }
+        }
 
         public MainWindowPages(object dataContext)
         {
             DevicesConnectionPage = new DevicesConnectionPage(dataContext);
             Multimeter3458AControlPage = new Multimeter3458AControlPage(dataContext);
+            SerialPortInstructionPage = new SerialPortInstructionPage(dataContext);
+            SerialPortPacketPage = new SerialPortPacketPage(dataContext);
+            DataStorageVisualizationPage = new DataStorageVisualizationPage(dataContext);
+            AutomationPage = new AutomationPage(dataContext);
+            FftAnalysisPage = new FftAnalysisPage(dataContext);
         }
     }
 }
