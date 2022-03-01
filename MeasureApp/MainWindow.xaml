@@ -14,6 +14,7 @@
         xmlns:editor="clr-namespace:RoslynPad.Editor;assembly=RoslynPad.Editor.Windows"
         xmlns:hc="https://handyorg.github.io/handycontrol"
         xmlns:ad="https://github.com/Dirkster99/AvalonDock"
+        d:DataContext="{d:DesignInstance Type=viewmodel:MainWindowDataContext}"
         mc:Ignorable="d"
         Title="MeasureApp" Height="650" Width="1200">
     <i:Interaction.Triggers>
@@ -24,11 +25,7 @@
             <vmc:EventCommandBase Command="{Binding MainWindowClosedEvent}"/>
         </i:EventTrigger>
     </i:Interaction.Triggers>
-    <Window.DataContext>
-        <viewmodel:MainWindowDataContext/>
-    </Window.DataContext>
     <Window.Resources>
-        <viewmodel:M3458ASyncMeasureButtonContentConverter x:Key="M3458ASyncMeasureButtonContentConverter"/>
         <viewmodel:SerialPortsStatusTextConverter x:Key="SerialPortsStatusTextConverter"/>
         <viewmodel:SerialPortCommandIsListeningButtonContentConverter x:Key="SerialPortCommandIsListeningButtonContentConverter"/>
         <viewmodel:SecondsToTimeFormatConverter x:Key="SecondsToTimeFormatConverter"/>
@@ -76,268 +73,14 @@
                         <ad:LayoutDocumentPaneGroup>
                             <ad:LayoutDocumentPane x:Name="panelTop">
                                 <ad:LayoutAnchorable Title="设备连接" CanHide="False">
-                                    <Grid>
-                                        <GroupBox Header="GPIB设备发现" HorizontalAlignment="Left" Height="166" Margin="10,10,0,0" VerticalAlignment="Top" Width="407">
-                                            <Grid>
-                                                <Button x:Name="SearchGPIBDevicesButton" Content="搜索GPIB设备" HorizontalAlignment="Left" Margin="227,83,0,0" VerticalAlignment="Top" Width="158" Height="23">
-                                                    <i:Interaction.Triggers>
-                                                        <i:EventTrigger EventName="Click">
-                                                            <vmc:EventCommandBase Command="{Binding GpibDeviceSearchEvent}"/>
-                                                        </i:EventTrigger>
-                                                    </i:Interaction.Triggers>
-                                                </Button>
-                                                <Button x:Name="OpenGPIBDeviceButton" Content="打开GPIB设备" HorizontalAlignment="Left" Margin="227,111,0,0" VerticalAlignment="Top" Width="158" Height="23">
-                                                    <i:Interaction.Triggers>
-                                                        <i:EventTrigger EventName="Click">
-                                                            <vmc:EventCommandBase Command="{Binding GpibDeviceOpenEvent}"/>
-                                                        </i:EventTrigger>
-                                                    </i:Interaction.Triggers>
-                                                </Button>
-                                                <ComboBox x:Name="GpibDeviceComboBox" ItemsSource="{Binding GpibDevicesName}" SelectedValue="{Binding GpibDevicesSelectedName}" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="201" Height="23"/>
-                                                <TextBlock x:Name="DeviceNameLabel" Text="{Binding GpibDeviceConnectStatusText}" HorizontalAlignment="Left" Margin="227,10,0,0" VerticalAlignment="Top" Width="158" Height="68"/>
-                                            </Grid>
-                                        </GroupBox>
-                                        <GroupBox Header="串口设备发现" HorizontalAlignment="Left" Height="166" Margin="422,10,0,0" VerticalAlignment="Top" Width="407">
-                                            <Grid>
-                                                <Button x:Name="SearchSerialPortButton" Content="搜索串口设备" Margin="231,0,10,0" VerticalAlignment="Center" Height="23">
-                                                    <i:Interaction.Triggers>
-                                                        <i:EventTrigger EventName="Click">
-                                                            <vmc:EventCommandBase Command="{Binding SerialPortDeviceSearchEvent}"/>
-                                                        </i:EventTrigger>
-                                                    </i:Interaction.Triggers>
-                                                </Button>
-                                                <Button x:Name="OpenSerialPortButton" Content="打开串口设备" Margin="231,88,10,0" VerticalAlignment="Top" Height="23">
-                                                    <i:Interaction.Triggers>
-                                                        <i:EventTrigger EventName="Click">
-                                                            <vmc:EventCommandBase Command="{Binding SerialPortDeviceOpenEvent}"/>
-                                                        </i:EventTrigger>
-                                                    </i:Interaction.Triggers>
-                                                </Button>
-                                                <Button x:Name="CloseSerialPortButton" Content="关闭串口设备" Margin="231,116,10,0" VerticalAlignment="Top" Height="23">
-                                                    <i:Interaction.Triggers>
-                                                        <i:EventTrigger EventName="Click">
-                                                            <vmc:EventCommandBase Command="{Binding SerialPortDeviceCloseEvent}"/>
-                                                        </i:EventTrigger>
-                                                    </i:Interaction.Triggers>
-                                                </Button>
-                                                <ComboBox x:Name="SerialPortNameComboBox" ItemsSource="{Binding SerialportDevicesNameComboBoxItems}" SelectedValue="{Binding SerialportDevicesNameSelectedValue}" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="201" Height="23"/>
-                                                <TextBlock Text="波特率：" HorizontalAlignment="Left" Margin="10,41,0,0" Width="71" TextWrapping="Wrap" Height="18" VerticalAlignment="Top"/>
-                                                <ComboBox x:Name="SerialPortBaudRateComboBox" ItemsSource="{Binding SerialportDeviceBaudRateList}" Text="{Binding SerialportDeviceBaudRate}" IsEditable="True" HorizontalAlignment="Left" Margin="86,38,0,0" VerticalAlignment="Top" Width="125" Height="23"/>
-                                                <TextBlock Text="校验位：" HorizontalAlignment="Left" Margin="10,67,0,0" Width="71" TextWrapping="Wrap" Height="18" VerticalAlignment="Top"/>
-                                                <ComboBox ItemsSource="{Binding SerialportDeviceParityList}" SelectedValue="{Binding SerialportDeviceParitySelectedValue}" HorizontalAlignment="Left" Margin="86,64,0,0" VerticalAlignment="Top" Width="125" Height="23"/>
-                                                <TextBlock Text="数据位：" HorizontalAlignment="Left" Margin="10,92,0,0" Width="71" TextWrapping="Wrap" Height="18" VerticalAlignment="Top"/>
-                                                <ComboBox ItemsSource="{Binding SerialportDeviceDataBitsList}" SelectedValue="{Binding SerialportDeviceDataBitsSelectedValue}" HorizontalAlignment="Left" Margin="86,90,0,0" VerticalAlignment="Top" Width="125" Height="23"/>
-                                                <TextBlock Text="停止位：" HorizontalAlignment="Left" Margin="10,121,0,0" Width="71" TextWrapping="Wrap" Height="18" VerticalAlignment="Top"/>
-                                                <ComboBox ItemsSource="{Binding SerialportDeviceStopBitsList}" SelectedValue="{Binding SerialportDeviceStopBitsSelectedValue}" HorizontalAlignment="Left" Margin="86,118,0,0" VerticalAlignment="Top" Width="125" Height="23"/>
-                                                <TextBlock x:Name="SerialPortDeviceNameTextBlock" Text="{Binding SerialPortsInstance.SerialPortsDict.Values, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource SerialPortsStatusTextConverter}}" HorizontalAlignment="Left" Margin="231,10,0,0" Width="154" TextWrapping="Wrap" Height="45" VerticalAlignment="Top"/>
-                                            </Grid>
-                                        </GroupBox>
-                                        <GroupBox Header="GPIB调试" HorizontalAlignment="Left" Margin="10,181,0,10" Width="407">
-                                            <Grid>
-                                                <TextBlock Text="Write Command" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top" Width="201"/>
-                                                <TextBlock Text="Read Data" HorizontalAlignment="Left" Margin="10,117,0,0" VerticalAlignment="Top" Width="201"/>
-                                                <TextBox x:Name="WriteCmdTextBox" Text="{Binding GPIBDebugWriteCommandText}" HorizontalAlignment="Left" Height="51" Margin="10,61,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="201"/>
-                                                <TextBox x:Name="ReadCmdTextBox" Text="{Binding GPIBDebugReadCommandText}" HorizontalAlignment="Left" Height="51" Margin="10,138,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="201"/>
-                                                <Button x:Name="QueryCmdButton" Content="Query" HorizontalAlignment="Left" Margin="227,61,0,0" VerticalAlignment="Top" Width="158" Height="51">
-                                                    <i:Interaction.Triggers>
-                                                        <i:EventTrigger EventName="Click">
-                                                            <vmc:EventCommandBase Command="{Binding GpibDebugCommandOperationEvent}" CommandParameter="Query"/>
-                                                        </i:EventTrigger>
-                                                    </i:Interaction.Triggers>
-                                                </Button>
-                                                <Button x:Name="WriteCmdButton" Content="Write" HorizontalAlignment="Left" Margin="227,137,0,0" VerticalAlignment="Top" Width="158" Height="23">
-                                                    <i:Interaction.Triggers>
-                                                        <i:EventTrigger EventName="Click">
-                                                            <vmc:EventCommandBase Command="{Binding GpibDebugCommandOperationEvent}" CommandParameter="Write"/>
-                                                        </i:EventTrigger>
-                                                    </i:Interaction.Triggers>
-                                                </Button>
-                                                <Button x:Name="ReadCmdButton" Content="Read" HorizontalAlignment="Left" Margin="227,165,0,0" VerticalAlignment="Top" Width="158" Height="23">
-                                                    <i:Interaction.Triggers>
-                                                        <i:EventTrigger EventName="Click">
-                                                            <vmc:EventCommandBase Command="{Binding GpibDebugCommandOperationEvent}" CommandParameter="Read"/>
-                                                        </i:EventTrigger>
-                                                    </i:Interaction.Triggers>
-                                                </Button>
-                                            </Grid>
-                                        </GroupBox>
-                                        <GroupBox Header="串口调试" HorizontalAlignment="Left" Margin="422,181,0,10" Width="407">
-                                            <Grid>
-                                                <CheckBox Content="16进制写入" IsChecked="{Binding SerialPortDebugWriteIsHex}" HorizontalAlignment="Left" Margin="129,41,0,0" VerticalAlignment="Top"/>
-                                                <CheckBox Content="16进制读取" IsChecked="{Binding SerialPortDebugReadIsHex}" HorizontalAlignment="Left" Margin="129,117,0,0" VerticalAlignment="Top"/>
-                                                <ComboBox x:Name="SerialPortDebugSelectComboBox" ItemsSource="{Binding SerialPortsInstance.SerialPortsDict, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Key" SelectedValue="{Binding SerialportDebugPortNameSelectedValue, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Key" HorizontalAlignment="Left" Margin="288,16,0,0" VerticalAlignment="Top" Width="97" Height="23"/>
-                                                <Button x:Name="SerialPortWriteCmdButton" Content="Write" HorizontalAlignment="Left" Margin="227,61,0,0" VerticalAlignment="Top" Width="158" Height="51">
-                                                    <i:Interaction.Triggers>
-                                                        <i:EventTrigger EventName="Click">
-                                                            <vmc:EventCommandBase Command="{Binding SerialPortDebugWriteCmdEvent}"/>
-                                                        </i:EventTrigger>
-                                                    </i:Interaction.Triggers>
-                                                </Button>
-                                                <Button x:Name="SerialPortReadCmdButton" Content="Read" HorizontalAlignment="Left" Margin="227,137,0,0" VerticalAlignment="Top" Width="158" Height="51">
-                                                    <i:Interaction.Triggers>
-                                                        <i:EventTrigger EventName="Click">
-                                                            <vmc:EventCommandBase Command="{Binding SerialPortDebugReadCmdEvent}"/>
-                                                        </i:EventTrigger>
-                                                    </i:Interaction.Triggers>
-                                                </Button>
-                                                <TextBox x:Name="SerialPortWriteCmdTextBox" Text="{Binding SerialPortDebugWriteCommandText}" HorizontalAlignment="Left" Height="51" Margin="10,61,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="201"/>
-                                                <TextBox x:Name="SerialPortReadCmdTextBox" Text="{Binding SerialPortDebugReadCommandText}" HorizontalAlignment="Left" Height="51" Margin="10,138,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="201"/>
-                                                <TextBlock Text="Write Command" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top" Width="114"/>
-                                                <TextBlock Text="Read Data" HorizontalAlignment="Left" Margin="10,117,0,0" VerticalAlignment="Top" Width="114"/>
-                                                <TextBlock Text="串口选择" HorizontalAlignment="Left" Margin="227,21,0,0" VerticalAlignment="Top" Width="56"/>
-                                            </Grid>
-                                        </GroupBox>
-                                    </Grid>
+                                    <ad:LayoutAnchorable.Content>
+                                        <Frame Content="{Binding Pages.DevicesConnectionPage}"/>
+                                    </ad:LayoutAnchorable.Content>
                                 </ad:LayoutAnchorable>
                                 <ad:LayoutAnchorable Title="3458A万用表控制" CanHide="False">
-                                    <Grid>
-                                        <GroupBox Header="基本" Height="350" Margin="10,10,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="329">
-                                            <Grid>
-                                                <Button Tag="RESET" Content="复位" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="80">
-                                                    <i:Interaction.Triggers>
-                                                        <i:EventTrigger EventName="Click">
-                                                            <vmc:EventCommandBase Command="{Binding M3458ABasicConfigEvent}" CommandParameter="RESET"/>
-                                                        </i:EventTrigger>
-                                                    </i:Interaction.Triggers>
-                                                </Button>
-                                                <Button Tag="ID" Content="ID" HorizontalAlignment="Left" Margin="10,33,0,0" VerticalAlignment="Top" Width="80">
-                                                    <i:Interaction.Triggers>
-                                                        <i:EventTrigger EventName="Click">
-                                                            <vmc:EventCommandBase Command="{Binding M3458ABasicConfigEvent}" CommandParameter="ID"/>
-                                                        </i:EventTrigger>
-                                                    </i:Interaction.Triggers>
-                                                </Button>
-                                                <Button Tag="ERR" Content="错误信息" HorizontalAlignment="Left" Margin="107,10,0,0" VerticalAlignment="Top" Width="80">
-                                                    <i:Interaction.Triggers>
-                                                        <i:EventTrigger EventName="Click">
-                                                            <vmc:EventCommandBase Command="{Binding M3458ABasicConfigEvent}" CommandParameter="ERR"/>
-                                                        </i:EventTrigger>
-                                                    </i:Interaction.Triggers>
-                                                </Button>
-                                                <Button Tag="STB" Content="状态位" HorizontalAlignment="Left" Margin="107,33,0,0" VerticalAlignment="Top" Width="80">
-                                                    <i:Interaction.Triggers>
-                                                        <i:EventTrigger EventName="Click">
-                                                            <vmc:EventCommandBase Command="{Binding M3458ABasicConfigEvent}" CommandParameter="STB"/>
-                                                        </i:EventTrigger>
-                                                    </i:Interaction.Triggers>
-                                                </Button>
-                                                <Button Tag="TEMP" Content="机器温度" HorizontalAlignment="Left" Margin="207,10,0,0" VerticalAlignment="Top" Width="80">
-                                                    <i:Interaction.Triggers>
-                                                        <i:EventTrigger EventName="Click">
-                                                            <vmc:EventCommandBase Command="{Binding M3458ABasicConfigEvent}" CommandParameter="TEMP"/>
-                                                        </i:EventTrigger>
-                                                    </i:Interaction.Triggers>
-                                                </Button>
-                                                <Button Tag="LINE" Content="工频频率" HorizontalAlignment="Left" Margin="207,33,0,0" VerticalAlignment="Top" Width="80">
-                                                    <i:Interaction.Triggers>
-                                                        <i:EventTrigger EventName="Click">
-                                                            <vmc:EventCommandBase Command="{Binding M3458ABasicConfigEvent}" CommandParameter="LINE"/>
-                                                        </i:EventTrigger>
-                                                    </i:Interaction.Triggers>
-                                                </Button>
-                                                <ComboBox Name="NdigComboBox" ItemsSource="{Binding M3458ANdigComboBoxItems}" SelectedValue="{Binding M3458ANdigSelectedValue}" Margin="107,66,0,0" Width="80" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top"/>
-                                                <Button Tag="NDIG" Content="显示位数" HorizontalAlignment="Left" Margin="207,66,0,0" VerticalAlignment="Top" Width="80">
-                                                    <i:Interaction.Triggers>
-                                                        <i:EventTrigger EventName="Click">
-                                                            <vmc:EventCommandBase Command="{Binding M3458ABasicConfigEvent}" CommandParameter="NDIG"/>
-                                                        </i:EventTrigger>
-                                                    </i:Interaction.Triggers>
-                                                </Button>
-
-                                                <ComboBox Name="AcalComboBox" ItemsSource="{Binding M3458AAcalItems}" DisplayMemberPath="Value" SelectedValue="{Binding M3458AAcalSelectedValue}" SelectedValuePath="Key" HorizontalAlignment="Left" Margin="10,110,0,0" VerticalAlignment="Top" Width="163" Height="22"/>
-                                                <Button Tag="ACAL" Content="执行自动校准" HorizontalAlignment="Left" Margin="178,110,0,0" VerticalAlignment="Top" Width="130" Height="22">
-                                                    <i:Interaction.Triggers>
-                                                        <i:EventTrigger EventName="Click">
-                                                            <vmc:EventCommandBase Command="{Binding M3458ABasicConfigEvent}" CommandParameter="ACAL"/>
-                                                        </i:EventTrigger>
-                                                    </i:Interaction.Triggers>
-                                                </Button>
-                                                <ComboBox Name="RangeComboBox" ItemsSource="{Binding M3458ASetRangeItems}" DisplayMemberPath="Value" SelectedValue="{Binding M3458ASetRangeSelectedValue}" SelectedValuePath="Key" HorizontalAlignment="Left" Margin="10,146,0,0" VerticalAlignment="Top" Width="79" Height="22"/>
-                                                <ComboBox Name="ResComboBox" ItemsSource="{Binding M3458ASetResolutionItems}" DisplayMemberPath="Value" SelectedValue="{Binding M3458ASetResolutionSelectedValue}" SelectedValuePath="Key" HorizontalAlignment="Left" Margin="94,146,0,0" VerticalAlignment="Top" Width="79" Height="22"/>
-                                                <Button Tag="RANGE" Content="设置量程/精度" HorizontalAlignment="Left" Margin="178,146,0,0" VerticalAlignment="Top" Width="130" Height="22">
-                                                    <i:Interaction.Triggers>
-                                                        <i:EventTrigger EventName="Click">
-                                                            <vmc:EventCommandBase Command="{Binding M3458ABasicConfigEvent}" CommandParameter="RANGE"/>
-                                                        </i:EventTrigger>
-                                                    </i:Interaction.Triggers>
-                                                </Button>
-                                                <TextBox Name="NplcTextBox" Text="{Binding M3458ASetNplcText}" HorizontalAlignment="Left" Height="23" Margin="10,183,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="163"/>
-                                                <Button Tag="NPLC" Content="设置速率(NPLC)" HorizontalAlignment="Left" Margin="178,183,0,0" VerticalAlignment="Top" Width="130" Height="22">
-                                                    <i:Interaction.Triggers>
-                                                        <i:EventTrigger EventName="Click">
-                                                            <vmc:EventCommandBase Command="{Binding M3458ABasicConfigEvent}" CommandParameter="NPLC"/>
-                                                        </i:EventTrigger>
-                                                    </i:Interaction.Triggers>
-                                                </Button>
-                                                <Button Tag="RANGE?" Content="读量程/精度" HorizontalAlignment="Left" Margin="16,220,0,0" VerticalAlignment="Top" Width="130" Height="22">
-                                                    <i:Interaction.Triggers>
-                                                        <i:EventTrigger EventName="Click">
-                                                            <vmc:EventCommandBase Command="{Binding M3458ABasicConfigEvent}" CommandParameter="RANGE?"/>
-                                                        </i:EventTrigger>
-                                                    </i:Interaction.Triggers>
-                                                </Button>
-                                                <Button Tag="NPLC?" Content="读输出速率(NPLC)" HorizontalAlignment="Left" Margin="170,220,0,0" VerticalAlignment="Top" Width="130" Height="22">
-                                                    <i:Interaction.Triggers>
-                                                        <i:EventTrigger EventName="Click">
-                                                            <vmc:EventCommandBase Command="{Binding M3458ABasicConfigEvent}" CommandParameter="NPLC?"/>
-                                                        </i:EventTrigger>
-                                                    </i:Interaction.Triggers>
-                                                </Button>
-                                                <TextBox Name="GuiConfigLogTextBox" Margin="10,257,9.8,10" TextWrapping="Wrap" Text="{Binding M3458ABasicConfigCommandLogText}"/>
-                                            </Grid>
-                                        </GroupBox>
-                                        <GroupBox Header="测量" HorizontalAlignment="Left" Margin="344,10,0,0" Width="405" Height="350" VerticalAlignment="Top">
-                                            <Grid>
-                                                <Border VerticalAlignment="Top" Margin="10,10,10,0" Height="130" BorderBrush="Gray" BorderThickness="0.5" CornerRadius="3">
-                                                    <Grid>
-                                                        <TextBlock Text="自动测量电压" Margin="10,10,10,0" VerticalAlignment="Top"/>
-                                                        <TextBlock x:Name="SyncDCVDisplayTextBlock" Text="{Binding M3458ASyncMeasureText}" TextWrapping="Wrap" Margin="10,42,159,0" TextAlignment="Center" VerticalAlignment="Top" FontSize="24" Height="34"/>
-                                                        <Button x:Name="SyncDCVDisplayButton" Content="{Binding M3458AIsSyncMeasureOpen, Converter={StaticResource M3458ASyncMeasureButtonContentConverter}}" HorizontalAlignment="Left" Margin="218,30,0,0" VerticalAlignment="Top" Width="145" Height="57">
-                                                            <i:Interaction.Triggers>
-                                                                <i:EventTrigger EventName="Click">
-                                                                    <vmc:EventCommandBase Command="{Binding M3458ASyncMeasureEvent}" CommandParameter="{Binding ElementName=SyncDCVDisplayStorageCheckBox, Path=IsChecked}"/>
-                                                                </i:EventTrigger>
-                                                            </i:Interaction.Triggers>
-                                                        </Button>
-                                                        <CheckBox Name="SyncDCVDisplayStorageCheckBox" Content="自动存储" HorizontalAlignment="Left" Margin="218,92,0,0" VerticalAlignment="Top"/>
-                                                    </Grid>
-                                                </Border>
-
-                                                <Border VerticalAlignment="Top" Margin="10,145,10,0" Height="173" BorderBrush="Gray" BorderThickness="0.5" CornerRadius="3">
-                                                    <Grid>
-                                                        <TextBlock Text="手动测量电压" Margin="10,10,10,0" VerticalAlignment="Top"/>
-                                                        <TextBlock Text="速度选择:" Margin="10,43,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="71"/>
-                                                        <Button x:Name="SetMinNPLCButton" Content="高速度(1 NPLC)" Height="22" Margin="86,40,0,0" HorizontalAlignment="Left" Width="130" VerticalAlignment="Top">
-                                                            <i:Interaction.Triggers>
-                                                                <i:EventTrigger EventName="Click">
-                                                                    <vmc:EventCommandBase Command="{Binding M3458ASetNPLCEvent}" CommandParameter="1"/>
-                                                                </i:EventTrigger>
-                                                            </i:Interaction.Triggers>
-                                                        </Button>
-                                                        <Button x:Name="SetMaxNPLCButton" Content="高精度(10 NPLC)" Height="22" Margin="221,40,0,0" HorizontalAlignment="Left" Width="130" VerticalAlignment="Top">
-                                                            <i:Interaction.Triggers>
-                                                                <i:EventTrigger EventName="Click">
-                                                                    <vmc:EventCommandBase Command="{Binding M3458ASetNPLCEvent}" CommandParameter="10"/>
-                                                                </i:EventTrigger>
-                                                            </i:Interaction.Triggers>
-                                                        </Button>
-                                                        <TextBlock Text="量程选择:" Margin="10,70,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="71"/>
-                                                        <ComboBox x:Name="ManualReadDCVRangeComboBox" ItemsSource="{Binding M3458ASetRangeItems}" DisplayMemberPath="Value" SelectedValue="{Binding M3458AManualMeasureRangeSelectedValue}" SelectedValuePath="Key" HorizontalAlignment="Left" Margin="86,67,0,0" VerticalAlignment="Top" Width="79" Height="22"/>
-                                                        <ComboBox x:Name="ManualReadDCVResComboBox" ItemsSource="{Binding M3458ASetResolutionItems}" DisplayMemberPath="Value" SelectedValue="{Binding M3458AManualMeasureResolutionSelectedValue}" SelectedValuePath="Key" HorizontalAlignment="Left" Margin="170,67,0,0" VerticalAlignment="Top" Width="79" Height="22"/>
-                                                        <TextBlock x:Name="ManualReadDCVTextBlock" Text="{Binding M3458AManualMeasureText}" TextWrapping="Wrap" Margin="10,98,159,0" TextAlignment="Center" VerticalAlignment="Top" FontSize="24" Height="34"/>
-                                                        <Button x:Name="ManualReadDCVButton" Content="手动读取电压" HorizontalAlignment="Left" Margin="218,94,0,0" VerticalAlignment="Top" Width="144" Height="41">
-                                                            <i:Interaction.Triggers>
-                                                                <i:EventTrigger EventName="Click">
-                                                                    <vmc:EventCommandBase Command="{Binding M3458AManualMeasureEvent}" CommandParameter="{Binding ElementName=ManualStorageDCVCheckBox, Path=IsChecked}"/>
-                                                                </i:EventTrigger>
-                                                            </i:Interaction.Triggers>
-                                                        </Button>
-                                                        <CheckBox Name="ManualStorageDCVCheckBox" Content="自动存储" HorizontalAlignment="Left" Margin="218,140,0,0" VerticalAlignment="Top"/>
-                                                    </Grid>
-                                                </Border>
-                                            </Grid>
-                                        </GroupBox>
-                                    </Grid>
+                                    <ad:LayoutAnchorable.Content>
+                                        <Frame Content="{Binding Pages.Multimeter3458AControlPage}"/>
+                                    </ad:LayoutAnchorable.Content>
                                 </ad:LayoutAnchorable>
                                 <ad:LayoutAnchorable Title="串口指令通信" CanHide="False">
                                     <Grid>

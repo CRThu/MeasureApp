@@ -19,8 +19,23 @@ namespace MeasureApp.ViewModel
         public string Key3458AString = "3458A Data Storage";
         public string KeySerialPortString = "Serial Port Data Storage";
 
+        // Pages
+        private MainWindowPages pages;
+        public MainWindowPages Pages
+        {
+            get => pages;
+            set
+            {
+                pages = value;
+                RaisePropertyChanged(() => Pages);
+            }
+        }
+
+
         public MainWindowDataContext()
         {
+            Pages = new(this);
+
             // 添加默认Key
             DataStorageInstance.AddKey(Key3458AString);
             DataStorageInstance.AddKey(KeySerialPortString);

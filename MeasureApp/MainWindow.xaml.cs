@@ -28,7 +28,7 @@ namespace MeasureApp
         {
             InitializeComponent();
 
-            //DataContext = new MainWindowDataContext();
+            DataContext = new MainWindowDataContext();
 
             // 默认文件选择路径加载
             if (Properties.Settings.Default.DefaultDirectory == string.Empty)

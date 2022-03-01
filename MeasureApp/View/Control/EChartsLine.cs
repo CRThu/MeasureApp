@@ -15,17 +15,17 @@ namespace MeasureApp.View.Control
 {
     public class EChartsLine : WebView2
     {
-        public static readonly DependencyProperty TextProperty = DependencyProperty.Register("Data", typeof(EChartsLineData), typeof(EChartsLine), new PropertyMetadata(null, DataChangedCallback));
+        public static readonly DependencyProperty DataProperty = DependencyProperty.Register("Data", typeof(EChartsLineData), typeof(EChartsLine), new PropertyMetadata(null, DataChangedCallback));
 
         public EChartsLineData Data
         {
             set
             {
-                SetValue(TextProperty, value);
+                SetValue(DataProperty, value);
             }
             get
             {
-                return (EChartsLineData)GetValue(TextProperty);
+                return (EChartsLineData)GetValue(DataProperty);
             }
         }
 

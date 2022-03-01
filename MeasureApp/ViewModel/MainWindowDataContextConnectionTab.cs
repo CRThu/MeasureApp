@@ -249,7 +249,7 @@ namespace MeasureApp.ViewModel
                     SerialportCommandPortNameSelectedValue = SerialPortsInstance.SerialPortsDict.Keys.First();
                 if (SerialPortsInstance.SerialPortNames.Any() && SpPktCommTabSerialPortName is null)
                     SpPktCommTabSerialPortName = SerialPortsInstance.SerialPortsDict.Keys.First();
-                
+
             }
             catch (Exception ex)
             {
