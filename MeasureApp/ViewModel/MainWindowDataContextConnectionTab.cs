@@ -211,10 +211,6 @@ namespace MeasureApp.ViewModel
                 // 更新串口默认选择
                 if (SerialPortsInstance.SerialPortNames.Any() && SerialportDebugPortNameSelectedValue is null)
                     SerialportDebugPortNameSelectedValue = SerialPortsInstance.SerialPortsDict.Keys.First();
-                if (SerialPortsInstance.SerialPortNames.Any() && SerialPortSendCmdSerialPortNameSelectedValue is null)
-                    SerialPortSendCmdSerialPortNameSelectedValue = SerialPortsInstance.SerialPortsDict.Keys.First();
-                if (SerialPortsInstance.SerialPortNames.Any() && SerialPortRecvDataSerialPortNameSelectedValue is null)
-                    SerialPortRecvDataSerialPortNameSelectedValue = SerialPortsInstance.SerialPortsDict.Keys.First();
                 if (SerialPortsInstance.SerialPortNames.Any() && SerialportCommandPortNameSelectedValue is null)
                     SerialportCommandPortNameSelectedValue = SerialPortsInstance.SerialPortsDict.Keys.First();
                 if (SerialPortsInstance.SerialPortNames.Any() && SpPktCommTabSerialPortName is null)
@@ -241,10 +237,6 @@ namespace MeasureApp.ViewModel
                 // 更新串口默认选择
                 if (SerialPortsInstance.SerialPortNames.Any() && SerialportDebugPortNameSelectedValue is null)
                     SerialportDebugPortNameSelectedValue = SerialPortsInstance.SerialPortsDict.Keys.First();
-                if (SerialPortsInstance.SerialPortNames.Any() && SerialPortSendCmdSerialPortNameSelectedValue is null)
-                    SerialPortSendCmdSerialPortNameSelectedValue = SerialPortsInstance.SerialPortsDict.Keys.First();
-                if (SerialPortsInstance.SerialPortNames.Any() && SerialPortRecvDataSerialPortNameSelectedValue is null)
-                    SerialPortRecvDataSerialPortNameSelectedValue = SerialPortsInstance.SerialPortsDict.Keys.First();
                 if (SerialPortsInstance.SerialPortNames.Any() && SerialportCommandPortNameSelectedValue is null)
                     SerialportCommandPortNameSelectedValue = SerialPortsInstance.SerialPortsDict.Keys.First();
                 if (SerialPortsInstance.SerialPortNames.Any() && SpPktCommTabSerialPortName is null)

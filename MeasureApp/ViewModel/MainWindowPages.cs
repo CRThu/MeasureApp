@@ -87,6 +87,62 @@ namespace MeasureApp.ViewModel
             }
         }
 
+        private UtilityPage utilityPage;
+        public UtilityPage UtilityPage
+        {
+            get => utilityPage;
+            set
+            {
+                utilityPage = value;
+                RaisePropertyChanged(() => UtilityPage);
+            }
+        }
+
+        private SettingsPage settingsPage;
+        public SettingsPage SettingsPage
+        {
+            get => settingsPage;
+            set
+            {
+                settingsPage = value;
+                RaisePropertyChanged(() => SettingsPage);
+            }
+        }
+
+        private OldDataStorageVisualizationPage oldDataStorageVisualizationPage;
+        public OldDataStorageVisualizationPage OldDataStorageVisualizationPage
+        {
+            get => oldDataStorageVisualizationPage;
+            set
+            {
+                oldDataStorageVisualizationPage = value;
+                RaisePropertyChanged(() => OldDataStorageVisualizationPage);
+            }
+        }
+
+        private TestPage testPage;
+        public TestPage TestPage
+        {
+            get => testPage;
+            set
+            {
+                testPage = value;
+                RaisePropertyChanged(() => TestPage);
+            }
+        }
+
+        private RunTasksPage runTasksPage;
+        public RunTasksPage RunTasksPage
+        {
+            get => runTasksPage;
+            set
+            {
+                runTasksPage = value;
+                RaisePropertyChanged(() => RunTasksPage);
+            }
+        }
+        
+
         public MainWindowPages(object dataContext)
         {
             DevicesConnectionPage = new DevicesConnectionPage(dataContext);
@@ -96,6 +152,11 @@ namespace MeasureApp.ViewModel
             DataStorageVisualizationPage = new DataStorageVisualizationPage(dataContext);
             AutomationPage = new AutomationPage(dataContext);
             FftAnalysisPage = new FftAnalysisPage(dataContext);
+            UtilityPage = new UtilityPage(dataContext);
+            SettingsPage = new SettingsPage(dataContext);
+            OldDataStorageVisualizationPage = new OldDataStorageVisualizationPage(dataContext);
+            TestPage = new TestPage(dataContext);
+            RunTasksPage = new RunTasksPage(dataContext);
         }
     }
 }
