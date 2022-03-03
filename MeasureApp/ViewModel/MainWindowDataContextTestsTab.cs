@@ -14,6 +14,7 @@ using MeasureApp.Model.Register;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using System.Threading;
+using static MeasureApp.Model.ClassTestBase;
 
 namespace MeasureApp.ViewModel
 {
@@ -412,5 +413,37 @@ namespace MeasureApp.ViewModel
             }
         }
 
+
+        public static ObservableRangeCollection<ClassTestBase> attrs()
+        {
+            ObservableRangeCollection<ClassTestBase> classTestBases = new();
+            var ms = typeof(TaskRunClassDemo).GetMethods().Where(x => x.IsDefined(typeof(TaskMethodInfoAttribute)));
+            foreach (var m in ms)
+            {
+                var attr = m.GetCustomAttribute<TaskMethodInfoAttribute>();
+                classTestBases.Add(new ClassTestBase()
+                {
+                    Id = attr.Id.ToString(),
+                    FuncName = m.Name,
+                    ParamVal = "PARVAL",
+                    ReturnVal = "RETVAL",
+                    Func = m.CreateDelegate<ClassDelegate>()
+                });
+            }
+            return classTestBases;
+        }
+
+        private ObservableRangeCollection<ClassTestBase> classTestBaseCollection = attrs();
+
+        public ObservableRangeCollection<ClassTestBase> ClassTestBaseCollection
+        {
+            get => classTestBaseCollection;
+            set
+            {
+                classTestBaseCollection = value;
+                RaisePropertyChanged(() => ClassTestBaseCollection);
+            }
+        }
     }
+
 }

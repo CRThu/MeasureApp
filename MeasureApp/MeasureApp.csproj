@@ -13,6 +13,7 @@
 
 	<ItemGroup>
 		<Compile Remove="AutomationExample.cs" />
+		<Compile Remove="AutomationExamples\AD7124IoutTest.cs" />
 		<Compile Remove="AutomationExamples\AutomationExample.cs" />
 		<Compile Remove="AutomationExamples\AutomationExample2.cs" />
 		<Compile Remove="AutomationExamples\AutomationTemplate.cs" />
@@ -23,6 +24,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<None Include="AutomationExamples\AD7124IoutTest.cs" />
 		<None Include="AutomationExamples\AutomationExample2.cs" />
 		<None Include="AutomationExamples\AutomationExample.cs" />
 		<None Include="AutomationExamples\AutomationTemplate.cs" />

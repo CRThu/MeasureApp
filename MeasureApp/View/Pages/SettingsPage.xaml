@@ -4,26 +4,28 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:MeasureApp.View.Pages"
+      xmlns:viewmodel="clr-namespace:MeasureApp.ViewModel"
+      d:DataContext="{d:DesignInstance Type=viewmodel:MainWindowDataContext}"
       mc:Ignorable="d"
       Title="SettingsPage">
     <Grid>
-        <Border BorderBrush="Gray" BorderThickness="0.5" CornerRadius="3" Margin="10,10,0,10" HorizontalAlignment="Left" Width="405">
-            <Grid Name="SettingsGrid">
-                <TextBlock Text="GPIB超时" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Width="120" Margin="10,10,0,0"/>
-                <TextBox Text="{Binding GPIBTimeoutSetting, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Width="98" Height="20" VerticalAlignment="Top" Margin="135,10,0,0"/>
-                <TextBlock Text="毫秒" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Width="40" Margin="238,10,0,0"/>
-                <TextBlock Text="串口超时" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Width="120" Margin="10,35,0,0"/>
-                <TextBox Text="{Binding SerialPortTimeoutSetting, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Width="98" Height="20" VerticalAlignment="Top" Margin="135,35,0,0"/>
-                <TextBlock Text="毫秒" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Width="40" Margin="238,35,0,0"/>
-                <TextBlock Text="串口缓冲区大小" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Width="120" Margin="10,60,0,0"/>
-                <TextBox Text="{Binding SerialPortBufferSetting, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Width="98" Height="20" VerticalAlignment="Top" Margin="135,60,0,0"/>
-                <TextBlock Text="字节" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Width="40" Margin="238,60,0,0"/>
-                <TextBlock Text="串口日志关键词高亮" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Width="120" Margin="10,85,0,0"/>
-                <CheckBox IsChecked="{Binding SerialPortLogKeywordHighlightSetting,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="135,87,0,0" VerticalAlignment="Top"/>
-            </Grid>
-        </Border>
+        <Grid Name="SettingsGrid"  Margin="10,10,0,10" HorizontalAlignment="Left" Width="405">
+            <TextBlock Text="GPIB超时" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Width="120" Margin="10,10,0,0"/>
+            <TextBox Text="{Binding GPIBTimeoutSetting, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Width="98" Height="20" VerticalAlignment="Top" Margin="135,10,0,0"/>
+            <TextBlock Text="毫秒" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Width="40" Margin="238,10,0,0"/>
+            <TextBlock Text="串口超时" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Width="120" Margin="10,35,0,0"/>
+            <TextBox Text="{Binding SerialPortTimeoutSetting, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Width="98" Height="20" VerticalAlignment="Top" Margin="135,35,0,0"/>
+            <TextBlock Text="毫秒" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Width="40" Margin="238,35,0,0"/>
+            <TextBlock Text="串口缓冲区大小" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Width="120" Margin="10,60,0,0"/>
+            <TextBox Text="{Binding SerialPortBufferSetting, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Width="98" Height="20" VerticalAlignment="Top" Margin="135,60,0,0"/>
+            <TextBlock Text="字节" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Width="40" Margin="238,60,0,0"/>
+            <TextBlock Text="串口日志关键词高亮" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Width="120" Margin="10,85,0,0"/>
+            <CheckBox IsChecked="{Binding SerialPortLogKeywordHighlightSetting,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="135,87,0,0" VerticalAlignment="Top"/>
+        </Grid>
+
         <Border BorderBrush="Gray" BorderThickness="0.5" CornerRadius="3" Margin="420,10,10,10">
             <TextBlock Text="{Binding SettingsVersionText}" Margin="5,5,5,5" TextWrapping="Wrap"/>
         </Border>
+        
     </Grid>
 </Page>
