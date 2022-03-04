@@ -15,94 +15,97 @@
         <viewmodel:String2NullableDecimalConverter x:Key="String2NullableDecimalConverter"/>
     </Page.Resources>
     <Grid>
-        <ListView ItemsSource="{Binding ClassTestBaseCollection}" HorizontalAlignment="Center" Margin="0,10,0,0" VerticalAlignment="Top" Width="600" Height="200">
+        <ListView ItemsSource="{Binding RunTaskItemsCollection}" Margin="20,111,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="700" Height="200">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="ID" Width="50" DisplayMemberBinding="{Binding Id}"/>
-                    <GridViewColumn Header="函数名" Width="100" DisplayMemberBinding="{Binding FuncName}"/>
-                    <GridViewColumn Header="传入参数" Width="120">
+                    <GridViewColumn Header="函数名" Width="100" DisplayMemberBinding="{Binding Description}"/>
+                    <GridViewColumn Header="传入参数" Width="200">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBox Text="{Binding ParamVal,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" Width="100"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBox Text="{Binding ParamVal,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" Width="100"/>
+                                    <Button Width="70" Content="任务运行" Margin="3,0,3,0">
+                                        <i:Interaction.Triggers>
+                                            <i:EventTrigger EventName="Click">
+                                                <!--<vmc:EventCommandBase Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ListView},Path=DataContext.MessageBoxTestEvent}" CommandParameter="{Binding Id}"/>-->
+                                                <vmc:EventCommandBase  Command="{Binding RunTaskEvent}"/>
+                                            </i:EventTrigger>
+                                        </i:Interaction.Triggers>
+                                    </Button>
+                                </StackPanel>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Header="返回值" Width="120">
+                    <GridViewColumn Header="返回值" Width="200">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBox Text="{Binding ReturnVal,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" Width="100"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBox Text="{Binding ReturnVal,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" Width="100"/>
+                                    <Button Width="70" Content="结果处理" Margin="3,0,3,0">
+                                        <i:Interaction.Triggers>
+                                            <i:EventTrigger EventName="Click">
+                                                <vmc:EventCommandBase  Command="{Binding }"/>
+                                            </i:EventTrigger>
+                                        </i:Interaction.Triggers>
+                                    </Button>
+                                </StackPanel>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Header="运行" Width="70">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <Button Width="50" Content="运行">
-                                    <i:Interaction.Triggers>
-                                        <i:EventTrigger EventName="Click">
-                                            <!--<vmc:EventCommandBase Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ListView},Path=DataContext.MessageBoxTestEvent}" CommandParameter="{Binding Id}"/>-->
-                                            <vmc:EventCommandBase  Command="{Binding MessageBoxTestEvent}"/>
-                                        </i:EventTrigger>
-                                    </i:Interaction.Triggers>
-                                </Button>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
+                    <GridViewColumn Header="状态" Width="70" DisplayMemberBinding="{Binding Status}"/>
+                    <GridViewColumn Header="进度" Width="70" DisplayMemberBinding="{Binding ProgressPercent,StringFormat={}{0:P1}}"/>
                 </GridView>
             </ListView.View>
         </ListView>
-        <!--<TextBlock Text="1" HorizontalAlignment="Left" Margin="22,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-        <Button Content="测试A" HorizontalAlignment="Left" Margin="34,0,0,0" VerticalAlignment="Top" Width="70">
+        <Button Content="任务集加载" HorizontalAlignment="Left" Margin="20,20,0,0" VerticalAlignment="Top" Width="100">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="Click">
-                    <vmc:EventCommandBase Command="{Binding }" CommandParameter="1"/>
+                    <vmc:EventCommandBase Command="{Binding LoadTaskRunConfigFileEvent}"/>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
         </Button>
-        <TextBox HorizontalAlignment="Left" Margin="109,115,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <Button Content="写入" HorizontalAlignment="Left" Margin="243,0,0,0" VerticalAlignment="Top" Width="87">
+        <TextBlock Text="{Binding TaskRunConfigFilePath,StringFormat=任务集文件路径:{0}}" HorizontalAlignment="Left" Margin="145,22,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+        
+        <Button Content="芯片配置加载" HorizontalAlignment="Left" Margin="20,44,0,0" VerticalAlignment="Top" Width="100">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="Click">
-                    <vmc:EventCommandBase Command="{Binding }" CommandParameter="1"/>
-                </i:EventTrigger>
-            </i:Interaction.Triggers>
-        </Button>-->
-
-        <!--<Button Content="测试项目加载" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="108"/>-->
-
-        <!--<TextBlock Text="测试项" HorizontalAlignment="Left" Margin="45,94,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-        <TextBlock Text="返回值" HorizontalAlignment="Left" Margin="153,95,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-        <TextBlock Text="芯片ID" HorizontalAlignment="Left" Margin="109,76,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-        <TextBox Text="{Binding Nb2005ChipId,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="151,75,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="78"/>-->
-
-        <!--<TextBlock Text="{Binding Nb2005ChipsConfigFilePath}" HorizontalAlignment="Left" Margin="128,12,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>-->
-        <!--<Button Content="从文件读取" HorizontalAlignment="Left" Margin="243,74,0,0" VerticalAlignment="Top" Width="87">
-            <i:Interaction.Triggers>
-                <i:EventTrigger EventName="Click">
-                    <vmc:EventCommandBase Command="{Binding Nb2005LoadChipConfigEvent}"/>
+                    <vmc:EventCommandBase Command="{Binding LoadChipConfigFileEvent}"/>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
         </Button>
-        <Button Content="配置文件加载" HorizontalAlignment="Left" Margin="10,34,0,0" VerticalAlignment="Top" Width="108">
+        <TextBlock Text="{Binding TaskRunChipConfigFilePath,StringFormat=芯片配置文件路径:{0}}" HorizontalAlignment="Left" Margin="145,46,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+        
+        <TextBlock Text="芯片ID" HorizontalAlignment="Left" Margin="20,81,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+        <TextBox Text="{Binding TaskRunChipId}" HorizontalAlignment="Left" Margin="70,80,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="78"/>
+        
+        <Button Content="读取" HorizontalAlignment="Left" Margin="164,79,0,0" VerticalAlignment="Top" Width="70">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="Click">
-                    <vmc:EventCommandBase Command="{Binding Nb2005LoadChipsConfigFileEvent}"/>
+                    <vmc:EventCommandBase Command="{Binding }"/>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
         </Button>
-        <Button Content="更新至文件" HorizontalAlignment="Left" Margin="119,242,0,0" VerticalAlignment="Top" Width="100">
+        <Button Content="写入" HorizontalAlignment="Left" Margin="239,79,0,0" VerticalAlignment="Top" Width="70">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="Click">
-                    <vmc:EventCommandBase Command="{Binding Nb2005UpdateChipConfigEvent}"/>
+                    <vmc:EventCommandBase Command="{Binding }"/>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
         </Button>
-        <Button Content="一键写入" HorizontalAlignment="Left" Margin="243,242,0,0" VerticalAlignment="Top" Width="87">
+        <Button Content="一键运行" HorizontalAlignment="Left" Margin="350,79,0,0" VerticalAlignment="Top" Width="87">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="Click">
-                    <vmc:EventCommandBase Command="{Binding Nb2005TestResultWriteAllEvent}" CommandParameter="4"/>
+                    <vmc:EventCommandBase Command="{Binding }" CommandParameter="4"/>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
-        </Button>-->
+        </Button>
+        <Button Content="一键写入" HorizontalAlignment="Left" Margin="451,78,0,0" VerticalAlignment="Top" Width="87">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="Click">
+                    <vmc:EventCommandBase Command="{Binding }" CommandParameter="4"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </Button>
     </Grid>
 </Page>

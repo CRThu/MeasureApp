@@ -60,7 +60,7 @@ namespace MeasureApp.View.Control
                     newValue = "";
                 }
 
-                if (target.Document.Text != newValue)
+                if (target.Document.Text != newValue.ToString())
                 {
                     target.Document.Text = (string)newValue;
                     target.CaretOffset = Math.Min(caretOffset, newValue.ToString().Length);
