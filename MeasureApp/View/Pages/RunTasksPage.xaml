@@ -45,7 +45,7 @@
                                     <Button Width="70" Content="结果处理" Margin="3,0,3,0">
                                         <i:Interaction.Triggers>
                                             <i:EventTrigger EventName="Click">
-                                                <vmc:EventCommandBase  Command="{Binding }"/>
+                                                <vmc:EventCommandBase  Command="{Binding RunTaskResultProcEvent}"/>
                                             </i:EventTrigger>
                                         </i:Interaction.Triggers>
                                     </Button>
@@ -61,24 +61,24 @@
         <Button Content="任务集加载" HorizontalAlignment="Left" Margin="20,20,0,0" VerticalAlignment="Top" Width="100">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="Click">
-                    <vmc:EventCommandBase Command="{Binding LoadTaskRunConfigFileEvent}"/>
+                    <vmc:EventCommandBase Command="{Binding LoadTaskItemsConfigFileEvent}"/>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
         </Button>
         <TextBlock Text="{Binding TaskRunConfigFilePath,StringFormat=任务集文件路径:{0}}" HorizontalAlignment="Left" Margin="145,22,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-        
-        <Button Content="芯片配置加载" HorizontalAlignment="Left" Margin="20,44,0,0" VerticalAlignment="Top" Width="100">
+
+        <Button Content="结果配置加载" HorizontalAlignment="Left" Margin="20,44,0,0" VerticalAlignment="Top" Width="100">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="Click">
-                    <vmc:EventCommandBase Command="{Binding LoadChipConfigFileEvent}"/>
+                    <vmc:EventCommandBase Command="{Binding LoadTaskResultsConfigFileEvent}"/>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
         </Button>
         <TextBlock Text="{Binding TaskRunChipConfigFilePath,StringFormat=芯片配置文件路径:{0}}" HorizontalAlignment="Left" Margin="145,46,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-        
-        <TextBlock Text="芯片ID" HorizontalAlignment="Left" Margin="20,81,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-        <TextBox Text="{Binding TaskRunChipId}" HorizontalAlignment="Left" Margin="70,80,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="78"/>
-        
+
+        <TextBlock Text="结果ID" HorizontalAlignment="Left" Margin="20,81,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+        <TextBox Text="{Binding TaskRunResultId}" HorizontalAlignment="Left" Margin="38,80,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="78"/>
+
         <Button Content="读取" HorizontalAlignment="Left" Margin="164,79,0,0" VerticalAlignment="Top" Width="70">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="Click">
@@ -96,14 +96,14 @@
         <Button Content="一键运行" HorizontalAlignment="Left" Margin="350,79,0,0" VerticalAlignment="Top" Width="87">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="Click">
-                    <vmc:EventCommandBase Command="{Binding }" CommandParameter="4"/>
+                    <vmc:EventCommandBase Command="{Binding RunAllTaskFuncEvent}" CommandParameter="4"/>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
         </Button>
         <Button Content="一键写入" HorizontalAlignment="Left" Margin="451,78,0,0" VerticalAlignment="Top" Width="87">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="Click">
-                    <vmc:EventCommandBase Command="{Binding }" CommandParameter="4"/>
+                    <vmc:EventCommandBase Command="{Binding RunAllTaskResultProcEvent}" CommandParameter="4"/>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
         </Button>

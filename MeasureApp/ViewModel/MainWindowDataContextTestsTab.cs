@@ -44,21 +44,20 @@ namespace MeasureApp.ViewModel
             }
         }
 
-        // 芯片ID
-        private int taskRunChipId;
-        public int TaskRunChipId
+        // 结果ID
+        private int taskRunResultId;
+        public int TaskRunResultId
         {
-            get => taskRunChipId;
+            get => taskRunResultId;
             set
             {
-                taskRunChipId = value;
-                RaisePropertyChanged(() => TaskRunChipId);
+                taskRunResultId = value;
+                RaisePropertyChanged(() => TaskRunResultId);
             }
         }
 
         // 函数实例
         private ObservableRangeCollection<RunTaskItem> runTaskItemsCollection = new();
-
         public ObservableRangeCollection<RunTaskItem> RunTaskItemsCollection
         {
             get => runTaskItemsCollection;
@@ -68,7 +67,8 @@ namespace MeasureApp.ViewModel
                 RaisePropertyChanged(() => RunTaskItemsCollection);
             }
         }
-        public void LoadTaskRunConfigFile()
+
+        public void LoadTaskItemsConfigFile()
         {
             try
             {
@@ -84,9 +84,8 @@ namespace MeasureApp.ViewModel
                     Properties.Settings.Default.DefaultDirectory = Path.GetDirectoryName(openFileDialog.FileName);
                     TaskRunConfigFilePath = openFileDialog.FileName;
 
-                    // TODO load
-                    RunTaskItemsCollection.Clear();
-                    RunTaskItemsCollection.AddRange(ConvertClassToRunTaskItems(typeof(TaskRunClassDemo), isReturnProc: false));
+                    // Load
+                    RunTaskItemsCollection = new(ConvertClassToRunTaskItems(typeof(TaskRunClassDemo)));
                 }
             }
             catch (Exception ex)
@@ -95,7 +94,7 @@ namespace MeasureApp.ViewModel
             }
         }
 
-        public void LoadChipConfigFile()
+        public void LoadTaskResultsConfigFile()
         {
             try
             {
@@ -115,6 +114,58 @@ namespace MeasureApp.ViewModel
             catch (Exception ex)
             {
                 _ = MessageBox.Show(ex.ToString());
+            }
+        }
+
+        public void RunAllTaskFunc()
+        {
+            try
+            {
+                Task.Run(() =>
+                {
+                    try
+                    {
+                        foreach (var runTaskItem in RunTaskItemsCollection)
+                        {
+                            Task t = runTaskItem.InvokeTaskFunc();
+                            t.Wait();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.ToString());
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        public void RunAllTaskResultProc()
+        {
+            try
+            {
+                Task.Run(() =>
+                {
+                    try
+                    {
+                        foreach (var runTaskItem in RunTaskItemsCollection)
+                        {
+                            Task t = runTaskItem.InvokeResultProcFunc();
+                            t.Wait();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.ToString());
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
             }
         }
 
@@ -186,29 +237,55 @@ namespace MeasureApp.ViewModel
         //}
 
         // CommandBase
-        private CommandBase loadTaskRunConfigFileEvent;
-        public CommandBase LoadTaskRunConfigFileEvent
+        private CommandBase loadTaskItemsConfigFileEvent;
+        public CommandBase LoadTaskItemsConfigFileEvent
         {
             get
             {
-                if (loadTaskRunConfigFileEvent == null)
+                if (loadTaskItemsConfigFileEvent == null)
                 {
-                    loadTaskRunConfigFileEvent = new CommandBase(new Action<object>(param => LoadTaskRunConfigFile()));
+                    loadTaskItemsConfigFileEvent = new CommandBase(new Action<object>(param => LoadTaskItemsConfigFile()));
                 }
-                return loadTaskRunConfigFileEvent;
+                return loadTaskItemsConfigFileEvent;
             }
         }
 
-        private CommandBase loadChipConfigFileEvent;
-        public CommandBase LoadChipConfigFileEvent
+        private CommandBase loadTaskResultsConfigFileEvent;
+        public CommandBase LoadTaskResultsConfigFileEvent
         {
             get
             {
-                if (loadChipConfigFileEvent == null)
+                if (loadTaskResultsConfigFileEvent == null)
                 {
-                    loadChipConfigFileEvent = new CommandBase(new Action<object>(param => LoadChipConfigFile()));
+                    loadTaskResultsConfigFileEvent = new CommandBase(new Action<object>(param => LoadTaskResultsConfigFile()));
                 }
-                return loadChipConfigFileEvent;
+                return loadTaskResultsConfigFileEvent;
+            }
+        }
+
+        private CommandBase runAllTaskFuncEvent;
+        public CommandBase RunAllTaskFuncEvent
+        {
+            get
+            {
+                if (runAllTaskFuncEvent == null)
+                {
+                    runAllTaskFuncEvent = new CommandBase(new Action<object>(param => RunAllTaskFunc()));
+                }
+                return runAllTaskFuncEvent;
+            }
+        }
+
+        private CommandBase runAllTaskResultProcEvent;
+        public CommandBase RunAllTaskResultProcEvent
+        {
+            get
+            {
+                if (runAllTaskResultProcEvent == null)
+                {
+                    runAllTaskResultProcEvent = new CommandBase(new Action<object>(param => RunAllTaskResultProc()));
+                }
+                return runAllTaskResultProcEvent;
             }
         }
     }

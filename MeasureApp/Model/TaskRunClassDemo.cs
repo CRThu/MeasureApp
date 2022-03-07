@@ -14,7 +14,7 @@ namespace MeasureApp
 {
     public static class TaskRunClassDemo
     {
-        public static string FuncX(string p)
+        public static string FuncX(string p, TaskProgressDelegate progressFunc)
         {
             MessageBox.Show("FUNCX CALLED");
             return "FUNCX:" + p;
@@ -54,9 +54,11 @@ namespace MeasureApp
         }
 
         [TaskMethodInfo(returnFunc: true)]
-        public static void FuncResultProc(string retVal)
+        public static string FuncResultProc(string retVal, TaskProgressDelegate progressFunc)
         {
+            Thread.Sleep(500);
             Debug.WriteLine($"FuncResultProc():{retVal}.");
+            return null;
         }
     }
 }

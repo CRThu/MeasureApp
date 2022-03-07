@@ -90,20 +90,23 @@ namespace MeasureApp.Model
         public delegate string TaskFuncDelegate(string obj, TaskProgressDelegate progressFunc);
         public delegate void TaskProgressDelegate(double percent);
         public TaskFuncDelegate Func;
+        public TaskFuncDelegate ResultProcFunc;
 
         private void ProgressUpdate(double percent)
         {
             ProgressPercent = percent;
         }
 
-        private void InvokeFunc(string p)
+        private Task InvokeGeneralFunc(TaskFuncDelegate f, string p, bool isUpdateRetVal)
         {
-            Task.Run(() =>
+            return Task.Run(() =>
             {
                 try
                 {
                     Status = TaskRunStatus.Running;
-                    ReturnVal = Func.Invoke(p, ProgressUpdate);
+                    string ret = f.Invoke(p, ProgressUpdate);
+                    if (isUpdateRetVal)
+                        ReturnVal = ret;
                     Status = TaskRunStatus.Finished;
                 }
                 catch (Exception ex)
@@ -114,6 +117,16 @@ namespace MeasureApp.Model
             });
         }
 
+        public Task InvokeTaskFunc()
+        {
+            return InvokeGeneralFunc(Func, ParamVal, true);
+        }
+
+        public Task InvokeResultProcFunc()
+        {
+            return InvokeGeneralFunc(ResultProcFunc, ReturnVal, false);
+        }
+
         private CommandBase runTaskEvent;
         public CommandBase RunTaskEvent
         {
@@ -121,18 +134,34 @@ namespace MeasureApp.Model
             {
                 if (runTaskEvent == null)
                 {
-                    runTaskEvent = new CommandBase(new Action<object>(param => InvokeFunc(ParamVal)));
+                    runTaskEvent = new CommandBase(new Action<object>(param => InvokeTaskFunc()));
                 }
                 return runTaskEvent;
             }
         }
 
-
-        public static IEnumerable<RunTaskItem> ConvertClassToRunTaskItems(Type classType, bool isReturnProc = false)
+        private CommandBase runTaskResultProcEvent;
+        public CommandBase RunTaskResultProcEvent
         {
+            get
+            {
+                if (runTaskResultProcEvent == null)
+                {
+                    runTaskResultProcEvent = new CommandBase(new Action<object>(param => InvokeResultProcFunc()));
+                }
+                return runTaskResultProcEvent;
+            }
+        }
+
+
+        public static IEnumerable<RunTaskItem> ConvertClassToRunTaskItems(Type classType)
+        {
+            TaskFuncDelegate resultProcFunc = TaskMethodInfoAttribute.GetMethodsContainAttribute(classType)
+                .Where(m => m.GetCustomAttribute<TaskMethodInfoAttribute>().IsReturnProc == true)
+                .First().CreateDelegate<TaskFuncDelegate>();
             List<RunTaskItem> runTaskItems = new();
             var ms = TaskMethodInfoAttribute.GetMethodsContainAttribute(classType)
-                .Where(m => m.GetCustomAttribute<TaskMethodInfoAttribute>().IsReturnProc == isReturnProc);
+                .Where(m => m.GetCustomAttribute<TaskMethodInfoAttribute>().IsReturnProc == false);
 
             foreach (var m in ms)
             {
@@ -142,7 +171,8 @@ namespace MeasureApp.Model
                     {
                         Id = (int)attr.Id,
                         Description = m.Name,
-                        Func = m.CreateDelegate<TaskFuncDelegate>()
+                        Func = m.CreateDelegate<TaskFuncDelegate>(),
+                        ResultProcFunc = resultProcFunc
                     });
             }
             return runTaskItems;
