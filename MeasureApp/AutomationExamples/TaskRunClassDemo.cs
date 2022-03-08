@@ -10,8 +10,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using static MeasureApp.Model.RunTaskItem;
 
-namespace MeasureApp
-{
+//namespace MeasureApp
+//{
     public static class TaskRunClassDemo
     {
         public static string FuncX(string p, TaskProgressDelegate progressFunc)
@@ -61,4 +61,4 @@ namespace MeasureApp
             return null;
         }
     }
-}
+//}

@@ -32,13 +32,10 @@ namespace MeasureApp.Model
             return CSharpSyntaxTree.ParseText(code);
         }
 
-        public static CSharpCompilation Compile(SyntaxTree syntaxTree)
+        public static CSharpCompilation Compile(SyntaxTree syntaxTree, string assemblyName = null)
         {
-            return Compile(syntaxTree, Path.GetRandomFileName());
-        }
+            assemblyName = assemblyName ?? Path.GetRandomFileName();
 
-        public static CSharpCompilation Compile(SyntaxTree syntaxTree, string assemblyName)
-        {
             // 元数据引用
             // var Assemblies = AppDomain.CurrentDomain.GetAssemblies().Select(x => MetadataReference.CreateFromFile(x.Location));
             var Assemblies = Assembly.GetExecutingAssembly().GetReferencedAssemblies().Select(Assembly.Load)

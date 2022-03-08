@@ -19,6 +19,7 @@
 		<Compile Remove="AutomationExamples\AutomationTemplate.cs" />
 		<Compile Remove="AutomationExamples\PlotViewExample.cs" />
 		<Compile Remove="AutomationExamples\StatusBarProgressBarExample.cs" />
+		<Compile Remove="Model\TaskRunClassDemo.cs" />
 		<Compile Remove="PlotViewExample.cs" />
 		<Compile Remove="StatusBarProgressBarExample.cs" />
 	</ItemGroup>
@@ -30,6 +31,7 @@
 		<None Include="AutomationExamples\AutomationTemplate.cs" />
 		<None Include="AutomationExamples\PlotViewExample.cs" />
 		<None Include="AutomationExamples\StatusBarProgressBarExample.cs" />
+		<None Include="AutomationExamples\TaskRunClassDemo.cs" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -85,7 +85,12 @@ namespace MeasureApp.ViewModel
                     TaskRunConfigFilePath = openFileDialog.FileName;
 
                     // Load
-                    RunTaskItemsCollection = new(ConvertClassToRunTaskItems(typeof(TaskRunClassDemo)));
+                    string f = File.ReadAllText(@"D:\Projects\MeasureApp\MeasureApp\AutomationExamples\TaskRunClassDemo.cs");
+                    Assembly assembly = CodeCompiler.Run(f);
+                    Type t = assembly.GetTypes().First();
+
+                    // RunTaskItemsCollection = new(ConvertClassToRunTaskItems(typeof(TaskRunClassDemo)));
+                    RunTaskItemsCollection = new(ConvertClassToRunTaskItems(t));
                 }
             }
             catch (Exception ex)
