@@ -33,14 +33,14 @@ namespace MeasureApp.ViewModel
             }
         }
 
-        private string taskRunChipConfigFilePath;
-        public string TaskRunChipConfigFilePath
+        private string taskRunResultsConfigFilePath;
+        public string TaskRunResultsConfigFilePath
         {
-            get => taskRunChipConfigFilePath;
+            get => taskRunResultsConfigFilePath;
             set
             {
-                taskRunChipConfigFilePath = value;
-                RaisePropertyChanged(() => TaskRunChipConfigFilePath);
+                taskRunResultsConfigFilePath = value;
+                RaisePropertyChanged(() => TaskRunResultsConfigFilePath);
             }
         }
 
@@ -103,12 +103,13 @@ namespace MeasureApp.ViewModel
                 {
                     Title = "Open Json File...",
                     Filter = "Json File|*.json",
-                    InitialDirectory = Properties.Settings.Default.DefaultDirectory
+                    InitialDirectory = Properties.Settings.Default.DefaultDirectory,
+                    CheckFileExists = false
                 };
                 if (openFileDialog.ShowDialog() == true)
                 {
                     Properties.Settings.Default.DefaultDirectory = Path.GetDirectoryName(openFileDialog.FileName);
-                    TaskRunChipConfigFilePath = openFileDialog.FileName;
+                    TaskRunResultsConfigFilePath = openFileDialog.FileName;
                 }
             }
             catch (Exception ex)
@@ -169,72 +170,63 @@ namespace MeasureApp.ViewModel
             }
         }
 
-        //// 读取配置
-        //public void Nb2005LoadChipConfig()
-        //{
-        //    try
-        //    {
-        //        string chipsTrimInfoJson;
-        //        ChipsTrimInfo chipsTrimInfo = new();
-        //        chipsTrimInfoJson = File.ReadAllText(Nb2005ChipsConfigFilePath);
-        //        chipsTrimInfo = JsonConvert.DeserializeObject<ChipsTrimInfo>(chipsTrimInfoJson, new JsonSerializerSettings() { FloatParseHandling = FloatParseHandling.Decimal });
+        // 读取配置
+        public void ReadResultsConfig()
+        {
+            try
+            {
+                string chipsTrimInfoJson = File.ReadAllText(TaskRunResultsConfigFilePath);
+                TaskResultsStorage chipsTrimInfo = TaskResultsStorage.Deserialize(chipsTrimInfoJson);
 
-        //        Nb2005TestTaskResult1 = chipsTrimInfo.Get(Nb2005ChipId, "TASK1");
-        //        Nb2005TestTaskResult2 = chipsTrimInfo.Get(Nb2005ChipId, "TASK2");
-        //        Nb2005TestTaskResult3 = chipsTrimInfo.Get(Nb2005ChipId, "TASK3");
-        //        Nb2005TestTaskResult4 = chipsTrimInfo.Get(Nb2005ChipId, "TASK4");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show(ex.ToString());
-        //    }
-        //}
+                RunTaskItemsCollection.ToList().ForEach(i => i.ReturnVal = chipsTrimInfo.Get(TaskRunResultId.ToString(), i.Description));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
 
-        //// 配置更新到文件
-        //public void Nb2005UpdateChipConfig()
-        //{
-        //    try
-        //    {
-        //        // 若存在文件则加载
-        //        string chipsTrimInfoJson;
-        //        ChipsTrimInfo chipsTrimInfo = new();
-        //        if (File.Exists(Nb2005ChipsConfigFilePath))
-        //        {
-        //            chipsTrimInfoJson = File.ReadAllText(Nb2005ChipsConfigFilePath);
-        //            chipsTrimInfo = JsonConvert.DeserializeObject<ChipsTrimInfo>(chipsTrimInfoJson, new JsonSerializerSettings() { FloatParseHandling = FloatParseHandling.Decimal });
-        //        }
-        //        else
-        //        {
-        //            SaveFileDialog saveFileDialog = new()
-        //            {
-        //                Title = "保存芯片Trim文件",
-        //                FileName = $"ChipsTrimInfo.{DataStorage.GenerateDateTimeNow()}.json",
-        //                DefaultExt = ".json",
-        //                Filter = "Json File|*.json",
-        //                InitialDirectory = Properties.Settings.Default.DefaultDirectory
-        //            };
-        //            if (saveFileDialog.ShowDialog() == true)
-        //            {
-        //                Properties.Settings.Default.DefaultDirectory = Path.GetDirectoryName(saveFileDialog.FileName);
-        //                Nb2005ChipsConfigFilePath = saveFileDialog.FileName;
-        //            }
-        //            else
-        //                return;
-        //        }
+        // 配置更新到文件
+        public void WriteResultsConfig()
+        {
+            try
+            {
+                // 若存在文件则加载
+                TaskResultsStorage chipsTrimInfo = new();
+                if (File.Exists(TaskRunResultsConfigFilePath))
+                {
+                    string json = File.ReadAllText(TaskRunResultsConfigFilePath);
+                    chipsTrimInfo = TaskResultsStorage.Deserialize(json);
+                }
+                else
+                {
+                    SaveFileDialog saveFileDialog = new()
+                    {
+                        Title = "保存芯片Trim文件",
+                        FileName = $"ChipsTrimInfo.{DataStorage.GenerateDateTimeNow()}.json",
+                        DefaultExt = ".json",
+                        Filter = "Json File|*.json",
+                        InitialDirectory = Properties.Settings.Default.DefaultDirectory
+                    };
+                    if (saveFileDialog.ShowDialog() == true)
+                    {
+                        Properties.Settings.Default.DefaultDirectory = Path.GetDirectoryName(saveFileDialog.FileName);
+                        TaskRunResultsConfigFilePath = saveFileDialog.FileName;
+                    }
+                    else
+                        return;
+                }
 
-        //        chipsTrimInfo.Set(Nb2005ChipId, "TASK1", Nb2005TestTaskResult1);
-        //        chipsTrimInfo.Set(Nb2005ChipId, "TASK2", Nb2005TestTaskResult2);
-        //        chipsTrimInfo.Set(Nb2005ChipId, "TASK3", Nb2005TestTaskResult3);
-        //        chipsTrimInfo.Set(Nb2005ChipId, "TASK4", Nb2005TestTaskResult4);
+                RunTaskItemsCollection.ToList().ForEach(i => chipsTrimInfo.Set(TaskRunResultId.ToString(), i.Description, i.ReturnVal));
 
-        //        chipsTrimInfoJson = JsonConvert.SerializeObject(chipsTrimInfo, new JsonSerializerSettings() { FloatParseHandling = FloatParseHandling.Decimal });
-        //        File.WriteAllText(Nb2005ChipsConfigFilePath, chipsTrimInfoJson);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _ = MessageBox.Show(ex.ToString());
-        //    }
-        //}
+                string jsonObject = JsonConvert.SerializeObject(chipsTrimInfo, new JsonSerializerSettings() { FloatParseHandling = FloatParseHandling.Decimal });
+                File.WriteAllText(TaskRunResultsConfigFilePath, jsonObject);
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
+            }
+        }
 
         // CommandBase
         private CommandBase loadTaskItemsConfigFileEvent;
@@ -260,6 +252,32 @@ namespace MeasureApp.ViewModel
                     loadTaskResultsConfigFileEvent = new CommandBase(new Action<object>(param => LoadTaskResultsConfigFile()));
                 }
                 return loadTaskResultsConfigFileEvent;
+            }
+        }
+
+        private CommandBase readResultsConfigEvent;
+        public CommandBase ReadResultsConfigEvent
+        {
+            get
+            {
+                if (readResultsConfigEvent == null)
+                {
+                    readResultsConfigEvent = new CommandBase(new Action<object>(param => ReadResultsConfig()));
+                }
+                return readResultsConfigEvent;
+            }
+        }
+
+        private CommandBase writeResultsConfigEvent;
+        public CommandBase WriteResultsConfigEvent
+        {
+            get
+            {
+                if (writeResultsConfigEvent == null)
+                {
+                    writeResultsConfigEvent = new CommandBase(new Action<object>(param => WriteResultsConfig()));
+                }
+                return writeResultsConfigEvent;
             }
         }
 

@@ -144,7 +144,8 @@ namespace MeasureApp.ViewModel
                                 {
                                     AutomationIsRun = true;
                                     AutomationCodeReturnData = "Compiling...";
-                                    var type = CodeCompiler.Run(AutomationCodeEditorText, "Automation");
+                                    var assembly = CodeCompiler.Run(AutomationCodeEditorText);
+                                    var type = assembly.GetTypes().First(x => x.Name == "Automation");
                                     AutomationCodeReturnData = "Running...";
                                     var transformer = Activator.CreateInstance(type);
                                     var newContent = type.GetMethod("Main").Invoke(transformer, new object[] { this });

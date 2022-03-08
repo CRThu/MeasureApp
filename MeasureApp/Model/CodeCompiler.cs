@@ -14,9 +14,11 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis;
 using System.IO;
 using System.Diagnostics;
+using Microsoft.CodeAnalysis.Emit;
 
 namespace MeasureApp.Model
 {
+    // Implement Reference: https://bit.ly/3HSS9gP
     public static class CodeCompiler
     {
         // 测试函数
@@ -25,44 +27,87 @@ namespace MeasureApp.Model
             return "Hello";
         }
 
-        public static Type Run(string code, string className)
+        public static SyntaxTree Parse(string code)
         {
-            var syntaxTree = CSharpSyntaxTree.ParseText(code);
-            var type = CompileType(className, syntaxTree);
-            return type;
+            return CSharpSyntaxTree.ParseText(code);
         }
 
-        private static Type CompileType(string originalClassName, SyntaxTree syntaxTree)
+        public static CSharpCompilation Compile(SyntaxTree syntaxTree)
         {
-            // 指定编译选项。
-            var assemblyName = $"{originalClassName}.g";
-            //var Assemblies = AppDomain.CurrentDomain.GetAssemblies().Select(x => MetadataReference.CreateFromFile(x.Location));
+            return Compile(syntaxTree, Path.GetRandomFileName());
+        }
+
+        public static CSharpCompilation Compile(SyntaxTree syntaxTree, string assemblyName)
+        {
+            // 元数据引用
+            // var Assemblies = AppDomain.CurrentDomain.GetAssemblies().Select(x => MetadataReference.CreateFromFile(x.Location));
             var Assemblies = Assembly.GetExecutingAssembly().GetReferencedAssemblies().Select(Assembly.Load)
             .Select(x => MetadataReference.CreateFromFile(x.Location)).ToList();
             Assemblies.Add(MetadataReference.CreateFromFile(typeof(object).Assembly.Location));
             Assemblies.Add(MetadataReference.CreateFromFile(typeof(ViewModel.MainWindowDataContext).Assembly.Location));
-            Debug.WriteLine($"Assemblies Count={Assemblies.Count()}");
-            CSharpCompilation compilation = CSharpCompilation.Create(assemblyName, new[] { syntaxTree },
-                    options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary))
-                .AddReferences(
-                    //加入到引用
-                    Assemblies
-                    );
 
+            // 编译对象
+            CSharpCompilation compilation = CSharpCompilation.Create(assemblyName,
+                syntaxTrees: new[] { syntaxTree },
+                options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary),
+                references: Assemblies);
 
-            // 编译到内存流中。
-            using (var ms = new MemoryStream())
+            return compilation;
+        }
+
+        public static Assembly Emit2Mem(CSharpCompilation compilation)
+        {
+            // IL代码存入内存
+            var ms = new MemoryStream();
+            var result = compilation.Emit(ms);
+
+            if (result.Success)
             {
-                var result = compilation.Emit(ms);
-
-                if (result.Success)
+                // 加载程序集
+                ms.Seek(0, SeekOrigin.Begin);
+                return Assembly.Load(ms.ToArray());
+            }
+            else
+            {
+                foreach (var d in result.Diagnostics)
                 {
-                    ms.Seek(0, SeekOrigin.Begin);
-                    var assembly = Assembly.Load(ms.ToArray());
-                    return assembly.GetTypes().First(x => x.Name == originalClassName);
+                    Debug.WriteLine("{0}: {1}", d.Id, d.GetMessage());
                 }
                 throw new Exception(string.Join("\n", result.Diagnostics));
             }
+        }
+
+        public static Assembly Emit2Dll(CSharpCompilation compilation, string dllPath, string pdbPath = null)
+        {
+            // Emit
+            var result = compilation.Emit(dllPath, pdbPath);
+
+            if (result.Success)
+            {
+                // 加载程序集
+                return Assembly.LoadFrom(dllPath);
+            }
+            else
+            {
+                foreach (var d in result.Diagnostics)
+                {
+                    Debug.WriteLine("{0}: {1}", d.Id, d.GetMessage());
+                }
+                throw new Exception(string.Join("\n", result.Diagnostics));
+            }
+        }
+
+        // CreateInstance/InvokeMember
+        public static Assembly Run(string code, string assemblyName = null, string dllPath = null, string pdbPath = null)
+        {
+            var syntaxTree = Parse(code);
+            var compilation = Compile(syntaxTree, assemblyName);
+            Assembly assembly;
+            if (dllPath == null)
+                assembly = Emit2Mem(compilation);
+            else
+                assembly = Emit2Dll(compilation, dllPath, pdbPath);
+            return assembly;
         }
     }
 }
