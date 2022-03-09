@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace MeasureApp.Model
+namespace MeasureApp.Model.DynamicCompilation
 {
     public enum TaskRunStatus
     {

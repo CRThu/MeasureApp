@@ -14,8 +14,8 @@ using MeasureApp.Model.Register;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using System.Threading;
-using static MeasureApp.Model.RunTaskItem;
 using System.Collections.ObjectModel;
+using MeasureApp.Model.DynamicCompilation;
 
 namespace MeasureApp.ViewModel
 {
@@ -75,8 +75,8 @@ namespace MeasureApp.ViewModel
                 // Open File Dialog
                 OpenFileDialog openFileDialog = new()
                 {
-                    Title = "Open Json File...",
-                    Filter = "Json File|*.json",
+                    Title = "Open File...",
+                    Filter = "CSharp文件|*.cs|动态链接库|*.dll|所有文件|*.*",
                     InitialDirectory = Properties.Settings.Default.DefaultDirectory
                 };
                 if (openFileDialog.ShowDialog() == true)
@@ -84,13 +84,31 @@ namespace MeasureApp.ViewModel
                     Properties.Settings.Default.DefaultDirectory = Path.GetDirectoryName(openFileDialog.FileName);
                     TaskRunConfigFilePath = openFileDialog.FileName;
 
-                    // Load
-                    string f = File.ReadAllText(@"D:\Projects\MeasureApp\MeasureApp\AutomationExamples\TaskRunClassDemo.cs");
-                    Assembly assembly = CodeCompiler.Run(f);
+                    Assembly assembly;
+                    string ext = Path.GetExtension(openFileDialog.FileName);
+                    if (ext == ".dll")
+                    {
+                        // Load
+                        // string pdbPath = openFileDialog.FileName.Replace(".dll", ".pdb");
+
+                        // assembly = CodeCompiler.Load(openFileDialog.FileName, File.Exists(pdbPath) ? pdbPath : null);
+                        assembly = CodeCompiler.Load(openFileDialog.FileName);
+                    }
+                    else
+                    {
+                        // Compile
+                        string f = File.ReadAllText(TaskRunConfigFilePath);
+                        // VS调试时不能多次加载pdb文件否则会出现文件占用
+                        //assembly = CodeCompiler.Run(f,
+                        //    dllPath: openFileDialog.FileName.Replace(ext, ".dll"),
+                        //    pdbPath: openFileDialog.FileName.Replace(ext, ".pdb"));
+                        assembly = CodeCompiler.Run(f, dllPath: openFileDialog.FileName.Replace(ext, ".dll"));
+                    }
+
                     Type t = assembly.GetTypes().First();
 
-                    // RunTaskItemsCollection = new(ConvertClassToRunTaskItems(typeof(TaskRunClassDemo)));
-                    RunTaskItemsCollection = new(ConvertClassToRunTaskItems(t));
+                    // RunTaskItemsCollection = new(RunTaskItem.ConvertClassToRunTaskItems(typeof(TaskRunClassDemo)));
+                    RunTaskItemsCollection = new(RunTaskItem.ConvertClassToRunTaskItems(t));
                 }
             }
             catch (Exception ex)
@@ -115,6 +133,12 @@ namespace MeasureApp.ViewModel
                 {
                     Properties.Settings.Default.DefaultDirectory = Path.GetDirectoryName(openFileDialog.FileName);
                     TaskRunResultsConfigFilePath = openFileDialog.FileName;
+
+                    var storage = TaskResultsStorage.Deserialize(File.ReadAllText(openFileDialog.FileName));
+                    if (!storage.IsEqualCurrentVersion())
+                        MessageBox.Show($"[WARNING]: Json文件版本或程序版本可能不兼容: " + Environment.NewLine +
+                            $"存储类版本: {string.Join('.', storage.ClassVersion)} ( {string.Join('.', TaskResultsStorage.defaultClassVersion)} )" + Environment.NewLine +
+                            $"Assembly类版本: {string.Join('.', storage.AssemblyVersion)} ( {string.Join('.', TaskResultsStorage.GetAssemblyVersionArray())} )");
                 }
             }
             catch (Exception ex)
@@ -180,10 +204,10 @@ namespace MeasureApp.ViewModel
         {
             try
             {
-                string chipsTrimInfoJson = File.ReadAllText(TaskRunResultsConfigFilePath);
-                TaskResultsStorage chipsTrimInfo = TaskResultsStorage.Deserialize(chipsTrimInfoJson);
+                string json = File.ReadAllText(TaskRunResultsConfigFilePath);
+                TaskResultsStorage storage = TaskResultsStorage.Deserialize(json);
 
-                RunTaskItemsCollection.ToList().ForEach(i => i.ReturnVal = chipsTrimInfo.Get(TaskRunResultId.ToString(), i.Description));
+                RunTaskItemsCollection.ToList().ForEach(i => (i.ParamVal, i.ReturnVal) = storage.Get(TaskRunResultId.ToString(), i.Description));
             }
             catch (Exception ex)
             {
@@ -197,18 +221,18 @@ namespace MeasureApp.ViewModel
             try
             {
                 // 若存在文件则加载
-                TaskResultsStorage chipsTrimInfo = new();
+                TaskResultsStorage taskResultsStorage = new();
                 if (File.Exists(TaskRunResultsConfigFilePath))
                 {
                     string json = File.ReadAllText(TaskRunResultsConfigFilePath);
-                    chipsTrimInfo = TaskResultsStorage.Deserialize(json);
+                    taskResultsStorage = TaskResultsStorage.Deserialize(json);
                 }
                 else
                 {
                     SaveFileDialog saveFileDialog = new()
                     {
-                        Title = "保存芯片Trim文件",
-                        FileName = $"ChipsTrimInfo.{DataStorage.GenerateDateTimeNow()}.json",
+                        Title = "保存任务结果文件",
+                        FileName = $"TaskResultsStorage.{DataStorage.GenerateDateTimeNow()}.json",
                         DefaultExt = ".json",
                         Filter = "Json File|*.json",
                         InitialDirectory = Properties.Settings.Default.DefaultDirectory
@@ -222,9 +246,9 @@ namespace MeasureApp.ViewModel
                         return;
                 }
 
-                RunTaskItemsCollection.ToList().ForEach(i => chipsTrimInfo.Set(TaskRunResultId.ToString(), i.Description, i.ReturnVal));
+                RunTaskItemsCollection.ToList().ForEach(i => taskResultsStorage.Set(TaskRunResultId.ToString(), i.Description, (i.ParamVal, i.ReturnVal)));
 
-                string jsonObject = JsonConvert.SerializeObject(chipsTrimInfo, new JsonSerializerSettings() { FloatParseHandling = FloatParseHandling.Decimal });
+                string jsonObject = JsonConvert.SerializeObject(taskResultsStorage, new JsonSerializerSettings() { FloatParseHandling = FloatParseHandling.Decimal });
                 File.WriteAllText(TaskRunResultsConfigFilePath, jsonObject);
             }
             catch (Exception ex)

@@ -13,6 +13,7 @@ using System.Windows;
 using System.Windows.Controls;
 using MeasureApp.Model.Common;
 using MeasureApp.ViewModel.Common;
+using MeasureApp.Model.DynamicCompilation;
 
 namespace MeasureApp.ViewModel
 {

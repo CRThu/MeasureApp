@@ -16,7 +16,7 @@ using System.IO;
 using System.Diagnostics;
 using Microsoft.CodeAnalysis.Emit;
 
-namespace MeasureApp.Model
+namespace MeasureApp.Model.DynamicCompilation
 {
     // Implement Reference: https://bit.ly/3HSS9gP
     public static class CodeCompiler
@@ -82,7 +82,7 @@ namespace MeasureApp.Model
             if (result.Success)
             {
                 // 加载程序集
-                return Assembly.LoadFrom(dllPath);
+                return Load(dllPath, pdbPath);
             }
             else
             {
@@ -105,6 +105,22 @@ namespace MeasureApp.Model
             else
                 assembly = Emit2Dll(compilation, dllPath, pdbPath);
             return assembly;
+        }
+
+        public static Assembly Load(string dllPath, string pdbPath = null)
+        {
+            //return Assembly.LoadFrom(dllPath);
+            if (pdbPath == null)
+            {
+                byte[] dllBytes = File.ReadAllBytes(dllPath);
+                return Assembly.Load(dllBytes);
+            }
+            else
+            {
+                byte[] dllBytes = File.ReadAllBytes(dllPath);
+                byte[] pdbBytes = File.ReadAllBytes(pdbPath);
+                return Assembly.Load(dllBytes, pdbBytes);
+            }
         }
     }
 }

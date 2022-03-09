@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MeasureApp.Model
+namespace MeasureApp.Model.Common
 {
     public static class CustomAttributeHelper
     {

@@ -1,4 +1,5 @@
 ﻿using MeasureApp.Model;
+using MeasureApp.Model.DynamicCompilation;
 using MeasureApp.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using static MeasureApp.Model.RunTaskItem;
+using static MeasureApp.Model.DynamicCompilation.RunTaskItem;
 
 //namespace MeasureApp
 //{

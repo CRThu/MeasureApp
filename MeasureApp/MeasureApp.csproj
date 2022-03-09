@@ -7,31 +7,30 @@
 		<StartupObject>MeasureApp.App</StartupObject>
 		<Deterministic>false</Deterministic>
 		<AssemblyVersion>1.0.*</AssemblyVersion>
-		<FileVersion>1.0.*</FileVersion>
 		<SatelliteResourceLanguages>zh-Hans</SatelliteResourceLanguages>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<Compile Remove="AutomationExample.cs" />
-		<Compile Remove="AutomationExamples\AD7124IoutTest.cs" />
-		<Compile Remove="AutomationExamples\AutomationExample.cs" />
-		<Compile Remove="AutomationExamples\AutomationExample2.cs" />
-		<Compile Remove="AutomationExamples\AutomationTemplate.cs" />
-		<Compile Remove="AutomationExamples\PlotViewExample.cs" />
-		<Compile Remove="AutomationExamples\StatusBarProgressBarExample.cs" />
+		<Compile Remove="Example\AD7124IoutTest.cs" />
+		<Compile Remove="Example\AutomationExample.cs" />
+		<Compile Remove="Example\AutomationExample2.cs" />
+		<Compile Remove="Example\AutomationTemplate.cs" />
+		<Compile Remove="Example\PlotViewExample.cs" />
+		<Compile Remove="Example\StatusBarProgressBarExample.cs" />
 		<Compile Remove="Model\TaskRunClassDemo.cs" />
 		<Compile Remove="PlotViewExample.cs" />
 		<Compile Remove="StatusBarProgressBarExample.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Include="AutomationExamples\AD7124IoutTest.cs" />
-		<None Include="AutomationExamples\AutomationExample2.cs" />
-		<None Include="AutomationExamples\AutomationExample.cs" />
-		<None Include="AutomationExamples\AutomationTemplate.cs" />
-		<None Include="AutomationExamples\PlotViewExample.cs" />
-		<None Include="AutomationExamples\StatusBarProgressBarExample.cs" />
-		<None Include="AutomationExamples\TaskRunClassDemo.cs" />
+		<None Include="Example\AD7124IoutTest.cs" />
+		<None Include="Example\AutomationExample2.cs" />
+		<None Include="Example\AutomationExample.cs" />
+		<None Include="Example\AutomationTemplate.cs" />
+		<None Include="Example\PlotViewExample.cs" />
+		<None Include="Example\StatusBarProgressBarExample.cs" />
+		<None Include="Example\TaskRunClassDemo.cs" />
 	</ItemGroup>
 
 	<ItemGroup>

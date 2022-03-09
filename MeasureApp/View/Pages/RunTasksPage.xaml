@@ -58,23 +58,23 @@
                 </GridView>
             </ListView.View>
         </ListView>
-        <Button Content="任务集加载" HorizontalAlignment="Left" Margin="20,20,0,0" VerticalAlignment="Top" Width="100">
+        <Button Content="代码加载" HorizontalAlignment="Left" Margin="20,20,0,0" VerticalAlignment="Top" Width="100">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="Click">
                     <vmc:EventCommandBase Command="{Binding LoadTaskItemsConfigFileEvent}"/>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
         </Button>
-        <TextBlock Text="{Binding TaskRunConfigFilePath,StringFormat=任务集文件路径:{0}}" HorizontalAlignment="Left" Margin="145,22,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+        <TextBlock Text="{Binding TaskRunConfigFilePath,StringFormat=任务集路径: {0}}" HorizontalAlignment="Left" Margin="145,22,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
 
-        <Button Content="结果配置加载" HorizontalAlignment="Left" Margin="20,44,0,0" VerticalAlignment="Top" Width="100">
+        <Button Content="配置加载" HorizontalAlignment="Left" Margin="20,44,0,0" VerticalAlignment="Top" Width="100">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="Click">
                     <vmc:EventCommandBase Command="{Binding LoadTaskResultsConfigFileEvent}"/>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
         </Button>
-        <TextBlock Text="{Binding TaskRunResultsConfigFilePath,StringFormat=结果配置文件路径:{0}}" HorizontalAlignment="Left" Margin="145,46,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+        <TextBlock Text="{Binding TaskRunResultsConfigFilePath,StringFormat=配置路径: {0}}" HorizontalAlignment="Left" Margin="145,46,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
 
         <TextBlock Text="结果ID" HorizontalAlignment="Left" Margin="20,81,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
         <TextBox Text="{Binding TaskRunResultId}" HorizontalAlignment="Left" Margin="67,80,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="78"/>
