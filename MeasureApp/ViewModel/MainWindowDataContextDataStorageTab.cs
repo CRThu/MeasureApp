@@ -43,6 +43,19 @@ namespace MeasureApp.ViewModel
             }
         }
 
+        private EChartsLineData ecl = new();
+        public EChartsLineData ECL
+        {
+            get => ecl;
+            set
+            {
+                ecl = value;
+                RaisePropertyChanged(() => ECL);
+            }
+        }
+
+
+
         // DataStorage添加键值对文本
         private string dataStorageAddKeyNameText = "New Key Name";
         public string DataStorageAddKeyNameText
@@ -54,8 +67,6 @@ namespace MeasureApp.ViewModel
                 RaisePropertyChanged(() => DataStorageAddKeyNameText);
             }
         }
-
-
 
         // ListBox选中数据类后更新DataGrid事件
         private CommandBase dataStorageSelectionChangedEvent;
@@ -80,6 +91,11 @@ namespace MeasureApp.ViewModel
                             else
                             {
                                 DataStorageDataGridBinding = DataStorageInstance.DataStorageDictionary[DataStorageSelectedValue];
+                                var vals = DataStorageInstance.DataStorageDictionary[DataStorageSelectedValue];
+                                double[] valsDouble = vals.Select(d => (double)d.Value).ToArray();
+                                double[] x = Enumerable.Range(0, valsDouble.Length).Select(xn => (double)xn).ToArray();
+                                ECL.ClearData();
+                                ECL.AddData(x, valsDouble);
                             }
                         }
                         catch (Exception ex)
@@ -289,6 +305,34 @@ namespace MeasureApp.ViewModel
                     }));
                 }
                 return dataStorageSaveEvent;
+            }
+        }
+
+        // 数据源保存
+        private CommandBase dataStorageAddTestEvent;
+        public CommandBase DataStorageAddTestEvent
+        {
+            get
+            {
+                if (dataStorageAddTestEvent == null)
+                {
+                    dataStorageAddTestEvent = new CommandBase(new Action<object>(param =>
+                    {
+                        try
+                        {
+                            int n = Convert.ToInt32(param);
+                            dynamic[] vs = new dynamic[n];
+                            for (int i = 0; i < vs.Length; i++)
+                                vs[i] = random.NextDouble();
+                            DataStorageInstance.AddDataCollection(Key3458AString, vs.ToList());
+                        }
+                        catch (Exception ex)
+                        {
+                            _ = MessageBox.Show(ex.ToString());
+                        }
+                    }));
+                }
+                return dataStorageAddTestEvent;
             }
         }
     }

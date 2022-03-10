@@ -12,6 +12,7 @@ using System.IO;
 using MeasureApp.Model.Common;
 using MeasureApp.ViewModel.Common;
 using MeasureApp.Model.Devices;
+using System.Linq;
 
 namespace MeasureApp.ViewModel
 {
@@ -43,6 +44,9 @@ namespace MeasureApp.ViewModel
             DataStorageSelectedValue = Key3458AString;
 
             // TEST
+            DataStorageInstance.OnDataChangedEvent += DataStorageInstance_OnDataChangedEvent;
+
+            // TEST
             PlotViewLineValues.WithQuality(Quality.Highest);
             //PlotViewLineValues.CollectionChanged += (_, _) => MessageBox.Show($"{PlotViewLineValues.Count}");
 
@@ -57,6 +61,13 @@ namespace MeasureApp.ViewModel
             {
                 SerialPortLogger.LoadKeywordFile(Properties.Settings.Default.DefaultLogKeywordColorJsonPath);
             }
+        }
+
+        private void DataStorageInstance_OnDataChangedEvent()
+        {
+            ECL.ClearData();
+            double[] y = DataStorageInstance.GetDataCollection(Key3458AString).Select(x => (double)x).ToArray();
+            ECL.AddData(Enumerable.Range(0, y.Length).Select(x => (double)x), y);
         }
 
         // 3458A 通信类

@@ -15,16 +15,16 @@ namespace MeasureApp.Model
 {
     public class DataStorage : NotificationObjectBase
     {
-        [JsonIgnore]
-        public Dictionary<string, object> lockers = new();
+        public delegate void OnDataChanged();
+        public event OnDataChanged OnDataChangedEvent;
 
-        private ObservableDictionary<string, ObservableRangeCollection<ObservableValue>> _dataStorageDictionary = new();
+        private ObservableDictionary<string, ObservableRangeCollection<ObservableValue>> dataStorageDictionary = new();
         public ObservableDictionary<string, ObservableRangeCollection<ObservableValue>> DataStorageDictionary
         {
-            get => _dataStorageDictionary;
+            get => dataStorageDictionary;
             set
             {
-                _dataStorageDictionary = value;
+                dataStorageDictionary = value;
                 RaisePropertyChanged(() => DataStorageDictionary);
             }
         }
@@ -45,12 +45,6 @@ namespace MeasureApp.Model
         private void Clear()
         {
             DataStorageDictionary.Clear();
-
-            // async
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                lockers.Clear();
-            });
         }
 
         public void AddKey(string key)
@@ -58,21 +52,15 @@ namespace MeasureApp.Model
             // async
             Application.Current.Dispatcher.Invoke(() =>
             {
-                lockers.Add(key, new object());
+                object locker = new();
                 DataStorageDictionary.Add(key, new ObservableRangeCollection<ObservableValue>());
-                BindingOperations.EnableCollectionSynchronization(DataStorageDictionary[key], lockers[key]);
+                BindingOperations.EnableCollectionSynchronization(DataStorageDictionary[key], locker);
             });
         }
 
         public void RemoveKey(string key)
         {
             DataStorageDictionary.Remove(key);
-
-            // async
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                lockers.Remove(key);
-            });
         }
 
         public void AddData(string key, dynamic value)
@@ -92,6 +80,8 @@ namespace MeasureApp.Model
                     DataStorageDictionary[key].Add(new ObservableValue() { Value = obj });
                 }
             }
+
+            OnDataChangedEvent();
         }
 
         public void AddDataCollection(string key, IEnumerable<dynamic> values)
@@ -101,6 +91,7 @@ namespace MeasureApp.Model
                 AddKey(key);
             }
             DataStorageDictionary[key].AddRange(values.Select(value => new ObservableValue() { Value = value }));
+            OnDataChangedEvent();
         }
 
         public IEnumerable<dynamic> GetDataCollection(string key)
@@ -111,6 +102,7 @@ namespace MeasureApp.Model
         public void ClearDataCollection(string key)
         {
             DataStorageDictionary[key].Clear();
+            OnDataChangedEvent();
         }
 
         public static string GenerateDateTimeNow()
