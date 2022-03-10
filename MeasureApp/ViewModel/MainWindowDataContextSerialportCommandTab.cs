@@ -20,6 +20,7 @@ using System.Windows.Controls;
 using System.Windows.Threading;
 using MeasureApp.Model.Common;
 using MeasureApp.ViewModel.Common;
+using MeasureApp.Model.Devices;
 
 namespace MeasureApp.ViewModel
 {

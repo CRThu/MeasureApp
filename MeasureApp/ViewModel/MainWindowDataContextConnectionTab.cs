@@ -8,6 +8,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using MeasureApp.ViewModel.Common;
+using MeasureApp.Model.Devices;
 
 namespace MeasureApp.ViewModel
 {

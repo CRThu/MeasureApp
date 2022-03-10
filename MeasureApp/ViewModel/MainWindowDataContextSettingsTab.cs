@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using MeasureApp.Model.Common;
+using MeasureApp.Model.Devices;
 
 namespace MeasureApp.ViewModel
 {

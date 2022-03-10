@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using MeasureApp.Model.Common;
 
-namespace MeasureApp.Model
+namespace MeasureApp.Model.Devices
 {
     public class GPIB : NotificationObjectBase
     {

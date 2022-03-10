@@ -8,7 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MeasureApp.Model.Common;
 
-namespace MeasureApp.Model
+namespace MeasureApp.Model.Devices
 {
     public class GPIB3458AMeasure : NotificationObjectBase
     {

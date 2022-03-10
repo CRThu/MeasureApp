@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MeasureApp.Model
+namespace MeasureApp.Model.Devices
 {
     public class SerialPorts : NotificationObjectBase
     {

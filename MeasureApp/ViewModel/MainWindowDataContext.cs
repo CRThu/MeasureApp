@@ -11,6 +11,7 @@ using System.Windows.Data;
 using System.IO;
 using MeasureApp.Model.Common;
 using MeasureApp.ViewModel.Common;
+using MeasureApp.Model.Devices;
 
 namespace MeasureApp.ViewModel
 {
