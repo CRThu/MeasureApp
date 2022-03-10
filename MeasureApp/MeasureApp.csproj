@@ -30,7 +30,7 @@
 		<None Include="Example\AutomationTemplate.cs" />
 		<None Include="Example\PlotViewExample.cs" />
 		<None Include="Example\StatusBarProgressBarExample.cs" />
-		<None Include="Example\TaskRunClassDemo.cs" />
+		<None Include="Example\TaskRunStaticClassDemo.cs" />
 	</ItemGroup>
 
 	<ItemGroup>

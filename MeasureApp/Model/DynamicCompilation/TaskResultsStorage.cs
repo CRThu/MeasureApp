@@ -17,8 +17,8 @@ namespace MeasureApp.Model.DynamicCompilation
         public int[] AssemblyVersion { get; set; }
         public DateTime LastModifyTime { get; set; }
 
-        // TODO
-        public string AssemblyPath { get; set; }
+        public bool IsAutoLoadAssemblyDll { get; set; }
+        public string AssemblyDllPath { get; set; }
         public Dictionary<string, Dictionary<string, RunTaskItemSaveData>> Value { get; set; }
 
         public TaskResultsStorage()
@@ -26,6 +26,7 @@ namespace MeasureApp.Model.DynamicCompilation
             ClassVersion = defaultClassVersion;
             AssemblyVersion = GetAssemblyVersionArray();
             LastModifyTime = DateTime.Now;
+            IsAutoLoadAssemblyDll = true;
             Value = new();
         }
 

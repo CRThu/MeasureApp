@@ -136,9 +136,26 @@ namespace MeasureApp.ViewModel
 
                     var storage = TaskResultsStorage.Deserialize(File.ReadAllText(openFileDialog.FileName));
                     if (!storage.IsEqualCurrentVersion())
+                    {
                         MessageBox.Show($"[WARNING]: Json文件版本或程序版本可能不兼容: " + Environment.NewLine +
                             $"存储类版本: {string.Join('.', storage.ClassVersion)} ( {string.Join('.', TaskResultsStorage.defaultClassVersion)} )" + Environment.NewLine +
-                            $"Assembly类版本: {string.Join('.', storage.AssemblyVersion)} ( {string.Join('.', TaskResultsStorage.GetAssemblyVersionArray())} )");
+                            $"Assembly版本: {string.Join('.', storage.AssemblyVersion)} ( {string.Join('.', TaskResultsStorage.GetAssemblyVersionArray())} )");
+                    }
+
+                    if (storage.IsAutoLoadAssemblyDll)
+                    {
+                        TaskRunConfigFilePath = storage.AssemblyDllPath;
+                        if (File.Exists(TaskRunConfigFilePath))
+                        {
+                            Assembly assembly = CodeCompiler.Load(TaskRunConfigFilePath);
+                            Type t = assembly.GetTypes().First();
+                            RunTaskItemsCollection = new(RunTaskItem.ConvertClassToRunTaskItems(t));
+                        }
+                        else
+                        {
+                            throw new FileNotFoundException("未能加载程序集文件:" + TaskRunConfigFilePath);
+                        }
+                    }
                 }
             }
             catch (Exception ex)
@@ -241,15 +258,16 @@ namespace MeasureApp.ViewModel
                     {
                         Properties.Settings.Default.DefaultDirectory = Path.GetDirectoryName(saveFileDialog.FileName);
                         TaskRunResultsConfigFilePath = saveFileDialog.FileName;
+
+                        string ext = Path.GetExtension(TaskRunConfigFilePath);
+                        taskResultsStorage.IsAutoLoadAssemblyDll = true;
+                        taskResultsStorage.AssemblyDllPath = TaskRunConfigFilePath.Replace(ext, ".dll");
+                        RunTaskItemsCollection.ToList().ForEach(i => taskResultsStorage.Set(TaskRunResultId.ToString(), i.Description, (i.ParamVal, i.ReturnVal)));
+
+                        string jsonObject = JsonConvert.SerializeObject(taskResultsStorage, new JsonSerializerSettings() { FloatParseHandling = FloatParseHandling.Decimal });
+                        File.WriteAllText(TaskRunResultsConfigFilePath, jsonObject);
                     }
-                    else
-                        return;
                 }
-
-                RunTaskItemsCollection.ToList().ForEach(i => taskResultsStorage.Set(TaskRunResultId.ToString(), i.Description, (i.ParamVal, i.ReturnVal)));
-
-                string jsonObject = JsonConvert.SerializeObject(taskResultsStorage, new JsonSerializerSettings() { FloatParseHandling = FloatParseHandling.Decimal });
-                File.WriteAllText(TaskRunResultsConfigFilePath, jsonObject);
             }
             catch (Exception ex)
             {
