@@ -46,10 +46,6 @@ namespace MeasureApp.ViewModel
             // TEST
             DataStorageInstance.OnDataChangedEvent += DataStorageInstance_OnDataChangedEvent;
 
-            // TEST
-            PlotViewLineValues.WithQuality(Quality.Highest);
-            //PlotViewLineValues.CollectionChanged += (_, _) => MessageBox.Show($"{PlotViewLineValues.Count}");
-
             // 加载串口预设指令
             if (File.Exists(Properties.Settings.Default.DefaultPresetCommandsJsonPath))
             {
@@ -65,9 +61,9 @@ namespace MeasureApp.ViewModel
 
         private void DataStorageInstance_OnDataChangedEvent()
         {
-            ECL.ClearData();
-            double[] y = DataStorageInstance.GetDataCollection(Key3458AString).Select(x => (double)x).ToArray();
-            ECL.AddData(Enumerable.Range(0, y.Length).Select(x => (double)x), y);
+            var y = DataStorageInstance.GetDataCollection(Key3458AString).Select(x => (double)x);
+            var x = Enumerable.Range(1, y.Count()).Select(x => (double)x);
+            ECL.SetData(x, y);
         }
 
         // 3458A 通信类

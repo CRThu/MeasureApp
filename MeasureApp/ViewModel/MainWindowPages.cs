@@ -109,17 +109,6 @@ namespace MeasureApp.ViewModel
             }
         }
 
-        private OldDataStorageVisualizationPage oldDataStorageVisualizationPage;
-        public OldDataStorageVisualizationPage OldDataStorageVisualizationPage
-        {
-            get => oldDataStorageVisualizationPage;
-            set
-            {
-                oldDataStorageVisualizationPage = value;
-                RaisePropertyChanged(() => OldDataStorageVisualizationPage);
-            }
-        }
-
         private TestPage testPage;
         public TestPage TestPage
         {
@@ -154,7 +143,6 @@ namespace MeasureApp.ViewModel
             FftAnalysisPage = new FftAnalysisPage(dataContext);
             UtilityPage = new UtilityPage(dataContext);
             SettingsPage = new SettingsPage(dataContext);
-            OldDataStorageVisualizationPage = new OldDataStorageVisualizationPage(dataContext);
             TestPage = new TestPage(dataContext);
             RunTasksPage = new RunTasksPage(dataContext);
         }

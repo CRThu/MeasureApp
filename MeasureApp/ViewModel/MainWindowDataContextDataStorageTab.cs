@@ -322,8 +322,9 @@ namespace MeasureApp.ViewModel
                         {
                             int n = Convert.ToInt32(param);
                             dynamic[] vs = new dynamic[n];
+                            Random random = new Random();
                             for (int i = 0; i < vs.Length; i++)
-                                vs[i] = random.NextDouble();
+                                vs[i] = i + random.NextDouble() - 0.5;
                             DataStorageInstance.AddDataCollection(Key3458AString, vs.ToList());
                         }
                         catch (Exception ex)

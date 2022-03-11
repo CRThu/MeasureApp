@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Data;
 
 namespace MeasureApp.Model
 {
@@ -120,6 +122,15 @@ namespace MeasureApp.Model
             FireCollectionResetNotification();
         }
 
+        public void SetData(IEnumerable<double> x, IEnumerable<double> y)
+        {
+            Data["x"].Clear();
+            Data["y"].Clear();
+            Data["x"].AddRange(x);
+            Data["y"].AddRange(y);
+            FireCollectionResetNotification();
+        }
+
         public EChartsLineData(bool showSymbol = false, bool smooth = false, EChartsStepLine stepLine = EChartsStepLine.False, bool sampling = true)
         {
             Data = new()
@@ -142,6 +153,12 @@ namespace MeasureApp.Model
             SetSmooth(smooth);
             SetStepLine(stepLine);
             SetSampling(sampling);
+
+
+            object lockerX = new();
+            object lockerY = new();
+            BindingOperations.EnableCollectionSynchronization(Data["x"], lockerX);
+            BindingOperations.EnableCollectionSynchronization(Data["y"], lockerY);
         }
 
         public EChartsLineData(double[] x, double[] y, bool showSymbol = false, bool smooth = false, EChartsStepLine stepLine = EChartsStepLine.False, bool sampling = true) : this(showSymbol, smooth, stepLine, sampling)
