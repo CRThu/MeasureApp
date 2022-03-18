@@ -110,11 +110,6 @@
                                     <Frame Content="{Binding Pages.SettingsPage}"/>
                                 </ad:LayoutAnchorable.Content>
                             </ad:LayoutAnchorable>
-                            <ad:LayoutAnchorable Title="可视化(废弃)" CanHide="False">
-                                <ad:LayoutAnchorable.Content>
-                                    <Frame Content="{Binding Pages.OldDataStorageVisualizationPage}"/>
-                                </ad:LayoutAnchorable.Content>
-                            </ad:LayoutAnchorable>
                             <ad:LayoutAnchorable Title="开发测试页" CanHide="False">
                                 <ad:LayoutAnchorable.Content>
                                     <Frame Content="{Binding Pages.TestPage}"/>

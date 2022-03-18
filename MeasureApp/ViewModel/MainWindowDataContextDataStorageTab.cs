@@ -80,19 +80,16 @@ namespace MeasureApp.ViewModel
                     {
                         try
                         {
-                            if (DataStorageSelectedValue is null && DataStorageInstance.DataStorageDictionary.Keys.Count != 0)
-                            {
-                                DataStorageSelectedValue = DataStorageInstance.DataStorageDictionary.Keys.First();
-                            }
                             if (DataStorageSelectedValue is null)
                             {
+                                ECL.ClearData();
                                 DataStorageDataGridBinding = null;
                             }
                             else
                             {
-                                DataStorageDataGridBinding = DataStorageInstance.DataStorageDictionary[DataStorageSelectedValue];
-                                var vals = DataStorageInstance.DataStorageDictionary[DataStorageSelectedValue];
-                                double[] valsDouble = vals.Select(d => (double)d.Value).ToArray();
+                                DataStorageDataGridBinding = DataStorageInstance.Dict[DataStorageSelectedValue];
+                                var vals = DataStorageInstance[DataStorageSelectedValue];
+                                double[] valsDouble = vals.Select(d => (double)d).ToArray();
                                 double[] x = Enumerable.Range(0, valsDouble.Length).Select(xn => (double)xn).ToArray();
                                 ECL.ClearData();
                                 ECL.AddData(x, valsDouble);
@@ -308,7 +305,7 @@ namespace MeasureApp.ViewModel
             }
         }
 
-        // 数据源保存
+        // 
         private CommandBase dataStorageAddTestEvent;
         public CommandBase DataStorageAddTestEvent
         {
@@ -322,7 +319,7 @@ namespace MeasureApp.ViewModel
                         {
                             int n = Convert.ToInt32(param);
                             dynamic[] vs = new dynamic[n];
-                            Random random = new Random();
+                            Random random = new();
                             for (int i = 0; i < vs.Length; i++)
                                 vs[i] = i + random.NextDouble() - 0.5;
                             DataStorageInstance.AddDataCollection(Key3458AString, vs.ToList());

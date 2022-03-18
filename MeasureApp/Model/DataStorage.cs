@@ -15,17 +15,56 @@ namespace MeasureApp.Model
 {
     public class DataStorage : NotificationObjectBase
     {
-        public delegate void OnDataChanged();
-        public event OnDataChanged OnDataChangedEvent;
+        public event EventHandler OnDataChangedEvent;
 
-        private ObservableDictionary<string, ObservableRangeCollection<ObservableValue>> dataStorageDictionary = new();
-        public ObservableDictionary<string, ObservableRangeCollection<ObservableValue>> DataStorageDictionary
+        private ObservableDictionary<string, ObservableRangeCollection<ObservableValue>> dict = new();
+        public ObservableDictionary<string, ObservableRangeCollection<ObservableValue>> Dict
         {
-            get => dataStorageDictionary;
+            get => dict;
             set
             {
-                dataStorageDictionary = value;
-                RaisePropertyChanged(() => DataStorageDictionary);
+                dict = value;
+                RaisePropertyChanged(() => Dict);
+                RaisePropertyChanged(() => Keys);
+            }
+        }
+
+        public dynamic[] this[string key]
+        {
+            get
+            {
+                return GetDataCollection(key).ToArray();
+            }
+        }
+
+        public int Count => Dict.Count;
+        public string[] Keys
+        {
+            get
+            {
+                return Dict.Keys.ToArray();
+            }
+        }
+
+        public dynamic[] SelectedData
+        {
+            get
+            {
+                if (Dict.ContainsKey(SelectedKey))
+                    return GetDataCollection(SelectedKey).ToArray();
+                else
+                    return null;
+            }
+        }
+
+        private string selectedKey;
+        public string SelectedKey
+        {
+            get => selectedKey;
+            set
+            {
+                selectedKey = value;
+                RaisePropertyChanged(() => SelectedKey);
             }
         }
 
@@ -36,7 +75,7 @@ namespace MeasureApp.Model
         public void Load(DataStorage dataStorage)
         {
             Clear();
-            foreach (string key in dataStorage.DataStorageDictionary.Keys)
+            foreach (string key in dataStorage.Dict.Keys)
             {
                 AddDataCollection(key, dataStorage.GetDataCollection(key));
             }
@@ -44,7 +83,7 @@ namespace MeasureApp.Model
 
         private void Clear()
         {
-            DataStorageDictionary.Clear();
+            Dict.Clear();
         }
 
         public void AddKey(string key)
@@ -53,56 +92,48 @@ namespace MeasureApp.Model
             Application.Current.Dispatcher.Invoke(() =>
             {
                 object locker = new();
-                DataStorageDictionary.Add(key, new ObservableRangeCollection<ObservableValue>());
-                BindingOperations.EnableCollectionSynchronization(DataStorageDictionary[key], locker);
+                Dict.Add(key, new ObservableRangeCollection<ObservableValue>());
+                RaisePropertyChanged(() => Keys);
+                BindingOperations.EnableCollectionSynchronization(Dict[key], locker);
             });
         }
 
         public void RemoveKey(string key)
         {
-            DataStorageDictionary.Remove(key);
+            Dict.Remove(key);
+            RaisePropertyChanged(() => Keys);
         }
 
         public void AddData(string key, dynamic value)
         {
-            if (!DataStorageDictionary.ContainsKey(key))
+            if (!Dict.ContainsKey(key))
             {
                 AddKey(key);
             }
-            if (value is not Array)
-            {
-                DataStorageDictionary[key].Add(new ObservableValue() { Value = value });
-            }
-            else
-            {
-                foreach (object obj in (Array)value)
-                {
-                    DataStorageDictionary[key].Add(new ObservableValue() { Value = obj });
-                }
-            }
+            Dict[key].Add(new ObservableValue() { Value = value });
 
-            OnDataChangedEvent();
+            OnDataChangedEvent?.Invoke(this, EventArgs.Empty);
         }
 
         public void AddDataCollection(string key, IEnumerable<dynamic> values)
         {
-            if (!DataStorageDictionary.ContainsKey(key))
+            if (!Dict.ContainsKey(key))
             {
                 AddKey(key);
             }
-            DataStorageDictionary[key].AddRange(values.Select(value => new ObservableValue() { Value = value }));
-            OnDataChangedEvent();
+            Dict[key].AddRange(values.Select(value => new ObservableValue() { Value = value }));
+            OnDataChangedEvent?.Invoke(this, EventArgs.Empty);
         }
 
         public IEnumerable<dynamic> GetDataCollection(string key)
         {
-            return DataStorageDictionary[key].Select(str => str.Value);
+            return Dict[key].Select(str => str.Value);
         }
 
         public void ClearDataCollection(string key)
         {
-            DataStorageDictionary[key].Clear();
-            OnDataChangedEvent();
+            Dict[key].Clear();
+            OnDataChangedEvent?.Invoke(this, EventArgs.Empty);
         }
 
         public static string GenerateDateTimeNow()
@@ -129,7 +160,7 @@ namespace MeasureApp.Model
 
         public void SaveAll(string extension = "txt", string titleName = "DataStorage", bool isAddDateTime = true)
         {
-            foreach (string key in DataStorageDictionary.Keys)
+            foreach (string key in Dict.Keys)
             {
                 Save(key, GenerateFileName(key, extension, titleName, isAddDateTime));
             }

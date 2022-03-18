@@ -131,6 +131,15 @@ namespace MeasureApp.Model
             FireCollectionResetNotification();
         }
 
+        public void SetData(IEnumerable<double> y)
+        {
+            Data["x"].Clear();
+            Data["y"].Clear();
+            Data["x"].AddRange(Enumerable.Range(1, y.Count()).Select(x => (double)x));
+            Data["y"].AddRange(y);
+            FireCollectionResetNotification();
+        }
+
         public EChartsLineData(bool showSymbol = false, bool smooth = false, EChartsStepLine stepLine = EChartsStepLine.False, bool sampling = true)
         {
             Data = new()
@@ -153,7 +162,6 @@ namespace MeasureApp.Model
             SetSmooth(smooth);
             SetStepLine(stepLine);
             SetSampling(sampling);
-
 
             object lockerX = new();
             object lockerY = new();

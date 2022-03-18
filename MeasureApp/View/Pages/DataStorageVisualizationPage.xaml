@@ -14,7 +14,7 @@
         <GroupBox Header="存储" Margin="10,10,10.2,10">
             <Grid>
                 <TextBlock Text="选择数据源：" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="230"/>
-                <ListBox Name="DataStorageSelectListBox" ItemsSource="{Binding DataStorageInstance.DataStorageDictionary,UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Key" SelectedValue="{Binding DataStorageSelectedValue}" SelectedValuePath="Key" HorizontalAlignment="Left" Height="106" Margin="10,30,0,0" VerticalAlignment="Top" Width="230"/>
+                <ListBox Name="DataStorageSelectListBox" ItemsSource="{Binding DataStorageInstance.Keys,UpdateSourceTrigger=PropertyChanged}" SelectedValue="{Binding DataStorageSelectedValue}" HorizontalAlignment="Left" Height="106" Margin="10,30,0,0" VerticalAlignment="Top" Width="230"/>
 
                 <TabControl HorizontalAlignment="Left" VerticalAlignment="Top" Margin="245,8,0,0" Height="500" Width="700">
                     <TabItem Header="表格">

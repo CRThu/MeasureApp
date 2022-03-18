@@ -13,6 +13,7 @@ using MeasureApp.Model.Common;
 using MeasureApp.ViewModel.Common;
 using MeasureApp.Model.Devices;
 using System.Linq;
+using System.Collections.Specialized;
 
 namespace MeasureApp.ViewModel
 {
@@ -59,11 +60,10 @@ namespace MeasureApp.ViewModel
             }
         }
 
-        private void DataStorageInstance_OnDataChangedEvent()
+        private void DataStorageInstance_OnDataChangedEvent(object sender, EventArgs e)
         {
-            var y = DataStorageInstance.GetDataCollection(Key3458AString).Select(x => (double)x);
-            var x = Enumerable.Range(1, y.Count()).Select(x => (double)x);
-            ECL.SetData(x, y);
+            var y = DataStorageInstance.GetDataCollection(DataStorageSelectedValue).Select(x => (double)x);
+            ECL.SetData(y);
         }
 
         // 3458A 通信类
