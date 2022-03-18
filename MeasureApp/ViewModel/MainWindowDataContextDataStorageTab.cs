@@ -322,7 +322,8 @@ namespace MeasureApp.ViewModel
                             Random random = new();
                             for (int i = 0; i < vs.Length; i++)
                                 vs[i] = i + random.NextDouble() - 0.5;
-                            DataStorageInstance.AddDataCollection(Key3458AString, vs.ToList());
+
+                            DataStorageInstance.AddDataCollection(DataStorageSelectedValue, vs.ToList());
                         }
                         catch (Exception ex)
                         {

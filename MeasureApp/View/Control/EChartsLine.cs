@@ -58,10 +58,22 @@ namespace MeasureApp.View.Control
             string js = $"UpdateData({jsons});";
 
             stopwatch.Stop(); //  停止监视
-            Debug.WriteLine($"Serialize:{stopwatch.ElapsedMilliseconds}ms.");
+            Debug.WriteLine($"Serialize:{stopwatch.ElapsedMilliseconds}ms, {js.Length}bytes.");
 
             if (CoreWebView2 != null)
-                this.CoreWebView2.ExecuteScriptAsync(js);
+            {
+                Task<string> execTask = this.CoreWebView2.ExecuteScriptAsync(js);
+                Task.Run(() =>
+                {
+                    Stopwatch stopwatch = new Stopwatch();
+                    stopwatch.Start(); //  开始监视代码运行时间
+
+                    execTask.Wait();
+
+                    stopwatch.Stop(); //  停止监视
+                    Debug.WriteLine($"ExecuteScriptAsync:{stopwatch.ElapsedMilliseconds}ms.");
+                });
+            }
         }
 
         public EChartsLine() : base()
