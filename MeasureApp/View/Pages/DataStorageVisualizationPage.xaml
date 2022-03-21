@@ -108,6 +108,13 @@
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                 </Button>
+                <Button Content="手动刷新" HorizontalAlignment="Left" Margin="18,362,0,0" VerticalAlignment="Top" Width="76" Height="32">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Click">
+                            <vmc:EventCommandBase Command="{Binding DataStorageManualChartRefreshEvent}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </Button>
             </Grid>
         </GroupBox>
     </Grid>

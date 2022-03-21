@@ -334,5 +334,28 @@ namespace MeasureApp.ViewModel
                 return dataStorageAddTestEvent;
             }
         }
+
+        private CommandBase dataStorageManualChartRefreshEvent;
+        public CommandBase DataStorageManualChartRefreshEvent
+        {
+            get
+            {
+                if (dataStorageManualChartRefreshEvent == null)
+                {
+                    dataStorageManualChartRefreshEvent = new CommandBase(new Action<object>(param =>
+                    {
+                        try
+                        {
+                            DataStorageInstance_OnDataChangedEvent(null, null);
+                        }
+                        catch (Exception ex)
+                        {
+                            _ = MessageBox.Show(ex.ToString());
+                        }
+                    }));
+                }
+                return dataStorageManualChartRefreshEvent;
+            }
+        }
     }
 }
