@@ -42,7 +42,7 @@ namespace MeasureApp.ViewModel
             // 添加默认Key
             DataStorageInstance.AddKey(Key3458AString);
             DataStorageInstance.AddKey(KeySerialPortString);
-            DataStorageSelectedValue = Key3458AString;
+            DataStorageInstance.SelectedKey = Key3458AString;
 
             // TEST
             //DataStorageInstance.OnDataChangedEvent += DataStorageInstance_OnDataChangedEvent;
@@ -62,7 +62,7 @@ namespace MeasureApp.ViewModel
 
         private void DataStorageInstance_OnDataChangedEvent(object sender, EventArgs e)
         {
-            var y = DataStorageInstance.GetValues(DataStorageSelectedValue).Select(x => (double)x);
+            var y = DataStorageInstance.SelectedData.Select(x => (double)x);
             ECL.SetData(y);
         }
 

@@ -19,29 +19,29 @@ namespace MeasureApp.ViewModel
     public partial class MainWindowDataContext : NotificationObjectBase
     {
         // DataStorage数据源选择
-        private string dataStorageSelectedValue;
-        public string DataStorageSelectedValue
-        {
-            get => dataStorageSelectedValue;
-            set
-            {
-                dataStorageSelectedValue = value;
-                RaisePropertyChanged(() => DataStorageSelectedValue);
-                DataStorageSelectionChangedEvent.Execute(null);
-            }
-        }
+        //private string dataStorageSelectedValue;
+        //public string DataStorageSelectedValue
+        //{
+        //    get => dataStorageSelectedValue;
+        //    set
+        //    {
+        //        dataStorageSelectedValue = value;
+        //        RaisePropertyChanged(() => DataStorageSelectedValue);
+        //        DataStorageSelectionChangedEvent.Execute(null);
+        //    }
+        //}
 
-        // DataGrid数据绑定
-        private dynamic dataStorageDataGridBinding;
-        public dynamic DataStorageDataGridBinding
-        {
-            get => dataStorageDataGridBinding;
-            set
-            {
-                dataStorageDataGridBinding = value;
-                RaisePropertyChanged(() => DataStorageDataGridBinding);
-            }
-        }
+        //// DataGrid数据绑定
+        //private dynamic dataStorageDataGridBinding;
+        //public dynamic DataStorageDataGridBinding
+        //{
+        //    get => dataStorageDataGridBinding;
+        //    set
+        //    {
+        //        dataStorageDataGridBinding = value;
+        //        RaisePropertyChanged(() => DataStorageDataGridBinding);
+        //    }
+        //}
 
         private EChartsLineData ecl = new();
         public EChartsLineData ECL
@@ -80,16 +80,13 @@ namespace MeasureApp.ViewModel
                     {
                         try
                         {
-                            if (DataStorageSelectedValue is null)
+                            if (DataStorageInstance.SelectedKey is null)
                             {
                                 ECL.ClearData();
-                                DataStorageDataGridBinding = null;
                             }
                             else
                             {
-                                throw new NotImplementedException();
-                                //DataStorageDataGridBinding = DataStorageInstance.Data[DataStorageSelectedValue];
-                                var vals = DataStorageInstance[DataStorageSelectedValue];
+                                var vals = DataStorageInstance.SelectedData;
                                 double[] valsDouble = vals.Select(d => (double)d).ToArray();
                                 double[] x = Enumerable.Range(0, valsDouble.Length).Select(xn => (double)xn).ToArray();
                                 ECL.ClearData();
@@ -118,7 +115,7 @@ namespace MeasureApp.ViewModel
                     {
                         try
                         {
-                            string dataStorageKey = DataStorageSelectedValue;
+                            string dataStorageKey = DataStorageInstance.SelectedKey;
                             SaveFileDialog saveFileDialog = new()
                             {
                                 Title = "存储数据",
@@ -155,9 +152,9 @@ namespace MeasureApp.ViewModel
                     {
                         try
                         {
-                            if (MessageBox.Show("清理本次通信数据，是否继续？", "清理数据确认", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
+                            if (MessageBox.Show("清理选中的数据，是否继续？", "清理数据确认", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
                             {
-                                DataStorageInstance.ClearValues(DataStorageSelectedValue);
+                                DataStorageInstance.ClearValues(DataStorageInstance.SelectedKey);
                             }
                         }
                         catch (Exception ex)
@@ -208,7 +205,7 @@ namespace MeasureApp.ViewModel
                         {
                             if (MessageBox.Show("删除键值对，是否继续？", "删除键值对确认", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
                             {
-                                DataStorageInstance.RemoveKey(DataStorageSelectedValue);
+                                DataStorageInstance.RemoveKey(DataStorageInstance.SelectedKey);
                             }
                         }
                         catch (Exception ex)
@@ -324,7 +321,7 @@ namespace MeasureApp.ViewModel
                             for (int i = 0; i < vs.Length; i++)
                                 vs[i] = i + random.NextDouble() - 0.5;
 
-                            DataStorageInstance.AddValues(DataStorageSelectedValue, vs);
+                            DataStorageInstance.AddValues(DataStorageInstance.SelectedKey, vs);
                         }
                         catch (Exception ex)
                         {

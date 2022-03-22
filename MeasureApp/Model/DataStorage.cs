@@ -59,7 +59,8 @@ namespace MeasureApp.Model
             get => selectedKey;
             set
             {
-                selectedKey = value;
+                // 删除选中元素后value传入null
+                selectedKey = value ?? Keys.FirstOrDefault();
                 OnSelectedKeyChanged?.Invoke(this, EventArgs.Empty);
                 OnSelectedDataChanged?.Invoke(this, EventArgs.Empty);
             }
@@ -161,7 +162,7 @@ namespace MeasureApp.Model
 
         public IEnumerable<decimal> GetValues(string key)
         {
-            if (Data.ContainsKey(key))
+            if (key != null && Data.ContainsKey(key))
                 return Data[key];
             else
                 return null;
@@ -169,7 +170,7 @@ namespace MeasureApp.Model
 
         public IEnumerable<T> GetValues<T>(string key)
         {
-            if (Data.ContainsKey(key))
+            if (key != null && Data.ContainsKey(key))
                 return Data[key].Select(v => (T)Convert.ChangeType(v, typeof(T)));
             else
                 return null;

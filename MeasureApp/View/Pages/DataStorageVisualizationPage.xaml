@@ -14,14 +14,14 @@
         <GroupBox Header="存储" Margin="10,10,10.2,10">
             <Grid>
                 <TextBlock Text="选择数据源：" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="230"/>
-                <ListBox Name="DataStorageSelectListBox" ItemsSource="{Binding DataStorageInstance.Keys,UpdateSourceTrigger=PropertyChanged}" SelectedValue="{Binding DataStorageSelectedValue}" HorizontalAlignment="Left" Height="106" Margin="10,30,0,0" VerticalAlignment="Top" Width="230"/>
+                <ListBox Name="DataStorageSelectListBox" ItemsSource="{Binding DataStorageInstance.Keys,UpdateSourceTrigger=PropertyChanged}" SelectedValue="{Binding DataStorageInstance.SelectedKey,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" HorizontalAlignment="Left" Height="106" Margin="10,30,0,0" VerticalAlignment="Top" Width="230"/>
 
                 <TabControl HorizontalAlignment="Left" VerticalAlignment="Top" Margin="245,8,0,0" Height="500" Width="700">
                     <TabItem Header="表格">
                         <Grid Background="#FFE5E5E5">
-                            <DataGrid Name="DataStorageDataGrid" ItemsSource="{Binding DataStorageDataGridBinding}" AutoGenerateColumns="False" IsReadOnly="True" Margin="3,3,3,3">
+                            <DataGrid Name="DataStorageDataGrid" ItemsSource="{Binding DataStorageInstance.SelectedData,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" AutoGenerateColumns="True" IsReadOnly="True" Margin="3,3,3,3">
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn CanUserSort="False" Width="1*" Header="数据" Binding="{Binding Value}"/>
+                                    <DataGridTextColumn CanUserSort="False" Width="1*" Header="数据" Binding="{Binding .}"/>
                                 </DataGrid.Columns>
                                 <i:Interaction.Triggers>
                                     <i:EventTrigger EventName="LoadingRow">
