@@ -80,7 +80,14 @@ namespace MeasureApp.Model
 
         public DataStorage()
         {
+            InitEvent();
+        }
+
+        private void InitEvent()
+        {
             OnKeysChanged += (_, _) => RaisePropertyChanged(() => Keys);
+            OnSelectedKeyChanged += (_, _) => RaisePropertyChanged(() => SelectedKey);
+            OnSelectedDataChanged += (_, _) => RaisePropertyChanged(() => SelectedData);
             OnDataChanged += DataStorage_SelectedKeyOnDataChanged;
         }
 
