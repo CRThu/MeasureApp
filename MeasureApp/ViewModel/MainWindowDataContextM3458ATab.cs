@@ -284,7 +284,7 @@ namespace MeasureApp.ViewModel
                                                 bool isStorage = (bool)param;
                                                 if (isStorage)
                                                 {
-                                                    DataStorageInstance.AddData(Key3458AString, DCVDisplay);
+                                                    DataStorageInstance.AddValue(Key3458AString, DCVDisplay);
                                                 }
                                             }
                                         }
@@ -354,7 +354,7 @@ namespace MeasureApp.ViewModel
                                         // 数据自动存储
                                         if (isStorage)
                                         {
-                                            DataStorageInstance.AddData(Key3458AString, Convert.ToDecimal(M3458AManualMeasureText));
+                                            DataStorageInstance.AddValue(Key3458AString, Convert.ToDecimal(M3458AManualMeasureText));
                                         }
                                     }
                                     catch (Exception ex)

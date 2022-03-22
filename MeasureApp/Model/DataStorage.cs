@@ -15,48 +15,44 @@ namespace MeasureApp.Model
 {
     public class DataStorage : NotificationObjectBase
     {
-        public event EventHandler OnDataChangedEvent;
+        public event EventHandler OnKeysChanged;
+        public event EventHandler OnSelectedKeyChanged;
+        public event EventHandler OnSelectedDataChanged;
+        // sender为key
+        public event EventHandler OnDataChanged;
 
-        private ObservableDictionary<string, ObservableRangeCollection<ObservableValue>> dict = new();
-        public ObservableDictionary<string, ObservableRangeCollection<ObservableValue>> Dict
+        private Dictionary<string, List<decimal>> data = new();
+        private Dictionary<string, List<decimal>> Data
         {
-            get => dict;
+            get => data;
             set
             {
-                dict = value;
-                RaisePropertyChanged(() => Dict);
-                RaisePropertyChanged(() => Keys);
+                data = value;
             }
         }
 
-        public dynamic[] this[string key]
+        public decimal[] this[string key]
         {
             get
             {
-                return GetDataCollection(key).ToArray();
+                return GetValues(key)?.ToArray();
+            }
+            set
+            {
+                SetValues(key, value);
             }
         }
 
-        public int Count => Dict.Count;
+        public int Count => Data.Count;
         public string[] Keys
         {
             get
             {
-                return Dict.Keys.ToArray();
+                return Data.Keys.ToArray();
             }
         }
 
-        public dynamic[] SelectedData
-        {
-            get
-            {
-                if (Dict.ContainsKey(SelectedKey))
-                    return GetDataCollection(SelectedKey).ToArray();
-                else
-                    return null;
-            }
-        }
-
+        // 选中的键值与数据
         private string selectedKey;
         public string SelectedKey
         {
@@ -64,106 +60,128 @@ namespace MeasureApp.Model
             set
             {
                 selectedKey = value;
-                RaisePropertyChanged(() => SelectedKey);
+                OnSelectedKeyChanged?.Invoke(this, EventArgs.Empty);
+                OnSelectedDataChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        public decimal[] SelectedData
+        {
+            get
+            {
+                return this[selectedKey];
+            }
+            set
+            {
+                this[selectedKey] = value;
+                OnSelectedDataChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
         public DataStorage()
         {
+            OnKeysChanged += (_, _) => RaisePropertyChanged(() => Keys);
+            OnDataChanged += DataStorage_SelectedKeyOnDataChanged;
         }
 
-        public void Load(DataStorage dataStorage)
+        private void DataStorage_SelectedKeyOnDataChanged(object sender, EventArgs e)
         {
-            Clear();
-            foreach (string key in dataStorage.Dict.Keys)
-            {
-                AddDataCollection(key, dataStorage.GetDataCollection(key));
-            }
+            if ((string)sender == selectedKey)
+                OnSelectedDataChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        private void Clear()
-        {
-            Dict.Clear();
-        }
-
+        // 字典操作方法
         public void AddKey(string key)
         {
-            // async
-            Application.Current.Dispatcher.Invoke(() =>
+            if (!Data.ContainsKey(key))
             {
-                object locker = new();
-                Dict.Add(key, new ObservableRangeCollection<ObservableValue>());
-                RaisePropertyChanged(() => Keys);
-                BindingOperations.EnableCollectionSynchronization(Dict[key], locker);
-            });
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    object locker = new();
+                    Data.Add(key, new List<decimal>());
+                    RaisePropertyChanged(() => Keys);
+                    BindingOperations.EnableCollectionSynchronization(Data[key], locker);
+                });
+                OnKeysChanged?.Invoke(this, EventArgs.Empty);
+            }
         }
 
         public void RemoveKey(string key)
         {
-            Dict.Remove(key);
-            RaisePropertyChanged(() => Keys);
-        }
-
-        public void AddData(string key, dynamic value)
-        {
-            if (!Dict.ContainsKey(key))
+            if (Data.ContainsKey(key))
             {
-                AddKey(key);
+                Data.Remove(key);
+                OnKeysChanged?.Invoke(this, EventArgs.Empty);
             }
-            Dict[key].Add(new ObservableValue() { Value = value });
-
-            OnDataChangedEvent?.Invoke(this, EventArgs.Empty);
         }
 
-        public void AddDataCollection(string key, IEnumerable<dynamic> values)
+        // 数据操作方法
+        public void AddValue(string key, decimal value)
         {
-            if (!Dict.ContainsKey(key))
-            {
+            if (!Data.ContainsKey(key))
                 AddKey(key);
-            }
-            Dict[key].AddRange(values.Select(value => new ObservableValue() { Value = value }));
-            OnDataChangedEvent?.Invoke(this, EventArgs.Empty);
+            Data[key].Add(value);
+            OnDataChanged?.Invoke(key, EventArgs.Empty);
         }
 
-        public IEnumerable<dynamic> GetDataCollection(string key)
+        public void AddValues(string key, IEnumerable<decimal> values)
         {
-            return Dict[key].Select(str => str.Value);
+            if (!Data.ContainsKey(key))
+                AddKey(key);
+            Data[key].AddRange(values);
+            OnDataChanged?.Invoke(key, EventArgs.Empty);
         }
 
-        public void ClearDataCollection(string key)
+        public void AddValues<T>(string key, IEnumerable<T> values)
         {
-            Dict[key].Clear();
-            OnDataChangedEvent?.Invoke(this, EventArgs.Empty);
+            AddValues(key, values.Select(v => (decimal)Convert.ChangeType(v, typeof(decimal))));
         }
 
+        public void ClearValues(string key)
+        {
+            if (!Data.ContainsKey(key))
+                AddKey(key);
+            Data[key].Clear();
+            OnDataChanged?.Invoke(key, EventArgs.Empty);
+        }
+
+        public void SetValues(string key, IEnumerable<decimal> values)
+        {
+            Data[key].Clear();
+            Data[key].AddRange(values);
+            OnDataChanged?.Invoke(key, EventArgs.Empty);
+        }
+
+        public IEnumerable<decimal> GetValues(string key)
+        {
+            if (Data.ContainsKey(key))
+                return Data[key];
+            else
+                return null;
+        }
+
+        public IEnumerable<T> GetValues<T>(string key)
+        {
+            if (Data.ContainsKey(key))
+                return Data[key].Select(v => (T)Convert.ChangeType(v, typeof(T)));
+            else
+                return null;
+        }
+
+        // 文件操作方法
         public static string GenerateDateTimeNow()
         {
-            return DateTime.Now.ToString().Replace('/', '-').Replace(':', '-').Replace(' ', '-');
+            return DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss-fff");
         }
 
         public static string GenerateFileName(string key, string extension = "txt", string titleName = "DataStorage", bool isAddDateTime = true)
         {
-            if (isAddDateTime)
-            {
-                return $"{titleName}_{key}_{GenerateDateTimeNow()}.{extension}";
-            }
-            else
-            {
-                return $"{titleName}_{key}.{extension}";
-            }
+            return $"{titleName}_{key}_{(isAddDateTime ? GenerateDateTimeNow() : string.Empty)}.{extension}";
         }
 
-        public void Save(string key, string fileName)
+        public void SaveValues(string key, string fileName)
         {
-            File.WriteAllLines(fileName, GetDataCollection(key).ToList().Select<dynamic, string>(v => v.ToString()));
-        }
-
-        public void SaveAll(string extension = "txt", string titleName = "DataStorage", bool isAddDateTime = true)
-        {
-            foreach (string key in Dict.Keys)
-            {
-                Save(key, GenerateFileName(key, extension, titleName, isAddDateTime));
-            }
+            File.WriteAllLines(fileName, GetValues<string>(key));
         }
     }
 }

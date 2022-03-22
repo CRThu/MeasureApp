@@ -87,7 +87,8 @@ namespace MeasureApp.ViewModel
                             }
                             else
                             {
-                                DataStorageDataGridBinding = DataStorageInstance.Dict[DataStorageSelectedValue];
+                                throw new NotImplementedException();
+                                //DataStorageDataGridBinding = DataStorageInstance.Data[DataStorageSelectedValue];
                                 var vals = DataStorageInstance[DataStorageSelectedValue];
                                 double[] valsDouble = vals.Select(d => (double)d).ToArray();
                                 double[] x = Enumerable.Range(0, valsDouble.Length).Select(xn => (double)xn).ToArray();
@@ -129,7 +130,7 @@ namespace MeasureApp.ViewModel
                             if (saveFileDialog.ShowDialog() == true)
                             {
                                 Properties.Settings.Default.DefaultDirectory = Path.GetDirectoryName(saveFileDialog.FileName);
-                                DataStorageInstance.Save(dataStorageKey, saveFileDialog.FileName);
+                                DataStorageInstance.SaveValues(dataStorageKey, saveFileDialog.FileName);
                             }
                         }
                         catch (Exception ex)
@@ -156,7 +157,7 @@ namespace MeasureApp.ViewModel
                         {
                             if (MessageBox.Show("清理本次通信数据，是否继续？", "清理数据确认", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
                             {
-                                DataStorageInstance.ClearDataCollection(DataStorageSelectedValue);
+                                DataStorageInstance.ClearValues(DataStorageSelectedValue);
                             }
                         }
                         catch (Exception ex)
@@ -250,7 +251,7 @@ namespace MeasureApp.ViewModel
                                 //};
                                 //DataStorage ds = System.Text.Json.JsonSerializer.Deserialize<DataStorage>(json, options);
                                 var ds = JsonConvert.DeserializeObject<DataStorage>(json, new JsonSerializerSettings() { FloatParseHandling = FloatParseHandling.Decimal });
-                                DataStorageInstance.Load(ds);
+                                DataStorageInstance = ds;
                             }
                         }
                         catch (Exception ex)
@@ -318,12 +319,12 @@ namespace MeasureApp.ViewModel
                         try
                         {
                             int n = Convert.ToInt32(param);
-                            dynamic[] vs = new dynamic[n];
+                            double[] vs = new double[n];
                             Random random = new();
                             for (int i = 0; i < vs.Length; i++)
                                 vs[i] = i + random.NextDouble() - 0.5;
 
-                            DataStorageInstance.AddDataCollection(DataStorageSelectedValue, vs.ToList());
+                            DataStorageInstance.AddValues(DataStorageSelectedValue, vs);
                         }
                         catch (Exception ex)
                         {

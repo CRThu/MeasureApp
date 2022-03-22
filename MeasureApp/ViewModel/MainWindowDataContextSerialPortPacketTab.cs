@@ -90,7 +90,7 @@ namespace MeasureApp.ViewModel
             {
                 string bytesPacket = SpPktCommTabReadPkt(command, wordLen, pktLen);
                 string[] bytes = new string[bytesPacket.Length / SpPktCommTabWordLen / 2];
-                for (int i = 0; i < bytes.Length ; i += 1)
+                for (int i = 0; i < bytes.Length; i += 1)
                     bytes[i] = bytesPacket.Substring(2 * i * SpPktCommTabWordLen, 2 * SpPktCommTabWordLen);
                 return bytes;
             }
@@ -123,7 +123,9 @@ namespace MeasureApp.ViewModel
                     pktLen = SpPktCommTabPktLen;
                 }
                 object dat = SpPktCommTabReadPkt(command, SpPktCommTabWordLen, pktLen, SpPktCommTabSelectedPktCvtType);
-                DataStorageInstance.AddData(KeySerialPortString, dat);
+                DataStorageInstance.AddValues(KeySerialPortString, ((dynamic[])dat).Select<dynamic, decimal>(x => Convert.ToDecimal(x)));
+                // TODO
+                MessageBox.Show("函数未验证, MainWindowDataContextSerialPortPacketTab.cs line127");
             }
             catch (Exception ex)
             {

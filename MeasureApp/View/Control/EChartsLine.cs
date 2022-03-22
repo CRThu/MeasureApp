@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace MeasureApp.View.Control
 {
@@ -54,7 +55,11 @@ namespace MeasureApp.View.Control
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start(); //  开始监视代码运行时间
 
-            string jsons = Data.ToJson();
+            string jsons = this.Dispatcher.Invoke(() =>
+            {
+                return Data.ToJson();
+            }, DispatcherPriority.Background);
+
             string js = $"UpdateData({jsons});";
 
             stopwatch.Stop(); //  停止监视
@@ -75,24 +80,6 @@ namespace MeasureApp.View.Control
                 });
             }
         }
-
-        // 待修改EChart后尝试在新线程序列化
-        //public async Task<string> ExecuteScript()
-        //{
-        //    return await Task.Run(() =>
-        //    {
-        //        Stopwatch stopwatch = new();
-        //        stopwatch.Start(); //  开始监视代码运行时间
-
-        //        string jsons = Data.ToJson();
-        //        string js = $"UpdateData({jsons});";
-
-        //        stopwatch.Stop(); //  停止监视
-        //        Debug.WriteLine($"Serialize:{stopwatch.ElapsedMilliseconds}ms, {js.Length}bytes.");
-
-        //        return this.CoreWebView2.ExecuteScriptAsync(js);
-        //    });
-        //}
 
         public EChartsLine() : base()
         {

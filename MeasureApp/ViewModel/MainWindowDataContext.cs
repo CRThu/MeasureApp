@@ -45,7 +45,7 @@ namespace MeasureApp.ViewModel
             DataStorageSelectedValue = Key3458AString;
 
             // TEST
-            DataStorageInstance.OnDataChangedEvent += DataStorageInstance_OnDataChangedEvent;
+            //DataStorageInstance.OnDataChangedEvent += DataStorageInstance_OnDataChangedEvent;
 
             // 加载串口预设指令
             if (File.Exists(Properties.Settings.Default.DefaultPresetCommandsJsonPath))
@@ -62,7 +62,7 @@ namespace MeasureApp.ViewModel
 
         private void DataStorageInstance_OnDataChangedEvent(object sender, EventArgs e)
         {
-            var y = DataStorageInstance.GetDataCollection(DataStorageSelectedValue).Select(x => (double)x);
+            var y = DataStorageInstance.GetValues(DataStorageSelectedValue).Select(x => (double)x);
             ECL.SetData(y);
         }
 
