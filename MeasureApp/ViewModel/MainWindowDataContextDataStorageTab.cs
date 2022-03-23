@@ -18,31 +18,6 @@ namespace MeasureApp.ViewModel
 {
     public partial class MainWindowDataContext : NotificationObjectBase
     {
-        // DataStorage数据源选择
-        //private string dataStorageSelectedValue;
-        //public string DataStorageSelectedValue
-        //{
-        //    get => dataStorageSelectedValue;
-        //    set
-        //    {
-        //        dataStorageSelectedValue = value;
-        //        RaisePropertyChanged(() => DataStorageSelectedValue);
-        //        DataStorageSelectionChangedEvent.Execute(null);
-        //    }
-        //}
-
-        //// DataGrid数据绑定
-        //private dynamic dataStorageDataGridBinding;
-        //public dynamic DataStorageDataGridBinding
-        //{
-        //    get => dataStorageDataGridBinding;
-        //    set
-        //    {
-        //        dataStorageDataGridBinding = value;
-        //        RaisePropertyChanged(() => DataStorageDataGridBinding);
-        //    }
-        //}
-
         private EChartsLineData ecl = new();
         public EChartsLineData ECL
         {
@@ -54,282 +29,180 @@ namespace MeasureApp.ViewModel
             }
         }
 
-
-
-        // DataStorage添加键值对文本
-        private string dataStorageAddKeyNameText = "New Key Name";
-        public string DataStorageAddKeyNameText
+        // 添加新键文本绑定
+        private string dataStorageNewKeyNameText = "New Key";
+        public string DataStorageNewKeyNameText
         {
-            get => dataStorageAddKeyNameText;
+            get => dataStorageNewKeyNameText;
             set
             {
-                dataStorageAddKeyNameText = value;
-                RaisePropertyChanged(() => DataStorageAddKeyNameText);
+                dataStorageNewKeyNameText = value;
+                RaisePropertyChanged(() => DataStorageNewKeyNameText);
             }
         }
 
-        // ListBox选中数据类后更新DataGrid事件
-        private CommandBase dataStorageSelectionChangedEvent;
-        public CommandBase DataStorageSelectionChangedEvent
+        // 加载Json
+        public void DataStorageLoadJson()
         {
-            get
+            try
             {
-                if (dataStorageSelectionChangedEvent == null)
+                // Open File Dialog
+                OpenFileDialog openFileDialog = new()
                 {
-                    dataStorageSelectionChangedEvent = new CommandBase(new Action<object>(param =>
+                    Title = "Open Json File...",
+                    Filter = "Json File|*.json",
+                    InitialDirectory = Properties.Settings.Default.DefaultDirectory
+                };
+                if (openFileDialog.ShowDialog() == true)
+                {
+                    Properties.Settings.Default.DefaultDirectory = Path.GetDirectoryName(openFileDialog.FileName);
+                    string json = File.ReadAllText(openFileDialog.FileName);
+                    DataStorageInstance = DataStorage.DeSerialize(json);
+                }
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
+            }
+        }
+
+        // 保存Json
+        public void DataStorageSaveJson()
+        {
+            try
+            {
+                SaveFileDialog saveFileDialog = new()
+                {
+                    Title = "存储数据",
+                    FileName = $"DataStorage.{DataStorage.GenerateDateTimeNow()}.json",
+                    DefaultExt = ".json",
+                    Filter = "Json File|*.json",
+                    InitialDirectory = Properties.Settings.Default.DefaultDirectory
+                };
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    Properties.Settings.Default.DefaultDirectory = Path.GetDirectoryName(saveFileDialog.FileName);
+                    string json = DataStorage.Serialize(DataStorageInstance);
+                    File.WriteAllText(saveFileDialog.FileName, json);
+                }
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
+            }
+        }
+
+        // 导出选中数据
+        public void DataStorageExportSelectedData()
+        {
+            try
+            {
+                SaveFileDialog saveFileDialog = new()
+                {
+                    Title = "存储数据",
+                    FileName = DataStorage.GenerateFileName(DataStorageInstance.SelectedKey),
+                    DefaultExt = ".txt",
+                    Filter = "Text File|*.txt",
+                    InitialDirectory = Properties.Settings.Default.DefaultDirectory
+                };
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    Properties.Settings.Default.DefaultDirectory = Path.GetDirectoryName(saveFileDialog.FileName);
+                    File.WriteAllLines(saveFileDialog.FileName, DataStorageInstance.GetValues<string>(DataStorageInstance.SelectedKey));
+                }
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
+            }
+        }
+
+        // 清空选中数据
+        public void DataStorageClearSelectedData()
+        {
+            try
+            {
+                if (MessageBox.Show($"清理键:{DataStorageInstance.SelectedKey}的数据，是否继续？", "清理数据确认", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
+                {
+                    DataStorageInstance.ClearValues(DataStorageInstance.SelectedKey);
+                }
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
+            }
+        }
+
+        // 添加键
+        public void DataStorageAddKey()
+        {
+            try
+            {
+                DataStorageInstance.AddKey(DataStorageNewKeyNameText);
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
+            }
+        }
+
+        // 删除键
+        public void DataStorageRemoveKey()
+        {
+            try
+            {
+                if (MessageBox.Show($"删除键:{DataStorageInstance.SelectedKey}, 是否继续？", "删除键确认", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
+                {
+                    DataStorageInstance.RemoveKey(DataStorageInstance.SelectedKey);
+                }
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
+            }
+        }
+
+        // For Test
+        public void DataStorageAddTestValue(int count, bool isOnce)
+        {
+            try
+            {
+                Task.Run(() =>
+                {
+                    double[] vs = new double[count];
+                    Random random = new();
+                    for (int i = 0; i < vs.Length; i++)
+                        vs[i] = i + random.NextDouble() - 0.5;
+
+                    if (isOnce)
                     {
-                        try
-                        {
-                            if (DataStorageInstance.SelectedKey is null)
+                        DataStorageInstance.AddValues(DataStorageInstance.SelectedKey, vs);
+                    }
+                    else
+                    {
+                        int times = 0;
+                        Stopwatch sw = new Stopwatch();
+                        double intervalMilliSecond = 1000.0 / count;
+
+                        sw.Start();
+                        while (true)
+                            if (sw.ElapsedMilliseconds > (times + 1) * intervalMilliSecond)
                             {
-                                ECL.ClearData();
+                                DataStorageInstance.AddValue(DataStorageInstance.SelectedKey, vs[times]);
+                                times++;
+                                if (times >= count)
+                                {
+
+                                    sw.Stop();
+                                    Debug.WriteLine(sw.ElapsedMilliseconds);
+                                }
                             }
-                            else
-                            {
-                                var vals = DataStorageInstance.SelectedData;
-                                double[] valsDouble = vals.Select(d => (double)d).ToArray();
-                                double[] x = Enumerable.Range(0, valsDouble.Length).Select(xn => (double)xn).ToArray();
-                                ECL.ClearData();
-                                ECL.AddData(x, valsDouble);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            _ = MessageBox.Show(ex.ToString());
-                        }
-                    }));
-                }
-                return dataStorageSelectionChangedEvent;
+                    }
+                });
             }
-        }
-
-        // 数据存储事件
-        private CommandBase dataStorageStoreEvent;
-        public CommandBase DataStorageStoreEvent
-        {
-            get
+            catch (Exception ex)
             {
-                if (dataStorageStoreEvent == null)
-                {
-                    dataStorageStoreEvent = new CommandBase(new Action<object>(param =>
-                    {
-                        try
-                        {
-                            string dataStorageKey = DataStorageInstance.SelectedKey;
-                            SaveFileDialog saveFileDialog = new()
-                            {
-                                Title = "存储数据",
-                                FileName = DataStorage.GenerateFileName(dataStorageKey),
-                                DefaultExt = ".txt",
-                                Filter = "Text File|*.txt",
-                                InitialDirectory = Properties.Settings.Default.DefaultDirectory
-                            };
-                            if (saveFileDialog.ShowDialog() == true)
-                            {
-                                Properties.Settings.Default.DefaultDirectory = Path.GetDirectoryName(saveFileDialog.FileName);
-                                DataStorageInstance.SaveValues(dataStorageKey, saveFileDialog.FileName);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            _ = MessageBox.Show(ex.ToString());
-                        }
-                    }));
-                }
-                return dataStorageStoreEvent;
-            }
-        }
-
-        // 数据删除事件
-        private CommandBase dataStorageDeleteEvent;
-        public CommandBase DataStorageDeleteEvent
-        {
-            get
-            {
-                if (dataStorageDeleteEvent == null)
-                {
-                    dataStorageDeleteEvent = new CommandBase(new Action<object>(param =>
-                    {
-                        try
-                        {
-                            if (MessageBox.Show("清理选中的数据，是否继续？", "清理数据确认", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
-                            {
-                                DataStorageInstance.ClearValues(DataStorageInstance.SelectedKey);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            _ = MessageBox.Show(ex.ToString());
-                        }
-                    }));
-                }
-                return dataStorageDeleteEvent;
-            }
-        }
-
-        // 数据源添加键值对
-        private CommandBase dataStorageAddKeyValuePairEvent;
-        public CommandBase DataStorageAddKeyValuePairEvent
-        {
-            get
-            {
-                if (dataStorageAddKeyValuePairEvent == null)
-                {
-                    dataStorageAddKeyValuePairEvent = new CommandBase(new Action<object>(param =>
-                    {
-                        try
-                        {
-                            DataStorageInstance.AddKey(DataStorageAddKeyNameText);
-                        }
-                        catch (Exception ex)
-                        {
-                            _ = MessageBox.Show(ex.ToString());
-                        }
-                    }));
-                }
-                return dataStorageAddKeyValuePairEvent;
-            }
-        }
-
-        // 数据源删除键值对
-        private CommandBase dataStorageRemoveKeyValuePairEvent;
-        public CommandBase DataStorageRemoveKeyValuePairEvent
-        {
-            get
-            {
-                if (dataStorageRemoveKeyValuePairEvent == null)
-                {
-                    dataStorageRemoveKeyValuePairEvent = new CommandBase(new Action<object>(param =>
-                    {
-                        try
-                        {
-                            if (MessageBox.Show("删除键值对，是否继续？", "删除键值对确认", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
-                            {
-                                DataStorageInstance.RemoveKey(DataStorageInstance.SelectedKey);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            _ = MessageBox.Show(ex.ToString());
-                        }
-                    }));
-                }
-                return dataStorageRemoveKeyValuePairEvent;
-            }
-        }
-
-
-        // 数据源加载
-        private CommandBase dataStorageLoadEvent;
-        public CommandBase DataStorageLoadEvent
-        {
-            get
-            {
-                if (dataStorageLoadEvent == null)
-                {
-                    dataStorageLoadEvent = new CommandBase(new Action<object>(param =>
-                    {
-                        try
-                        {
-                            // Open File Dialog
-                            OpenFileDialog openFileDialog = new()
-                            {
-                                Title = "Open Json File...",
-                                Filter = "Json File|*.json",
-                                InitialDirectory = Properties.Settings.Default.DefaultDirectory
-                            };
-                            if (openFileDialog.ShowDialog() == true)
-                            {
-                                Properties.Settings.Default.DefaultDirectory = Path.GetDirectoryName(openFileDialog.FileName);
-                                string json = File.ReadAllText(openFileDialog.FileName);
-                                //var options = new JsonSerializerOptions
-                                //{
-                                //    IncludeFields = true
-                                //};
-                                //DataStorage ds = System.Text.Json.JsonSerializer.Deserialize<DataStorage>(json, options);
-                                var ds = JsonConvert.DeserializeObject<DataStorage>(json, new JsonSerializerSettings() { FloatParseHandling = FloatParseHandling.Decimal });
-                                DataStorageInstance = ds;
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            _ = MessageBox.Show(ex.ToString());
-                        }
-                    }));
-                }
-                return dataStorageLoadEvent;
-            }
-        }
-
-        // 数据源保存
-        private CommandBase dataStorageSaveEvent;
-        public CommandBase DataStorageSaveEvent
-        {
-            get
-            {
-                if (dataStorageSaveEvent == null)
-                {
-                    dataStorageSaveEvent = new CommandBase(new Action<object>(param =>
-                    {
-                        try
-                        {
-                            SaveFileDialog saveFileDialog = new()
-                            {
-                                Title = "存储数据",
-                                FileName = $"DataStorage.{DataStorage.GenerateDateTimeNow()}.json",
-                                DefaultExt = ".json",
-                                Filter = "Json File|*.json",
-                                InitialDirectory = Properties.Settings.Default.DefaultDirectory
-                            };
-                            if (saveFileDialog.ShowDialog() == true)
-                            {
-                                Properties.Settings.Default.DefaultDirectory = Path.GetDirectoryName(saveFileDialog.FileName);
-                                //var options = new JsonSerializerOptions
-                                //{
-                                //    IncludeFields = true
-                                //};
-                                //string json = System.Text.Json.JsonSerializer.Serialize(DataStorageInstance, options);
-                                string json = JsonConvert.SerializeObject(DataStorageInstance, new JsonSerializerSettings() { FloatParseHandling = FloatParseHandling.Decimal });
-                                File.WriteAllText(saveFileDialog.FileName, json);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            _ = MessageBox.Show(ex.ToString());
-                        }
-                    }));
-                }
-                return dataStorageSaveEvent;
-            }
-        }
-
-        // 
-        private CommandBase dataStorageAddTestEvent;
-        public CommandBase DataStorageAddTestEvent
-        {
-            get
-            {
-                if (dataStorageAddTestEvent == null)
-                {
-                    dataStorageAddTestEvent = new CommandBase(new Action<object>(param =>
-                    {
-                        try
-                        {
-                            int n = Convert.ToInt32(param);
-                            double[] vs = new double[n];
-                            Random random = new();
-                            for (int i = 0; i < vs.Length; i++)
-                                vs[i] = i + random.NextDouble() - 0.5;
-
-                            DataStorageInstance.AddValues(DataStorageInstance.SelectedKey, vs);
-                        }
-                        catch (Exception ex)
-                        {
-                            _ = MessageBox.Show(ex.ToString());
-                        }
-                    }));
-                }
-                return dataStorageAddTestEvent;
+                _ = MessageBox.Show(ex.ToString());
             }
         }
 
@@ -353,6 +226,112 @@ namespace MeasureApp.ViewModel
                     }));
                 }
                 return dataStorageManualChartRefreshEvent;
+            }
+        }
+
+        // CommandBase
+        private CommandBase dataStorageLoadJsonEvent;
+        public CommandBase DataStorageLoadJsonEvent
+        {
+            get
+            {
+                if (dataStorageLoadJsonEvent == null)
+                {
+                    dataStorageLoadJsonEvent = new CommandBase(new Action<object>(param => DataStorageLoadJson()));
+                }
+                return dataStorageLoadJsonEvent;
+            }
+        }
+
+        private CommandBase dataStorageSaveJsonEvent;
+        public CommandBase DataStorageSaveJsonEvent
+        {
+            get
+            {
+                if (dataStorageSaveJsonEvent == null)
+                {
+                    dataStorageSaveJsonEvent = new CommandBase(new Action<object>(param => DataStorageSaveJson()));
+                }
+                return dataStorageSaveJsonEvent;
+            }
+        }
+
+        private CommandBase dataStorageExportSelectedDataEvent;
+        public CommandBase DataStorageExportSelectedDataEvent
+        {
+            get
+            {
+                if (dataStorageExportSelectedDataEvent == null)
+                {
+                    dataStorageExportSelectedDataEvent = new CommandBase(new Action<object>(param => DataStorageExportSelectedData()));
+                }
+                return dataStorageExportSelectedDataEvent;
+            }
+        }
+
+        private CommandBase dataStorageClearSelectedDataEvent;
+        public CommandBase DataStorageClearSelectedDataEvent
+        {
+            get
+            {
+                if (dataStorageClearSelectedDataEvent == null)
+                {
+                    dataStorageClearSelectedDataEvent = new CommandBase(new Action<object>(param => DataStorageClearSelectedData()));
+                }
+                return dataStorageClearSelectedDataEvent;
+            }
+        }
+
+        private CommandBase dataStorageAddKeyEvent;
+        public CommandBase DataStorageAddKeyEvent
+        {
+            get
+            {
+                if (dataStorageAddKeyEvent == null)
+                {
+                    dataStorageAddKeyEvent = new CommandBase(new Action<object>(param => DataStorageAddKey()));
+                }
+                return dataStorageAddKeyEvent;
+            }
+        }
+
+        private CommandBase dataStorageRemoveKeyEvent;
+        public CommandBase DataStorageRemoveKeyEvent
+        {
+            get
+            {
+                if (dataStorageRemoveKeyEvent == null)
+                {
+                    dataStorageRemoveKeyEvent = new CommandBase(new Action<object>(param => DataStorageRemoveKey()));
+                }
+                return dataStorageRemoveKeyEvent;
+            }
+        }
+
+        // For Test
+        private CommandBase dataStorageAddTestValueOnceEvent;
+        public CommandBase DataStorageAddTestValueOnceEvent
+        {
+            get
+            {
+                if (dataStorageAddTestValueOnceEvent == null)
+                {
+                    dataStorageAddTestValueOnceEvent = new CommandBase(new Action<object>(param => DataStorageAddTestValue(Convert.ToInt32(param), true)));
+                }
+                return dataStorageAddTestValueOnceEvent;
+            }
+        }
+
+        private CommandBase dataStorageAddTestValueIntervalEvent;
+        public CommandBase DataStorageAddTestValueIntervalEvent
+        {
+            get
+            {
+                if (dataStorageAddTestValueIntervalEvent == null)
+                {
+                    dataStorageAddTestValueIntervalEvent = new CommandBase(new Action<object>(param => DataStorageAddTestValue(Convert.ToInt32(param), false)));
+                }
+                return dataStorageAddTestValueIntervalEvent;
             }
         }
     }

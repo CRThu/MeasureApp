@@ -1,5 +1,6 @@
 ﻿using MeasureApp.Model.Common;
 using MeasureApp.ViewModel;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -84,6 +85,12 @@ namespace MeasureApp.Model
             InitEvent();
         }
 
+        public DataStorage(Dictionary<string, List<decimal>> data) : this()
+        {
+            foreach (var item in data)
+                AddValues(item.Key, item.Value);
+        }
+
         private void InitEvent()
         {
             OnKeysChanged += (_, _) => RaisePropertyChanged(() => Keys);
@@ -132,6 +139,11 @@ namespace MeasureApp.Model
             OnDataChanged?.Invoke(key, EventArgs.Empty);
         }
 
+        public void AddValue<T>(string key, T value)
+        {
+            AddValue(key, (decimal)Convert.ChangeType(value, typeof(decimal)));
+        }
+
         public void AddValues(string key, IEnumerable<decimal> values)
         {
             if (!Data.ContainsKey(key))
@@ -155,6 +167,8 @@ namespace MeasureApp.Model
 
         public void SetValues(string key, IEnumerable<decimal> values)
         {
+            if (!Data.ContainsKey(key))
+                AddKey(key);
             Data[key].Clear();
             Data[key].AddRange(values);
             OnDataChanged?.Invoke(key, EventArgs.Empty);
@@ -187,9 +201,26 @@ namespace MeasureApp.Model
             return $"{titleName}_{key}_{(isAddDateTime ? GenerateDateTimeNow() : string.Empty)}.{extension}";
         }
 
-        public void SaveValues(string key, string fileName)
+        // 序列化与反序列化
+        public static string Serialize(DataStorage ds)
         {
-            File.WriteAllLines(fileName, GetValues<string>(key));
+            //var options = new JsonSerializerOptions
+            //{
+            //    IncludeFields = true
+            //};
+            //string json = System.Text.Json.JsonSerializer.Serialize(DataStorageInstance, options);
+            return JsonConvert.SerializeObject(ds.Data, new JsonSerializerSettings() { FloatParseHandling = FloatParseHandling.Decimal });
+        }
+
+        public static DataStorage DeSerialize(string json)
+        {
+            //var options = new JsonSerializerOptions
+            //{
+            //    IncludeFields = true
+            //};
+            //DataStorage ds = System.Text.Json.JsonSerializer.Deserialize<DataStorage>(json, options);
+            var data = JsonConvert.DeserializeObject<Dictionary<string, List<decimal>>>(json, new JsonSerializerSettings() { FloatParseHandling = FloatParseHandling.Decimal });
+            return new(data);
         }
     }
 }

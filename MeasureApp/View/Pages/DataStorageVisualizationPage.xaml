@@ -37,78 +37,109 @@
                         </Grid>
                     </TabItem>
                 </TabControl>
-                <Button Name="DataStorageExportListDataButton" Content="导出选中数据" HorizontalAlignment="Left" Margin="10,191,0,0" VerticalAlignment="Top" Width="107" Height="32">
+                <Button Content="导出选中数据" HorizontalAlignment="Left" Margin="10,191,0,0" VerticalAlignment="Top" Width="107" Height="32">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="Click">
-                            <vmc:EventCommandBase Command="{Binding DataStorageStoreEvent}"/>
+                            <vmc:EventCommandBase Command="{Binding DataStorageExportSelectedDataEvent}"/>
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                 </Button>
-                <Button Name="DataStorageClearListDataButton" Content="清空选中数据" HorizontalAlignment="Left" Margin="133,191,0,0" VerticalAlignment="Top" Width="107" Height="32">
+                <Button Content="清空选中数据" HorizontalAlignment="Left" Margin="133,191,0,0" VerticalAlignment="Top" Width="107" Height="32">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="Click">
-                            <vmc:EventCommandBase Command="{Binding DataStorageDeleteEvent}"/>
+                            <vmc:EventCommandBase Command="{Binding DataStorageClearSelectedDataEvent}"/>
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                 </Button>
-                <TextBox HorizontalAlignment="Left" VerticalContentAlignment="Center" Margin="10,228,0,0" Text="{Binding DataStorageAddKeyNameText}" TextWrapping="Wrap" VerticalAlignment="Top" Width="107" Height="32"/>
-                <Button Content="添加键值对" HorizontalAlignment="Left" Margin="133,228,0,0" VerticalAlignment="Top" Width="107" Height="32">
+                <TextBox Text="{Binding DataStorageNewKeyNameText}" HorizontalAlignment="Left" VerticalContentAlignment="Center" Margin="10,228,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="107" Height="32"/>
+                <Button Content="添加键" HorizontalAlignment="Left" Margin="133,228,0,0" VerticalAlignment="Top" Width="50" Height="32">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="Click">
-                            <vmc:EventCommandBase Command="{Binding DataStorageAddKeyValuePairEvent}"/>
+                            <vmc:EventCommandBase Command="{Binding DataStorageAddKeyEvent}"/>
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                 </Button>
-                <Button Content="删除键值对" HorizontalAlignment="Left" Margin="133,265,0,0" VerticalAlignment="Top" Width="107" Height="32">
+                <Button Content="删除键" HorizontalAlignment="Left" Margin="190,228,0,0" VerticalAlignment="Top" Width="50" Height="32">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="Click">
-                            <vmc:EventCommandBase Command="{Binding DataStorageRemoveKeyValuePairEvent}"/>
+                            <vmc:EventCommandBase Command="{Binding DataStorageRemoveKeyEvent}"/>
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                 </Button>
-                <Button Content="加载数据文件" HorizontalAlignment="Left" Margin="10,154,0,0" VerticalAlignment="Top" Width="107" Height="32">
+                <Button Content="加载Json" HorizontalAlignment="Left" Margin="10,154,0,0" VerticalAlignment="Top" Width="107" Height="32">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="Click">
-                            <vmc:EventCommandBase Command="{Binding DataStorageLoadEvent}"/>
+                            <vmc:EventCommandBase Command="{Binding DataStorageLoadJsonEvent}"/>
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                 </Button>
-                <Button Content="保存数据文件" HorizontalAlignment="Left" Margin="133,154,0,0" VerticalAlignment="Top" Width="107" Height="32">
+                <Button Content="保存Json" HorizontalAlignment="Left" Margin="133,154,0,0" VerticalAlignment="Top" Width="107" Height="32">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="Click">
-                            <vmc:EventCommandBase Command="{Binding DataStorageSaveEvent}"/>
+                            <vmc:EventCommandBase Command="{Binding DataStorageSaveJsonEvent}"/>
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                 </Button>
-                <Button Content="+1" HorizontalAlignment="Left" Margin="18,320,0,0" VerticalAlignment="Top" Width="46" Height="32">
+                <TextBlock Text="添加测试数据" HorizontalAlignment="Left" Margin="16,281,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                <Button Content="+1" HorizontalAlignment="Left" Margin="16,301,0,0" VerticalAlignment="Top" Width="46" Height="32">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="Click">
-                            <vmc:EventCommandBase Command="{Binding DataStorageAddTestEvent}" CommandParameter="1"/>
+                            <vmc:EventCommandBase Command="{Binding DataStorageAddTestValueOnceEvent}" CommandParameter="1"/>
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                 </Button>
-                <Button Content="+100" HorizontalAlignment="Left" Margin="71,320,0,0" VerticalAlignment="Top" Width="46" Height="32">
+                <Button Content="+100" HorizontalAlignment="Left" Margin="69,301,0,0" VerticalAlignment="Top" Width="46" Height="32">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="Click">
-                            <vmc:EventCommandBase Command="{Binding DataStorageAddTestEvent}" CommandParameter="100"/>
+                            <vmc:EventCommandBase Command="{Binding DataStorageAddTestValueOnceEvent}" CommandParameter="100"/>
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                 </Button>
-                <Button Content="+10K" HorizontalAlignment="Left" Margin="133,320,0,0" VerticalAlignment="Top" Width="46" Height="32">
+                <Button Content="+10K" HorizontalAlignment="Left" Margin="131,301,0,0" VerticalAlignment="Top" Width="46" Height="32">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="Click">
-                            <vmc:EventCommandBase Command="{Binding DataStorageAddTestEvent}" CommandParameter="10000"/>
+                            <vmc:EventCommandBase Command="{Binding DataStorageAddTestValueOnceEvent}" CommandParameter="10000"/>
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                 </Button>
-                <Button Content="+1M" HorizontalAlignment="Left" Margin="194,320,0,0" VerticalAlignment="Top" Width="46" Height="32">
+                <Button Content="+1M" HorizontalAlignment="Left" Margin="192,301,0,0" VerticalAlignment="Top" Width="46" Height="32">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="Click">
-                            <vmc:EventCommandBase Command="{Binding DataStorageAddTestEvent}" CommandParameter="1000000"/>
+                            <vmc:EventCommandBase Command="{Binding DataStorageAddTestValueOnceEvent}" CommandParameter="1000000"/>
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                 </Button>
-                <Button Content="手动刷新" HorizontalAlignment="Left" Margin="18,362,0,0" VerticalAlignment="Top" Width="76" Height="32">
+                <Button Content="1Hz" HorizontalAlignment="Left" Margin="16,338,0,0" VerticalAlignment="Top" Width="46" Height="32">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Click">
+                            <vmc:EventCommandBase Command="{Binding DataStorageAddTestValueIntervalEvent}" CommandParameter="1"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </Button>
+                <Button Content="10Hz" HorizontalAlignment="Left" Margin="69,338,0,0" VerticalAlignment="Top" Width="46" Height="32">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Click">
+                            <vmc:EventCommandBase Command="{Binding DataStorageAddTestValueIntervalEvent}" CommandParameter="10"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </Button>
+                <Button Content="100Hz" HorizontalAlignment="Left" Margin="131,338,0,0" VerticalAlignment="Top" Width="46" Height="32">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Click">
+                            <vmc:EventCommandBase Command="{Binding DataStorageAddTestValueIntervalEvent}" CommandParameter="100"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </Button>
+                <Button Content="1000Hz" HorizontalAlignment="Left" Margin="192,338,0,0" VerticalAlignment="Top" Width="46" Height="32">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Click">
+                            <vmc:EventCommandBase Command="{Binding DataStorageAddTestValueIntervalEvent}" CommandParameter="1000"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </Button>
+
+                <TextBlock Text="图表刷新选项" HorizontalAlignment="Left" Margin="16,404,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                <Button Content="手动刷新" HorizontalAlignment="Left" Margin="16,424,0,0" VerticalAlignment="Top" Width="76" Height="32">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="Click">
                             <vmc:EventCommandBase Command="{Binding DataStorageManualChartRefreshEvent}"/>
