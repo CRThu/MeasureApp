@@ -163,40 +163,35 @@ namespace MeasureApp.ViewModel
         }
 
         // For Test
-        public void DataStorageAddTestValue(int count, bool isOnce)
+        public void DataStorageAddTestValue(int count, bool isOneThread)
         {
             try
             {
                 Task.Run(() =>
                 {
-                    double[] vs = new double[count];
                     Random random = new();
-                    for (int i = 0; i < vs.Length; i++)
-                        vs[i] = i + random.NextDouble() - 0.5;
-
-                    if (isOnce)
+                    if (isOneThread)
                     {
+                        double[] vs = new double[count];
+                        for (int i = 0; i < vs.Length; i++)
+                            vs[i] = i + random.NextDouble() - 0.5;
                         DataStorageInstance.AddValues(DataStorageInstance.SelectedKey, vs);
                     }
                     else
                     {
-                        int times = 0;
-                        Stopwatch sw = new Stopwatch();
-                        double intervalMilliSecond = 1000.0 / count;
-
-                        sw.Start();
-                        while (true)
-                            if (sw.ElapsedMilliseconds > (times + 1) * intervalMilliSecond)
+                        List<Task> tasksq = new();
+                        for (int t = 0; t < 100 * DataStorageInstance.Keys.Length; t++)
+                            tasksq.Add(new Task((x) =>
                             {
-                                DataStorageInstance.AddValue(DataStorageInstance.SelectedKey, vs[times]);
-                                times++;
-                                if (times >= count)
+                                for (int i = 0; i < count; i++)
                                 {
-
-                                    sw.Stop();
-                                    Debug.WriteLine(sw.ElapsedMilliseconds);
+                                    DataStorageInstance.AddValue(DataStorageInstance.Keys[(int)x], i + random.NextDouble() - 0.5);
+                                    Task.Delay(1);
                                 }
                             }
+                            , (int)(t / 100.0)));
+                        foreach (Task t in tasksq)
+                            t.Start();
                     }
                 });
             }
@@ -322,16 +317,16 @@ namespace MeasureApp.ViewModel
             }
         }
 
-        private CommandBase dataStorageAddTestValueIntervalEvent;
-        public CommandBase DataStorageAddTestValueIntervalEvent
+        private CommandBase dataStorageAddTestValueMultiThreadEvent;
+        public CommandBase DataStorageAddTestValueMultiThreadEvent
         {
             get
             {
-                if (dataStorageAddTestValueIntervalEvent == null)
+                if (dataStorageAddTestValueMultiThreadEvent == null)
                 {
-                    dataStorageAddTestValueIntervalEvent = new CommandBase(new Action<object>(param => DataStorageAddTestValue(Convert.ToInt32(param), false)));
+                    dataStorageAddTestValueMultiThreadEvent = new CommandBase(new Action<object>(param => DataStorageAddTestValue(Convert.ToInt32(param), false)));
                 }
-                return dataStorageAddTestValueIntervalEvent;
+                return dataStorageAddTestValueMultiThreadEvent;
             }
         }
     }

@@ -2,6 +2,7 @@
 using MeasureApp.ViewModel;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -22,8 +23,8 @@ namespace MeasureApp.Model
         // sender为key
         public event EventHandler OnDataChanged;
 
-        private Dictionary<string, List<decimal>> data = new();
-        private Dictionary<string, List<decimal>> Data
+        private Dictionary<string, ConcurrentBag<decimal>> data = new();
+        private Dictionary<string, ConcurrentBag<decimal>> Data
         {
             get => data;
             set
@@ -36,7 +37,7 @@ namespace MeasureApp.Model
         {
             get
             {
-                return GetValues(key)?.ToArray();
+                return GetValues(key).ToArray();
             }
             set
             {
@@ -44,7 +45,6 @@ namespace MeasureApp.Model
             }
         }
 
-        public int Count => Data.Count;
         public string[] Keys
         {
             get
@@ -71,11 +71,11 @@ namespace MeasureApp.Model
         {
             get
             {
-                return this[selectedKey];
+                return GetValues(SelectedKey).ToArray();
             }
             set
             {
-                this[selectedKey] = value;
+                SetValues(SelectedKey, value);
                 OnSelectedDataChanged?.Invoke(this, EventArgs.Empty);
             }
         }
@@ -85,7 +85,7 @@ namespace MeasureApp.Model
             InitEvent();
         }
 
-        public DataStorage(Dictionary<string, List<decimal>> data) : this()
+        public DataStorage(Dictionary<string, ConcurrentBag<decimal>> data) : this()
         {
             foreach (var item in data)
                 AddValues(item.Key, item.Value);
@@ -112,10 +112,10 @@ namespace MeasureApp.Model
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    object locker = new();
-                    Data.Add(key, new List<decimal>());
+                    //object locker = new();
+                    Data.Add(key, new ConcurrentBag<decimal>());
+                    //BindingOperations.EnableCollectionSynchronization(Data[key], locker);
                     RaisePropertyChanged(() => Keys);
-                    BindingOperations.EnableCollectionSynchronization(Data[key], locker);
                 });
                 OnKeysChanged?.Invoke(this, EventArgs.Empty);
             }
@@ -148,7 +148,7 @@ namespace MeasureApp.Model
         {
             if (!Data.ContainsKey(key))
                 AddKey(key);
-            Data[key].AddRange(values);
+            //Data[key].AddRange(values);
             OnDataChanged?.Invoke(key, EventArgs.Empty);
         }
 
@@ -170,7 +170,7 @@ namespace MeasureApp.Model
             if (!Data.ContainsKey(key))
                 AddKey(key);
             Data[key].Clear();
-            Data[key].AddRange(values);
+            //Data[key].AddRange(values);
             OnDataChanged?.Invoke(key, EventArgs.Empty);
         }
 
@@ -185,7 +185,7 @@ namespace MeasureApp.Model
         public IEnumerable<T> GetValues<T>(string key)
         {
             if (key != null && Data.ContainsKey(key))
-                return Data[key].Select(v => (T)Convert.ChangeType(v, typeof(T)));
+                return GetValues(key).Select(v => (T)Convert.ChangeType(v, typeof(T)));
             else
                 return null;
         }
@@ -219,7 +219,7 @@ namespace MeasureApp.Model
             //    IncludeFields = true
             //};
             //DataStorage ds = System.Text.Json.JsonSerializer.Deserialize<DataStorage>(json, options);
-            var data = JsonConvert.DeserializeObject<Dictionary<string, List<decimal>>>(json, new JsonSerializerSettings() { FloatParseHandling = FloatParseHandling.Decimal });
+            var data = JsonConvert.DeserializeObject<Dictionary<string, ConcurrentBag<decimal>>>(json, new JsonSerializerSettings() { FloatParseHandling = FloatParseHandling.Decimal });
             return new(data);
         }
     }

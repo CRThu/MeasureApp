@@ -109,31 +109,10 @@
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                 </Button>
-                <Button Content="1Hz" HorizontalAlignment="Left" Margin="16,338,0,0" VerticalAlignment="Top" Width="46" Height="32">
+                <Button Content="Nk*100T*1000" HorizontalAlignment="Left" Margin="16,338,0,0" VerticalAlignment="Top" Width="99" Height="32">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="Click">
-                            <vmc:EventCommandBase Command="{Binding DataStorageAddTestValueIntervalEvent}" CommandParameter="1"/>
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                </Button>
-                <Button Content="10Hz" HorizontalAlignment="Left" Margin="69,338,0,0" VerticalAlignment="Top" Width="46" Height="32">
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="Click">
-                            <vmc:EventCommandBase Command="{Binding DataStorageAddTestValueIntervalEvent}" CommandParameter="10"/>
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                </Button>
-                <Button Content="100Hz" HorizontalAlignment="Left" Margin="131,338,0,0" VerticalAlignment="Top" Width="46" Height="32">
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="Click">
-                            <vmc:EventCommandBase Command="{Binding DataStorageAddTestValueIntervalEvent}" CommandParameter="100"/>
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                </Button>
-                <Button Content="1000Hz" HorizontalAlignment="Left" Margin="192,338,0,0" VerticalAlignment="Top" Width="46" Height="32">
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="Click">
-                            <vmc:EventCommandBase Command="{Binding DataStorageAddTestValueIntervalEvent}" CommandParameter="1000"/>
+                            <vmc:EventCommandBase Command="{Binding DataStorageAddTestValueMultiThreadEvent}" CommandParameter="1000"/>
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                 </Button>
