@@ -1,4 +1,4 @@
-﻿<Page x:Class="MeasureApp.View.Pages.DataStorageVisualizationPage"
+﻿<Page
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -7,19 +7,20 @@
       xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
       xmlns:viewmodel="clr-namespace:MeasureApp.ViewModel"
       xmlns:view="clr-namespace:MeasureApp.View.Control"
-      d:DataContext="{d:DesignInstance Type=viewmodel:MainWindowDataContext}"
+      xmlns:hc="https://handyorg.github.io/handycontrol" x:Class="MeasureApp.View.Pages.DataStorageVisualizationPage"
+      d:DataContext="{d:DesignInstance Type={x:Type viewmodel:MainWindowDataContext}}"
       mc:Ignorable="d" 
       Title="DataStorageVisualizationPage">
     <Grid>
         <GroupBox Header="存储" Margin="10,10,10.2,10">
             <Grid>
                 <TextBlock Text="选择数据源：" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="230"/>
-                <ListBox Name="DataStorageSelectListBox" ItemsSource="{Binding DataStorageInstance.Keys,UpdateSourceTrigger=PropertyChanged}" SelectedValue="{Binding DataStorageInstance.SelectedKey,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" HorizontalAlignment="Left" Height="106" Margin="10,30,0,0" VerticalAlignment="Top" Width="230"/>
+                <ListBox x:Name="DataStorageSelectListBox" ItemsSource="{Binding DataStorageInstance.Keys, UpdateSourceTrigger=PropertyChanged}" SelectedValue="{Binding DataStorageInstance.SelectedKey, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Height="106" Margin="10,30,0,0" VerticalAlignment="Top" Width="230"/>
 
                 <TabControl HorizontalAlignment="Left" VerticalAlignment="Top" Margin="245,8,0,0" Height="500" Width="700">
                     <TabItem Header="表格">
                         <Grid Background="#FFE5E5E5">
-                            <DataGrid Name="DataStorageDataGrid" ItemsSource="{Binding DataStorageInstance.SelectedData,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" AutoGenerateColumns="True" IsReadOnly="True" Margin="3,3,3,3">
+                            <DataGrid x:Name="DataStorageDataGrid" ItemsSource="{Binding DataStorageInstance.SelectedData, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="True" IsReadOnly="True" Margin="3,3,3,3">
                                 <DataGrid.Columns>
                                     <DataGridTextColumn CanUserSort="False" Width="1*" Header="数据" Binding="{Binding .}"/>
                                 </DataGrid.Columns>
@@ -33,7 +34,7 @@
                     </TabItem>
                     <TabItem Header="图形">
                         <Grid Background="#FFE5E5E5">
-                            <view:EChartsLine Margin="3,3,3,3" Data="{Binding ECL,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"/>
+                            <view:EChartsLine Margin="3,3,3,3" Data="{Binding ECL, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                         </Grid>
                     </TabItem>
                 </TabControl>
@@ -53,7 +54,7 @@
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                 </Button>
-                
+
                 <TextBlock Text="选中数据:" HorizontalAlignment="Left" Margin="10,199,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
                 <Button Content="导入" HorizontalAlignment="Left" Margin="78,191,0,0" VerticalAlignment="Top" Width="50" Height="32">
                     <i:Interaction.Triggers>
@@ -93,37 +94,37 @@
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                 </Button>
-                
-                <TextBlock Text="添加测试数据" HorizontalAlignment="Left" Margin="16,281,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-                <Button Content="+1" HorizontalAlignment="Left" Margin="16,301,0,0" VerticalAlignment="Top" Width="46" Height="32">
+
+                <TextBlock Text="添加测试数据" HorizontalAlignment="Left" Margin="10,394,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                <Button Content="+1" HorizontalAlignment="Left" Margin="10,414,0,0" VerticalAlignment="Top" Width="46" Height="32">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="Click">
                             <vmc:EventCommandBase Command="{Binding DataStorageAddTestValueOnceEvent}" CommandParameter="1"/>
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                 </Button>
-                <Button Content="+100" HorizontalAlignment="Left" Margin="69,301,0,0" VerticalAlignment="Top" Width="46" Height="32">
+                <Button Content="+100" HorizontalAlignment="Left" Margin="63,414,0,0" VerticalAlignment="Top" Width="46" Height="32">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="Click">
                             <vmc:EventCommandBase Command="{Binding DataStorageAddTestValueOnceEvent}" CommandParameter="100"/>
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                 </Button>
-                <Button Content="+10K" HorizontalAlignment="Left" Margin="131,301,0,0" VerticalAlignment="Top" Width="46" Height="32">
+                <Button Content="+10K" HorizontalAlignment="Left" Margin="125,414,0,0" VerticalAlignment="Top" Width="46" Height="32">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="Click">
                             <vmc:EventCommandBase Command="{Binding DataStorageAddTestValueOnceEvent}" CommandParameter="10000"/>
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                 </Button>
-                <Button Content="+1M" HorizontalAlignment="Left" Margin="192,301,0,0" VerticalAlignment="Top" Width="46" Height="32">
+                <Button Content="+1M" HorizontalAlignment="Left" Margin="186,414,0,0" VerticalAlignment="Top" Width="46" Height="32">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="Click">
                             <vmc:EventCommandBase Command="{Binding DataStorageAddTestValueOnceEvent}" CommandParameter="1000000"/>
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                 </Button>
-                <Button Content="Nk*100T*1000" HorizontalAlignment="Left" Margin="16,338,0,0" VerticalAlignment="Top" Width="99" Height="32">
+                <Button Content="Nk*100T*1000" HorizontalAlignment="Left" Margin="10,451,0,0" VerticalAlignment="Top" Width="99" Height="32">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="Click">
                             <vmc:EventCommandBase Command="{Binding DataStorageAddTestValueMultiThreadEvent}" CommandParameter="1000"/>
@@ -131,14 +132,18 @@
                     </i:Interaction.Triggers>
                 </Button>
 
-                <TextBlock Text="图表刷新选项" HorizontalAlignment="Left" Margin="16,404,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-                <Button Content="手动刷新" HorizontalAlignment="Left" Margin="16,424,0,0" VerticalAlignment="Top" Width="76" Height="32">
+                <TextBlock Text="图表刷新选项" HorizontalAlignment="Left" Margin="10,285,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                <Button Content="手动刷新" HorizontalAlignment="Left" Margin="10,305,0,0" VerticalAlignment="Top" Width="76" Height="32">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="Click">
-                            <vmc:EventCommandBase Command="{Binding DataStorageManualChartRefreshEvent}"/>
+                            <vmc:EventCommandBase Command="{Binding DataStorageChartManualRefreshEvent}"/>
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                 </Button>
+                <CheckBox Content="自动刷新" IsChecked="{Binding DataStorageChartIsAutoRefresh}" HorizontalAlignment="Left" Margin="115,314,0,0" VerticalAlignment="Top"/>
+                <TextBlock Text="最小触发时间:" HorizontalAlignment="Left" Margin="11,349,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                <TextBox Text="{Binding DataStorageChartAutoRefreshMinimumMilliSecond}" HorizontalAlignment="Left" Margin="91,348,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="62"/>
+                <TextBlock Text="毫秒" HorizontalAlignment="Left" Margin="158,349,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
             </Grid>
         </GroupBox>
     </Grid>

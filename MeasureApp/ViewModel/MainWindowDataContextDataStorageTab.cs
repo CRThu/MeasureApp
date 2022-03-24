@@ -43,6 +43,72 @@ namespace MeasureApp.ViewModel
             }
         }
 
+        private bool dataStorageChartIsAutoRefresh = false;
+        /// <summary>
+        /// 图表自动刷新选项框绑定
+        /// </summary>
+        public bool DataStorageChartIsAutoRefresh
+        {
+            get => dataStorageChartIsAutoRefresh;
+            set
+            {
+                dataStorageChartIsAutoRefresh = value;
+                RaisePropertyChanged(() => DataStorageChartIsAutoRefresh);
+
+                DataStorageChartRefreshEventRegister(DataStorageChartIsAutoRefresh);
+            }
+        }
+
+        private int dataStorageChartAutoRefreshMinimumMilliSecond = 1000;
+        /// <summary>
+        /// 图表自动刷新最小触发时间绑定
+        /// </summary>
+        public int DataStorageChartAutoRefreshMinimumMilliSecond
+        {
+            get => dataStorageChartAutoRefreshMinimumMilliSecond;
+            set
+            {
+                dataStorageChartAutoRefreshMinimumMilliSecond = value;
+                RaisePropertyChanged(() => DataStorageChartAutoRefreshMinimumMilliSecond);
+            }
+        }
+
+        /// <summary>
+        /// 注册图表自动刷新事件
+        /// </summary>
+        /// <param name="isAutoRefresh"></param>
+        public void DataStorageChartRefreshEventRegister(bool isAutoRefresh)
+        {
+            if (isAutoRefresh)
+                DataStorageInstance.OnSelectedDataChanged += DataStorageChartRefreshEvent;
+            else
+                DataStorageInstance.OnSelectedDataChanged -= DataStorageChartRefreshEvent;
+        }
+
+        /// <summary>
+        /// 上一次图表数据刷新时间
+        /// </summary>
+        public DateTime DataStorageChartLastRefreshTime = DateTime.Now;
+
+        /// <summary>
+        /// 图表数据刷新事件函数
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public void DataStorageChartRefreshEvent(object sender, EventArgs e)
+        {
+            if ((DateTime.Now - DataStorageChartLastRefreshTime).TotalMilliseconds >= DataStorageChartAutoRefreshMinimumMilliSecond)
+            {
+                // TODO
+                Debug.WriteLine("Selected Data Changed.");
+                DataStorageChartLastRefreshTime = DateTime.Now;
+            }
+            else
+            {
+                Debug.WriteLine("Busy, Not Triggered.");
+            }
+        }
+
         /// <summary>
         /// 数据源加载Json
         /// </summary>
@@ -246,18 +312,19 @@ namespace MeasureApp.ViewModel
             }
         }
 
-        private CommandBase dataStorageManualChartRefreshEvent;
-        public CommandBase DataStorageManualChartRefreshEvent
+        private CommandBase dataStorageChartManualRefreshEvent;
+        public CommandBase DataStorageChartManualRefreshEvent
         {
             get
             {
-                if (dataStorageManualChartRefreshEvent == null)
+                if (dataStorageChartManualRefreshEvent == null)
                 {
-                    dataStorageManualChartRefreshEvent = new CommandBase(new Action<object>(param =>
+                    dataStorageChartManualRefreshEvent = new CommandBase(new Action<object>(param =>
                     {
                         try
                         {
-                            DataStorageInstance_OnDataChangedEvent(null, null);
+                            var y = DataStorageInstance.SelectedData.Select(x => (double)x);
+                            ECL.SetData(y);
                         }
                         catch (Exception ex)
                         {
@@ -265,7 +332,7 @@ namespace MeasureApp.ViewModel
                         }
                     }));
                 }
-                return dataStorageManualChartRefreshEvent;
+                return dataStorageChartManualRefreshEvent;
             }
         }
 
@@ -295,7 +362,7 @@ namespace MeasureApp.ViewModel
                 return dataStorageSaveJsonEvent;
             }
         }
-        
+
         private CommandBase dataStorageImportSelectedDataEvent;
         public CommandBase DataStorageImportSelectedDataEvent
         {

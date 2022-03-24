@@ -44,9 +44,6 @@ namespace MeasureApp.ViewModel
             DataStorageInstance.AddKey(KeySerialPortString);
             DataStorageInstance.SelectedKey = Key3458AString;
 
-            // TEST
-            //DataStorageInstance.OnDataChangedEvent += DataStorageInstance_OnDataChangedEvent;
-
             // 加载串口预设指令
             if (File.Exists(Properties.Settings.Default.DefaultPresetCommandsJsonPath))
             {
@@ -58,12 +55,6 @@ namespace MeasureApp.ViewModel
             {
                 SerialPortLogger.LoadKeywordFile(Properties.Settings.Default.DefaultLogKeywordColorJsonPath);
             }
-        }
-
-        private void DataStorageInstance_OnDataChangedEvent(object sender, EventArgs e)
-        {
-            var y = DataStorageInstance.SelectedData.Select(x => (double)x);
-            ECL.SetData(y);
         }
 
         // 3458A 通信类
