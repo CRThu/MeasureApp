@@ -23,8 +23,8 @@ namespace MeasureApp.Model
         // sender为key
         public event EventHandler OnDataChanged;
 
-        private Dictionary<string, ConcurrentBag<decimal>> data = new();
-        private Dictionary<string, ConcurrentBag<decimal>> Data
+        private Dictionary<string, ConcurrentRangeBag<decimal>> data = new();
+        private Dictionary<string, ConcurrentRangeBag<decimal>> Data
         {
             get => data;
             set
@@ -71,7 +71,10 @@ namespace MeasureApp.Model
         {
             get
             {
-                return GetValues(SelectedKey).ToArray();
+                if (selectedKey != null)
+                    return GetValues(SelectedKey).ToArray();
+                else
+                    return null;
             }
             set
             {
@@ -85,7 +88,7 @@ namespace MeasureApp.Model
             InitEvent();
         }
 
-        public DataStorage(Dictionary<string, ConcurrentBag<decimal>> data) : this()
+        public DataStorage(Dictionary<string, IEnumerable<decimal>> data) : this()
         {
             foreach (var item in data)
                 AddValues(item.Key, item.Value);
@@ -113,7 +116,7 @@ namespace MeasureApp.Model
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     //object locker = new();
-                    Data.Add(key, new ConcurrentBag<decimal>());
+                    Data.Add(key, new ConcurrentRangeBag<decimal>());
                     //BindingOperations.EnableCollectionSynchronization(Data[key], locker);
                     RaisePropertyChanged(() => Keys);
                 });
@@ -148,7 +151,7 @@ namespace MeasureApp.Model
         {
             if (!Data.ContainsKey(key))
                 AddKey(key);
-            //Data[key].AddRange(values);
+            Data[key].AddRange(values);
             OnDataChanged?.Invoke(key, EventArgs.Empty);
         }
 
@@ -170,7 +173,7 @@ namespace MeasureApp.Model
             if (!Data.ContainsKey(key))
                 AddKey(key);
             Data[key].Clear();
-            //Data[key].AddRange(values);
+            Data[key].AddRange(values);
             OnDataChanged?.Invoke(key, EventArgs.Empty);
         }
 
@@ -219,7 +222,7 @@ namespace MeasureApp.Model
             //    IncludeFields = true
             //};
             //DataStorage ds = System.Text.Json.JsonSerializer.Deserialize<DataStorage>(json, options);
-            var data = JsonConvert.DeserializeObject<Dictionary<string, ConcurrentBag<decimal>>>(json, new JsonSerializerSettings() { FloatParseHandling = FloatParseHandling.Decimal });
+            var data = JsonConvert.DeserializeObject<Dictionary<string, IEnumerable<decimal>>>(json, new JsonSerializerSettings() { FloatParseHandling = FloatParseHandling.Decimal });
             return new(data);
         }
     }

@@ -37,49 +37,63 @@
                         </Grid>
                     </TabItem>
                 </TabControl>
-                <Button Content="导出选中数据" HorizontalAlignment="Left" Margin="10,191,0,0" VerticalAlignment="Top" Width="107" Height="32">
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="Click">
-                            <vmc:EventCommandBase Command="{Binding DataStorageExportSelectedDataEvent}"/>
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                </Button>
-                <Button Content="清空选中数据" HorizontalAlignment="Left" Margin="133,191,0,0" VerticalAlignment="Top" Width="107" Height="32">
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="Click">
-                            <vmc:EventCommandBase Command="{Binding DataStorageClearSelectedDataEvent}"/>
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                </Button>
-                <TextBox Text="{Binding DataStorageNewKeyNameText}" HorizontalAlignment="Left" VerticalContentAlignment="Center" Margin="10,228,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="107" Height="32"/>
-                <Button Content="添加键" HorizontalAlignment="Left" Margin="133,228,0,0" VerticalAlignment="Top" Width="50" Height="32">
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="Click">
-                            <vmc:EventCommandBase Command="{Binding DataStorageAddKeyEvent}"/>
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                </Button>
-                <Button Content="删除键" HorizontalAlignment="Left" Margin="190,228,0,0" VerticalAlignment="Top" Width="50" Height="32">
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="Click">
-                            <vmc:EventCommandBase Command="{Binding DataStorageRemoveKeyEvent}"/>
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                </Button>
-                <Button Content="加载Json" HorizontalAlignment="Left" Margin="10,154,0,0" VerticalAlignment="Top" Width="107" Height="32">
+
+                <TextBlock Text="数据源:" HorizontalAlignment="Left" Margin="10,162,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                <Button Content="加载Json" HorizontalAlignment="Left" Margin="78,154,0,0" VerticalAlignment="Top" Width="70" Height="32">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="Click">
                             <vmc:EventCommandBase Command="{Binding DataStorageLoadJsonEvent}"/>
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                 </Button>
-                <Button Content="保存Json" HorizontalAlignment="Left" Margin="133,154,0,0" VerticalAlignment="Top" Width="107" Height="32">
+                <Button Content="保存Json" HorizontalAlignment="Left" Margin="170,154,0,0" VerticalAlignment="Top" Width="70" Height="32">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="Click">
                             <vmc:EventCommandBase Command="{Binding DataStorageSaveJsonEvent}"/>
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                 </Button>
+                
+                <TextBlock Text="选中数据:" HorizontalAlignment="Left" Margin="10,199,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                <Button Content="导入" HorizontalAlignment="Left" Margin="78,191,0,0" VerticalAlignment="Top" Width="50" Height="32">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Click">
+                            <vmc:EventCommandBase Command="{Binding DataStorageImportSelectedDataEvent}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </Button>
+                <Button Content="导出" HorizontalAlignment="Left" Margin="133,191,0,0" VerticalAlignment="Top" Width="50" Height="32">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Click">
+                            <vmc:EventCommandBase Command="{Binding DataStorageExportSelectedDataEvent}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </Button>
+                <Button Content="清空" HorizontalAlignment="Left" Margin="190,191,0,0" VerticalAlignment="Top" Width="50" Height="32">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Click">
+                            <vmc:EventCommandBase Command="{Binding DataStorageClearSelectedDataEvent}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </Button>
+
+                <TextBlock Text="键:" HorizontalAlignment="Left" Margin="10,236,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                <TextBox Text="{Binding DataStorageNewKeyNameText}" HorizontalAlignment="Left" VerticalContentAlignment="Center" Margin="44,228,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="84" Height="32"/>
+                <Button Content="添加" HorizontalAlignment="Left" Margin="133,228,0,0" VerticalAlignment="Top" Width="50" Height="32">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Click">
+                            <vmc:EventCommandBase Command="{Binding DataStorageAddKeyEvent}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </Button>
+                <Button Content="删除" HorizontalAlignment="Left" Margin="190,228,0,0" VerticalAlignment="Top" Width="50" Height="32">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Click">
+                            <vmc:EventCommandBase Command="{Binding DataStorageRemoveKeyEvent}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </Button>
+                
                 <TextBlock Text="添加测试数据" HorizontalAlignment="Left" Margin="16,281,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
                 <Button Content="+1" HorizontalAlignment="Left" Margin="16,301,0,0" VerticalAlignment="Top" Width="46" Height="32">
                     <i:Interaction.Triggers>

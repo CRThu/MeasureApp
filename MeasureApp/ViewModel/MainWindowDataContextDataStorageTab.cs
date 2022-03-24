@@ -29,8 +29,10 @@ namespace MeasureApp.ViewModel
             }
         }
 
-        // 添加新键文本绑定
         private string dataStorageNewKeyNameText = "New Key";
+        /// <summary>
+        /// 添加新键文本绑定
+        /// </summary>
         public string DataStorageNewKeyNameText
         {
             get => dataStorageNewKeyNameText;
@@ -41,7 +43,9 @@ namespace MeasureApp.ViewModel
             }
         }
 
-        // 加载Json
+        /// <summary>
+        /// 数据源加载Json
+        /// </summary>
         public void DataStorageLoadJson()
         {
             try
@@ -66,7 +70,9 @@ namespace MeasureApp.ViewModel
             }
         }
 
-        // 保存Json
+        /// <summary>
+        /// 数据源保存Json
+        /// </summary>
         public void DataStorageSaveJson()
         {
             try
@@ -92,7 +98,36 @@ namespace MeasureApp.ViewModel
             }
         }
 
-        // 导出选中数据
+        /// <summary>
+        /// 选中数据导入
+        /// </summary>
+        public void DataStorageImportSelectedData()
+        {
+            try
+            {
+                // Open File Dialog
+                OpenFileDialog openFileDialog = new()
+                {
+                    Title = "Open Text File...",
+                    Filter = "Text File|*.txt",
+                    InitialDirectory = Properties.Settings.Default.DefaultDirectory
+                };
+                if (openFileDialog.ShowDialog() == true)
+                {
+                    Properties.Settings.Default.DefaultDirectory = Path.GetDirectoryName(openFileDialog.FileName);
+                    string[] lines = File.ReadAllLines(openFileDialog.FileName);
+                    DataStorageInstance.AddValues(DataStorageInstance.SelectedKey, lines);
+                }
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
+            }
+        }
+
+        /// <summary>
+        /// 选中数据导出
+        /// </summary>
         public void DataStorageExportSelectedData()
         {
             try
@@ -117,7 +152,9 @@ namespace MeasureApp.ViewModel
             }
         }
 
-        // 清空选中数据
+        /// <summary>
+        /// 选中数据清空
+        /// </summary>
         public void DataStorageClearSelectedData()
         {
             try
@@ -133,7 +170,9 @@ namespace MeasureApp.ViewModel
             }
         }
 
-        // 添加键
+        /// <summary>
+        /// 添加键
+        /// </summary>
         public void DataStorageAddKey()
         {
             try
@@ -146,7 +185,9 @@ namespace MeasureApp.ViewModel
             }
         }
 
-        // 删除键
+        /// <summary>
+        /// 删除键
+        /// </summary>
         public void DataStorageRemoveKey()
         {
             try
@@ -162,7 +203,11 @@ namespace MeasureApp.ViewModel
             }
         }
 
-        // For Test
+        /// <summary>
+        /// 添加测试点
+        /// </summary>
+        /// <param name="count"></param>
+        /// <param name="isOneThread"></param>
         public void DataStorageAddTestValue(int count, bool isOneThread)
         {
             try
@@ -248,6 +293,19 @@ namespace MeasureApp.ViewModel
                     dataStorageSaveJsonEvent = new CommandBase(new Action<object>(param => DataStorageSaveJson()));
                 }
                 return dataStorageSaveJsonEvent;
+            }
+        }
+        
+        private CommandBase dataStorageImportSelectedDataEvent;
+        public CommandBase DataStorageImportSelectedDataEvent
+        {
+            get
+            {
+                if (dataStorageImportSelectedDataEvent == null)
+                {
+                    dataStorageImportSelectedDataEvent = new CommandBase(new Action<object>(param => DataStorageImportSelectedData()));
+                }
+                return dataStorageImportSelectedDataEvent;
             }
         }
 
