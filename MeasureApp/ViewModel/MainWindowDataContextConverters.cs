@@ -1,5 +1,4 @@
-﻿using LiveCharts.Geared;
-using MeasureApp.Model;
+﻿using MeasureApp.Model;
 using MeasureApp.Model.Converter;
 using System;
 using System.Collections.Generic;

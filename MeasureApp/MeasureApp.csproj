@@ -39,7 +39,6 @@
 		<PackageReference Include="Dirkster.AvalonDock.Themes.VS2013" Version="4.70.0" />
 		<PackageReference Include="Extended.Wpf.Toolkit" Version="4.2.0" />
 		<PackageReference Include="HandyControl" Version="3.3.0" />
-		<PackageReference Include="LiveCharts.Geared" Version="1.2.9" />
 		<PackageReference Include="MahApps.Metro" Version="2.4.9" />
 		<PackageReference Include="MathNet.Numerics" Version="4.15.0" />
 		<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1133-prerelease" />
