@@ -34,7 +34,7 @@
                     </TabItem>
                     <TabItem Header="图形">
                         <Grid Background="#FFE5E5E5">
-                            <view:EChartsLine Margin="3,3,3,3" Data="{Binding ECL, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            <view:EChartsLine Margin="3,3,3,3" DataY="{Binding DataStorageInstance.SelectedData, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                         </Grid>
                     </TabItem>
                 </TabControl>

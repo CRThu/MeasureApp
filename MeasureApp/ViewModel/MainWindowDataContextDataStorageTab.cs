@@ -54,8 +54,6 @@ namespace MeasureApp.ViewModel
             {
                 dataStorageChartIsAutoRefresh = value;
                 RaisePropertyChanged(() => DataStorageChartIsAutoRefresh);
-
-                DataStorageChartRefreshEventRegister(DataStorageChartIsAutoRefresh);
             }
         }
 
@@ -70,42 +68,6 @@ namespace MeasureApp.ViewModel
             {
                 dataStorageChartAutoRefreshMinimumMilliSecond = value;
                 RaisePropertyChanged(() => DataStorageChartAutoRefreshMinimumMilliSecond);
-            }
-        }
-
-        /// <summary>
-        /// 注册图表自动刷新事件
-        /// </summary>
-        /// <param name="isAutoRefresh"></param>
-        public void DataStorageChartRefreshEventRegister(bool isAutoRefresh)
-        {
-            if (isAutoRefresh)
-                DataStorageInstance.OnSelectedDataChanged += DataStorageChartRefreshEvent;
-            else
-                DataStorageInstance.OnSelectedDataChanged -= DataStorageChartRefreshEvent;
-        }
-
-        /// <summary>
-        /// 上一次图表数据刷新时间
-        /// </summary>
-        public DateTime DataStorageChartLastRefreshTime = DateTime.Now;
-
-        /// <summary>
-        /// 图表数据刷新事件函数
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        public void DataStorageChartRefreshEvent(object sender, EventArgs e)
-        {
-            if ((DateTime.Now - DataStorageChartLastRefreshTime).TotalMilliseconds >= DataStorageChartAutoRefreshMinimumMilliSecond)
-            {
-                // TODO
-                Debug.WriteLine("Selected Data Changed.");
-                DataStorageChartLastRefreshTime = DateTime.Now;
-            }
-            else
-            {
-                Debug.WriteLine("Busy, Not Triggered.");
             }
         }
 

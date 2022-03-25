@@ -79,6 +79,6 @@
                 </ListView.GroupStyle>
             </ListView>
         </Grid>
-        <view:EChartsLine Margin="308,20,10,10" Data="{Binding ChartData,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"/>
+        <!--<view:EChartsLine Margin="308,20,10,10" Data="{Binding ChartData,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"/>-->
     </Grid>
 </Page>
