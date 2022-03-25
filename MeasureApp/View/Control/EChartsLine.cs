@@ -1,8 +1,10 @@
 ﻿using MeasureApp.Model;
+using MeasureApp.Model.Common;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -17,7 +19,7 @@ namespace MeasureApp.View.Control
 {
     public class EChartsLine : WebView2
     {
-        public static readonly DependencyProperty DataYProperty = DependencyProperty.Register("DataY", typeof(IEnumerable<decimal>), typeof(EChartsLine), new PropertyMetadata(null, DataChangedCallback));
+        public static readonly DependencyProperty DataYProperty = DependencyProperty.Register("DataY", typeof(ObservableCollection<decimal>), typeof(EChartsLine), new PropertyMetadata(null, DataChangedCallback));
 
         public static readonly DependencyProperty IsAutoUpdateProperty = DependencyProperty.Register("IsAutoUpdate", typeof(bool), typeof(EChartsLine), new PropertyMetadata(true));
 
@@ -26,7 +28,7 @@ namespace MeasureApp.View.Control
         /// <summary>
         /// Y轴数据值
         /// </summary>
-        public IEnumerable<decimal> DataY
+        public ObservableCollection<decimal> DataY
         {
             set
             {
@@ -34,9 +36,10 @@ namespace MeasureApp.View.Control
             }
             get
             {
-                return (IEnumerable<decimal>)GetValue(DataYProperty);
+                return (ObservableCollection<decimal>)GetValue(DataYProperty);
             }
         }
+
         /// <summary>
         /// 图标是否自动刷新, 默认值true
         /// </summary>
@@ -51,6 +54,7 @@ namespace MeasureApp.View.Control
                 return (bool)GetValue(IsAutoUpdateProperty);
             }
         }
+
         /// <summary>
         /// 图表自动刷新最小触发时间, 默认值1000毫秒
         /// </summary>
@@ -75,34 +79,34 @@ namespace MeasureApp.View.Control
 
         private static void DataChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            ((EChartsLine)d).DataChangedCallback(e.NewValue as IEnumerable<decimal>, e.OldValue as IEnumerable<decimal>);
+            ((EChartsLine)d).DataChangedCallback(e.NewValue as ObservableCollection<decimal>, e.OldValue as ObservableCollection<decimal>);
         }
 
-        private void DataChangedCallback(IEnumerable<decimal> newvalue, IEnumerable<decimal> oldvalue)
+        private void DataChangedCallback(ObservableCollection<decimal> newvalue, ObservableCollection<decimal> oldvalue)
         {
-            //if (oldvalue != null)
-            //    oldvalue.CollectionChanged -= Changed;
-            //if (newvalue != null)
-            //    newvalue.CollectionChanged += Changed;
-
-            if (IsAutoUpdate)
-                if ((DateTime.Now - dataStorageChartLastRefreshTime).TotalMilliseconds >= MinimumTriggerTime)
-                {
-                    // TODO
-                    Debug.WriteLine("Selected Data Changed.");
-                    dataStorageChartLastRefreshTime = DateTime.Now;
-                    Debug.WriteLine(System.Windows.Media.RenderCapability.Tier>>16);
-                    UpdateChart();
-                }
-                else
-                {
-                    Debug.WriteLine("Busy, Not Triggered.");
-                }
+            if (oldvalue != null)
+                oldvalue.CollectionChanged -= Changed;
+            if (newvalue != null)
+                newvalue.CollectionChanged += Changed;
         }
 
         private void Changed(object sender, NotifyCollectionChangedEventArgs e)
         {
-            UpdateChart();
+            Dispatcher.Invoke(() =>
+            {
+                if (IsAutoUpdate)
+                    if ((DateTime.Now - dataStorageChartLastRefreshTime).TotalMilliseconds >= MinimumTriggerTime)
+                    {
+                        // TODO
+                        Debug.WriteLine("Selected Data Changed.");
+                        dataStorageChartLastRefreshTime = DateTime.Now;
+                        UpdateChart();
+                    }
+                    else
+                    {
+                        Debug.WriteLine("Busy, Not Triggered.");
+                    }
+            });
         }
 
         private void UpdateChart()

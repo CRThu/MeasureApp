@@ -233,5 +233,4 @@ namespace MeasureApp.ViewModel
                 return (decimal?)decimal.Parse(s, culture);
         }
     }
-
 }

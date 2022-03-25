@@ -2,7 +2,6 @@
 using MeasureApp.ViewModel;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -23,8 +22,8 @@ namespace MeasureApp.Model
         // sender为key
         public event EventHandler OnDataChanged;
 
-        private Dictionary<string, ConcurrentRangeBag<decimal>> data = new();
-        private Dictionary<string, ConcurrentRangeBag<decimal>> Data
+        private Dictionary<string, ObservableRangeCollection<decimal>> data = new();
+        private Dictionary<string, ObservableRangeCollection<decimal>> Data
         {
             get => data;
             set
@@ -67,14 +66,13 @@ namespace MeasureApp.Model
             }
         }
 
-        public decimal[] SelectedData
+        public IEnumerable<decimal> SelectedData
         {
             get
             {
                 if (selectedKey != null)
-                    return GetValues(SelectedKey).ToArray();
-                else
-                    return null;
+                    return Data[selectedKey];
+                return null;
             }
             set
             {
@@ -115,9 +113,9 @@ namespace MeasureApp.Model
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    //object locker = new();
-                    Data.Add(key, new ConcurrentRangeBag<decimal>());
-                    //BindingOperations.EnableCollectionSynchronization(Data[key], locker);
+                    object locker = new();
+                    Data.Add(key, new ObservableRangeCollection<decimal>());
+                    BindingOperations.EnableCollectionSynchronization(Data[key], locker);
                     RaisePropertyChanged(() => Keys);
                 });
                 OnKeysChanged?.Invoke(this, EventArgs.Empty);
