@@ -32,6 +32,8 @@ namespace MeasureApp.Model
             }
         }
 
+        private Dictionary<string, object> dataLock = new();
+
         public decimal[] this[string key]
         {
             get
@@ -116,6 +118,7 @@ namespace MeasureApp.Model
                     object locker = new();
                     Data.Add(key, new ObservableRangeCollection<decimal>());
                     BindingOperations.EnableCollectionSynchronization(Data[key], locker);
+                    dataLock.Add(key, new object());
                     RaisePropertyChanged(() => Keys);
                 });
                 OnKeysChanged?.Invoke(this, EventArgs.Empty);
@@ -126,7 +129,9 @@ namespace MeasureApp.Model
         {
             if (Data.ContainsKey(key))
             {
-                Data.Remove(key);
+                lock (dataLock[key])
+                    Data.Remove(key);
+                dataLock.Remove(key);
                 OnKeysChanged?.Invoke(this, EventArgs.Empty);
             }
         }
@@ -136,7 +141,8 @@ namespace MeasureApp.Model
         {
             if (!Data.ContainsKey(key))
                 AddKey(key);
-            Data[key].Add(value);
+            lock (dataLock[key])
+                Data[key].Add(value);
             OnDataChanged?.Invoke(key, EventArgs.Empty);
         }
 
@@ -149,7 +155,8 @@ namespace MeasureApp.Model
         {
             if (!Data.ContainsKey(key))
                 AddKey(key);
-            Data[key].AddRange(values);
+            lock (dataLock[key])
+                Data[key].AddRange(values);
             OnDataChanged?.Invoke(key, EventArgs.Empty);
         }
 
@@ -162,7 +169,8 @@ namespace MeasureApp.Model
         {
             if (!Data.ContainsKey(key))
                 AddKey(key);
-            Data[key].Clear();
+            lock (dataLock[key])
+                Data[key].Clear();
             OnDataChanged?.Invoke(key, EventArgs.Empty);
         }
 
@@ -170,8 +178,11 @@ namespace MeasureApp.Model
         {
             if (!Data.ContainsKey(key))
                 AddKey(key);
-            Data[key].Clear();
-            Data[key].AddRange(values);
+            lock (dataLock[key])
+            {
+                Data[key].Clear();
+                Data[key].AddRange(values);
+            }
             OnDataChanged?.Invoke(key, EventArgs.Empty);
         }
 

@@ -13,6 +13,7 @@ using System.Windows;
 using System.Windows.Controls;
 using MeasureApp.Model.Common;
 using MeasureApp.ViewModel.Common;
+using System.Threading;
 
 namespace MeasureApp.ViewModel
 {
@@ -43,7 +44,7 @@ namespace MeasureApp.ViewModel
             }
         }
 
-        private bool dataStorageChartIsAutoRefresh = false;
+        private bool dataStorageChartIsAutoRefresh = true;
         /// <summary>
         /// 图表自动刷新选项框绑定
         /// </summary>
@@ -57,7 +58,7 @@ namespace MeasureApp.ViewModel
             }
         }
 
-        private int dataStorageChartAutoRefreshMinimumMilliSecond = 1000;
+        private int dataStorageChartAutoRefreshMinimumMilliSecond = 500;
         /// <summary>
         /// 图表自动刷新最小触发时间绑定
         /// </summary>
@@ -253,16 +254,16 @@ namespace MeasureApp.ViewModel
                     else
                     {
                         List<Task> tasksq = new();
-                        for (int t = 0; t < 100 * DataStorageInstance.Keys.Length; t++)
+                        for (int t = 0; t < 10 * DataStorageInstance.Keys.Length; t++)
                             tasksq.Add(new Task((x) =>
                             {
                                 for (int i = 0; i < count; i++)
                                 {
                                     DataStorageInstance.AddValue(DataStorageInstance.Keys[(int)x], i + random.NextDouble() - 0.5);
-                                    Task.Delay(1);
+                                    Thread.Sleep(100);
                                 }
                             }
-                            , (int)(t / 100.0)));
+                            , (int)(t / 10.0)));
                         foreach (Task t in tasksq)
                             t.Start();
                     }
@@ -274,28 +275,16 @@ namespace MeasureApp.ViewModel
             }
         }
 
-        private CommandBase dataStorageChartManualRefreshEvent;
-        public CommandBase DataStorageChartManualRefreshEvent
+        public Action UpdateChartAction { get; set; }
+
+        public void UpdateChart()
         {
-            get
-            {
-                if (dataStorageChartManualRefreshEvent == null)
-                {
-                    dataStorageChartManualRefreshEvent = new CommandBase(new Action<object>(param =>
-                    {
-                        try
-                        {
-                            var y = DataStorageInstance.SelectedData.Select(x => (double)x);
-                            ECL.SetData(y);
-                        }
-                        catch (Exception ex)
-                        {
-                            _ = MessageBox.Show(ex.ToString());
-                        }
-                    }));
-                }
-                return dataStorageChartManualRefreshEvent;
-            }
+            UpdateChartAction.Invoke();
+        }
+
+        public void DataStorageChartManualRefresh()
+        {
+            UpdateChart();
         }
 
         // CommandBase
@@ -416,5 +405,19 @@ namespace MeasureApp.ViewModel
                 return dataStorageAddTestValueMultiThreadEvent;
             }
         }
+
+        private CommandBase dataStorageChartManualRefreshEvent;
+        public CommandBase DataStorageChartManualRefreshEvent
+        {
+            get
+            {
+                if (dataStorageChartManualRefreshEvent == null)
+                {
+                    dataStorageChartManualRefreshEvent = new CommandBase(new Action<object>(param => DataStorageChartManualRefresh()));
+                }
+                return dataStorageChartManualRefreshEvent;
+            }
+        }
+
     }
 }

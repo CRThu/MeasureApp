@@ -34,7 +34,11 @@
                     </TabItem>
                     <TabItem Header="图形">
                         <Grid Background="#FFE5E5E5">
-                            <view:EChartsLine Margin="3,3,3,3" DataY="{Binding DataStorageInstance.SelectedData, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            <view:EChartsLine Margin="3,3,3,3" DataY="{Binding DataStorageInstance.SelectedData, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsAutoUpdate="{Binding DataStorageChartIsAutoRefresh}" MinimumTriggerTime="{Binding DataStorageChartAutoRefreshMinimumMilliSecond}">
+                                <i:Interaction.Behaviors>
+                                    <vmc:InvokeMethodBehavior MethodName="UpdateChart" InvokeMethodAction="{Binding UpdateChartAction,Mode=OneWayToSource}"/>
+                                </i:Interaction.Behaviors>
+                            </view:EChartsLine>
                         </Grid>
                     </TabItem>
                 </TabControl>
@@ -124,10 +128,10 @@
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                 </Button>
-                <Button Content="Nk*100T*1000" HorizontalAlignment="Left" Margin="10,451,0,0" VerticalAlignment="Top" Width="99" Height="32">
+                <Button Content="Nk*10T*100(1S)" HorizontalAlignment="Left" Margin="10,451,0,0" VerticalAlignment="Top" Width="99" Height="32">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="Click">
-                            <vmc:EventCommandBase Command="{Binding DataStorageAddTestValueMultiThreadEvent}" CommandParameter="1000"/>
+                            <vmc:EventCommandBase Command="{Binding DataStorageAddTestValueMultiThreadEvent}" CommandParameter="100"/>
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                 </Button>
@@ -142,7 +146,7 @@
                 </Button>
                 <CheckBox Content="自动刷新" IsChecked="{Binding DataStorageChartIsAutoRefresh}" HorizontalAlignment="Left" Margin="115,314,0,0" VerticalAlignment="Top"/>
                 <TextBlock Text="最小触发时间:" HorizontalAlignment="Left" Margin="11,349,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-                <TextBox Text="{Binding DataStorageChartAutoRefreshMinimumMilliSecond}" HorizontalAlignment="Left" Margin="91,348,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="62"/>
+                <TextBox Text="{Binding DataStorageChartAutoRefreshMinimumMilliSecond,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="91,348,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="62"/>
                 <TextBlock Text="毫秒" HorizontalAlignment="Left" Margin="158,349,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
             </Grid>
         </GroupBox>

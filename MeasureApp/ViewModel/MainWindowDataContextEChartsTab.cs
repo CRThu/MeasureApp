@@ -19,8 +19,8 @@ namespace MeasureApp.ViewModel
     public partial class MainWindowDataContext : NotificationObjectBase
     {
         // ECharts数据绑定
-        private EChartsLineData chartData = new();
-        public EChartsLineData ChartData
+        private ObservableRangeCollection<decimal> chartData = new();
+        public ObservableRangeCollection<decimal> ChartData
         {
             get => chartData;
             set
@@ -120,15 +120,20 @@ namespace MeasureApp.ViewModel
                 foreach (var info in fftAnaylsisResult.sgnInfo)
                     FftAnalysisReports.Add(new FftAnalysisReport("信号", info.Key, $"{info.Value.v1:F3} {info.Value.s1}", $"{info.Value.v2:F3} {info.Value.s2}"));
 
-                ChartData.SetSampling(FftAnalysisPropertyConfig.IsSampling || FftAnalysisPropertyConfig.FftN >= FftAnalysisPropertyConfig.AutoSamplingOnDataLength);
-                ChartData.ClearData();
+                // TODO
+                //ChartData.SetSampling(FftAnalysisPropertyConfig.IsSampling || FftAnalysisPropertyConfig.FftN >= FftAnalysisPropertyConfig.AutoSamplingOnDataLength);
+                //ChartData.ClearData();
+                MessageBox.Show("Warning: DataX in ECharts is not implemented.");
+                ChartData.Clear();
                 switch ((string)param)
                 {
                     case "0":
-                        ChartData.AddData(fftAnaylsisResult.t, fftAnaylsisResult.v);
+                        ChartData.AddRange(fftAnaylsisResult.v.Select(x=>(decimal)x));
+                        //ChartData.AddData(fftAnaylsisResult.t, fftAnaylsisResult.v);
                         break;
                     case "1":
-                        ChartData.AddData(fftAnaylsisResult.f, fftAnaylsisResult.p);
+                        ChartData.AddRange(fftAnaylsisResult.p.Select(x => (decimal)x));
+                        //ChartData.AddData(fftAnaylsisResult.f, fftAnaylsisResult.p);
                         break;
                     default:
                         throw new NotImplementedException();

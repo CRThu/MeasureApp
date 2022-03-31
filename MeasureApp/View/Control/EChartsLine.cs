@@ -88,6 +88,7 @@ namespace MeasureApp.View.Control
                 oldvalue.CollectionChanged -= Changed;
             if (newvalue != null)
                 newvalue.CollectionChanged += Changed;
+            Changed(null, null);
         }
 
         private void Changed(object sender, NotifyCollectionChangedEventArgs e)
@@ -109,7 +110,7 @@ namespace MeasureApp.View.Control
             });
         }
 
-        private void UpdateChart()
+        public void UpdateChart()
         {
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start(); //  开始监视代码运行时间
