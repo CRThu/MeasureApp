@@ -51,5 +51,19 @@
                 </Button>
             </Grid>
         </GroupBox>
+
+        <GroupBox Header="遍历脚本" HorizontalAlignment="Left" VerticalAlignment="Top" Height="200" Width="500" Margin="10,208,0,0">
+            <Grid>
+                <TextBox Text="{Binding SpPktCommTabForEachStatement,UpdateSourceTrigger=PropertyChanged}" Height="20" Width="200" Margin="44,10,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                <TextBlock Text="{Binding SpPktCommTabForEachCount,StringFormat=[{0}]}" HorizontalAlignment="Left" Margin="257,12,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                <Button Content="Send" HorizontalAlignment="Left" Margin="389,6,0,0" VerticalAlignment="Top" Width="80">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Click">
+                            <vmc:EventCommandBase Command="{Binding }" CommandParameter="word"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </Button>
+            </Grid>
+        </GroupBox>
     </Grid>
 </Page>
