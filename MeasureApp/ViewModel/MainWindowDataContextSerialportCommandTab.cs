@@ -343,25 +343,22 @@ namespace MeasureApp.ViewModel
                     case "MEASURE":
                         // <measure/>
                         M3458AManualMeasureText = "Measuring...";
-                        _ = Task.Run(() =>
+                        if (Measure3458AInstance.IsOpen)
                         {
-                            if (Measure3458AInstance.IsOpen)
+                            try
                             {
-                                try
-                                {
-                                    M3458AManualMeasureText = Measure3458AInstance.MeasureDCV(-1, -1).ToString();
-                                    DataStorageInstance.AddValue(Key3458AString, Convert.ToDecimal(M3458AManualMeasureText));
-                                }
-                                catch (Exception ex)
-                                {
-                                    _ = MessageBox.Show(ex.ToString());
-                                }
+                                M3458AManualMeasureText = Measure3458AInstance.MeasureDCV(-1, -1).ToString();
+                                DataStorageInstance.AddValue(Key3458AString, Convert.ToDecimal(M3458AManualMeasureText));
                             }
-                            else
+                            catch (Exception ex)
                             {
-                                throw new InvalidOperationException("GPIB(3458A) is not open.");
+                                _ = MessageBox.Show(ex.ToString());
                             }
-                        });
+                        }
+                        else
+                        {
+                            throw new InvalidOperationException("GPIB(3458A) is not open.");
+                        }
                         break;
                     default:
                         throw new FormatException($"Unknown Command: {code}");
