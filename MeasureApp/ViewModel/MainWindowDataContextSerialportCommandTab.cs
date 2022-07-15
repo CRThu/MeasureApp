@@ -182,6 +182,48 @@ namespace MeasureApp.ViewModel
             }
         }
 
+        /// <summary>
+        /// 脚本寄存器字典
+        /// </summary>
+        private ObservableDictionary<string, int> serialportCommandScriptVarDict = new();
+        public ObservableDictionary<string, int> SerialportCommandScriptVarDict
+        {
+            get => serialportCommandScriptVarDict;
+            set
+            {
+                serialportCommandScriptVarDict = value;
+                RaisePropertyChanged(() => SerialportCommandScriptVarDict);
+            }
+        }
+
+        /// <summary>
+        /// 脚本For信息栈字典
+        /// 0|
+        /// 1|for(A)
+        /// 2|    for(B)
+        /// 3|        for(C)
+        /// 4|        ...
+        /// 5|        forend(C)
+        /// 6|    forend(B)
+        /// 7|forend(A)
+        /// 8|
+        /// For信息栈内存放为
+        /// |0|1|2|3|4|5|6|7|8|
+        /// |-|A|A|A|A|A|A|A|-|
+        /// |-|-|B|B|B|B|B|-|-|
+        /// |-|-|-|C|C|C|-|-|-|
+        /// </summary>
+        private ObservableCollection<CommandScriptForStatementInfo> serialportCommandScriptForStack = new();
+        public ObservableCollection<CommandScriptForStatementInfo> SerialportCommandScriptForStack
+        {
+            get => serialportCommandScriptForStack;
+            set
+            {
+                serialportCommandScriptForStack = value;
+                RaisePropertyChanged(() => SerialportCommandScriptForStack);
+            }
+        }
+
         // 加载预设指令函数
         public void SerialPortLoadPresetCommandsFromJson(string jsonPath)
         {
@@ -347,7 +389,7 @@ namespace MeasureApp.ViewModel
                         {
                             try
                             {
-                                M3458AManualMeasureText = Measure3458AInstance.MeasureDCV(-1, -1).ToString();
+                                M3458AManualMeasureText = Measure3458AInstance.ReadDecimal().ToString();
                                 DataStorageInstance.AddValue(Key3458AString, Convert.ToDecimal(M3458AManualMeasureText));
                             }
                             catch (Exception ex)
@@ -360,17 +402,121 @@ namespace MeasureApp.ViewModel
                             throw new InvalidOperationException("GPIB(3458A) is not open.");
                         }
                         break;
+                    case "SETVAR":
+                        // <setvar key="..." val="..."/>
+                        if (TagAttrs.ContainsKey("key") && TagAttrs.ContainsKey("val"))
+                        {
+                            SerialportCommandScriptVarDict[TagAttrs["key"]] = Convert.ToInt32(TagAttrs["val"]);
+                        }
+                        else
+                        {
+                            throw new InvalidOperationException("SETVAR do not contain key or value attribute.");
+                        }
+                        break;
+                    case "GOTO":
+                        // <goto line="..."/>
+                        if (TagAttrs.ContainsKey("line"))
+                        {
+                            int gotoLine = Convert.ToInt32(TagAttrs["line"]);
+                            SerialPortCommandScriptGotoLinePointer(gotoLine);
+                        }
+                        else
+                        {
+                            throw new InvalidOperationException("GOTO do not contain line attribute.");
+                        }
+                        break;
+                    case "FOR":
+                        if (SerialportCommandScriptForStack.Count == 1)
+                            Console.WriteLine($"EndForPointer:" + SerialportCommandScriptForStack[0].EndForPointer);
+                        // <for var="..." begin="..." end="..." step="..."/>
+                        // var add from begin to end, begin < end
+                        // default: var = FOR_ITERATOR
+                        // default: Step = 1
+                        // type
+                        // var:string
+                        // begin:int32
+                        // end:int32
+                        // step:int32
+
+                        /*
+A;
+<for var="i" begin="1" end="2" step="1"/>
+<for var="j" begin="1" end="2" step="1"/>
+REGW;{i};
+<forend/>
+<forend/>
+B;
+                         */
+                        if (TagAttrs.ContainsKey("begin") && TagAttrs.ContainsKey("end"))
+                        {
+                            string forVarName = TagAttrs.ContainsKey("var") ? TagAttrs["var"] : "FOR_ITERATOR";
+                            int begin = Convert.ToInt32(TagAttrs["begin"]);
+                            int end = Convert.ToInt32(TagAttrs["end"]);
+                            int step = Convert.ToInt32(TagAttrs.ContainsKey("step") ? TagAttrs["step"] : "1");
+
+                            // ForStackDict: FOR[VAR]
+                            int currentLine = SerialPortCommandScriptGetCurrentLinePointer();
+                            // 第一次进入此for循环
+                            if (SerialportCommandScriptForStack.Where(l => l.ForPointer == currentLine).Count() == 0)
+                            {
+                                SerialportCommandScriptForStack.Add(new CommandScriptForStatementInfo()
+                                {
+                                    ForPointer = currentLine,
+                                    EndForPointer = -1,
+                                    Var = forVarName,
+                                    Begin = begin,
+                                    End = end,
+                                    Step = step,
+                                });
+                                SerialportCommandScriptVarDict[forVarName] = begin;
+                            }
+                            // 循环状态
+                            if (SerialportCommandScriptVarDict[forVarName] > end)
+                            {
+                                // 循环判断语句为false
+                                SerialPortCommandScriptGotoLinePointer(SerialportCommandScriptForStack[^1].EndForPointer + 1);
+                                SerialportCommandScriptForStack.RemoveAt(SerialportCommandScriptForStack.Count - 1);
+                            }
+                        }
+                        else
+                        {
+                            throw new InvalidOperationException("FOR do not contain key or value attribute.");
+                        }
+                        break;
+                    case "FOREND":
+                        // <forend/>
+                        // 自增
+                        var getForInfoFromStack = SerialportCommandScriptForStack[^1];
+                        // 若第一次运行至forend则保存endfor指针
+                        SerialportCommandScriptVarDict[getForInfoFromStack.Var] += getForInfoFromStack.Step;
+                        SerialPortCommandScriptGotoLinePointer(getForInfoFromStack.ForPointer);
+                        break;
                     default:
                         throw new FormatException($"Unknown Command: {code}");
                 }
             }
             else
             {
+                // TODO REGW;{i};{j};
+
                 // Debug.WriteLine($"[{SerialportCommandPortNameSelectedValue}]:{code}");
                 SerialPortsInstance.WriteString(SerialportCommandPortNameSelectedValue, code);
             }
 
             return SerialPortScriptRunStatus.Executed;
+        }
+
+        // 获取本行行数
+        public int SerialPortCommandScriptGetCurrentLinePointer()
+        {
+            return SerialportCommandScriptCurruntLineCursor;
+        }
+
+
+        // 设置跳转行
+        public void SerialPortCommandScriptGotoLinePointer(int line)
+        {
+            SerialportCommandScriptCurruntLineCursor = line - 1;
         }
 
         // 获取本行脚本
@@ -757,5 +903,36 @@ namespace MeasureApp.ViewModel
                 return serialPortCommandScriptRunEvent;
             }
         }
+    }
+
+    /// <summary>
+    /// 脚本For语句栈信息存储
+    /// </summary>
+    public class CommandScriptForStatementInfo
+    {
+        /// <summary>
+        /// For 语句开始行地址
+        /// </summary>
+        public int ForPointer { get; set; }
+        /// <summary>
+        /// For语句结束行地址
+        /// </summary>
+        public int EndForPointer { get; set; }
+        /// <summary>
+        /// For循环变量名
+        /// </summary>
+        public string Var { get; set; }
+        /// <summary>
+        /// 初始值
+        /// </summary>
+        public int Begin { get; set; }
+        /// <summary>
+        /// 结束值
+        /// </summary>
+        public int End { get; set; }
+        /// <summary>
+        /// 自增值
+        /// </summary>
+        public int Step { get; set; }
     }
 }
