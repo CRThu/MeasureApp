@@ -426,8 +426,6 @@ namespace MeasureApp.ViewModel
                         }
                         break;
                     case "FOR":
-                        if (SerialportCommandScriptForStack.Count == 1)
-                            Console.WriteLine($"EndForPointer:" + SerialportCommandScriptForStack[0].EndForPointer);
                         // <for var="..." begin="..." end="..." step="..."/>
                         // var add from begin to end, begin < end
                         // default: var = FOR_ITERATOR
@@ -441,8 +439,8 @@ namespace MeasureApp.ViewModel
                         /*
 A;
 <for var="i" begin="1" end="2" step="1"/>
-<for var="j" begin="1" end="2" step="1"/>
-REGW;{i};
+<for var="j" begin="1" end="3" step="1"/>
+REGW;{i:X};{j:D};
 <forend/>
 <forend/>
 B;
@@ -487,8 +485,10 @@ B;
                         // <forend/>
                         // 自增
                         var getForInfoFromStack = SerialportCommandScriptForStack[^1];
-                        // 若第一次运行至forend则保存endfor指针
-                        SerialportCommandScriptVarDict[getForInfoFromStack.Var] += getForInfoFromStack.Step;
+                        if (getForInfoFromStack.EndForPointer == -1)
+                            getForInfoFromStack.EndForPointer = SerialPortCommandScriptGetCurrentLinePointer();
+                            // 若第一次运行至forend则保存endfor指针
+                            SerialportCommandScriptVarDict[getForInfoFromStack.Var] += getForInfoFromStack.Step;
                         SerialPortCommandScriptGotoLinePointer(getForInfoFromStack.ForPointer);
                         break;
                     default:
@@ -497,10 +497,67 @@ B;
             }
             else
             {
-                // TODO REGW;{i};{j};
+                try
+                {
+                    /*
+<setvar key="i" val="255"/>
+<setvar key="j" val="123"/>
+REGW;{i:X};{j:D};
 
-                // Debug.WriteLine($"[{SerialportCommandPortNameSelectedValue}]:{code}");
-                SerialPortsInstance.WriteString(SerialportCommandPortNameSelectedValue, code);
+<setvar key="i" val="255"/>
+<setvar key="j" val="123"/>
+REGW;{i};{j};
+                     */
+
+                    // 语法解析 REGW;{i:X};{j:D};
+                    var leftSymbolIndexes = code.Select((item, index) => new { item, index }).Where(t => t.item == '{').Select(t => t.index).ToArray();
+                    var rightSymbolIndexes = code.Select((item, index) => new { item, index }).Where(t => t.item == '}').Select(t => t.index).ToArray();
+                    var symboIndexes = leftSymbolIndexes.Zip(rightSymbolIndexes).ToArray();
+                    List<string> splitStrs = new();
+                    List<int> splitStrsReplaceIndex = new();
+                    int splitStrsCursor = 0;
+                    // 将带转义代码分割并填入splitStrs,转义代码索引填入splitStrsReplaceIndex
+                    // REGW;{i:X};{j:D};
+                    for (int i = 0; i < symboIndexes.Length; i++)
+                    {
+                        splitStrs.Add(code[splitStrsCursor..symboIndexes[i].First]);
+                        splitStrs.Add(code[symboIndexes[i].First..(symboIndexes[i].Second + 1)]);
+                        splitStrsCursor = symboIndexes[i].Second + 1;
+                        splitStrsReplaceIndex.Add(splitStrs.Count - 1);
+                    }
+                    if (splitStrsCursor != code.Length)
+                        splitStrs.Add(code[splitStrsCursor..code.Length]);
+
+                    // {i:X} {j:D}
+                    for (int i = 0; i < splitStrsReplaceIndex.Count; i++)
+                    {
+                        string strNonSym = splitStrs[splitStrsReplaceIndex[i]].Replace("{", "").Replace("}", "");
+                        // [i,X] [j,D]
+                        string[] strSplit;
+                        if (strNonSym.Contains(":"))
+                            strSplit = strNonSym.Split(":");
+                        else
+                            strSplit = new string[2] { strNonSym, "X" };
+                        // 支持10进制(D)与16进制(X), 默认输出16进制
+                        splitStrs[splitStrsReplaceIndex[i]] = SerialportCommandScriptVarDict[strSplit[0]].ToString(strSplit[1]);
+                    }
+
+                    //Debug.WriteLine("-----");
+                    //Debug.WriteLine(string.Join('\n', splitStrs));
+                    //Debug.WriteLine("-----");
+                    //Debug.WriteLine(string.Join(',', splitStrsReplaceIndex));
+                    //Debug.WriteLine("-----");
+
+                    code = string.Concat(splitStrs);
+
+                    // 串口发送
+                    // Debug.WriteLine($"[{SerialportCommandPortNameSelectedValue}]:{code}");
+                    SerialPortsInstance.WriteString(SerialportCommandPortNameSelectedValue, code);
+                }
+                catch (Exception ex)
+                {
+                    _ = MessageBox.Show(ex.ToString());
+                }
             }
 
             return SerialPortScriptRunStatus.Executed;
