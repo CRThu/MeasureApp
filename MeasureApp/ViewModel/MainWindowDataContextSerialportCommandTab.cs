@@ -383,14 +383,24 @@ namespace MeasureApp.ViewModel
                         }
                         break;
                     case "MEASURE":
-                        // <measure/>
+                        // <measure key="..." mode="..."/>
+                        // default: Key = 3458A Data Storage
+                        // mode = DCI DCV <null>
+                        /*
+<measure key="Measure" mode="DCV"/>
+<measure key="Measure" mode="DCI"/>
+<measure key="Measure"/>
+                        */
+                        string measureKeyName = TagAttrs.ContainsKey("key") ? TagAttrs["key"] : Key3458AString;
+                        string measureCmd = TagAttrs.ContainsKey("mode") ? TagAttrs["mode"] : string.Empty;
                         M3458AManualMeasureText = "Measuring...";
                         if (Measure3458AInstance.IsOpen)
                         {
                             try
                             {
-                                M3458AManualMeasureText = Measure3458AInstance.ReadDecimal().ToString();
-                                DataStorageInstance.AddValue(Key3458AString, Convert.ToDecimal(M3458AManualMeasureText));
+                                decimal measureData = measureCmd == string.Empty ? Measure3458AInstance.ReadDecimal() : Measure3458AInstance.QueryDecimal(measureCmd);
+                                M3458AManualMeasureText = measureData.ToString();
+                                DataStorageInstance.AddValue(measureKeyName, measureData);
                             }
                             catch (Exception ex)
                             {
