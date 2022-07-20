@@ -27,11 +27,25 @@ namespace MeasureApp.Model.SerialPortScript
             Match match = Regex.Match(codeString, regexStr, RegexOptions.IgnoreCase);
             Attrs.Add("Tag", match.Groups["Tag"].Value);
             Debug.WriteLine($"Attrs: {match.Groups["Attrs"].Value}");
-            string[] attrsArray = match.Groups["Attrs"].Value.Trim().Replace("\"", "").Split(" =".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-            if (attrsArray.Length % 2 != 0)
-                throw new ArgumentException("Elements of attrsArray are not pairs.");
-            for (int i = 0; i < attrsArray.Length; i += 2)
-                Attrs.Add(attrsArray[i].ToLower(), attrsArray[i + 1]);
+
+            string attrsString = match.Groups["Attrs"].Value.Trim();
+            int attrsStringCursor = 0;
+            while (attrsStringCursor < attrsString.Length)
+            {
+                int index1 = attrsString.IndexOf('=', attrsStringCursor);
+                if (index1 < 0)
+                    break;
+                int index2 = attrsString.IndexOf('"', index1 + 1);
+                if (index2 < 0)
+                    break;
+                int index3 = attrsString.IndexOf('"', index2 + 1);
+                if (index3 < 0)
+                    break;
+                string attr = attrsString[attrsStringCursor..index1].Trim();
+                string value = attrsString[(index2+1)..index3].Trim();
+                Attrs.Add(attr, value);
+                attrsStringCursor = index3 + 1;
+            }
             return Attrs;
         }
     }

@@ -71,31 +71,6 @@ namespace MeasureApp.ViewModel
             }
         }
 
-        // 遍历语句
-        private string spPktCommTabForEachStatement = "STAT;{START:END:STEP};";
-        public string SpPktCommTabForEachStatement
-        {
-            get => spPktCommTabForEachStatement;
-            set
-            {
-                spPktCommTabForEachStatement = value;
-                RaisePropertyChanged(() => SpPktCommTabForEachStatement);
-                SpPktCommTabUpdateLoopCount(SpPktCommTabForEachStatement);
-            }
-        }
-
-        // 遍历次数
-        private int spPktCommTabForEachCount = 0;
-        public int SpPktCommTabForEachCount
-        {
-            get => spPktCommTabForEachCount;
-            set
-            {
-                spPktCommTabForEachCount = value;
-                RaisePropertyChanged(() => SpPktCommTabForEachCount);
-            }
-        }
-
         private ObservableCollection<string> spPktCommTabForEachGenerateStatments;
         public ObservableCollection<string> SpPktCommTabForEachGenerateStatments
         {
@@ -162,36 +137,6 @@ namespace MeasureApp.ViewModel
                 DataStorageInstance.AddValues(KeySerialPortString, ((dynamic[])dat).Select<dynamic, decimal>(x => Convert.ToDecimal(x)));
                 // TODO
                 MessageBox.Show("函数未验证, MainWindowDataContextSerialPortPacketTab.cs line127");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.ToString());
-            }
-        }
-
-        public void SpPktCommTabUpdateLoopCount(string statement)
-        {
-            try
-            {
-                int leftIndex = statement.IndexOf('{');
-                int rightIndex = statement.IndexOf('}');
-                if (leftIndex < 0 || rightIndex < 0 || leftIndex > rightIndex)
-                {
-                    SpPktCommTabForEachCount = 0;
-                    return;
-                }
-                string loopParamsStr = statement.Substring(leftIndex + 1, rightIndex - leftIndex - 1);
-                string[] loopParamsStrSplit = loopParamsStr.Split(':');
-                try
-                {
-                    int[] loopParams = loopParamsStrSplit.Select(x => Convert.ToInt32(x, 16)).ToArray();
-                    SpPktCommTabForEachCount = (int)((loopParams[1] - loopParams[0]) / (double)loopParams[2]) + 1;
-                    return;
-                }
-                catch (Exception)
-                {
-                    SpPktCommTabForEachCount = 0;
-                }
             }
             catch (Exception ex)
             {
