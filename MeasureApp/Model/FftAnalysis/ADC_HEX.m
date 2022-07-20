@@ -24,7 +24,7 @@ data=[data;m];         %将读出的数据存入data矩阵中
 end
 
 code = data';                           
-code =code(1:30000);
+code =code(1:16384);
 code_len = length(code);                            %波形数据点数目
 %code_len = 2000;                            %波形数据点数目
 %code = code /maxdata;                              %归一化

@@ -487,9 +487,23 @@ B;
                         var getForInfoFromStack = SerialportCommandScriptForStack[^1];
                         if (getForInfoFromStack.EndForPointer == -1)
                             getForInfoFromStack.EndForPointer = SerialPortCommandScriptGetCurrentLinePointer();
-                            // 若第一次运行至forend则保存endfor指针
-                            SerialportCommandScriptVarDict[getForInfoFromStack.Var] += getForInfoFromStack.Step;
+                        // 若第一次运行至forend则保存endfor指针
+                        SerialportCommandScriptVarDict[getForInfoFromStack.Var] += getForInfoFromStack.Step;
                         SerialPortCommandScriptGotoLinePointer(getForInfoFromStack.ForPointer);
+                        break;
+                    case "TRIM":
+                        // <trim key="..." target="..." retvar="..."/>
+                        // trim指令寻找datastorage的key数组中最接近target的目标值并返回index存入retvar名称的寄存器
+                        /*
+<trim key="keyX" target="2.5" retvar="i"/>
+REGW;01;{i:D};
+                         */
+                        string trimDataKey = TagAttrs["key"];
+                        decimal trimTargetValue = Convert.ToDecimal(TagAttrs["target"]);
+                        string trimReturnVar = TagAttrs["retvar"];
+                        IEnumerable<decimal> data = DataStorageInstance[trimDataKey];
+                        decimal closestValue = data.MinBy(x => Math.Abs(x - trimTargetValue));
+                        SerialportCommandScriptVarDict[trimReturnVar] = Array.IndexOf(data.ToArray(), closestValue);
                         break;
                     default:
                         throw new FormatException($"Unknown Command: {code}");

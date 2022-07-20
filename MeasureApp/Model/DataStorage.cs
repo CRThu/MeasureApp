@@ -34,11 +34,11 @@ namespace MeasureApp.Model
 
         private Dictionary<string, object> dataLock = new();
 
-        public decimal[] this[string key]
+        public IEnumerable<decimal> this[string key]
         {
             get
             {
-                return GetValues(key).ToArray();
+                return GetValues(key);
             }
             set
             {
