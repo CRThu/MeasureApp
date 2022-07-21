@@ -414,6 +414,7 @@ namespace MeasureApp.ViewModel
                         break;
                     case "SETVAR":
                         // <setvar key="..." val="..."/>
+                        // <setvar key="i" val="123"/>
                         if (TagAttrs.ContainsKey("key") && TagAttrs.ContainsKey("val"))
                         {
                             SerialportCommandScriptVarDict[TagAttrs["key"]] = Convert.ToInt32(TagAttrs["val"]);
@@ -854,6 +855,68 @@ REGW;{i};{j};
             }
         }
 
+        // 串口命令模块寄存器表加载
+        public void SerialPortCommandScriptRegisterLoad()
+        {
+            try
+            {
+                // Open File Dialog
+                OpenFileDialog openFileDialog = new()
+                {
+                    Title = "Open Json File...",
+                    Filter = "Json File|*.json",
+                    InitialDirectory = Properties.Settings.Default.DefaultDirectory
+                };
+                if (openFileDialog.ShowDialog() == true)
+                {
+                    Properties.Settings.Default.DefaultDirectory = Path.GetDirectoryName(openFileDialog.FileName);
+                    string json = File.ReadAllText(openFileDialog.FileName);
+                    var tempDic = JsonConvert.DeserializeObject<Dictionary<string, int>>(json, new JsonSerializerSettings() { FloatParseHandling = FloatParseHandling.Decimal });
+                    SerialportCommandScriptVarDict.Clear();
+                    foreach (var kv in tempDic)
+                    {
+                        SerialportCommandScriptVarDict.Add(kv.Key, kv.Value);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
+            }
+        }
+
+        // 串口命令模块寄存器表保存
+        public void SerialPortCommandScriptRegisterSave()
+        {
+            try
+            {
+                SaveFileDialog saveFileDialog = new()
+                {
+                    Title = "存储数据",
+                    FileName = $"DataStorage.{DataStorage.GenerateDateTimeNow()}.json",
+                    DefaultExt = ".json",
+                    Filter = "Json File|*.json",
+                    InitialDirectory = Properties.Settings.Default.DefaultDirectory
+                };
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    Properties.Settings.Default.DefaultDirectory = Path.GetDirectoryName(saveFileDialog.FileName);
+                    string json = JsonConvert.SerializeObject(SerialportCommandScriptVarDict, new JsonSerializerSettings() { FloatParseHandling = FloatParseHandling.Decimal });
+                    File.WriteAllText(saveFileDialog.FileName, json);
+                }
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
+            }
+        }
+
+        // 串口命令模块寄存器表清空
+        public void SerialPortCommandScriptRegisterClear()
+        {
+            SerialportCommandScriptVarDict.Clear();
+        }
+
         // CommandBase
         private CommandBase serialPortCommandSendEvent;
         public CommandBase SerialPortCommandSendEvent
@@ -984,6 +1047,46 @@ REGW;{i};{j};
                 return serialPortCommandScriptRunEvent;
             }
         }
+
+        private CommandBase serialPortCommandScriptRegisterLoadEvent;
+        public CommandBase SerialPortCommandScriptRegisterLoadEvent
+        {
+            get
+            {
+                if (serialPortCommandScriptRegisterLoadEvent == null)
+                {
+                    serialPortCommandScriptRegisterLoadEvent = new CommandBase(new Action<object>(param => SerialPortCommandScriptRegisterLoad()));
+                }
+                return serialPortCommandScriptRegisterLoadEvent;
+            }
+        }
+
+        private CommandBase serialPortCommandScriptRegisterSaveEvent;
+        public CommandBase SerialPortCommandScriptRegisterSaveEvent
+        {
+            get
+            {
+                if (serialPortCommandScriptRegisterSaveEvent == null)
+                {
+                    serialPortCommandScriptRegisterSaveEvent = new CommandBase(new Action<object>(param => SerialPortCommandScriptRegisterSave()));
+                }
+                return serialPortCommandScriptRegisterSaveEvent;
+            }
+        }
+
+        private CommandBase serialPortCommandScriptRegisterClearEvent;
+        public CommandBase SerialPortCommandScriptRegisterClearEvent
+        {
+            get
+            {
+                if (serialPortCommandScriptRegisterClearEvent == null)
+                {
+                    serialPortCommandScriptRegisterClearEvent = new CommandBase(new Action<object>(param => SerialPortCommandScriptRegisterClear()));
+                }
+                return serialPortCommandScriptRegisterClearEvent;
+            }
+        }
+
     }
 
     /// <summary>

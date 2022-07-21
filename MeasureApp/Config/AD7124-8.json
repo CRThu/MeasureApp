@@ -2,7 +2,7 @@
   {
     "GroupName": "寄存器页",
     "Name": "固定位宽页",
-    "Command": "REGFILE.FIXED;",
+    "Command": "REGFILE.FIXED;3;",
     "Description": ""
   },
   {
