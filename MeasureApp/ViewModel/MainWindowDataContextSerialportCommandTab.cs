@@ -358,9 +358,12 @@ namespace MeasureApp.ViewModel
                         MessageBox.Show(TagAttrs.ContainsKey("msg") ? TagAttrs["msg"] : "No Message.");
                         break;
                     case "WAIT":
-                        // <wait keyword="..." timeout="..." stop="..."/>
+                        // <wait keyword="..." timeout="..." stop="..." storekey="..."/>
                         // default: keyword="[COMMAND]" timeout="1000" stop="true"
-                        //MessageBox.Show(SerialPortLogger.IsLastLogContains("COM", "[COMMAND]") ? "[COMMAND]" : "Nothing");
+                        /*
+PA5.FREQ;
+<wait keyword="FREQ" timeout="1500" storekey="f"/>
+                         */
                         bool result = Utility.TimeoutCheck(Convert.ToInt32(TagAttrs.ContainsKey("timeout") ? TagAttrs["timeout"] : "1000"), () =>
                         {
                             try
@@ -380,6 +383,20 @@ namespace MeasureApp.ViewModel
                             MessageBox.Show($"{code}: Timeout.");
                             if (Convert.ToBoolean(TagAttrs.ContainsKey("stop") ? TagAttrs["stop"] : "true"))
                                 return SerialPortScriptRunStatus.Stopped;
+                        }
+                        else
+                        {
+                            // storekey
+                            if (TagAttrs.ContainsKey("storekey"))
+                            {
+                                SerialPortCommLogElement lastLogFromHost = SerialPortLogger.LogCollection.LastOrDefault(log => log.Host == "COM");
+                                if (lastLogFromHost is not null && ((string)lastLogFromHost.Message.ToString()).Contains(TagAttrs["keyword"], StringComparison.CurrentCultureIgnoreCase))
+                                {
+                                    string[] storeKeyStrs = ((string)lastLogFromHost.Message.ToString()).Split(':');
+                                    decimal storeKeyData = Convert.ToDecimal(storeKeyStrs[1].Trim());
+                                    DataStorageInstance.AddValue(TagAttrs["storekey"], storeKeyData);
+                                }
+                            }
                         }
                         break;
                     case "MEASURE":

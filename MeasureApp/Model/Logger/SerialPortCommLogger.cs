@@ -42,8 +42,9 @@ namespace MeasureApp.Model.Logger
 
         public bool IsLastLogContains(string host, string keyword)
         {
-            SerialPortCommLogElement lastLogFromHost = LogCollection.LastOrDefault(log => log.Host == host);
-            return lastLogFromHost is not null && ((string)lastLogFromHost.Message.ToString()).Contains(keyword, StringComparison.CurrentCultureIgnoreCase);
+            SerialPortCommLogElement lastLogFromHost = LogCollection.LastOrDefault();
+            //SerialPortCommLogElement lastLogFromHost = LogCollection.LastOrDefault(log => log.Host == host);
+            return lastLogFromHost.Host == host && lastLogFromHost is not null && ((string)lastLogFromHost.Message.ToString()).Contains(keyword, StringComparison.CurrentCultureIgnoreCase);
         }
 
         public void LoadKeywordFile(string keywordConfigFile)
