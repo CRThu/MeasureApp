@@ -412,6 +412,18 @@ namespace MeasureApp.ViewModel
                             throw new InvalidOperationException("GPIB(3458A) is not open.");
                         }
                         break;
+                    case "DELMEASURE":
+                        // <delmeasure key="..."/>
+                        if (TagAttrs.ContainsKey("key"))
+                        {
+                            if (DataStorageInstance.ContainsKey(TagAttrs["key"]))
+                                DataStorageInstance.RemoveKey(TagAttrs["key"]);
+                        }
+                        else
+                        {
+                            throw new InvalidOperationException("DELMEASURE do not contain key attribute.");
+                        }
+                        break;
                     case "SETVAR":
                         // <setvar key="..." val="..."/>
                         // <setvar key="i" val="123"/>
@@ -422,6 +434,18 @@ namespace MeasureApp.ViewModel
                         else
                         {
                             throw new InvalidOperationException("SETVAR do not contain key or value attribute.");
+                        }
+                        break;
+                    case "DELVAR":
+                        // <delvar key="..."/>
+                        if (TagAttrs.ContainsKey("key"))
+                        {
+                            if (SerialportCommandScriptVarDict.ContainsKey(TagAttrs["key"]))
+                                SerialportCommandScriptVarDict.Remove(TagAttrs["key"]);
+                        }
+                        else
+                        {
+                            throw new InvalidOperationException("DELVAR do not contain key attribute.");
                         }
                         break;
                     case "GOTO":
@@ -914,7 +938,14 @@ REGW;{i};{j};
         // 串口命令模块寄存器表清空
         public void SerialPortCommandScriptRegisterClear()
         {
-            SerialportCommandScriptVarDict.Clear();
+            try
+            {
+                SerialportCommandScriptVarDict.Clear();
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
+            }
         }
 
         // CommandBase

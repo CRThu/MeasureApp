@@ -136,6 +136,11 @@ namespace MeasureApp.Model
             }
         }
 
+        public bool ContainsKey(string key)
+        {
+            return Data.ContainsKey(key);
+        }
+
         // 数据操作方法
         public void AddValue(string key, decimal value)
         {
