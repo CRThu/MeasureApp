@@ -185,8 +185,8 @@ namespace MeasureApp.ViewModel
         /// <summary>
         /// 脚本寄存器字典
         /// </summary>
-        private ObservableDictionary<string, int> serialportCommandScriptVarDict = new();
-        public ObservableDictionary<string, int> SerialportCommandScriptVarDict
+        private ObservableDictionary<string, decimal> serialportCommandScriptVarDict = new();
+        public ObservableDictionary<string, decimal> SerialportCommandScriptVarDict
         {
             get => serialportCommandScriptVarDict;
             set
@@ -544,10 +544,10 @@ B;
                         SerialPortCommandScriptGotoLinePointer(getForInfoFromStack.ForPointer);
                         break;
                     case "TRIM":
-                        // <trim key="..." target="..." retvar="..."/>
+                        // <trim key="..." target="..." retvar="..." rettrimdata="..."/>
                         // trim指令寻找datastorage的key数组中最接近target的目标值并返回index存入retvar名称的寄存器
                         /*
-<trim key="keyX" target="2.5" retvar="i"/>
+<trim key="keyX" target="2.5" retvar="i" rettrimdata="x"/>
 REGW;01;{i:D};
                          */
                         string trimDataKey = TagAttrs["key"];
@@ -555,6 +555,8 @@ REGW;01;{i:D};
                         string trimReturnVar = TagAttrs["retvar"];
                         IEnumerable<decimal> data = DataStorageInstance[trimDataKey];
                         decimal closestValue = data.MinBy(x => Math.Abs(x - trimTargetValue));
+                        if (TagAttrs.ContainsKey("rettrimdata"))
+                            SerialportCommandScriptVarDict[TagAttrs["rettrimdata"]] = closestValue;
                         SerialportCommandScriptVarDict[trimReturnVar] = Array.IndexOf(data.ToArray(), closestValue);
                         break;
                     default:
@@ -605,7 +607,7 @@ REGW;{i};{j};
                         else
                             strSplit = new string[2] { strNonSym, "X" };
                         // 支持10进制(D)与16进制(X), 默认输出16进制
-                        splitStrs[splitStrsReplaceIndex[i]] = SerialportCommandScriptVarDict[strSplit[0]].ToString(strSplit[1]);
+                        splitStrs[splitStrsReplaceIndex[i]] = ((int)SerialportCommandScriptVarDict[strSplit[0]]).ToString(strSplit[1]);
                     }
 
                     //Debug.WriteLine("-----");
@@ -826,7 +828,7 @@ REGW;{i};{j};
                 OpenFileDialog openFileDialog = new()
                 {
                     Title = "Open Script File...",
-                    Filter = "Text File|*.txt|Task Code|*.task",
+                    Filter = "Text File|*.txt|Task Code|*.task|Markdown Code|*.md",
                     InitialDirectory = Properties.Settings.Default.DefaultDirectory
                 };
                 if (openFileDialog.ShowDialog() == true)
@@ -850,7 +852,7 @@ REGW;{i};{j};
                 SaveFileDialog saveFileDialog = new()
                 {
                     Title = "Save Script File...",
-                    Filter = "Text File|*.txt|Task Code|*.task",
+                    Filter = "Text File|*.txt|Task Code|*.task|Markdown Code|*.md",
                     InitialDirectory = Properties.Settings.Default.DefaultDirectory
                 };
                 if (saveFileDialog.ShowDialog() == true)
@@ -912,7 +914,7 @@ REGW;{i};{j};
                 {
                     Properties.Settings.Default.DefaultDirectory = Path.GetDirectoryName(openFileDialog.FileName);
                     string json = File.ReadAllText(openFileDialog.FileName);
-                    var tempDic = JsonConvert.DeserializeObject<Dictionary<string, int>>(json, new JsonSerializerSettings() { FloatParseHandling = FloatParseHandling.Decimal });
+                    var tempDic = JsonConvert.DeserializeObject<Dictionary<string, decimal>>(json, new JsonSerializerSettings() { FloatParseHandling = FloatParseHandling.Decimal });
                     SerialportCommandScriptVarDict.Clear();
                     foreach (var kv in tempDic)
                     {

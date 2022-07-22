@@ -115,27 +115,30 @@ namespace MeasureApp.View.Control
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start(); //  开始监视代码运行时间
 
-            lineData.SetData(DataY.Select(x => (double)x));
-            string jsons = lineData.ToJson();
-
-            string js = $"UpdateData({jsons});";
-
-            stopwatch.Stop(); //  停止监视
-            Debug.WriteLine($"Serialize:{stopwatch.ElapsedMilliseconds}ms, {js.Length}bytes.");
-
-            if (CoreWebView2 != null)
+            if (DataY != null)
             {
-                Task<string> execTask = this.CoreWebView2.ExecuteScriptAsync(js);
-                Task.Run(() =>
+                lineData.SetData(DataY.Select(x => (double)x));
+                string jsons = lineData.ToJson();
+
+                string js = $"UpdateData({jsons});";
+
+                stopwatch.Stop(); //  停止监视
+                Debug.WriteLine($"Serialize:{stopwatch.ElapsedMilliseconds}ms, {js.Length}bytes.");
+
+                if (CoreWebView2 != null)
                 {
-                    Stopwatch stopwatch = new Stopwatch();
-                    stopwatch.Start(); //  开始监视代码运行时间
+                    Task<string> execTask = this.CoreWebView2.ExecuteScriptAsync(js);
+                    Task.Run(() =>
+                    {
+                        Stopwatch stopwatch = new Stopwatch();
+                        stopwatch.Start(); //  开始监视代码运行时间
 
-                    execTask.Wait();
+                        execTask.Wait();
 
-                    stopwatch.Stop(); //  停止监视
-                    Debug.WriteLine($"ExecuteScriptAsync:{stopwatch.ElapsedMilliseconds}ms.");
-                });
+                        stopwatch.Stop(); //  停止监视
+                        Debug.WriteLine($"ExecuteScriptAsync:{stopwatch.ElapsedMilliseconds}ms.");
+                    });
+                }
             }
         }
 

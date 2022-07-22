@@ -70,5 +70,17 @@
     "Name": "内部增益校准",
     "Command": "REGM;1;2;4;6;",
     "Description": ""
+  },
+  {
+    "GroupName": "工作模式",
+    "Name": "系统失调校准",
+    "Command": "REGM;1;2;4;7;",
+    "Description": ""
+  },
+  {
+    "GroupName": "工作模式",
+    "Name": "系统增益校准",
+    "Command": "REGM;1;2;4;8;",
+    "Description": ""
   }
 ]

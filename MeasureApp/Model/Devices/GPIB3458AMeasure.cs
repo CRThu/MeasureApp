@@ -146,7 +146,20 @@ namespace MeasureApp.Model.Devices
 
         public static decimal ConvertNumber(string data)
         {
-            return Convert.ToDecimal(decimal.Parse(data, System.Globalization.NumberStyles.Float));
+            try
+            {
+                return Convert.ToDecimal(decimal.Parse(data, System.Globalization.NumberStyles.Float));
+            }
+            catch(OverflowException)
+            {
+                // Keysight 3458A User’s Guide, Page 146, Overload indication
+                return decimal.MaxValue;
+            }
+            catch(FormatException)
+            {
+                // Sometimes error: --4.559575826E+00
+                return decimal.MaxValue;
+            }
         }
 
         public void WaitForDataAvailable()

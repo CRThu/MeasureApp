@@ -10,6 +10,7 @@
       mc:Ignorable="d"
       Title="Multimeter3458AControlPage">
     <Page.Resources>
+        <viewmodel:M3458ADataOverflowConverter x:Key="M3458ADataOverflowConverter"/>
         <viewmodel:M3458ASyncMeasureButtonContentConverter x:Key="M3458ASyncMeasureButtonContentConverter"/>
     </Page.Resources>
     <Grid>
@@ -108,20 +109,20 @@
                 <TextBox Name="GuiConfigLogTextBox" Margin="10,257,9.8,10" TextWrapping="Wrap" Text="{Binding M3458ABasicConfigCommandLogText}"/>
             </Grid>
         </GroupBox>
-        <GroupBox Header="测量" HorizontalAlignment="Left" Margin="344,10,0,0" Width="405" Height="350" VerticalAlignment="Top">
+        <GroupBox Header="测量" HorizontalAlignment="Left" Margin="344,10,0,0" Width="488" Height="350" VerticalAlignment="Top">
             <Grid>
                 <Border VerticalAlignment="Top" Margin="10,10,10,0" Height="130" BorderBrush="Gray" BorderThickness="0.5" CornerRadius="3">
                     <Grid>
                         <TextBlock Text="自动测量电压" Margin="10,10,10,0" VerticalAlignment="Top"/>
-                        <TextBlock x:Name="SyncDCVDisplayTextBlock" Text="{Binding M3458ASyncMeasureText}" TextWrapping="Wrap" Margin="10,42,159,0" TextAlignment="Center" VerticalAlignment="Top" FontSize="24" Height="34"/>
-                        <Button x:Name="SyncDCVDisplayButton" Content="{Binding M3458AIsSyncMeasureOpen, Converter={StaticResource M3458ASyncMeasureButtonContentConverter}}" HorizontalAlignment="Left" Margin="218,30,0,0" VerticalAlignment="Top" Width="145" Height="57">
+                        <TextBlock x:Name="SyncDCVDisplayTextBlock" Text="{Binding M3458ASyncMeasureText, Converter={StaticResource M3458ADataOverflowConverter}}" TextWrapping="Wrap" Margin="10,44,159,0" TextAlignment="Center" VerticalAlignment="Top" FontSize="24" Height="34"/>
+                        <Button x:Name="SyncDCVDisplayButton" Content="{Binding M3458AIsSyncMeasureOpen, Converter={StaticResource M3458ASyncMeasureButtonContentConverter}}" HorizontalAlignment="Left" Margin="301,32,0,0" VerticalAlignment="Top" Width="145" Height="57">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="Click">
                                     <vmc:EventCommandBase Command="{Binding M3458ASyncMeasureEvent}" CommandParameter="{Binding ElementName=SyncDCVDisplayStorageCheckBox, Path=IsChecked}"/>
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </Button>
-                        <CheckBox Name="SyncDCVDisplayStorageCheckBox" Content="自动存储" HorizontalAlignment="Left" Margin="218,92,0,0" VerticalAlignment="Top"/>
+                        <CheckBox Name="SyncDCVDisplayStorageCheckBox" Content="自动存储" HorizontalAlignment="Left" Margin="301,94,0,0" VerticalAlignment="Top"/>
                     </Grid>
                 </Border>
 
@@ -146,15 +147,15 @@
                         <TextBlock Text="量程选择:" Margin="10,70,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="71"/>
                         <ComboBox x:Name="ManualReadDCVRangeComboBox" ItemsSource="{Binding M3458ASetRangeItems}" DisplayMemberPath="Value" SelectedValue="{Binding M3458AManualMeasureRangeSelectedValue}" SelectedValuePath="Key" HorizontalAlignment="Left" Margin="86,67,0,0" VerticalAlignment="Top" Width="79" Height="22"/>
                         <ComboBox x:Name="ManualReadDCVResComboBox" ItemsSource="{Binding M3458ASetResolutionItems}" DisplayMemberPath="Value" SelectedValue="{Binding M3458AManualMeasureResolutionSelectedValue}" SelectedValuePath="Key" HorizontalAlignment="Left" Margin="170,67,0,0" VerticalAlignment="Top" Width="79" Height="22"/>
-                        <TextBlock x:Name="ManualReadDCVTextBlock" Text="{Binding M3458AManualMeasureText}" TextWrapping="Wrap" Margin="10,98,159,0" TextAlignment="Center" VerticalAlignment="Top" FontSize="24" Height="34"/>
-                        <Button x:Name="ManualReadDCVButton" Content="手动读取电压" HorizontalAlignment="Left" Margin="218,94,0,0" VerticalAlignment="Top" Width="144" Height="41">
+                        <TextBlock x:Name="ManualReadDCVTextBlock" Text="{Binding M3458AManualMeasureText, Converter={StaticResource M3458ADataOverflowConverter}}" TextWrapping="Wrap" Margin="10,98,159,0" TextAlignment="Center" VerticalAlignment="Top" FontSize="24" Height="34"/>
+                        <Button x:Name="ManualReadDCVButton" Content="手动读取电压" HorizontalAlignment="Left" Margin="301,94,0,0" VerticalAlignment="Top" Width="144" Height="42">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="Click">
                                     <vmc:EventCommandBase Command="{Binding M3458AManualMeasureEvent}" CommandParameter="{Binding ElementName=ManualStorageDCVCheckBox, Path=IsChecked}"/>
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </Button>
-                        <CheckBox Name="ManualStorageDCVCheckBox" Content="自动存储" HorizontalAlignment="Left" Margin="218,140,0,0" VerticalAlignment="Top"/>
+                        <CheckBox Name="ManualStorageDCVCheckBox" Content="自动存储" HorizontalAlignment="Left" Margin="301,141,0,0" VerticalAlignment="Top"/>
                     </Grid>
                 </Border>
             </Grid>
