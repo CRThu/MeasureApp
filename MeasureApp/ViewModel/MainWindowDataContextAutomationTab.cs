@@ -105,7 +105,7 @@ namespace MeasureApp.ViewModel
         public bool IsAutomationCancelled => automationCancellationTokenSource.Token.IsCancellationRequested;
 
 
-        // 3458A 同步电压显示开启标志位
+        // 自动化模块是否运行标志
         private bool automationIsRun = false;
         public bool AutomationIsRun
 

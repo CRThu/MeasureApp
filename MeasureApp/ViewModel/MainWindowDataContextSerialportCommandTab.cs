@@ -196,6 +196,18 @@ namespace MeasureApp.ViewModel
             }
         }
 
+        // 串口脚本模块是否运行标志
+        private bool serialportCommandScriptIsRun = false;
+        public bool SerialportCommandScriptIsRun
+        {
+            get => serialportCommandScriptIsRun;
+            set
+            {
+                serialportCommandScriptIsRun = value;
+                RaisePropertyChanged(() => SerialportCommandScriptIsRun);
+            }
+        }
+
         /// <summary>
         /// 脚本For信息栈字典
         /// 0|
@@ -275,10 +287,15 @@ namespace MeasureApp.ViewModel
             timer.Elapsed += (sender, args) =>
             {
                 timer.Stop();
-                //Debug.WriteLine("TICK");
-                var isContinue = SerialPortCommandScriptRunAllByTick();
-                if (isContinue)
-                    timer.Start();
+                // TODO
+                // 若被停止则不再启动Timer
+                if (SerialportCommandScriptIsRun)
+                {
+                    //Debug.WriteLine("TICK");
+                    var isContinue = SerialPortCommandScriptRunAllByTick();
+                    if (isContinue)
+                        timer.Start();
+                }
             };
             timer.Start();
         }
@@ -828,7 +845,7 @@ REGW;{i};{j};
                 OpenFileDialog openFileDialog = new()
                 {
                     Title = "Open Script File...",
-                    Filter = "Text File|*.txt|Task Code|*.task|Markdown Code|*.md",
+                    Filter = "Code File|*.txt;*.task;*.md",
                     InitialDirectory = Properties.Settings.Default.DefaultDirectory
                 };
                 if (openFileDialog.ShowDialog() == true)
@@ -877,7 +894,13 @@ REGW;{i};{j};
                     switch (param as string)
                     {
                         case "Run":
-                            SerialPortCommandScriptRunAll();
+                            if (!SerialportCommandScriptIsRun)
+                            {
+                                SerialPortCommandScriptRunAll();
+                                SerialportCommandScriptIsRun = true;
+                            }
+                            else
+                                SerialportCommandScriptIsRun = false;
                             break;
                         case "RunOnce":
                             string line = SerialPortCommandScriptGetCurrentLine();

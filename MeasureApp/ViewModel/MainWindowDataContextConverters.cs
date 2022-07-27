@@ -247,4 +247,18 @@ namespace MeasureApp.ViewModel
                 return (decimal?)decimal.Parse(s, culture);
         }
     }
+
+    // 串口命令脚本运行/停止按钮文本
+    public class SerialportCommandScriptRunButtonConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return (bool)value ? "停止" : "运行";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }
