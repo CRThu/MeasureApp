@@ -435,6 +435,17 @@
                                 </Button>
                             </Grid>
                         </Grid>
+                        <Grid Margin="0,450,0,0">
+                            <TextBlock Text="For循环栈状态" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="3,3,0,0"/>
+                            <TextBlock Text="{Binding SerialportCommandScriptForStack.Count}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="100,3,0,0"/>
+                            <Button Content="复位" Margin="0,20,0,3" VerticalAlignment="Top" Height="28" HorizontalAlignment="Left" Width="60">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="Click">
+                                        <vmc:EventCommandBase Command="{Binding SerialPortCommandScriptForStackResetEvent}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </Button>
+                        </Grid>
                     </Grid>
                 </Grid>
             </TabItem>

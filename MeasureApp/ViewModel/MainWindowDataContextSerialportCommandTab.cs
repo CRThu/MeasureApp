@@ -287,14 +287,20 @@ namespace MeasureApp.ViewModel
             timer.Elapsed += (sender, args) =>
             {
                 timer.Stop();
-                // TODO
                 // 若被停止则不再启动Timer
                 if (SerialportCommandScriptIsRun)
                 {
                     //Debug.WriteLine("TICK");
                     var isContinue = SerialPortCommandScriptRunAllByTick();
                     if (isContinue)
+                    {
                         timer.Start();
+                    }
+                    else
+                    {
+                        // 停止
+                        SerialportCommandScriptIsRun = false;
+                    }
                 }
             };
             timer.Start();
@@ -990,6 +996,21 @@ REGW;{i};{j};
             }
         }
 
+        /// <summary>
+        /// For栈复位
+        /// </summary>
+        public void SerialPortCommandScriptForStackReset()
+        {
+            try
+            {
+                SerialportCommandScriptForStack.Clear();
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
+            }
+        }
+
         // CommandBase
         private CommandBase serialPortCommandSendEvent;
         public CommandBase SerialPortCommandSendEvent
@@ -1157,6 +1178,19 @@ REGW;{i};{j};
                     serialPortCommandScriptRegisterClearEvent = new CommandBase(new Action<object>(param => SerialPortCommandScriptRegisterClear()));
                 }
                 return serialPortCommandScriptRegisterClearEvent;
+            }
+        }
+
+        private CommandBase serialPortCommandScriptForStackResetEvent;
+        public CommandBase SerialPortCommandScriptForStackResetEvent
+        {
+            get
+            {
+                if (serialPortCommandScriptForStackResetEvent == null)
+                {
+                    serialPortCommandScriptForStackResetEvent = new CommandBase(new Action<object>(param => SerialPortCommandScriptForStackReset()));
+                }
+                return serialPortCommandScriptForStackResetEvent;
             }
         }
 
