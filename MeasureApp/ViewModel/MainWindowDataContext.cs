@@ -166,6 +166,11 @@ namespace MeasureApp.ViewModel
             }
         }
 
+        public static void CopyToClipBoard(object param)
+        {
+            Clipboard.SetText(param.ToString());
+        }
+
         // CommandBase
         private CommandBase mainWindowLoadedEvent;
         public CommandBase MainWindowLoadedEvent
@@ -203,6 +208,19 @@ namespace MeasureApp.ViewModel
                     dataGridLoadingRowAddRowIndexEvent = new CommandBase(new Action<object>(param => DataGridLoadingRowAddRowIndex(param)));
                 }
                 return dataGridLoadingRowAddRowIndexEvent;
+            }
+        }
+
+        private CommandBase copyToClipBoardEvent;
+        public CommandBase CopyToClipBoardEvent
+        {
+            get
+            {
+                if (copyToClipBoardEvent == null)
+                {
+                    copyToClipBoardEvent = new CommandBase(new Action<object>(param => CopyToClipBoard(param)));
+                }
+                return copyToClipBoardEvent;
             }
         }
     }

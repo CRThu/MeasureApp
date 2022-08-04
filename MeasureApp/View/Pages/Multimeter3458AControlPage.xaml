@@ -122,7 +122,14 @@
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </Button>
-                        <CheckBox Name="SyncDCVDisplayStorageCheckBox" Content="自动存储" HorizontalAlignment="Left" Margin="301,94,0,0" VerticalAlignment="Top"/>
+                        <CheckBox Name="SyncDCVDisplayStorageCheckBox" Content="自动存储" HorizontalAlignment="Left" Margin="301,98,0,0" VerticalAlignment="Top"/>
+                        <Button x:Name="CopyToClipBoardButton" Content="Copy" HorizontalAlignment="Left" Margin="386,94,0,0" VerticalAlignment="Top" Width="60" Height="22">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="Click">
+                                    <vmc:EventCommandBase Command="{Binding CopyToClipBoardEvent}" CommandParameter="{Binding ElementName=SyncDCVDisplayTextBlock, Path=Text}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </Button>
                     </Grid>
                 </Border>
 
