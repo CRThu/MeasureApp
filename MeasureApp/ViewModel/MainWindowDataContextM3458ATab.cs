@@ -246,7 +246,8 @@ namespace MeasureApp.ViewModel
         }
 
         // 3458A 同步电压显示事件
-        private ManualResetEvent m3458ASyncMeasureManualResetEvent = new(false);
+        private CancellationTokenSource m3458ASyncMeasureTokenSource = new();
+
         private CommandBase m3458ASyncMeasureEvent;
         public CommandBase M3458ASyncMeasureEvent
         {
@@ -263,25 +264,25 @@ namespace MeasureApp.ViewModel
                                 if (M3458AIsSyncMeasureOpen)
                                 {
                                     M3458AIsSyncMeasureOpen = false;
-                                    m3458ASyncMeasureManualResetEvent.Reset();
+                                    m3458ASyncMeasureTokenSource.Cancel();
                                 }
                                 else
                                 {
                                     M3458AIsSyncMeasureOpen = true;
-                                    m3458ASyncMeasureManualResetEvent.Set();
+                                    m3458ASyncMeasureTokenSource = new();
+
+                                    bool isStorage = (bool)param;
                                     _ = Task.Run(() =>
                                     {
                                         try
                                         {
-                                            while (true)
+                                            while (!m3458ASyncMeasureTokenSource.IsCancellationRequested)
                                             {
-                                                m3458ASyncMeasureManualResetEvent.WaitOne();
                                                 // 3458A Multimeter User's Guide Page 149
                                                 decimal DCVDisplay = Measure3458AInstance.ReadDecimal();
                                                 M3458ASyncMeasureText = $"{DCVDisplay}";
 
                                                 // 数据自动存储
-                                                bool isStorage = (bool)param;
                                                 if (isStorage)
                                                 {
                                                     DataStorageInstance.AddValue(Key3458AString, DCVDisplay);
@@ -292,7 +293,7 @@ namespace MeasureApp.ViewModel
                                         {
                                             _ = MessageBox.Show(ex.ToString());
                                         }
-                                    });
+                                    }, m3458ASyncMeasureTokenSource.Token);
                                 }
                             }
                             else
