@@ -21,6 +21,7 @@ using System.Windows.Threading;
 using MeasureApp.Model.Common;
 using MeasureApp.ViewModel.Common;
 using MeasureApp.Model.Devices;
+using CodingSeb.ExpressionEvaluator;
 
 namespace MeasureApp.ViewModel
 {
@@ -469,7 +470,7 @@ PA5.FREQ;
                         // <setvar key="i" val="123"/>
                         if (TagAttrs.ContainsKey("key") && TagAttrs.ContainsKey("val"))
                         {
-                            SerialportCommandScriptVarDict[TagAttrs["key"]] = Convert.ToInt32(TagAttrs["val"]);
+                            SerialportCommandScriptVarDict[TagAttrs["key"]] = Convert.ToDecimal(TagAttrs["val"]);
                         }
                         else
                         {
@@ -598,9 +599,13 @@ REGW;{i:X};{j:D};
 <setvar key="i" val="255"/>
 <setvar key="j" val="123"/>
 REGW;{i};{j};
+
+<setvar key="i" val="1.1"/>
+<setvar key="j" val="-2.2"/>
+REGW;{i+j+3:D};{Round(j+8):D};{Max(i,j,0.5):F3};
                      */
 
-                    // 语法解析 REGW;{i:X};{j:D};
+                    // 语法解析 REGW;{i:X};{j:D};{i+2:D};
                     var leftSymbolIndexes = code.Select((item, index) => new { item, index }).Where(t => t.item == '{').Select(t => t.index).ToArray();
                     var rightSymbolIndexes = code.Select((item, index) => new { item, index }).Where(t => t.item == '}').Select(t => t.index).ToArray();
                     var symboIndexes = leftSymbolIndexes.Zip(rightSymbolIndexes).ToArray();
@@ -608,7 +613,7 @@ REGW;{i};{j};
                     List<int> splitStrsReplaceIndex = new();
                     int splitStrsCursor = 0;
                     // 将带转义代码分割并填入splitStrs,转义代码索引填入splitStrsReplaceIndex
-                    // REGW;{i:X};{j:D};
+                    // REGW;{i:X};{j:D};{i+2:D};
                     for (int i = 0; i < symboIndexes.Length; i++)
                     {
                         splitStrs.Add(code[splitStrsCursor..symboIndexes[i].First]);
@@ -619,18 +624,29 @@ REGW;{i};{j};
                     if (splitStrsCursor != code.Length)
                         splitStrs.Add(code[splitStrsCursor..code.Length]);
 
-                    // {i:X} {j:D}
+                    // {i:X} {j:D} {i+2:D}
                     for (int i = 0; i < splitStrsReplaceIndex.Count; i++)
                     {
                         string strNonSym = splitStrs[splitStrsReplaceIndex[i]].Replace("{", "").Replace("}", "");
-                        // [i,X] [j,D]
+                        // [i,X] [j,D] [i+2,D]
+                        // 支持10进制(D)与16进制(X), 默认输出16进制
                         string[] strSplit;
-                        if (strNonSym.Contains(":"))
+                        if (strNonSym.Contains(':'))
                             strSplit = strNonSym.Split(":");
                         else
                             strSplit = new string[2] { strNonSym, "X" };
-                        // 支持10进制(D)与16进制(X), 默认输出16进制
-                        splitStrs[splitStrsReplaceIndex[i]] = ((int)SerialportCommandScriptVarDict[strSplit[0]]).ToString(strSplit[1]);
+
+                        // 支持表达式运算
+
+                        ExpressionEvaluator evaluator = new();
+                        evaluator.Variables = SerialportCommandScriptVarDict.ToDictionary(pair => pair.Key, pair => (object)(double)pair.Value);
+                        var result = evaluator.Evaluate(strSplit[0]);
+
+                        // Double类型转整型
+                        if (strSplit[1].ToUpper().Contains('D') || strSplit[1].ToUpper().Contains('X'))
+                            splitStrs[splitStrsReplaceIndex[i]] = (Convert.ToInt64(result)).ToString(strSplit[1]);
+                        else
+                            splitStrs[splitStrsReplaceIndex[i]] = ((double)result).ToString(strSplit[1]);
                     }
 
                     //Debug.WriteLine("-----");
