@@ -74,10 +74,22 @@ namespace MeasureApp.ViewModel
         {
             try
             {
-                gpibDeviceConnectStatusText = $"No Device Connected.";
-                Measure3458AInstance.Dispose();
                 GpibDeviceConnectStatusText = $"{Measure3458AInstance.Open(GpibDevicesSelectedName)} Connected.";
                 Measure3458AInstance.Timeout = Properties.Settings.Default.GPIBTimeout;
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
+            }
+        }
+
+        // 关闭GPIB设备事件
+        public void GpibDeviceClose()
+        {
+            try
+            {
+                Measure3458AInstance.Dispose();
+                GpibDeviceConnectStatusText = $"No Device Connected.";
             }
             catch (Exception ex)
             {
@@ -426,6 +438,19 @@ namespace MeasureApp.ViewModel
                     gpibDeviceOpenEvent = new CommandBase(new Action<object>(param => GpibDeviceOpen()));
                 }
                 return gpibDeviceOpenEvent;
+            }
+        }
+
+        private CommandBase gpibDeviceCloseEvent;
+        public CommandBase GpibDeviceCloseEvent
+        {
+            get
+            {
+                if (gpibDeviceCloseEvent == null)
+                {
+                    gpibDeviceCloseEvent = new CommandBase(new Action<object>(param => GpibDeviceClose()));
+                }
+                return gpibDeviceCloseEvent;
             }
         }
 

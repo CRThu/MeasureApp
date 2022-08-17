@@ -15,22 +15,30 @@
     <Grid>
         <GroupBox Header="GPIB设备发现" HorizontalAlignment="Left" Height="166" Margin="10,10,0,0" VerticalAlignment="Top" Width="407">
             <Grid>
-                <Button x:Name="SearchGPIBDevicesButton" Content="搜索GPIB设备" HorizontalAlignment="Left" Margin="227,83,0,0" VerticalAlignment="Top" Width="158" Height="23">
+                <Button x:Name="SearchGPIBDevicesButton" Content="搜索GPIB设备" HorizontalAlignment="Left" Margin="227,60,0,0" VerticalAlignment="Top" Width="158" Height="23">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="Click">
                             <vmc:EventCommandBase Command="{Binding GpibDeviceSearchEvent}"/>
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                 </Button>
-                <Button x:Name="OpenGPIBDeviceButton" Content="打开GPIB设备" HorizontalAlignment="Left" Margin="227,111,0,0" VerticalAlignment="Top" Width="158" Height="23">
+                <Button x:Name="OpenGPIBDeviceButton" Content="打开GPIB设备" HorizontalAlignment="Left" Margin="227,88,0,0" VerticalAlignment="Top" Width="158" Height="23">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="Click">
                             <vmc:EventCommandBase Command="{Binding GpibDeviceOpenEvent}"/>
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                 </Button>
+
+                <Button x:Name="CloseGPIBDeviceButton" Content="关闭GPIB设备" HorizontalAlignment="Left" Margin="227,116,0,0" VerticalAlignment="Top" Width="158" Height="23">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Click">
+                            <vmc:EventCommandBase Command="{Binding GpibDeviceCloseEvent}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </Button>
                 <ComboBox x:Name="GpibDeviceComboBox" ItemsSource="{Binding GpibDevicesName}" SelectedValue="{Binding GpibDevicesSelectedName}" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="201" Height="23"/>
-                <TextBlock x:Name="DeviceNameLabel" Text="{Binding GpibDeviceConnectStatusText}" HorizontalAlignment="Left" Margin="227,10,0,0" VerticalAlignment="Top" Width="158" Height="68"/>
+                <TextBlock x:Name="DeviceNameLabel" Text="{Binding GpibDeviceConnectStatusText}" HorizontalAlignment="Left" Margin="227,10,0,0" VerticalAlignment="Top" Width="158" Height="23"/>
             </Grid>
         </GroupBox>
         <GroupBox Header="串口设备发现" HorizontalAlignment="Left" Height="166" Margin="422,10,0,0" VerticalAlignment="Top" Width="407">

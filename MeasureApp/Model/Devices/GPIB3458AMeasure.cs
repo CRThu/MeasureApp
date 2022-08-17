@@ -44,7 +44,7 @@ namespace MeasureApp.Model.Devices
         public string Open(string deviceAddr)
         {
             gpib.Open(deviceAddr);
-            Timeout = 5000;
+            Timeout = 500;
             gpib.Write("END");
             return GetID();
         }
