@@ -44,8 +44,8 @@ namespace MeasureApp.Model.Devices
         public string Open(string deviceAddr)
         {
             gpib.Open(deviceAddr);
-            Timeout = 500;
-            gpib.Write("END");
+            Timeout = 100;
+            //gpib.Write("END");
             return GetID();
         }
 
@@ -67,7 +67,26 @@ namespace MeasureApp.Model.Devices
 
         public string GetID()
         {
-            return gpib.Query("ID?");
+            string idRet = string.Empty;
+            // SCPI PROTOCOL
+            try
+            {
+                idRet = gpib.Query("*IDN?\n");
+                string[] idnRetArr = idRet.Trim().Split(',').ToArray();
+                if (idnRetArr.Length != 4)
+                    throw new NotSupportedException();
+                return idnRetArr[1];
+            }
+            catch (Exception _) { }
+            // HP3458A PROTOCOL
+            try
+            {
+                gpib.Write("END");
+                idRet = gpib.Query("ID?\n");
+                return idRet.Trim();
+            }
+            catch (Exception _) { }
+            return null;
         }
 
         public string GetTemp()
@@ -150,12 +169,12 @@ namespace MeasureApp.Model.Devices
             {
                 return Convert.ToDecimal(decimal.Parse(data, System.Globalization.NumberStyles.Float));
             }
-            catch(OverflowException)
+            catch (OverflowException)
             {
                 // Keysight 3458A User’s Guide, Page 146, Overload indication
                 return decimal.MaxValue;
             }
-            catch(FormatException)
+            catch (FormatException)
             {
                 // Sometimes error: --4.559575826E+00
                 return decimal.MaxValue;

@@ -1,14 +1,7 @@
-﻿using MeasureApp.ViewModel;
+﻿using MeasureApp.Model.Common;
 using NationalInstruments.VisaNS;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
-using MeasureApp.Model.Common;
 
 namespace MeasureApp.Model.Devices
 {
@@ -76,7 +69,7 @@ namespace MeasureApp.Model.Devices
 
         public string Query(string cmd)
         {
-            return IsOpen ? messageBasedSession.Query(cmd).Trim() : null;
+            return IsOpen ? messageBasedSession.Query(cmd) : null;
         }
 
 
