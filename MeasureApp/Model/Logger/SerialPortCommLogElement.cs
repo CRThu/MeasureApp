@@ -119,7 +119,7 @@ namespace MeasureApp.Model.Logger
 
         public override string ToString()
         {
-            return $"{Time:yyyy-MM-dd hh:mm:ss.fff} | {Host} | {Message}";
+            return $"{Time:yyyy-MM-dd HH:mm:ss.fff} | {Host} | {Message}";
         }
     }
 }
