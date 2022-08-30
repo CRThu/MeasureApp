@@ -40,7 +40,6 @@ namespace MeasureApp.ViewModel
             // 添加默认Key
             DataStorageInstance.AddKey(Key3458AString);
             DataStorageInstance.AddKey(KeySerialPortString);
-            DataStorageInstance.SelectedKey = Key3458AString;
 
             // 串口控制指令界面 寄存器表
             object SerialportCommandScriptVarDictLocker = new();

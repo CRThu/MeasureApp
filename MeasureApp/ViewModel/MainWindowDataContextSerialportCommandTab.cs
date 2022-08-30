@@ -575,12 +575,12 @@ B;
 REGW;01;{i:D};
                          */
                         string trimDataKey = TagAttrs["key"];
-                        decimal trimTargetValue = Convert.ToDecimal(TagAttrs["target"]);
+                        double trimTargetValue = Convert.ToDouble(TagAttrs["target"]);
                         string trimReturnVar = TagAttrs["retvar"];
-                        IEnumerable<decimal> data = DataStorageInstance[trimDataKey];
-                        decimal closestValue = data.MinBy(x => Math.Abs(x - trimTargetValue));
+                        IEnumerable<double> data = DataStorageInstance[trimDataKey];
+                        double closestValue = data.MinBy(x => Math.Abs(x - trimTargetValue));
                         if (TagAttrs.ContainsKey("rettrimdata"))
-                            SerialportCommandScriptVarDict[TagAttrs["rettrimdata"]] = closestValue;
+                            SerialportCommandScriptVarDict[TagAttrs["rettrimdata"]] = (decimal)closestValue;
                         SerialportCommandScriptVarDict[trimReturnVar] = Array.IndexOf(data.ToArray(), closestValue);
                         break;
                     default:

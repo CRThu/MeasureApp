@@ -17,13 +17,11 @@ namespace MeasureApp.Model
     public class DataStorage : NotificationObjectBase
     {
         public event EventHandler OnKeysChanged;
-        public event EventHandler OnSelectedKeyChanged;
-        public event EventHandler OnSelectedDataChanged;
         // sender为key
         public event EventHandler OnDataChanged;
 
-        private Dictionary<string, ObservableRangeCollection<decimal>> data = new();
-        private Dictionary<string, ObservableRangeCollection<decimal>> Data
+        private Dictionary<string, DataStorageElement> data;
+        private Dictionary<string, DataStorageElement> Data
         {
             get => data;
             set
@@ -32,9 +30,7 @@ namespace MeasureApp.Model
             }
         }
 
-        private Dictionary<string, object> dataLock = new();
-
-        public IEnumerable<decimal> this[string key]
+        public IEnumerable<double> this[string key]
         {
             get
             {
@@ -61,51 +57,42 @@ namespace MeasureApp.Model
             get => selectedKey;
             set
             {
-                // 删除选中元素后value传入null
+                SelectedData.OnDataChanged -= (_, _) => RaisePropertyChanged(() => SelectedData);
+
                 selectedKey = value ?? Keys.FirstOrDefault();
-                OnSelectedKeyChanged?.Invoke(this, EventArgs.Empty);
-                OnSelectedDataChanged?.Invoke(this, EventArgs.Empty);
+
+                SelectedData.OnDataChanged += (_, _) => RaisePropertyChanged(() => SelectedData);
+                RaisePropertyChanged(() => SelectedData);
             }
         }
 
-        public IEnumerable<decimal> SelectedData
+        public DataStorageElement SelectedData
         {
             get
             {
                 if (selectedKey != null)
-                    return Data[selectedKey];
-                return null;
-            }
-            set
-            {
-                SetValues(SelectedKey, value);
-                OnSelectedDataChanged?.Invoke(this, EventArgs.Empty);
+                    return Data[SelectedKey];
+                return new();
             }
         }
 
         public DataStorage()
         {
             InitEvent();
+            Data = new();
+            AddKey("DefaultKey");
+            SelectedKey = "DefaultKey";
         }
 
-        public DataStorage(Dictionary<string, IEnumerable<decimal>> data) : this()
+        public DataStorage(Dictionary<string, DataStorageElement> data) : this()
         {
             foreach (var item in data)
-                AddValues(item.Key, item.Value);
+                AddValues(item.Key, item.Value.Y);
         }
 
         private void InitEvent()
         {
             OnKeysChanged += (_, _) => RaisePropertyChanged(() => Keys);
-            OnSelectedKeyChanged += (_, _) => RaisePropertyChanged(() => SelectedKey);
-            OnSelectedDataChanged += (_, _) => RaisePropertyChanged(() => SelectedData);
-            OnDataChanged += DataStorage_SelectedKeyOnDataChanged;
-        }
-
-        private void DataStorage_SelectedKeyOnDataChanged(object sender, EventArgs e)
-        {
-            if ((string)sender == selectedKey)
-                OnSelectedDataChanged?.Invoke(this, EventArgs.Empty);
         }
 
         // 字典操作方法
@@ -113,14 +100,7 @@ namespace MeasureApp.Model
         {
             if (!Data.ContainsKey(key))
             {
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    object locker = new();
-                    Data.Add(key, new ObservableRangeCollection<decimal>());
-                    BindingOperations.EnableCollectionSynchronization(Data[key], locker);
-                    dataLock.Add(key, new object());
-                    RaisePropertyChanged(() => Keys);
-                });
+                Data.Add(key, new DataStorageElement());
                 OnKeysChanged?.Invoke(this, EventArgs.Empty);
             }
         }
@@ -129,9 +109,8 @@ namespace MeasureApp.Model
         {
             if (Data.ContainsKey(key))
             {
-                lock (dataLock[key])
+                if (key != "DefaultKey")
                     Data.Remove(key);
-                dataLock.Remove(key);
                 OnKeysChanged?.Invoke(this, EventArgs.Empty);
             }
         }
@@ -142,12 +121,11 @@ namespace MeasureApp.Model
         }
 
         // 数据操作方法
-        public void AddValue(string key, decimal value)
+        public void AddValue(string key, double value)
         {
             if (!Data.ContainsKey(key))
                 AddKey(key);
-            lock (dataLock[key])
-                Data[key].Add(value);
+            Data[key].AddY(value);
             OnDataChanged?.Invoke(key, EventArgs.Empty);
         }
 
@@ -156,12 +134,11 @@ namespace MeasureApp.Model
             AddValue(key, (decimal)Convert.ChangeType(value, typeof(decimal)));
         }
 
-        public void AddValues(string key, IEnumerable<decimal> values)
+        public void AddValues(string key, IEnumerable<double> values)
         {
             if (!Data.ContainsKey(key))
                 AddKey(key);
-            lock (dataLock[key])
-                Data[key].AddRange(values);
+            Data[key].AddY(values);
             OnDataChanged?.Invoke(key, EventArgs.Empty);
         }
 
@@ -174,27 +151,23 @@ namespace MeasureApp.Model
         {
             if (!Data.ContainsKey(key))
                 AddKey(key);
-            lock (dataLock[key])
-                Data[key].Clear();
+            Data[key].Clear();
             OnDataChanged?.Invoke(key, EventArgs.Empty);
         }
 
-        public void SetValues(string key, IEnumerable<decimal> values)
+        public void SetValues(string key, IEnumerable<double> values)
         {
             if (!Data.ContainsKey(key))
                 AddKey(key);
-            lock (dataLock[key])
-            {
-                Data[key].Clear();
-                Data[key].AddRange(values);
-            }
+            Data[key].Clear();
+            Data[key].AddY(values);
             OnDataChanged?.Invoke(key, EventArgs.Empty);
         }
 
-        public IEnumerable<decimal> GetValues(string key)
+        public IEnumerable<double> GetValues(string key)
         {
             if (key != null && Data.ContainsKey(key))
-                return Data[key];
+                return Data[key].Y;
             else
                 return null;
         }
@@ -236,7 +209,7 @@ namespace MeasureApp.Model
             //    IncludeFields = true
             //};
             //DataStorage ds = System.Text.Json.JsonSerializer.Deserialize<DataStorage>(json, options);
-            var data = JsonConvert.DeserializeObject<Dictionary<string, IEnumerable<decimal>>>(json, new JsonSerializerSettings() { FloatParseHandling = FloatParseHandling.Decimal });
+            var data = JsonConvert.DeserializeObject<Dictionary<string, DataStorageElement>>(json, new JsonSerializerSettings() { FloatParseHandling = FloatParseHandling.Decimal });
             return new(data);
         }
     }

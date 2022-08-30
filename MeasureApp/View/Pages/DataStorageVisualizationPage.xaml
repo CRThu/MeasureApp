@@ -20,9 +20,10 @@
                 <TabControl Margin="245,8,5,5">
                     <TabItem Header="表格">
                         <Grid Background="#FFE5E5E5">
-                            <DataGrid x:Name="DataStorageDataGrid" ItemsSource="{Binding DataStorageInstance.SelectedData, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="True" IsReadOnly="True" Margin="3,3,3,3">
+                            <DataGrid x:Name="DataStorageDataGrid" ItemsSource="{Binding DataStorageInstance.SelectedData.Data, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False" IsReadOnly="True" Margin="3,3,3,3">
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn CanUserSort="False" Width="1*" Header="数据" Binding="{Binding .}"/>
+                                    <DataGridTextColumn CanUserSort="False" Width="1*" Header="X" Binding="{Binding X}"/>
+                                    <DataGridTextColumn CanUserSort="False" Width="1*" Header="Y" Binding="{Binding Y}"/>
                                 </DataGrid.Columns>
                                 <i:Interaction.Triggers>
                                     <i:EventTrigger EventName="LoadingRow">
@@ -33,12 +34,12 @@
                         </Grid>
                     </TabItem>
                     <TabItem Header="图形">
-                        <Grid Background="#FFE5E5E5">
-                            <view:EChartsLine Margin="3,3,3,3" DataY="{Binding DataStorageInstance.SelectedData, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsAutoUpdate="{Binding DataStorageChartIsAutoRefresh}" MinimumTriggerTime="{Binding DataStorageChartAutoRefreshMinimumMilliSecond}">
+                        <!--<Grid Background="#FFE5E5E5">
+                            <view:EChartsLine Margin="3,3,3,3" DataY="{Binding DataStorageInstance.SelectedData.Y, UpdateSourceTrigger=PropertyChanged}" IsAutoUpdate="{Binding DataStorageChartIsAutoRefresh}" MinimumTriggerTime="{Binding DataStorageChartAutoRefreshMinimumMilliSecond}">
                                 <i:Interaction.Behaviors>
                                     <vmc:InvokeMethodBehavior MethodName="UpdateChart" InvokeMethodAction="{Binding UpdateChartAction,Mode=OneWayToSource}"/>
                                 </i:Interaction.Behaviors>
-                            </view:EChartsLine>
+                            </view:EChartsLine>-->
                         </Grid>
                     </TabItem>
                 </TabControl>

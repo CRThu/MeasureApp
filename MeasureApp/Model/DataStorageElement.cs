@@ -23,8 +23,36 @@ namespace MeasureApp.Model
 
     public class DataStorageElement : NotificationObjectBase
     {
-        public List<DataPoint> DataPoints { get; set; }
-        private object locker = new();
+        public ObservableRangeCollection<DataPoint> DataPoints { get; set; }
+
+        public IEnumerable<double> X
+        {
+            get
+            {
+                lock (locker)
+                    return DataPoints.Select(p => p.X);
+            }
+        }
+
+        public IEnumerable<double> Y
+        {
+            get
+            {
+                lock (locker)
+                    return DataPoints.Select(p => p.Y);
+            }
+        }
+
+        public IEnumerable<DataPoint> Data
+        {
+            get
+            {
+                lock (locker)
+                    return DataPoints;
+            }
+        }
+
+        private readonly object locker = new();
 
         public int Count => DataPoints.Count;
 
@@ -32,7 +60,7 @@ namespace MeasureApp.Model
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
-                DataPoints = new List<DataPoint>();
+                DataPoints = new ObservableRangeCollection<DataPoint>();
                 BindingOperations.EnableCollectionSynchronization(DataPoints, locker);
             });
         }
@@ -48,8 +76,12 @@ namespace MeasureApp.Model
 
         public void AddY(double y)
         {
-            double x = DataPoints.Count == 0 ? 1 : DataPoints.Last().X + 1;
-            AddXY(x, y);
+            lock (locker)
+            {
+                double x = DataPoints.Count == 0 ? 1 : DataPoints.Last().X + 1;
+                DataPoints.Add(new DataPoint(x, y));
+            }
+            OnDataChanged?.Invoke(this, new EventArgs());
         }
 
         public void AddXY(IEnumerable<double> x, IEnumerable<double> y)
@@ -61,9 +93,20 @@ namespace MeasureApp.Model
 
         public void AddY(IEnumerable<double> y)
         {
-            double xFirst = DataPoints.Count == 0 ? 1 : DataPoints.Last().X + 1;
-            IEnumerable<double> x = Enumerable.Range(0, y.Count()).Select(n => n + xFirst);
-            AddXY(x, y);
+            lock (locker)
+            {
+                double xFirst = DataPoints.Count == 0 ? 1 : DataPoints.Last().X + 1;
+                IEnumerable<double> x = Enumerable.Range(0, y.Count()).Select(n => n + xFirst);
+                DataPoints.AddRange(x.Zip(y).Select(p => new DataPoint(p.First, p.Second)));
+            }
+            OnDataChanged?.Invoke(this, new EventArgs());
+        }
+
+        public void Clear()
+        {
+            lock (locker)
+                DataPoints.Clear();
+            OnDataChanged?.Invoke(this, new EventArgs());
         }
     }
 }
