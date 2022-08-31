@@ -4,10 +4,19 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:MeasureApp.View.Pages"
+      xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+      xmlns:vmc="clr-namespace:MeasureApp.ViewModel.Common"
       mc:Ignorable="d"
       Title="TestPage">
 
     <Grid>
-        
+        <Button x:Name="PlotUpdateButton" Content="更新" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="158" Height="23">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="Click">
+                    <vmc:EventCommandBase Command="{Binding PlotUpdateEvent}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </Button>
+        <ContentControl Content="{Binding PlotControl}" Height="362" Width="600" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,38,0,0"/>
     </Grid>
 </Page>

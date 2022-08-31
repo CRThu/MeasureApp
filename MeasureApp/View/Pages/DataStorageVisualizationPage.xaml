@@ -39,8 +39,8 @@
                                 <i:Interaction.Behaviors>
                                     <vmc:InvokeMethodBehavior MethodName="UpdateChart" InvokeMethodAction="{Binding UpdateChartAction,Mode=OneWayToSource}"/>
                                 </i:Interaction.Behaviors>
-                            </view:EChartsLine>-->
-                        </Grid>
+                            </view:EChartsLine>
+                        </Grid>-->
                     </TabItem>
                 </TabControl>
 
