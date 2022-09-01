@@ -17,9 +17,21 @@ using System.Windows.Threading;
 
 namespace MeasureApp.View.Control
 {
+    public struct Point
+    {
+        public readonly double X { get; }
+        public readonly double Y { get; }
+
+        public Point(double x, double y)
+        {
+            X = x;
+            Y = y;
+        }
+    }
+
     public class EChartsLine : WebView2
     {
-        public static readonly DependencyProperty DataYProperty = DependencyProperty.Register("DataY", typeof(ObservableCollection<decimal>), typeof(EChartsLine), new PropertyMetadata(null, DataChangedCallback));
+        public static readonly DependencyProperty DataProperty = DependencyProperty.Register("Data", typeof(ObservableCollection<Point>), typeof(EChartsLine), new PropertyMetadata(null, DataChangedCallback));
 
         public static readonly DependencyProperty IsAutoUpdateProperty = DependencyProperty.Register("IsAutoUpdate", typeof(bool), typeof(EChartsLine), new PropertyMetadata(true));
 
@@ -28,15 +40,15 @@ namespace MeasureApp.View.Control
         /// <summary>
         /// Y轴数据值
         /// </summary>
-        public ObservableCollection<decimal> DataY
+        public ObservableCollection<Point> Data
         {
             set
             {
-                SetValue(DataYProperty, value);
+                SetValue(DataProperty, value);
             }
             get
             {
-                return (ObservableCollection<decimal>)GetValue(DataYProperty);
+                return (ObservableCollection<Point>)GetValue(DataProperty);
             }
         }
 
@@ -79,10 +91,10 @@ namespace MeasureApp.View.Control
 
         private static void DataChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            ((EChartsLine)d).DataChangedCallback(e.NewValue as ObservableCollection<decimal>, e.OldValue as ObservableCollection<decimal>);
+            ((EChartsLine)d).DataChangedCallback(e.NewValue as ObservableCollection<Point>, e.OldValue as ObservableCollection<Point>);
         }
 
-        private void DataChangedCallback(ObservableCollection<decimal> newvalue, ObservableCollection<decimal> oldvalue)
+        private void DataChangedCallback(ObservableCollection<Point> newvalue, ObservableCollection<Point> oldvalue)
         {
             if (oldvalue != null)
                 oldvalue.CollectionChanged -= Changed;
@@ -115,9 +127,9 @@ namespace MeasureApp.View.Control
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start(); //  开始监视代码运行时间
 
-            if (DataY != null)
+            if (Data != null)
             {
-                lineData.SetData(DataY.Select(x => (double)x));
+                lineData.SetData(Data.Select(pt=>pt.X), Data.Select(pt => pt.Y));
                 string jsons = lineData.ToJson();
 
                 string js = $"UpdateData({jsons});";

@@ -2,6 +2,7 @@
 using MeasureApp.Model.Common;
 using MeasureApp.Model.Converter;
 using MeasureApp.Model.FftAnalysis;
+using MeasureApp.View.Control;
 using MeasureApp.ViewModel.Common;
 using Microsoft.Win32;
 using System;
@@ -19,8 +20,8 @@ namespace MeasureApp.ViewModel
     public partial class MainWindowDataContext : NotificationObjectBase
     {
         // ECharts数据绑定
-        private ObservableRangeCollection<decimal> chartData = new();
-        public ObservableRangeCollection<decimal> ChartData
+        private ObservableRangeCollection<View.Control.Point> chartData = new();
+        public ObservableRangeCollection<View.Control.Point> ChartData
         {
             get => chartData;
             set
@@ -123,16 +124,15 @@ namespace MeasureApp.ViewModel
                 // TODO
                 //ChartData.SetSampling(FftAnalysisPropertyConfig.IsSampling || FftAnalysisPropertyConfig.FftN >= FftAnalysisPropertyConfig.AutoSamplingOnDataLength);
                 //ChartData.ClearData();
-                MessageBox.Show("Warning: DataX in ECharts is not implemented.");
                 ChartData.Clear();
                 switch ((string)param)
                 {
                     case "0":
-                        ChartData.AddRange(fftAnaylsisResult.v.Select(x=>(decimal)x));
+                        ChartData.AddRange(fftAnaylsisResult.t.Zip(fftAnaylsisResult.v, (t, v) => new View.Control.Point(t, v)));
                         //ChartData.AddData(fftAnaylsisResult.t, fftAnaylsisResult.v);
                         break;
                     case "1":
-                        ChartData.AddRange(fftAnaylsisResult.p.Select(x => (decimal)x));
+                        ChartData.AddRange(fftAnaylsisResult.f.Zip(fftAnaylsisResult.p, (f, p) => new View.Control.Point(f, p)));
                         //ChartData.AddData(fftAnaylsisResult.f, fftAnaylsisResult.p);
                         break;
                     default:
