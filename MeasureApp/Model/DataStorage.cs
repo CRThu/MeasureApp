@@ -131,7 +131,7 @@ namespace MeasureApp.Model
 
         public void AddValue<T>(string key, T value)
         {
-            AddValue(key, (decimal)Convert.ChangeType(value, typeof(decimal)));
+            AddValue(key, (double)Convert.ChangeType(value, typeof(double)));
         }
 
         public void AddValues(string key, IEnumerable<double> values)
@@ -144,7 +144,7 @@ namespace MeasureApp.Model
 
         public void AddValues<T>(string key, IEnumerable<T> values)
         {
-            AddValues(key, values.Select(v => (decimal)Convert.ChangeType(v, typeof(decimal))));
+            AddValues(key, values.Select(v => (double)Convert.ChangeType(v, typeof(double))));
         }
 
         public void ClearValues(string key)
