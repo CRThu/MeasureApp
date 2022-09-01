@@ -34,13 +34,13 @@
                         </Grid>
                     </TabItem>
                     <TabItem Header="图形">
-                        <!--<Grid Background="#FFE5E5E5">
-                            <view:EChartsLine Margin="3,3,3,3" DataY="{Binding DataStorageInstance.SelectedData.Y, UpdateSourceTrigger=PropertyChanged}" IsAutoUpdate="{Binding DataStorageChartIsAutoRefresh}" MinimumTriggerTime="{Binding DataStorageChartAutoRefreshMinimumMilliSecond}">
+                        <Grid Background="#FFE5E5E5">
+                            <view:EChartsLine Margin="3,3,3,3" Data="{Binding DataStorageInstance.SelectedData.DataPoints, UpdateSourceTrigger=PropertyChanged}" IsAutoUpdate="{Binding DataStorageChartIsAutoRefresh}" MinimumTriggerTime="{Binding DataStorageChartAutoRefreshMinimumMilliSecond}">
                                 <i:Interaction.Behaviors>
                                     <vmc:InvokeMethodBehavior MethodName="UpdateChart" InvokeMethodAction="{Binding UpdateChartAction,Mode=OneWayToSource}"/>
                                 </i:Interaction.Behaviors>
                             </view:EChartsLine>
-                        </Grid>-->
+                        </Grid>
                     </TabItem>
                 </TabControl>
 
