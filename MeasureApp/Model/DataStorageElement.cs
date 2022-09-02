@@ -10,21 +10,9 @@ using System.Windows.Data;
 
 namespace MeasureApp.Model
 {
-    //public struct DataPoint
-    //{
-    //    public readonly double X { get; }
-    //    public readonly double Y { get; }
-
-    //    public DataPoint(double x, double y)
-    //    {
-    //        X = x;
-    //        Y = y;
-    //    }
-    //}
-
     public class DataStorageElement : NotificationObjectBase
     {
-        public ObservableRangeCollection<View.Control.Point> DataPoints { get; set; }
+        public ObservableRangeCollection<DataPoint> DataPoints { get; set; }
 
         public IEnumerable<double> X
         {
@@ -44,7 +32,7 @@ namespace MeasureApp.Model
             }
         }
 
-        public IEnumerable<View.Control.Point> Data
+        public IEnumerable<DataPoint> Data
         {
             get
             {
@@ -61,7 +49,7 @@ namespace MeasureApp.Model
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
-                DataPoints = new ObservableRangeCollection<View.Control.Point>();
+                DataPoints = new ObservableRangeCollection<DataPoint>();
                 BindingOperations.EnableCollectionSynchronization(DataPoints, locker);
             });
         }
@@ -71,7 +59,7 @@ namespace MeasureApp.Model
         public void AddXY(double x, double y)
         {
             lock (locker)
-                DataPoints.Add(new View.Control.Point(x, y));
+                DataPoints.Add(new DataPoint(x, y));
         }
 
         public void AddY(double y)
@@ -79,14 +67,14 @@ namespace MeasureApp.Model
             lock (locker)
             {
                 double x = DataPoints.Count == 0 ? 1 : DataPoints.Last().X + 1;
-                DataPoints.Add(new View.Control.Point(x, y));
+                DataPoints.Add(new DataPoint(x, y));
             }
         }
 
         public void AddXY(IEnumerable<double> x, IEnumerable<double> y)
         {
             lock (locker)
-                DataPoints.AddRange(x.Zip(y).Select(p => new View.Control.Point(p.First, p.Second)));
+                DataPoints.AddRange(x.Zip(y).Select(p => new DataPoint(p.First, p.Second)));
         }
 
         public void AddY(IEnumerable<double> y)
@@ -95,7 +83,7 @@ namespace MeasureApp.Model
             {
                 double xFirst = DataPoints.Count == 0 ? 1 : DataPoints.Last().X + 1;
                 IEnumerable<double> x = Enumerable.Range(0, y.Count()).Select(n => n + xFirst);
-                DataPoints.AddRange(x.Zip(y).Select(p => new View.Control.Point(p.First, p.Second)));
+                DataPoints.AddRange(x.Zip(y).Select(p => new DataPoint(p.First, p.Second)));
             }
         }
 

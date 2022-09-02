@@ -17,21 +17,9 @@ using System.Windows.Threading;
 
 namespace MeasureApp.View.Control
 {
-    public struct Point
-    {
-        public readonly double X { get; }
-        public readonly double Y { get; }
-
-        public Point(double x, double y)
-        {
-            X = x;
-            Y = y;
-        }
-    }
-
     public class EChartsLine : WebView2
     {
-        public static readonly DependencyProperty DataProperty = DependencyProperty.Register("Data", typeof(ObservableCollection<Point>), typeof(EChartsLine), new PropertyMetadata(null, DataChangedCallback));
+        public static readonly DependencyProperty DataProperty = DependencyProperty.Register("Data", typeof(ObservableCollection<DataPoint>), typeof(EChartsLine), new PropertyMetadata(null, DataChangedCallback));
 
         public static readonly DependencyProperty IsAutoUpdateProperty = DependencyProperty.Register("IsAutoUpdate", typeof(bool), typeof(EChartsLine), new PropertyMetadata(true));
 
@@ -40,7 +28,7 @@ namespace MeasureApp.View.Control
         /// <summary>
         /// Y轴数据值
         /// </summary>
-        public ObservableCollection<Point> Data
+        public ObservableCollection<DataPoint> Data
         {
             set
             {
@@ -48,7 +36,7 @@ namespace MeasureApp.View.Control
             }
             get
             {
-                return (ObservableCollection<Point>)GetValue(DataProperty);
+                return (ObservableCollection<DataPoint>)GetValue(DataProperty);
             }
         }
 
@@ -91,10 +79,10 @@ namespace MeasureApp.View.Control
 
         private static void DataChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            ((EChartsLine)d).DataChangedCallback(e.NewValue as ObservableCollection<Point>, e.OldValue as ObservableCollection<Point>);
+            ((EChartsLine)d).DataChangedCallback(e.NewValue as ObservableCollection<DataPoint>, e.OldValue as ObservableCollection<DataPoint>);
         }
 
-        private void DataChangedCallback(ObservableCollection<Point> newvalue, ObservableCollection<Point> oldvalue)
+        private void DataChangedCallback(ObservableCollection<DataPoint> newvalue, ObservableCollection<DataPoint> oldvalue)
         {
             if (oldvalue != null)
                 oldvalue.CollectionChanged -= Changed;

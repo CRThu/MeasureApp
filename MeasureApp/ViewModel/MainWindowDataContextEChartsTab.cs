@@ -20,8 +20,8 @@ namespace MeasureApp.ViewModel
     public partial class MainWindowDataContext : NotificationObjectBase
     {
         // ECharts数据绑定
-        private ObservableRangeCollection<View.Control.Point> chartData = new();
-        public ObservableRangeCollection<View.Control.Point> ChartData
+        private ObservableRangeCollection<DataPoint> chartData = new();
+        public ObservableRangeCollection<DataPoint> ChartData
         {
             get => chartData;
             set
@@ -128,11 +128,11 @@ namespace MeasureApp.ViewModel
                 switch ((string)param)
                 {
                     case "0":
-                        ChartData.AddRange(fftAnaylsisResult.t.Zip(fftAnaylsisResult.v, (t, v) => new View.Control.Point(t, v)));
+                        ChartData.AddRange(fftAnaylsisResult.t.Zip(fftAnaylsisResult.v, (t, v) => new DataPoint(t, v)));
                         //ChartData.AddData(fftAnaylsisResult.t, fftAnaylsisResult.v);
                         break;
                     case "1":
-                        ChartData.AddRange(fftAnaylsisResult.f.Zip(fftAnaylsisResult.p, (f, p) => new View.Control.Point(f, p)));
+                        ChartData.AddRange(fftAnaylsisResult.f.Zip(fftAnaylsisResult.p, (f, p) => new DataPoint(f, p)));
                         //ChartData.AddData(fftAnaylsisResult.f, fftAnaylsisResult.p);
                         break;
                     default:
