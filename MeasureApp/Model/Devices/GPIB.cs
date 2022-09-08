@@ -10,7 +10,6 @@ namespace MeasureApp.Model.Devices
         public bool IsOpen = false;
         public string deviceAddr = string.Empty;
         public MessageBasedSession messageBasedSession;
-
         public int Timeout
         {
             get => messageBasedSession.Timeout;

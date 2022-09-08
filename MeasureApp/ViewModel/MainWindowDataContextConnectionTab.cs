@@ -57,6 +57,9 @@ namespace MeasureApp.ViewModel
             try
             {
                 GpibDevicesName.Clear();
+                //GPIB.SearchDevices("?*").ToList().ForEach(dev => GpibDevicesName.Add(dev));
+                // TODO
+                //public SerialSession serialSession;
                 GPIB.SearchDevices("GPIB?*INSTR").ToList().ForEach(dev => GpibDevicesName.Add(dev));
                 if (GpibDevicesName.Count != 0 && GpibDevicesSelectedName is null)
                 {

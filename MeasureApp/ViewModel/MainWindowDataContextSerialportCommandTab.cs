@@ -435,6 +435,28 @@ PA5.FREQ;
                             }
                         }
                         break;
+                    case "SERIALPORT":
+                        // 临时
+                        // <serialport port="..." cmd="..."/>
+                        /*
+<serialport port="COM10" cmd="'Measure'"/>
+
+<setvar key="i" val="123"/>
+<serialport port="COM10" cmd="'Measure_'+i"/>
+                        */
+
+                        string serialportPortName = TagAttrs["port"];
+                        string serialportCmd = TagAttrs["cmd"];
+
+                        // 支持表达式运算
+                        ExpressionEvaluator evaluator1 = new();
+                        evaluator1.Variables = SerialportCommandScriptVarDict.ToDictionary(pair => pair.Key, pair => (object)(double)pair.Value);
+                        string r1 = evaluator1.Evaluate(serialportCmd.Replace('\'', '\"')).ToString();
+
+
+                        SerialPortsInstance.WriteString(serialportPortName, r1);
+                        break;
+
                     case "MEASUREKEY":
                         // 临时
                         // <measurekey key="..."/>
@@ -448,11 +470,11 @@ PA5.FREQ;
                         SerialportMeasureDefaultKeyName = TagAttrs.ContainsKey("key") ? TagAttrs["key"] : Key3458AString;
 
                         // 支持表达式运算
-                        ExpressionEvaluator evaluator = new();
-                        evaluator.Variables = SerialportCommandScriptVarDict.ToDictionary(pair => pair.Key, pair => (object)(double)pair.Value);
-                        string r = evaluator.Evaluate(SerialportMeasureDefaultKeyName.Replace('\'', '\"')).ToString();
+                        ExpressionEvaluator evaluator2 = new();
+                        evaluator2.Variables = SerialportCommandScriptVarDict.ToDictionary(pair => pair.Key, pair => (object)(double)pair.Value);
+                        string r2 = evaluator2.Evaluate(SerialportMeasureDefaultKeyName.Replace('\'', '\"')).ToString();
                         
-                        SerialportMeasureDefaultKeyName = r;
+                        SerialportMeasureDefaultKeyName = r2;
                         break;
                     case "MEASURE":
                         // <measure key="..." mode="..."/>
