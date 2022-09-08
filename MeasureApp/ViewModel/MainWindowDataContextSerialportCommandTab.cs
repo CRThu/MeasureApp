@@ -209,6 +209,18 @@ namespace MeasureApp.ViewModel
             }
         }
 
+        // 串口通信采集指令默认键名称
+        private string serialportMeasureDefaultKeyName = Key3458AString;
+        public string SerialportMeasureDefaultKeyName
+        {
+            get => serialportMeasureDefaultKeyName;
+            set
+            {
+                serialportMeasureDefaultKeyName = value;
+                RaisePropertyChanged(() => SerialportMeasureDefaultKeyName);
+            }
+        }
+
         /// <summary>
         /// 脚本For信息栈字典
         /// 0|
@@ -423,6 +435,25 @@ PA5.FREQ;
                             }
                         }
                         break;
+                    case "MEASUREKEY":
+                        // 临时
+                        // <measurekey key="..."/>
+                        // default: Key = 3458A Data Storage
+                        /*
+<measurekey key="'Measure'"/>
+
+<setvar key="i" val="123"/>
+<measurekey key="'Measure_'+i"/>
+                        */
+                        SerialportMeasureDefaultKeyName = TagAttrs.ContainsKey("key") ? TagAttrs["key"] : Key3458AString;
+
+                        // 支持表达式运算
+                        ExpressionEvaluator evaluator = new();
+                        evaluator.Variables = SerialportCommandScriptVarDict.ToDictionary(pair => pair.Key, pair => (object)(double)pair.Value);
+                        string r = evaluator.Evaluate(SerialportMeasureDefaultKeyName.Replace('\'', '\"')).ToString();
+                        
+                        SerialportMeasureDefaultKeyName = r;
+                        break;
                     case "MEASURE":
                         // <measure key="..." mode="..."/>
                         // default: Key = 3458A Data Storage
@@ -432,7 +463,7 @@ PA5.FREQ;
 <measure key="Measure" mode="DCI"/>
 <measure key="Measure"/>
                         */
-                        string measureKeyName = TagAttrs.ContainsKey("key") ? TagAttrs["key"] : Key3458AString;
+                        string measureKeyName = TagAttrs.ContainsKey("key") ? TagAttrs["key"] : SerialportMeasureDefaultKeyName;
                         string measureCmd = TagAttrs.ContainsKey("mode") ? TagAttrs["mode"] : string.Empty;
                         M3458AManualMeasureText = "Measuring...";
                         if (Measure3458AInstance.IsOpen)
