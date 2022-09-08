@@ -440,7 +440,7 @@ PA5.FREQ;
                         // <serialport port="..." cmd="..."/>
                         /*
 <serialport port="COM10" cmd="'Measure'"/>
-
+                        
 <setvar key="i" val="123"/>
 <serialport port="COM10" cmd="'Measure_'+i"/>
                         */
@@ -454,7 +454,7 @@ PA5.FREQ;
                         string r1 = evaluator1.Evaluate(serialportCmd.Replace('\'', '\"')).ToString();
 
 
-                        SerialPortsInstance.WriteString(serialportPortName, r1);
+                        SerialPortsInstance.WriteString(serialportPortName, r1 + "\r\n");
                         break;
 
                     case "MEASUREKEY":
@@ -473,7 +473,7 @@ PA5.FREQ;
                         ExpressionEvaluator evaluator2 = new();
                         evaluator2.Variables = SerialportCommandScriptVarDict.ToDictionary(pair => pair.Key, pair => (object)(double)pair.Value);
                         string r2 = evaluator2.Evaluate(SerialportMeasureDefaultKeyName.Replace('\'', '\"')).ToString();
-                        
+
                         SerialportMeasureDefaultKeyName = r2;
                         break;
                     case "MEASURE":
