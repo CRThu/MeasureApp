@@ -476,6 +476,43 @@ PA5.FREQ;
 
                         SerialportMeasureDefaultKeyName = r2;
                         break;
+                    case "GPIBMEASURE":
+                        // 临时
+                        // <gpibmeasure addr="..." key="..." mode="..."/>
+                        // default: Key = 3458A Data Storage
+                        // mode = DCI DCV <null>
+                        /*
+<gpibmeasure addr="..." key="Measure" mode="DCV"/>
+<gpibmeasure addr="..." key="Measure" mode="DCI"/>
+<gpibmeasure addr="..." key="Measure"/>
+                        */
+                        string measureGpibAddr0 = TagAttrs.ContainsKey("addr") ? TagAttrs["addr"] : GpibDevicesName.First();
+                        string measureKeyName0 = TagAttrs.ContainsKey("key") ? TagAttrs["key"] : SerialportMeasureDefaultKeyName;
+                        string measureCmd0 = TagAttrs.ContainsKey("mode") ? TagAttrs["mode"] : string.Empty;
+                        M3458AManualMeasureText = "Measuring...";
+                        GPIB3458AMeasure measureDevice = new();
+                        measureDevice.Open(measureGpibAddr0);
+                        measureDevice.Timeout = Properties.Settings.Default.GPIBTimeout;
+                        if (measureDevice.IsOpen)
+                        {
+                            try
+                            {
+                                decimal measureData = measureCmd0 == string.Empty ? measureDevice.ReadDecimal() : measureDevice.QueryDecimal(measureCmd0);
+                                M3458AManualMeasureText = measureData.ToString();
+                                DataStorageInstance.AddValue(measureKeyName0, measureData);
+                                measureDevice.Dispose();
+                            }
+                            catch (Exception ex)
+                            {
+                                _ = MessageBox.Show(ex.ToString());
+                                measureDevice.Dispose();
+                            }
+                        }
+                        else
+                        {
+                            throw new InvalidOperationException("GPIB is not open.");
+                        }
+                        break;
                     case "MEASURE":
                         // <measure key="..." mode="..."/>
                         // default: Key = 3458A Data Storage
