@@ -17,8 +17,8 @@ namespace MeasureApp.ViewModel
 {
     public partial class MainWindowDataContext : NotificationObjectBase
     {
-        public string Key3458AString = "3458A Data Storage";
-        public string KeySerialPortString = "Serial Port Data Storage";
+        public static string Key3458AString = "3458A Data Storage";
+        public static string KeySerialPortString = "Serial Port Data Storage";
 
         // Pages
         private MainWindowPages pages;

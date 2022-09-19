@@ -85,10 +85,10 @@
 
 	<ItemGroup>
 		<Reference Include="NationalInstruments.Common">
-			<HintPath>C:\Users\Public\Documents\National Instruments\NI-VISA\Examples\.NET Nonstandard\4.5.1\SimpleAsynchronousReadWrite\cs\bin\Debug\NationalInstruments.Common.dll</HintPath>
+		  <Private>True</Private>
 		</Reference>
 		<Reference Include="NationalInstruments.VisaNS">
-			<HintPath>C:\Users\Public\Documents\National Instruments\NI-VISA\Examples\.NET Nonstandard\4.5.1\SimpleAsynchronousReadWrite\cs\bin\Debug\NationalInstruments.VisaNS.dll</HintPath>
+		  <Private>True</Private>
 		</Reference>
 	</ItemGroup>
 

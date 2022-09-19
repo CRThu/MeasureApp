@@ -209,6 +209,18 @@ namespace MeasureApp.ViewModel
             }
         }
 
+        // 串口通信采集指令默认键名称
+        private string serialportMeasureDefaultKeyName = Key3458AString;
+        public string SerialportMeasureDefaultKeyName
+        {
+            get => serialportMeasureDefaultKeyName;
+            set
+            {
+                serialportMeasureDefaultKeyName = value;
+                RaisePropertyChanged(() => SerialportMeasureDefaultKeyName);
+            }
+        }
+
         /// <summary>
         /// 脚本For信息栈字典
         /// 0|
@@ -423,6 +435,85 @@ PA5.FREQ;
                             }
                         }
                         break;
+                    case "SERIALPORT":
+                        // 临时
+                        // <serialport port="..." cmd="..."/>
+                        /*
+<serialport port="COM10" cmd="'Measure'"/>
+                        
+<setvar key="i" val="123"/>
+<serialport port="COM10" cmd="'Measure_'+i"/>
+                        */
+
+                        string serialportPortName = TagAttrs["port"];
+                        string serialportCmd = TagAttrs["cmd"];
+
+                        // 支持表达式运算
+                        ExpressionEvaluator evaluator1 = new();
+                        evaluator1.Variables = SerialportCommandScriptVarDict.ToDictionary(pair => pair.Key, pair => (object)(double)pair.Value);
+                        string r1 = evaluator1.Evaluate(serialportCmd.Replace('\'', '\"')).ToString();
+
+
+                        SerialPortsInstance.WriteString(serialportPortName, r1 + "\r\n");
+                        break;
+
+                    case "MEASUREKEY":
+                        // 临时
+                        // <measurekey key="..."/>
+                        // default: Key = 3458A Data Storage
+                        /*
+<measurekey key="'Measure'"/>
+
+<setvar key="i" val="123"/>
+<measurekey key="'Measure_'+i"/>
+                        */
+                        SerialportMeasureDefaultKeyName = TagAttrs.ContainsKey("key") ? TagAttrs["key"] : Key3458AString;
+
+                        // 支持表达式运算
+                        ExpressionEvaluator evaluator2 = new();
+                        evaluator2.Variables = SerialportCommandScriptVarDict.ToDictionary(pair => pair.Key, pair => (object)(double)pair.Value);
+                        string r2 = evaluator2.Evaluate(SerialportMeasureDefaultKeyName.Replace('\'', '\"')).ToString();
+
+                        SerialportMeasureDefaultKeyName = r2;
+                        break;
+                    case "GPIBMEASURE":
+                        // 临时
+                        // <gpibmeasure addr="..." key="..." mode="..."/>
+                        // default: Key = 3458A Data Storage
+                        // mode = DCI DCV <null>
+                        /*
+<gpibmeasure addr="GPIB0::22::INSTR" key="Measure" mode="DCV"/>
+<gpibmeasure addr="GPIB0::22::INSTR" key="Measure" mode="DCI"/>
+<gpibmeasure addr="GPIB0::19::INSTR" key="Measure" mode=":MEAS:VOLT:DC?"/>
+<gpibmeasure addr="GPIB0::19::INSTR" key="Measure" mode=":MEAS:CURR:DC?"/>
+                        */
+                        string measureGpibAddr0 = TagAttrs.ContainsKey("addr") ? TagAttrs["addr"] : GpibDevicesName.First();
+                        string measureKeyName0 = TagAttrs.ContainsKey("key") ? TagAttrs["key"] : SerialportMeasureDefaultKeyName;
+                        string measureCmd0 = TagAttrs.ContainsKey("mode") ? TagAttrs["mode"] : string.Empty;
+                        M3458AManualMeasureText = "Measuring...";
+                        GPIB3458AMeasure measureDevice = new();
+                        measureDevice.Open(measureGpibAddr0);
+                        measureDevice.Timeout = Properties.Settings.Default.GPIBTimeout;
+                        if (measureDevice.IsOpen)
+                        {
+                            try
+                            {
+                                decimal measureData = measureCmd0 == string.Empty ? measureDevice.ReadDecimal() : measureDevice.QueryDecimal(measureCmd0);
+                                M3458AManualMeasureText = measureData.ToString();
+                                DataStorageInstance.AddValue(measureKeyName0, measureData);
+                                measureDevice.Dispose();
+                            }
+                            catch (Exception ex)
+                            {
+                                _ = MessageBox.Show(ex.ToString());
+                                measureDevice.Dispose();
+                            }
+                        }
+                        else
+                        {
+                            throw new InvalidOperationException("GPIB is not open.");
+                        }
+                        break;
                     case "MEASURE":
                         // <measure key="..." mode="..."/>
                         // default: Key = 3458A Data Storage
@@ -432,7 +523,7 @@ PA5.FREQ;
 <measure key="Measure" mode="DCI"/>
 <measure key="Measure"/>
                         */
-                        string measureKeyName = TagAttrs.ContainsKey("key") ? TagAttrs["key"] : Key3458AString;
+                        string measureKeyName = TagAttrs.ContainsKey("key") ? TagAttrs["key"] : SerialportMeasureDefaultKeyName;
                         string measureCmd = TagAttrs.ContainsKey("mode") ? TagAttrs["mode"] : string.Empty;
                         M3458AManualMeasureText = "Measuring...";
                         if (Measure3458AInstance.IsOpen)
