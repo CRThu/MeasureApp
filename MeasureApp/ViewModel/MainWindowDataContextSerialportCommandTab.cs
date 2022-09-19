@@ -482,9 +482,10 @@ PA5.FREQ;
                         // default: Key = 3458A Data Storage
                         // mode = DCI DCV <null>
                         /*
-<gpibmeasure addr="..." key="Measure" mode="DCV"/>
-<gpibmeasure addr="..." key="Measure" mode="DCI"/>
-<gpibmeasure addr="..." key="Measure"/>
+<gpibmeasure addr="GPIB0::22::INSTR" key="Measure" mode="DCV"/>
+<gpibmeasure addr="GPIB0::22::INSTR" key="Measure" mode="DCI"/>
+<gpibmeasure addr="GPIB0::19::INSTR" key="Measure" mode=":MEAS:VOLT:DC?"/>
+<gpibmeasure addr="GPIB0::19::INSTR" key="Measure" mode=":MEAS:CURR:DC?"/>
                         */
                         string measureGpibAddr0 = TagAttrs.ContainsKey("addr") ? TagAttrs["addr"] : GpibDevicesName.First();
                         string measureKeyName0 = TagAttrs.ContainsKey("key") ? TagAttrs["key"] : SerialportMeasureDefaultKeyName;
