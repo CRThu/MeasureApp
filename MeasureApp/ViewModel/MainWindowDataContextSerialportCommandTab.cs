@@ -663,13 +663,18 @@ REGW;{i:X};{j:D};
 <forend/>
 <forend/>
 B;
+<for var="i" begin="1.8" end="1.4" step="-0.1"/>
+<for var="j" begin="1" end="-1" step="-1"/>
+REGW;{i:F3};{j:F3};
+<forend/>
+<forend/>
                          */
                         if (TagAttrs.ContainsKey("begin") && TagAttrs.ContainsKey("end"))
                         {
                             string forVarName = TagAttrs.ContainsKey("var") ? TagAttrs["var"] : "FOR_ITERATOR";
-                            int begin = Convert.ToInt32(TagAttrs["begin"]);
-                            int end = Convert.ToInt32(TagAttrs["end"]);
-                            int step = Convert.ToInt32(TagAttrs.ContainsKey("step") ? TagAttrs["step"] : "1");
+                            decimal begin = Convert.ToDecimal(TagAttrs["begin"]);
+                            decimal end = Convert.ToDecimal(TagAttrs["end"]);
+                            decimal step = Convert.ToDecimal(TagAttrs.ContainsKey("step") ? TagAttrs["step"] : "1");
 
                             // ForStackDict: FOR[VAR]
                             int currentLine = SerialPortCommandScriptGetCurrentLinePointer();
@@ -688,10 +693,12 @@ B;
                                 SerialportCommandScriptVarDict[forVarName] = begin;
                             }
                             // 循环状态
-                            if (SerialportCommandScriptVarDict[forVarName] > end)
+                            var getForInfoFromStack0 = SerialportCommandScriptForStack[^1];
+                            if ((SerialportCommandScriptVarDict[getForInfoFromStack0.Var] > getForInfoFromStack0.End && getForInfoFromStack0.Step > 0)
+                                || (SerialportCommandScriptVarDict[getForInfoFromStack0.Var] < getForInfoFromStack0.End && getForInfoFromStack0.Step < 0))
                             {
                                 // 循环判断语句为false
-                                SerialPortCommandScriptGotoLinePointer(SerialportCommandScriptForStack[^1].EndForPointer + 1);
+                                SerialPortCommandScriptGotoLinePointer(getForInfoFromStack0.EndForPointer + 1);
                                 SerialportCommandScriptForStack.RemoveAt(SerialportCommandScriptForStack.Count - 1);
                             }
                         }
@@ -1375,14 +1382,14 @@ REGW;{i+j+3:D};{Round(j+8):D};{Max(i,j,0.5):F3};
         /// <summary>
         /// 初始值
         /// </summary>
-        public int Begin { get; set; }
+        public decimal Begin { get; set; }
         /// <summary>
         /// 结束值
         /// </summary>
-        public int End { get; set; }
+        public decimal End { get; set; }
         /// <summary>
         /// 自增值
         /// </summary>
-        public int Step { get; set; }
+        public decimal Step { get; set; }
     }
 }
