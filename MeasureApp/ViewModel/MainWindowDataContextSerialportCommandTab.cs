@@ -457,6 +457,43 @@ PA5.FREQ;
                         SerialPortsInstance.WriteString(serialportPortName, r1 + "\r\n");
                         break;
 
+                    case "GPIB":
+                        // <gpibmeasure addr="..." mode="..."/>
+                        // mode = DCI DCV NPLC
+                        /*
+<gpib addr="GPIB0::22::INSTR" mode="NPLC 10"/>
+<gpib addr="GPIB0::22::INSTR" mode="DCI"/>
+<gpib addr="GPIB0::18::INSTR" mode="DISP:CURR:NPLC 10"/>
+<gpib addr="GPIB0::18::INSTR" mode="DISP:CURR:DIG 6"/>
+<gpib addr="GPIB0::18::INSTR" mode="SOUR:VOLT 1.65"/>
+<gpib addr="GPIB0::18::INSTR" mode="OUTP ON"/>
+                        */
+                        string gpibAddr0 = TagAttrs.ContainsKey("addr") ? TagAttrs["addr"] : GpibDevicesName.First();
+                        string gpibCmd0 = TagAttrs.ContainsKey("mode") ? TagAttrs["mode"] : string.Empty;
+                        GPIB3458AMeasure gpibDevice = new();
+                        gpibDevice.Open(gpibAddr0);
+                        gpibDevice.Timeout = Properties.Settings.Default.GPIBTimeout;
+                        if (gpibDevice.IsOpen)
+                        {
+                            try
+                            {
+                                if (gpibCmd0 != string.Empty)
+                                {
+                                    gpibDevice.WriteCommand(gpibCmd0);
+                                }
+                                gpibDevice.Dispose();
+                            }
+                            catch (Exception ex)
+                            {
+                                _ = MessageBox.Show(ex.ToString());
+                                gpibDevice.Dispose();
+                            }
+                        }
+                        else
+                        {
+                            throw new InvalidOperationException("GPIB is not open.");
+                        }
+                        break;
                     case "MEASUREKEY":
                         // 临时
                         // <measurekey key="..."/>
