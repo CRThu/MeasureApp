@@ -458,8 +458,10 @@ PA5.FREQ;
                         break;
 
                     case "GPIB":
-                        // <gpibmeasure addr="..." mode="..."/>
+                        // 临时
+                        // <gpibmeasure addr="..." mode="..." expr="..."/>
                         // mode = DCI DCV NPLC
+                        // expr = true/false, default: false
                         /*
 <gpib addr="GPIB0::22::INSTR" mode="NPLC 10"/>
 <gpib addr="GPIB0::22::INSTR" mode="DCI"/>
@@ -467,9 +469,22 @@ PA5.FREQ;
 <gpib addr="GPIB0::18::INSTR" mode="DISP:CURR:DIG 6"/>
 <gpib addr="GPIB0::18::INSTR" mode="SOUR:VOLT 1.65"/>
 <gpib addr="GPIB0::18::INSTR" mode="OUTP ON"/>
+                        
+<setvar key="volt" val="1.65"/>
+<gpib addr="GPIB0::18::INSTR" expr="true" mode="'SOUR:VOLT '+volt"/>
                         */
                         string gpibAddr0 = TagAttrs.ContainsKey("addr") ? TagAttrs["addr"] : GpibDevicesName.First();
                         string gpibCmd0 = TagAttrs.ContainsKey("mode") ? TagAttrs["mode"] : string.Empty;
+                        string CmdExpr0 = TagAttrs.ContainsKey("expr") ? TagAttrs["expr"] : "false";
+
+                        if (Convert.ToBoolean(CmdExpr0))
+                        {
+                            // 支持表达式运算
+                            ExpressionEvaluator evaluator3 = new();
+                            evaluator3.Variables = SerialportCommandScriptVarDict.ToDictionary(pair => pair.Key, pair => (object)(double)pair.Value);
+                            gpibCmd0 = evaluator3.Evaluate(gpibCmd0.Replace('\'', '\"')).ToString();
+                        }
+
                         GPIB3458AMeasure gpibDevice = new();
                         gpibDevice.Open(gpibAddr0);
                         gpibDevice.Timeout = Properties.Settings.Default.GPIBTimeout;
