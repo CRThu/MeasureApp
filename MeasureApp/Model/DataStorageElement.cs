@@ -1,4 +1,5 @@
 ﻿using MeasureApp.Model.Common;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -10,10 +11,12 @@ using System.Windows.Data;
 
 namespace MeasureApp.Model
 {
+    [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
     public class DataStorageElement : NotificationObjectBase
     {
         public ObservableRangeCollection<DataPoint> DataPoints { get; set; }
 
+        [JsonProperty]
         public IEnumerable<double> X
         {
             get
@@ -21,8 +24,11 @@ namespace MeasureApp.Model
                 lock (locker)
                     return DataPoints.Select(p => p.X);
             }
+            set
+            { }
         }
 
+        [JsonProperty]
         public IEnumerable<double> Y
         {
             get
@@ -30,6 +36,8 @@ namespace MeasureApp.Model
                 lock (locker)
                     return DataPoints.Select(p => p.Y);
             }
+            set
+            { }
         }
 
         public IEnumerable<DataPoint> Data

@@ -21,7 +21,7 @@ namespace MeasureApp.Model
         public event EventHandler OnDataChanged;
 
         private Dictionary<string, DataStorageElement> data;
-        private Dictionary<string, DataStorageElement> Data
+        public Dictionary<string, DataStorageElement> Data
         {
             get => data;
             set
@@ -199,7 +199,7 @@ namespace MeasureApp.Model
             //    IncludeFields = true
             //};
             //string json = System.Text.Json.JsonSerializer.Serialize(DataStorageInstance, options);
-            return JsonConvert.SerializeObject(ds.Data, new JsonSerializerSettings() { FloatParseHandling = FloatParseHandling.Decimal });
+            return JsonConvert.SerializeObject(new DataStorageJsonSerializeStructure(ds), new JsonSerializerSettings() { FloatParseHandling = FloatParseHandling.Decimal });
         }
 
         public static DataStorage DeSerialize(string json)
@@ -209,8 +209,8 @@ namespace MeasureApp.Model
             //    IncludeFields = true
             //};
             //DataStorage ds = System.Text.Json.JsonSerializer.Deserialize<DataStorage>(json, options);
-            var data = JsonConvert.DeserializeObject<Dictionary<string, DataStorageElement>>(json, new JsonSerializerSettings() { FloatParseHandling = FloatParseHandling.Decimal });
-            return new(data);
+            var data = JsonConvert.DeserializeObject<DataStorageJsonSerializeStructure>(json, new JsonSerializerSettings() { FloatParseHandling = FloatParseHandling.Decimal });
+            return new(data.ToDataStorageElements());
         }
     }
 }

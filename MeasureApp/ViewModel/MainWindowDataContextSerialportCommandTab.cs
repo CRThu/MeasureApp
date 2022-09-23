@@ -465,7 +465,7 @@ PA5.FREQ;
                         /*
 <gpib addr="GPIB0::22::INSTR" mode="NPLC 10"/>
 <gpib addr="GPIB0::22::INSTR" mode="DCI"/>
-<gpib addr="GPIB0::18::INSTR" mode="DISP:CURR:NPLC 10"/>
+<gpib addr="GPIB0::18::INSTR" mode="SENS:CURR:NPLC 10"/>
 <gpib addr="GPIB0::18::INSTR" mode="DISP:CURR:DIG 6"/>
 <gpib addr="GPIB0::18::INSTR" mode="SOUR:VOLT 1.65"/>
 <gpib addr="GPIB0::18::INSTR" mode="OUTP ON"/>
