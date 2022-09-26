@@ -11,7 +11,7 @@ namespace MeasureApp.Model
         public DataStorageJsonSerializeStructure() : base()
         {
         }
-
+         
         public DataStorageJsonSerializeStructure(DataStorage ds) : base()
         {
             foreach (var item in ds.Data)

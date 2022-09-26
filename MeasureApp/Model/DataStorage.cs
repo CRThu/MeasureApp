@@ -57,8 +57,6 @@ namespace MeasureApp.Model
             get => selectedKey;
             set
             {
-                SelectedData.OnDataChanged -= (_, _) => RaisePropertyChanged(() => SelectedData);
-
                 selectedKey = value ?? Keys.FirstOrDefault();
 
                 SelectedData.OnDataChanged += (_, _) => RaisePropertyChanged(() => SelectedData);
