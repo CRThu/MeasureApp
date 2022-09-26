@@ -4,14 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MeasureApp.Model
+namespace MeasureApp.Model.DataStorage
 {
     public class DataStorageJsonSerializeStructure : Dictionary<string, Dictionary<string, List<double>>>
     {
         public DataStorageJsonSerializeStructure() : base()
         {
         }
-         
+
         public DataStorageJsonSerializeStructure(DataStorage ds) : base()
         {
             foreach (var item in ds.Data)

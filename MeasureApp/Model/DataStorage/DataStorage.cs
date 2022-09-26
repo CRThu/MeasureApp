@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 
-namespace MeasureApp.Model
+namespace MeasureApp.Model.DataStorage
 {
     public class DataStorage : NotificationObjectBase
     {

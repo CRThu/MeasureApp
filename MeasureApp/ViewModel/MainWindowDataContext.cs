@@ -12,6 +12,7 @@ using MeasureApp.ViewModel.Common;
 using MeasureApp.Model.Devices;
 using System.Linq;
 using System.Collections.Specialized;
+using MeasureApp.Model.DataStorage;
 
 namespace MeasureApp.ViewModel
 {

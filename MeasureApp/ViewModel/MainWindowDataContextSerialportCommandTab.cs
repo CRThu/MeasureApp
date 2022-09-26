@@ -22,6 +22,7 @@ using MeasureApp.Model.Common;
 using MeasureApp.ViewModel.Common;
 using MeasureApp.Model.Devices;
 using CodingSeb.ExpressionEvaluator;
+using MeasureApp.Model.DataStorage;
 
 namespace MeasureApp.ViewModel
 {
