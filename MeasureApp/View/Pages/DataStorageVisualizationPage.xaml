@@ -45,21 +45,27 @@
                 </TabControl>
 
                 <TextBlock Text="数据源:" HorizontalAlignment="Left" Margin="10,162,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-                <Button Content="加载Json" HorizontalAlignment="Left" Margin="78,154,0,0" VerticalAlignment="Top" Width="70" Height="32">
+                <Button Content="加载Json" HorizontalAlignment="Left" Margin="54,154,0,0" VerticalAlignment="Top" Width="61" Height="32">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="Click">
                             <vmc:EventCommandBase Command="{Binding DataStorageLoadJsonEvent}"/>
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                 </Button>
-                <Button Content="保存Json" HorizontalAlignment="Left" Margin="170,154,0,0" VerticalAlignment="Top" Width="70" Height="32">
+                <Button Content="保存Json" HorizontalAlignment="Left" Margin="120,154,0,0" VerticalAlignment="Top" Width="62" Height="32">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="Click">
                             <vmc:EventCommandBase Command="{Binding DataStorageSaveJsonEvent}"/>
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                 </Button>
-
+                <Button Content="复制" HorizontalAlignment="Left" Margin="190,154,0,0" VerticalAlignment="Top" Width="50" Height="32">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Click">
+                            <vmc:EventCommandBase Command="{Binding DataStorageCopyToClipBoardEvent}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </Button>
                 <TextBlock Text="选中数据:" HorizontalAlignment="Left" Margin="10,199,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
                 <Button Content="导入" HorizontalAlignment="Left" Margin="78,191,0,0" VerticalAlignment="Top" Width="50" Height="32">
                     <i:Interaction.Triggers>

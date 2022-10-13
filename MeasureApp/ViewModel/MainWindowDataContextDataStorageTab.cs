@@ -129,6 +129,41 @@ namespace MeasureApp.ViewModel
         }
 
         /// <summary>
+        /// 数据源复制到剪切板(可直接粘贴至Excel)
+        /// NAME1       NAME2
+        /// X   Y       X   Y
+        /// 1   1111    1   123
+        /// 2   2222    2   234
+        /// 3   3333    3   345
+        /// 4   4444    4   456
+        /// 5   5555    5   567
+        /// </summary>
+        private void DataStorageCopyToClipBoard()
+        {
+            try
+            {
+                int rowsCnt = DataStorageInstance.Data.Select(kvp => kvp.Value.Count).Max();
+                StringBuilder[] tableRows = new StringBuilder[rowsCnt + 2];
+                for (int i = 0; i < tableRows.Length; i++)
+                    tableRows[i] = new StringBuilder();
+                foreach (var dataElement in DataStorageInstance.Data)
+                {
+                    tableRows[0].Append($"{dataElement.Key}\t\t\t");
+                    tableRows[1].Append("X\tY\t\t");
+                    for (int i = 0; i < dataElement.Value.DataPoints.Count; i++)
+                    {
+                        tableRows[i + 2].Append($"{dataElement.Value.DataPoints[i].X}\t{dataElement.Value.DataPoints[i].Y}\t\t");
+                    }
+                }
+                Clipboard.SetText(string.Join("\r\n", tableRows.Select(row => row.ToString())));
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
+            }
+        }
+
+        /// <summary>
         /// 选中数据导入
         /// </summary>
         public void DataStorageImportSelectedData()
@@ -312,6 +347,19 @@ namespace MeasureApp.ViewModel
                     dataStorageSaveJsonEvent = new CommandBase(new Action<object>(param => DataStorageSaveJson()));
                 }
                 return dataStorageSaveJsonEvent;
+            }
+        }
+
+        private CommandBase dataStorageCopyToClipBoardEvent;
+        public CommandBase DataStorageCopyToClipBoardEvent
+        {
+            get
+            {
+                if (dataStorageCopyToClipBoardEvent == null)
+                {
+                    dataStorageCopyToClipBoardEvent = new CommandBase(new Action<object>(param => DataStorageCopyToClipBoard()));
+                }
+                return dataStorageCopyToClipBoardEvent;
             }
         }
 
