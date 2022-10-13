@@ -13,7 +13,6 @@
     <Page.Resources>
         <viewmodel:SerialPortCommandIsListeningButtonContentConverter x:Key="SerialPortCommandIsListeningButtonContentConverter"/>
         <viewmodel:IsNotNullConverter x:Key="IsNotNullConverter"/>
-        <viewmodel:DateTimeToStringConverter x:Key="DateTimeToStringConverter"/>
         <viewmodel:SerialportCommandScriptRunButtonConverter x:Key="SerialportCommandScriptRunButtonConverter"/>
     </Page.Resources>
     <Grid>
@@ -49,7 +48,7 @@
             </ListView.ItemContainerStyle>
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="时间" DisplayMemberBinding="{Binding Time, Converter={StaticResource DateTimeToStringConverter}}" Width="160"/>
+                    <GridViewColumn Header="时间" DisplayMemberBinding="{Binding Time, StringFormat='{}{0:yyyy-MM-dd HH:mm:ss.fff}'}" Width="160"/>
                     <GridViewColumn Header="发送方" DisplayMemberBinding="{Binding Host}" Width="50"/>
                     <GridViewColumn Header="消息" DisplayMemberBinding="{Binding Message}" Width="300"/>
                 </GridView>

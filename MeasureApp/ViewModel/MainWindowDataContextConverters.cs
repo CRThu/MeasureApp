@@ -184,7 +184,7 @@ namespace MeasureApp.ViewModel
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return ((DateTime)value).ToString("yyyy-MM-dd hh:mm:ss.fff");
+            return ((DateTime)value).ToString("yyyy-MM-dd HH:mm:ss.fff");
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
