@@ -45,6 +45,7 @@
 		<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1133-prerelease" />
 		<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.37" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+		<PackageReference Include="NPOI" Version="2.5.5" />
 		<PackageReference Include="NWaves" Version="0.9.6" />
 		<PackageReference Include="RoslynPad.Editor.Windows" Version="1.2.0" />
 		<PackageReference Include="ScottPlot.WPF" Version="4.1.57" />
@@ -63,6 +64,9 @@
 
 	<ItemGroup>
 		<None Update="Config\AD7124-8.json">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="Config\Device.json">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
 		<None Update="Config\LogKeywordColor.json">
@@ -94,6 +98,12 @@
 
 	<ItemGroup>
 	  <Folder Include="View\Web\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Page Update="View\Pages\TempControlPage.xaml">
+	    <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+	  </Page>
 	</ItemGroup>
 
 </Project>

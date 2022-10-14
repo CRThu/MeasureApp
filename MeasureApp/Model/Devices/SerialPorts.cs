@@ -109,6 +109,11 @@ namespace MeasureApp.Model.Devices
             return buf;
         }
 
+        public string ReadLine(string serialPort)
+        {
+            return SerialPortsDict[serialPort].ReadLine();
+        }
+
         public byte[] GetDataPacket(string serialPort, string cmd, int pktLen)
         {
             byte[] cmdBytes = BytesConverter.String2Bytes(cmd);

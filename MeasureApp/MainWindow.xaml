@@ -69,6 +69,11 @@
                                     <Frame Content="{Binding Pages.Multimeter3458AControlPage}"/>
                                 </ad:LayoutAnchorable.Content>
                             </ad:LayoutAnchorable>
+                            <ad:LayoutAnchorable Title="温度控制" CanHide="False">
+                                <ad:LayoutAnchorable.Content>
+                                    <Frame Content="{Binding Pages.TempControlPage}"/>
+                                </ad:LayoutAnchorable.Content>
+                            </ad:LayoutAnchorable>
                             <ad:LayoutAnchorable Title="串口指令通信" CanHide="False">
                                 <ad:LayoutAnchorable.Content>
                                     <Frame Content="{Binding Pages.SerialPortInstructionPage}"/>

@@ -32,6 +32,17 @@ namespace MeasureApp.ViewModel
             }
         }
 
+        private TempControlPage tempControlPage;
+        public TempControlPage TempControlPage
+        {
+            get => tempControlPage;
+            set
+            {
+                tempControlPage = value;
+                RaisePropertyChanged(() => TempControlPage);
+            }
+        }
+
         private SerialPortInstructionPage serialPortInstructionPage;
         public SerialPortInstructionPage SerialPortInstructionPage
         {
@@ -136,6 +147,7 @@ namespace MeasureApp.ViewModel
         {
             DevicesConnectionPage = new DevicesConnectionPage(dataContext);
             Multimeter3458AControlPage = new Multimeter3458AControlPage(dataContext);
+            TempControlPage = new TempControlPage(dataContext);
             SerialPortInstructionPage = new SerialPortInstructionPage(dataContext);
             SerialPortPacketPage = new SerialPortPacketPage(dataContext);
             DataStorageVisualizationPage = new DataStorageVisualizationPage(dataContext);

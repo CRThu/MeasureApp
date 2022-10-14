@@ -1,0 +1,38 @@
+﻿<Page x:Class="MeasureApp.View.Pages.TempControlPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:MeasureApp.View.Pages"
+      xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+      xmlns:viewmodel="clr-namespace:MeasureApp.ViewModel"
+      xmlns:vmc="clr-namespace:MeasureApp.ViewModel.Common"
+      mc:Ignorable="d"
+      Title="TempControlPage">
+    <Page.Resources>
+        <viewmodel:M3458ASyncMeasureButtonContentConverter x:Key="M3458ASyncMeasureButtonContentConverter"/>
+    </Page.Resources>
+    <Grid>
+        <TextBlock Text="串口选择：" TextWrapping="Wrap" Margin="10,14,0,0" TextAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+        <ComboBox ItemsSource="{Binding SerialPortsInstance.SerialPortsDict, UpdateSourceTrigger=PropertyChanged}" SelectedValue="{Binding TempControlPortNameSelectedValue, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Key" SelectedValuePath="Key" HorizontalAlignment="Left" Margin="75,10,0,0" VerticalAlignment="Top" Width="97" Height="23"/>
+        <CheckBox Name="TempControlMonitorIsOpenCheckBox" Content="温度监控" IsChecked="{Binding TempControlMonitorIsOpen}" HorizontalAlignment="Left" Margin="191,15,0,0" VerticalAlignment="Top">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="Click">
+                    <vmc:EventCommandBase Command="{Binding TempControlMonitorStatusChangedEvent}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </CheckBox>
+
+        <TextBlock Text="当前温度：" TextWrapping="Wrap" Margin="10,66,0,0" TextAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+        <TextBlock x:Name="TempControlCurrentTempTextBlock" Text="{Binding TempControlCurrentTempText}" TextWrapping="Wrap" Margin="75,58,0,0" TextAlignment="Center" VerticalAlignment="Top" FontSize="24" Height="34" HorizontalAlignment="Left" Width="62"/>
+        <TextBlock Text="设定温度：" TextWrapping="Wrap" Margin="10,97,0,0" TextAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+        <TextBox Name="TempControlSetTempTextBox" Text="{Binding TempControlSetTempText}" HorizontalAlignment="Left" Margin="75,96,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="54"/>
+        <Button x:Name="TempControlSetTempButton" Content="设定" HorizontalAlignment="Left" Margin="144,94,0,0" VerticalAlignment="Top" Width="60" Height="22">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="Click">
+                    <vmc:EventCommandBase Command="{Binding TempControlSetTempEvent}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </Button>
+    </Grid>
+</Page>
