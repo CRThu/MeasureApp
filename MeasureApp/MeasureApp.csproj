@@ -66,6 +66,9 @@
 		<None Update="Config\AD7124-8.json">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
+		<None Update="Config\Settings.json">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
 		<None Update="Config\Device.json">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>

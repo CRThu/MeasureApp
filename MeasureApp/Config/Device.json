@@ -1,24 +1,26 @@
 {
+  "Devices": {
     "ATS-545": {
-        "TYPE": "THERMOSTREAM",
-        "PROTOCOL": {
-            "SERIALPORT": {
-                "CONFIG": {
-                    "BAUDRATE": "9600",
-                    "DATABITS": "8",
-                    "STOPBITS": "1",
-                    "PARITY": "NONE",
-                    "TERMCHAR": "\n"
-                },
-                "COMMAND": {
-                    "NOWTEMP": "TEMP?",
-                    "GETTEMP": "SETP?",
-                    "SETTEMP": "SETP {0}",
-                    "GETFLOW": "FLOW?",
-                    "FLOWON": "FLOW 1",
-                    "FLOWOFF": "FLOW 0"
-                }
-            }
+      "TYPE": "THERMOSTREAM",
+      "PROTOCOL": {
+        "SERIALPORT": {
+          "CONFIG": {
+            "BAUDRATE": "9600",
+            "DATABITS": "8",
+            "STOPBITS": "1",
+            "PARITY": "NONE",
+            "TERMCHAR": "\n"
+          },
+          "COMMAND": {
+            "NOWTEMP": "TEMP?",
+            "GETTEMP": "SETP?",
+            "SETTEMP": "SETP {0}",
+            "GETFLOW": "FLOW?",
+            "FLOWON": "FLOW 1",
+            "FLOWOFF": "FLOW 0"
+          }
         }
+      }
     }
+  }
 }

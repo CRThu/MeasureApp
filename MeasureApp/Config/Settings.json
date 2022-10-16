@@ -1,0 +1,53 @@
+{
+  "Settings": {
+    "VISA": {
+      "Timeout": 5000
+    },
+    "SerialPort": {
+      "Timeout": 1000,
+      "Buffer": 65536,
+      "DefaultBaudRate": 9600,
+      "DefaultParity": "None",
+      "DefaultDataBits": 8,
+      "DefaultStopBits": 1,
+      "BaudRate": [
+        9600,
+        38400,
+        115200,
+        921600
+      ],
+      "Parity": [
+        "None",
+        "Odd",
+        "Even",
+        "Mark",
+        "Space"
+      ],
+      "DataBits": [
+        5,
+        6,
+        7,
+        8
+      ],
+      "StopBits": [
+        1,
+        1.5,
+        2
+      ]
+    }
+  },
+  "Logger": {
+    "SerialPortLogger": {
+      "IsHighLight": true
+    },
+    "Keyword": {
+      "PASS": "#FF008000",
+      "FAIL": "#FFFF0000",
+      "__DEFAULT__": "#FFFFA500"
+    }
+  },
+  "TempControl":{
+    "WarningMinTemp":-55,
+    "WarningMaxTemp":125
+  }
+}
