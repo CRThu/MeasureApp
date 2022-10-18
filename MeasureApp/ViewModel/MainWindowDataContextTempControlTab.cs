@@ -121,7 +121,7 @@ namespace MeasureApp.ViewModel
                     if (result == MessageBoxResult.Cancel)
                         return;
                 }
-                SerialPortsInstance.WriteString(TempControlPortNameSelectedValue, $"TEMP {TempControlSetTempText}\n");
+                SerialPortsInstance.WriteString(TempControlPortNameSelectedValue, $"SETP {TempControlSetTempText}\n");
             }
             catch (Exception ex)
             {
