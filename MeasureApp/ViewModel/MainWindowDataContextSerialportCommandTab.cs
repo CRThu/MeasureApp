@@ -583,7 +583,23 @@ PA5.FREQ;
                         {
                             try
                             {
-                                decimal measureData = measureCmd == string.Empty ? Measure3458AInstance.ReadDecimal() : Measure3458AInstance.QueryDecimal(measureCmd);
+                                // 3458A 连续发送DCV时千分之一概率出现超时错误,需要重发
+                                decimal measureData;
+                                int retryTime = 3;
+                                while (true)
+                                {
+                                    try
+                                    {
+                                        measureData = measureCmd == string.Empty ? Measure3458AInstance.ReadDecimal() : Measure3458AInstance.QueryDecimal(measureCmd);
+                                        break;
+                                    }
+                                    catch
+                                    {
+                                        retryTime--;
+                                        if (retryTime <= 0)
+                                            throw;
+                                    }
+                                }
                                 M3458AManualMeasureText = measureData.ToString();
                                 DataStorageInstance.AddValue(measureKeyName, measureData);
                             }
@@ -712,9 +728,9 @@ REGW;{i:F3};{j:F3};
                         // <forend/>
                         // 自增
                         var getForInfoFromStack = SerialportCommandScriptForStack[^1];
+                        // 若第一次运行至forend则保存endfor指针
                         if (getForInfoFromStack.EndForPointer == -1)
                             getForInfoFromStack.EndForPointer = SerialPortCommandScriptGetCurrentLinePointer();
-                        // 若第一次运行至forend则保存endfor指针
                         SerialportCommandScriptVarDict[getForInfoFromStack.Var] += getForInfoFromStack.Step;
                         SerialPortCommandScriptGotoLinePointer(getForInfoFromStack.ForPointer);
                         break;
