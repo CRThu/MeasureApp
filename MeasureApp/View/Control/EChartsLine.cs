@@ -99,13 +99,13 @@ namespace MeasureApp.View.Control
                     if ((DateTime.Now - dataStorageChartLastRefreshTime).TotalMilliseconds >= MinimumTriggerTime)
                     {
                         // TODO
-                        Debug.WriteLine("Selected Data Changed.");
+                        //Debug.WriteLine("Selected Data Changed.");
                         dataStorageChartLastRefreshTime = DateTime.Now;
                         UpdateChart();
                     }
                     else
                     {
-                        Debug.WriteLine("Busy, Not Triggered.");
+                        //Debug.WriteLine("Busy, Not Triggered.");
                     }
             });
         }
@@ -123,7 +123,7 @@ namespace MeasureApp.View.Control
                 string js = $"UpdateData({jsons});";
 
                 stopwatch.Stop(); //  停止监视
-                Debug.WriteLine($"Serialize:{stopwatch.ElapsedMilliseconds}ms, {js.Length}bytes.");
+                //Debug.WriteLine($"Serialize:{stopwatch.ElapsedMilliseconds}ms, {js.Length}bytes.");
 
                 if (CoreWebView2 != null)
                 {
@@ -136,7 +136,7 @@ namespace MeasureApp.View.Control
                         execTask.Wait();
 
                         stopwatch.Stop(); //  停止监视
-                        Debug.WriteLine($"ExecuteScriptAsync:{stopwatch.ElapsedMilliseconds}ms.");
+                        //Debug.WriteLine($"ExecuteScriptAsync:{stopwatch.ElapsedMilliseconds}ms.");
                     });
                 }
             }

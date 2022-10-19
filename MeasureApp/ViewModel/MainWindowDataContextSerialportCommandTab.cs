@@ -585,7 +585,7 @@ PA5.FREQ;
                             {
                                 // 3458A 连续发送DCV时千分之一概率出现超时错误,需要重发
                                 decimal measureData;
-                                int retryTime = 3;
+                                int retryTimes = 3;
                                 while (true)
                                 {
                                     try
@@ -595,8 +595,9 @@ PA5.FREQ;
                                     }
                                     catch
                                     {
-                                        retryTime--;
-                                        if (retryTime <= 0)
+                                        retryTimes--;
+                                        Debug.WriteLine($"{DateTime.Now:HH:mm:ss}: Visa has throwed an exception, retryTimes: {retryTimes}");
+                                        if (retryTimes <= 0)
                                             throw;
                                     }
                                 }

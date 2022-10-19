@@ -26,7 +26,7 @@ namespace MeasureApp.Model.SerialPortScript
             string regexStr = @"<(?<Tag>\w+)(?<Attrs>.*)\/>";
             Match match = Regex.Match(codeString, regexStr, RegexOptions.IgnoreCase);
             Attrs.Add("Tag", match.Groups["Tag"].Value);
-            Debug.WriteLine($"Attrs: {match.Groups["Attrs"].Value}");
+            //Debug.WriteLine($"Attrs: {match.Groups["Attrs"].Value}");
 
             string attrsString = match.Groups["Attrs"].Value.Trim();
             int attrsStringCursor = 0;
