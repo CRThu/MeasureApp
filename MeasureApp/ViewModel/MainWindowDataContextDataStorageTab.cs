@@ -150,9 +150,12 @@ namespace MeasureApp.ViewModel
                 {
                     tableRows[0].Append($"{dataElement.Key}\t\t\t");
                     tableRows[1].Append("X\tY\t\t");
-                    for (int i = 0; i < dataElement.Value.DataPoints.Count; i++)
+                    for (int i = 0; i < rowsCnt; i++)
                     {
-                        tableRows[i + 2].Append($"{dataElement.Value.DataPoints[i].X}\t{dataElement.Value.DataPoints[i].Y}\t\t");
+                        if (i < dataElement.Value.DataPoints.Count)
+                            tableRows[i + 2].Append($"{dataElement.Value.DataPoints[i].X}\t{dataElement.Value.DataPoints[i].Y}\t\t");
+                        else
+                            tableRows[i + 2].Append("\t\t\t");
                     }
                 }
                 Clipboard.SetText(string.Join("\r\n", tableRows.Select(row => row.ToString())));
