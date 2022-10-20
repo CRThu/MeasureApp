@@ -635,14 +635,18 @@ PA5.FREQ;
                         break;
                     case "DELMEASURE":
                         // <delmeasure key="..."/>
-                        if (TagAttrs.ContainsKey("key"))
+                        // default:all
+                        string delmeaKey0 = TagAttrs.ContainsKey("key") ? TagAttrs["key"] : null;
+
+                        if (delmeaKey0 != null)
                         {
-                            if (DataStorageInstance.ContainsKey(TagAttrs["key"]))
-                                DataStorageInstance.RemoveKey(TagAttrs["key"]);
+                            if (DataStorageInstance.ContainsKey(delmeaKey0))
+                                DataStorageInstance.RemoveKey(delmeaKey0);
                         }
                         else
                         {
-                            throw new InvalidOperationException("DELMEASURE do not contain key attribute.");
+                            foreach(var key in DataStorageInstance.Keys)
+                                DataStorageInstance.RemoveKey(key);
                         }
                         break;
                     case "SETVAR":
