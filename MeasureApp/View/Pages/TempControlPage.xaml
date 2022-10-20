@@ -24,7 +24,7 @@
         </CheckBox>
 
         <TextBlock Text="当前温度：" TextWrapping="Wrap" Margin="10,66,0,0" TextAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Left"/>
-        <TextBlock x:Name="TempControlCurrentTempTextBlock" Text="{Binding TempControlCurrentTempText}" TextWrapping="Wrap" Margin="75,58,0,0" TextAlignment="Left" VerticalAlignment="Top" FontSize="24" Height="34" HorizontalAlignment="Left" Width="90"/>
+        <TextBlock x:Name="TempControlCurrentTempTextBlock" Text="{Binding TempControlCurrentTempText,StringFormat={}{0:0.0}}" TextWrapping="Wrap" Margin="75,58,0,0" TextAlignment="Left" VerticalAlignment="Top" FontSize="24" Height="34" HorizontalAlignment="Left" Width="90"/>
         <TextBlock Text="设定温度：" TextWrapping="Wrap" Margin="10,97,0,0" TextAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Left"/>
         <TextBox Name="TempControlSetTempTextBox" Text="{Binding TempControlSetTempText}" HorizontalAlignment="Left" Margin="75,96,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="54"/>
         <Button x:Name="TempControlSetTempButton" Content="设定" HorizontalAlignment="Left" Margin="144,94,0,0" VerticalAlignment="Top" Width="60" Height="22">

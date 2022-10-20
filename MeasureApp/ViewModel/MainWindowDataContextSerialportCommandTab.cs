@@ -397,15 +397,34 @@ namespace MeasureApp.ViewModel
                     case "WAIT":
                         // <wait keyword="..." timeout="..." stop="..." storekey="..."/>
                         // default: keyword="[COMMAND]" timeout="1000" stop="true"
+                        // expr = true/false, default: false
                         /*
 PA5.FREQ;
 <wait keyword="FREQ" timeout="1500" storekey="f"/>
+PA5.FREQ;
+<setvar key="i" val="123"/>
+<wait keyword="FREQ" timeout="1500" expr="true" storekey="'f@'+i"/>
                          */
-                        bool result = Utility.TimeoutCheck(Convert.ToInt32(TagAttrs.ContainsKey("timeout") ? TagAttrs["timeout"] : "1000"), () =>
+
+                        string waitKeyword0 = TagAttrs.ContainsKey("keyword") ? TagAttrs["keyword"] : "[COMMAND]";
+                        string waitTimeout0 = TagAttrs.ContainsKey("timeout") ? TagAttrs["timeout"] : "1000";
+                        string waitStop0 = TagAttrs.ContainsKey("stop") ? TagAttrs["stop"] : "true";
+                        string waitStoreKey0 = TagAttrs.ContainsKey("storekey") ? TagAttrs["storekey"] : null;
+                        string waitExpr0 = TagAttrs.ContainsKey("expr") ? TagAttrs["expr"] : "false";
+
+                        if (Convert.ToBoolean(waitExpr0))
+                        {
+                            // 支持表达式运算
+                            ExpressionEvaluator evaluator4 = new();
+                            evaluator4.Variables = SerialportCommandScriptVarDict.ToDictionary(pair => pair.Key, pair => (object)(double)pair.Value);
+                            waitStoreKey0 = evaluator4.Evaluate(waitStoreKey0.Replace('\'', '\"')).ToString();
+                        }
+
+                        bool result = Utility.TimeoutCheck(Convert.ToInt32(waitTimeout0), () =>
                         {
                             try
                             {
-                                while (!SerialPortLogger.IsLastLogContains("COM", TagAttrs.ContainsKey("keyword") ? TagAttrs["keyword"] : "[COMMAND]"))
+                                while (!SerialPortLogger.IsLastLogContains("COM", waitKeyword0))
                                     Thread.Sleep(20);
                                 return true;
                             }
@@ -418,20 +437,20 @@ PA5.FREQ;
                         if (!result)
                         {
                             MessageBox.Show($"{code}: Timeout.");
-                            if (Convert.ToBoolean(TagAttrs.ContainsKey("stop") ? TagAttrs["stop"] : "true"))
+                            if (Convert.ToBoolean(waitStop0))
                                 return SerialPortScriptRunStatus.Stopped;
                         }
                         else
                         {
                             // storekey
-                            if (TagAttrs.ContainsKey("storekey"))
+                            if (waitStoreKey0 != null)
                             {
                                 SerialPortCommLogElement lastLogFromHost = SerialPortLogger.LogCollection.LastOrDefault(log => log.Host == "COM");
-                                if (lastLogFromHost is not null && ((string)lastLogFromHost.Message.ToString()).Contains(TagAttrs["keyword"], StringComparison.CurrentCultureIgnoreCase))
+                                if (lastLogFromHost is not null && ((string)lastLogFromHost.Message.ToString()).Contains(waitKeyword0, StringComparison.CurrentCultureIgnoreCase))
                                 {
                                     string[] storeKeyStrs = ((string)lastLogFromHost.Message.ToString()).Split(':');
                                     decimal storeKeyData = Convert.ToDecimal(storeKeyStrs[1].Trim());
-                                    DataStorageInstance.AddValue(TagAttrs["storekey"], storeKeyData);
+                                    DataStorageInstance.AddValue(waitStoreKey0, storeKeyData);
                                 }
                             }
                         }
