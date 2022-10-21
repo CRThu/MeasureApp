@@ -463,6 +463,13 @@ PA5.FREQ;
                         
 <setvar key="i" val="123"/>
 <serialport port="COM10" cmd="'Measure_'+i"/>
+
+<setvar key="vin" val="2.5"/>
+<setvar key="pga_reg" val="0"/>
+<serialport port="COM250" cmd="'VOLT '+((vin/Math.Pow(2,pga_reg)+3.3)/2.0).ToString('0.000')"/>
+
+<setvar key="pga_reg" val="4"/>
+<serialport port="COM250" cmd="'VOLT '+((vin/Math.Pow(2,pga_reg)+3.3)/2.0).ToString('0.000')"/>
                         */
 
                         string serialportPortName = TagAttrs["port"];

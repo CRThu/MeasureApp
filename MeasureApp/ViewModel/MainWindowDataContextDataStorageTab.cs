@@ -130,6 +130,7 @@ namespace MeasureApp.ViewModel
 
         /// <summary>
         /// 数据源复制到剪切板(可直接粘贴至Excel)
+        /// 复制X与Y列:
         /// NAME1       NAME2
         /// X   Y       X   Y
         /// 1   1111    1   123
@@ -137,28 +138,62 @@ namespace MeasureApp.ViewModel
         /// 3   3333    3   345
         /// 4   4444    4   456
         /// 5   5555    5   567
+        /// 
+        /// 仅复制Y列:
+        /// NAME1   NAME2
+        /// 1111    123
+        /// 2222    234
+        /// 3333    345
+        /// 4444    456
+        /// 5555    567
+        /// 
         /// </summary>
         private void DataStorageCopyToClipBoard()
         {
             try
             {
-                int rowsCnt = DataStorageInstance.Data.Select(kvp => kvp.Value.Count).Max();
-                StringBuilder[] tableRows = new StringBuilder[rowsCnt + 2];
-                for (int i = 0; i < tableRows.Length; i++)
-                    tableRows[i] = new StringBuilder();
-                foreach (var dataElement in DataStorageInstance.Data)
+                bool copyXColumn = MessageBox.Show("是否复制X列?", "复制选项", MessageBoxButton.YesNo) == MessageBoxResult.Yes;
+                if (copyXColumn)
                 {
-                    tableRows[0].Append($"{dataElement.Key}\t\t\t");
-                    tableRows[1].Append("X\tY\t\t");
-                    for (int i = 0; i < rowsCnt; i++)
+                    // 复制X与Y列:
+                    int rowsCnt = DataStorageInstance.Data.Select(kvp => kvp.Value.Count).Max();
+                    StringBuilder[] tableRows = new StringBuilder[rowsCnt + 2];
+                    for (int i = 0; i < tableRows.Length; i++)
+                        tableRows[i] = new StringBuilder();
+                    foreach (var dataElement in DataStorageInstance.Data)
                     {
-                        if (i < dataElement.Value.DataPoints.Count)
-                            tableRows[i + 2].Append($"{dataElement.Value.DataPoints[i].X}\t{dataElement.Value.DataPoints[i].Y}\t\t");
-                        else
-                            tableRows[i + 2].Append("\t\t\t");
+                        tableRows[0].Append($"{dataElement.Key}\t\t\t");
+                        tableRows[1].Append("X\tY\t\t");
+                        for (int i = 0; i < rowsCnt; i++)
+                        {
+                            if (i < dataElement.Value.DataPoints.Count)
+                                tableRows[i + 2].Append($"{dataElement.Value.DataPoints[i].X}\t{dataElement.Value.DataPoints[i].Y}\t\t");
+                            else
+                                tableRows[i + 2].Append("\t\t\t");
+                        }
                     }
+                    Clipboard.SetText(string.Join("\r\n", tableRows.Select(row => row.ToString())));
                 }
-                Clipboard.SetText(string.Join("\r\n", tableRows.Select(row => row.ToString())));
+                else
+                {
+                    // 仅复制Y列
+                    int rowsCnt = DataStorageInstance.Data.Select(kvp => kvp.Value.Count).Max();
+                    StringBuilder[] tableRows = new StringBuilder[rowsCnt + 2];
+                    for (int i = 0; i < tableRows.Length; i++)
+                        tableRows[i] = new StringBuilder();
+                    foreach (var dataElement in DataStorageInstance.Data)
+                    {
+                        tableRows[0].Append($"{dataElement.Key}\t");
+                        for (int i = 0; i < rowsCnt; i++)
+                        {
+                            if (i < dataElement.Value.DataPoints.Count)
+                                tableRows[i + 1].Append($"{dataElement.Value.DataPoints[i].Y}\t");
+                            else
+                                tableRows[i + 1].Append("\t");
+                        }
+                    }
+                    Clipboard.SetText(string.Join("\r\n", tableRows.Select(row => row.ToString())));
+                }
             }
             catch (Exception ex)
             {
