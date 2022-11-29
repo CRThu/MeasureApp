@@ -23,6 +23,7 @@ using MeasureApp.ViewModel.Common;
 using MeasureApp.Model.Devices;
 using CodingSeb.ExpressionEvaluator;
 using MeasureApp.Model.DataStorage;
+using Newtonsoft.Json.Linq;
 
 namespace MeasureApp.ViewModel
 {
@@ -659,23 +660,17 @@ PA5.FREQ;
                     case "SETVAR":
                         // <setvar key="..." val="..."/>
                         // <setvar key="i" val="123"/>
+                        // <setvar key="i" val="[1,2,3,4,5]"/>
                         if (TagAttrs.ContainsKey("key") && TagAttrs.ContainsKey("val"))
                         {
-                            SerialportCommandScriptVarDict[TagAttrs["key"]]= new(TagAttrs["key"], Convert.ToDecimal(TagAttrs["val"]));
-                        }
-                        else
-                        {
-                            throw new InvalidOperationException("SETVAR do not contain key or value attribute.");
-                        }
-                        break;
-                    case "SETLIST":
-                        // <setlist key="..." val="..."/>
-                        // <setlist key="i" val="[1,2,3,4,5]"/>
-                        if (TagAttrs.ContainsKey("key") && TagAttrs.ContainsKey("val"))
-                        {
-                            SerialportCommandScriptVarDict[TagAttrs["key"]]= new(TagAttrs["key"],
-                                TagAttrs["val"].Split("[],".ToCharArray(), StringSplitOptions.RemoveEmptyEntries)
-                                .Select(n => Convert.ToDecimal(n)));
+                            if (!TagAttrs["val"].Contains('['))
+                                // var = 123
+                                SerialportCommandScriptVarDict[TagAttrs["key"]] = new(TagAttrs["key"], Convert.ToDecimal(TagAttrs["val"]));
+                            else
+                                // var = [1,2,3]
+                                SerialportCommandScriptVarDict[TagAttrs["key"]] = new(TagAttrs["key"],
+                                    TagAttrs["val"].Split("[],".ToCharArray(), StringSplitOptions.RemoveEmptyEntries)
+                                    .Select(n => Convert.ToDecimal(n)));
                         }
                         else
                         {
@@ -1171,11 +1166,15 @@ REGW;{i+j+3:D};{Round(j+8):D};{Max(i,j,0.5):F3};
                 {
                     Properties.Settings.Default.DefaultDirectory = Path.GetDirectoryName(openFileDialog.FileName);
                     string json = File.ReadAllText(openFileDialog.FileName);
-                    var tempDic = JsonConvert.DeserializeObject<Dictionary<string, decimal>>(json, new JsonSerializerSettings() { FloatParseHandling = FloatParseHandling.Decimal });
+                    //var tempDic = JsonConvert.DeserializeObject<Dictionary<string, decimal>>(json, new JsonSerializerSettings() { FloatParseHandling = FloatParseHandling.Decimal });
+                    var j = JToken.Parse(json);
                     SerialportCommandScriptVarDict.Clear();
-                    foreach (var kv in tempDic)
+                    foreach (JProperty kv in j)
                     {
-                        SerialportCommandScriptVarDict.Add(kv.Key, new(kv.Key, kv.Value));
+                        if (kv.Value.Type == JTokenType.Float)
+                            SerialportCommandScriptVarDict.Add(kv.Name, new(kv.Name, kv.Value.Value<decimal>()));
+                        else
+                            SerialportCommandScriptVarDict.Add(kv.Name, new(kv.Name, kv.Value.Values<decimal>()));
                     }
                 }
             }
@@ -1201,7 +1200,15 @@ REGW;{i+j+3:D};{Round(j+8):D};{Max(i,j,0.5):F3};
                 if (saveFileDialog.ShowDialog() == true)
                 {
                     Properties.Settings.Default.DefaultDirectory = Path.GetDirectoryName(saveFileDialog.FileName);
-                    string json = JsonConvert.SerializeObject(SerialportCommandScriptVarDict, new JsonSerializerSettings() { FloatParseHandling = FloatParseHandling.Decimal });
+                    //string json = JsonConvert.SerializeObject(SerialportCommandScriptVarDict, new JsonSerializerSettings() { FloatParseHandling = FloatParseHandling.Decimal });
+
+                    JObject jo = new();
+                    foreach (var regs in SerialportCommandScriptVarDict.Values)
+                    {
+                        JProperty kv = new(regs.Name, regs.ValueObject);
+                        jo.Add(kv);
+                    }
+                    string json = JsonConvert.SerializeObject(jo);
                     File.WriteAllText(saveFileDialog.FileName, json);
                 }
             }

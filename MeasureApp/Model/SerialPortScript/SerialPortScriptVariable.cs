@@ -31,6 +31,17 @@ namespace MeasureApp.Model.SerialPortScript
             }
         }
 
+        public object ValueObject
+        {
+            get
+            {
+                if (Type.Equals(SerialPortScriptVariableType.VAR))
+                    return Value1;
+                else
+                    return Value.ToArray();
+            }
+        }
+
         public SerialPortScriptVariable(string name, IEnumerable<decimal> value)
         {
             Type = SerialPortScriptVariableType.LIST;
@@ -56,7 +67,7 @@ namespace MeasureApp.Model.SerialPortScript
 
         public override string ToString()
         {
-                return $"{{{Name} : {ValueToString()}}}";
+            return $"{{{Name} : {ValueToString()}}}";
         }
     }
 }
