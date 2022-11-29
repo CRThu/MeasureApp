@@ -13,6 +13,7 @@
     <Page.Resources>
         <viewmodel:SerialPortCommandIsListeningButtonContentConverter x:Key="SerialPortCommandIsListeningButtonContentConverter"/>
         <viewmodel:IsNotNullConverter x:Key="IsNotNullConverter"/>
+        <viewmodel:SerialPortScriptVariableConverter x:Key="SerialPortScriptVariableConverter"/>
         <viewmodel:SerialportCommandScriptRunButtonConverter x:Key="SerialportCommandScriptRunButtonConverter"/>
     </Page.Resources>
     <Grid>
@@ -406,8 +407,8 @@
                             <TextBlock Text="寄存器表" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="3,3,0,0"/>
                             <DataGrid ItemsSource="{Binding SerialportCommandScriptVarDict}" AutoGenerateColumns="False" IsReadOnly="True" Width="130" Height="150" Margin="0,23,0,0" VerticalAlignment="Top">
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Header="Key" Binding="{Binding Key}"/>
-                                    <DataGridTextColumn Header="Value" Binding="{Binding Value}"/>
+                                    <DataGridTextColumn Header="Key" Binding="{Binding Value.Name}"/>
+                                    <DataGridTextColumn Header="Value" Binding="{Binding Value,Converter={StaticResource SerialPortScriptVariableConverter}}"/>
                                 </DataGrid.Columns>
                             </DataGrid>
                             <Grid Margin="0,178,0,0">

@@ -187,8 +187,8 @@ namespace MeasureApp.ViewModel
         /// <summary>
         /// 脚本寄存器字典
         /// </summary>
-        private ObservableDictionary<string, decimal> serialportCommandScriptVarDict = new();
-        public ObservableDictionary<string, decimal> SerialportCommandScriptVarDict
+        private ObservableDictionary<string, SerialPortScriptVariable> serialportCommandScriptVarDict = new();
+        public ObservableDictionary<string, SerialPortScriptVariable> SerialportCommandScriptVarDict
         {
             get => serialportCommandScriptVarDict;
             set
@@ -416,7 +416,7 @@ PA5.FREQ;
                         {
                             // 支持表达式运算
                             ExpressionEvaluator evaluator4 = new();
-                            evaluator4.Variables = SerialportCommandScriptVarDict.ToDictionary(pair => pair.Key, pair => (object)(double)pair.Value);
+                            evaluator4.Variables = SerialportCommandScriptVarDict.ToDictionary(pair => pair.Value.Name, pair => (object)(double)pair.Value.Value1);
                             waitStoreKey0 = evaluator4.Evaluate(waitStoreKey0.Replace('\'', '\"')).ToString();
                         }
 
@@ -477,7 +477,7 @@ PA5.FREQ;
 
                         // 支持表达式运算
                         ExpressionEvaluator evaluator1 = new();
-                        evaluator1.Variables = SerialportCommandScriptVarDict.ToDictionary(pair => pair.Key, pair => (object)(double)pair.Value);
+                        evaluator1.Variables = SerialportCommandScriptVarDict.ToDictionary(pair => pair.Value.Name, pair => (object)(double)pair.Value.Value1);
                         string r1 = evaluator1.Evaluate(serialportCmd.Replace('\'', '\"')).ToString();
 
 
@@ -508,7 +508,7 @@ PA5.FREQ;
                         {
                             // 支持表达式运算
                             ExpressionEvaluator evaluator3 = new();
-                            evaluator3.Variables = SerialportCommandScriptVarDict.ToDictionary(pair => pair.Key, pair => (object)(double)pair.Value);
+                            evaluator3.Variables = SerialportCommandScriptVarDict.ToDictionary(pair => pair.Value.Name, pair => (object)(double)pair.Value.Value1);
                             gpibCmd0 = evaluator3.Evaluate(gpibCmd0.Replace('\'', '\"')).ToString();
                         }
 
@@ -550,7 +550,7 @@ PA5.FREQ;
 
                         // 支持表达式运算
                         ExpressionEvaluator evaluator2 = new();
-                        evaluator2.Variables = SerialportCommandScriptVarDict.ToDictionary(pair => pair.Key, pair => (object)(double)pair.Value);
+                        evaluator2.Variables = SerialportCommandScriptVarDict.ToDictionary(pair => pair.Value.Name, pair => (object)(double)pair.Value.Value1);
                         string r2 = evaluator2.Evaluate(SerialportMeasureDefaultKeyName.Replace('\'', '\"')).ToString();
 
                         SerialportMeasureDefaultKeyName = r2;
@@ -652,7 +652,7 @@ PA5.FREQ;
                         }
                         else
                         {
-                            foreach(var key in DataStorageInstance.Keys)
+                            foreach (var key in DataStorageInstance.Keys)
                                 DataStorageInstance.RemoveKey(key);
                         }
                         break;
@@ -661,7 +661,21 @@ PA5.FREQ;
                         // <setvar key="i" val="123"/>
                         if (TagAttrs.ContainsKey("key") && TagAttrs.ContainsKey("val"))
                         {
-                            SerialportCommandScriptVarDict[TagAttrs["key"]] = Convert.ToDecimal(TagAttrs["val"]);
+                            SerialportCommandScriptVarDict[TagAttrs["key"]]= new(TagAttrs["key"], Convert.ToDecimal(TagAttrs["val"]));
+                        }
+                        else
+                        {
+                            throw new InvalidOperationException("SETVAR do not contain key or value attribute.");
+                        }
+                        break;
+                    case "SETLIST":
+                        // <setlist key="..." val="..."/>
+                        // <setlist key="i" val="[1,2,3,4,5]"/>
+                        if (TagAttrs.ContainsKey("key") && TagAttrs.ContainsKey("val"))
+                        {
+                            SerialportCommandScriptVarDict[TagAttrs["key"]]= new(TagAttrs["key"],
+                                TagAttrs["val"].Split("[],".ToCharArray(), StringSplitOptions.RemoveEmptyEntries)
+                                .Select(n => Convert.ToDecimal(n)));
                         }
                         else
                         {
@@ -672,7 +686,7 @@ PA5.FREQ;
                         // <delvar key="..."/>
                         if (TagAttrs.ContainsKey("key"))
                         {
-                            if (SerialportCommandScriptVarDict.ContainsKey(TagAttrs["key"]))
+                            if (SerialportCommandScriptVarDict.Any(k => k.Value.Name == TagAttrs["key"]))
                                 SerialportCommandScriptVarDict.Remove(TagAttrs["key"]);
                         }
                         else
@@ -738,12 +752,12 @@ REGW;{i:F3};{j:F3};
                                     End = end,
                                     Step = step,
                                 });
-                                SerialportCommandScriptVarDict[forVarName] = begin;
+                                SerialportCommandScriptVarDict[forVarName] = new SerialPortScriptVariable(forVarName, begin);
                             }
                             // 循环状态
                             var getForInfoFromStack0 = SerialportCommandScriptForStack[^1];
-                            if ((SerialportCommandScriptVarDict[getForInfoFromStack0.Var] > getForInfoFromStack0.End && getForInfoFromStack0.Step > 0)
-                                || (SerialportCommandScriptVarDict[getForInfoFromStack0.Var] < getForInfoFromStack0.End && getForInfoFromStack0.Step < 0))
+                            if ((SerialportCommandScriptVarDict[getForInfoFromStack0.Var].Value1 > getForInfoFromStack0.End && getForInfoFromStack0.Step > 0)
+                                || (SerialportCommandScriptVarDict[getForInfoFromStack0.Var].Value1 < getForInfoFromStack0.End && getForInfoFromStack0.Step < 0))
                             {
                                 // 循环判断语句为false
                                 SerialPortCommandScriptGotoLinePointer(getForInfoFromStack0.EndForPointer + 1);
@@ -762,7 +776,7 @@ REGW;{i:F3};{j:F3};
                         // 若第一次运行至forend则保存endfor指针
                         if (getForInfoFromStack.EndForPointer == -1)
                             getForInfoFromStack.EndForPointer = SerialPortCommandScriptGetCurrentLinePointer();
-                        SerialportCommandScriptVarDict[getForInfoFromStack.Var] += getForInfoFromStack.Step;
+                        SerialportCommandScriptVarDict[getForInfoFromStack.Var].Value1 += getForInfoFromStack.Step;
                         SerialPortCommandScriptGotoLinePointer(getForInfoFromStack.ForPointer);
                         break;
                     case "TRIM":
@@ -778,8 +792,8 @@ REGW;01;{i:D};
                         IEnumerable<double> data = DataStorageInstance[trimDataKey];
                         double closestValue = data.MinBy(x => Math.Abs(x - trimTargetValue));
                         if (TagAttrs.ContainsKey("rettrimdata"))
-                            SerialportCommandScriptVarDict[TagAttrs["rettrimdata"]] = (decimal)closestValue;
-                        SerialportCommandScriptVarDict[trimReturnVar] = Array.IndexOf(data.ToArray(), closestValue);
+                            SerialportCommandScriptVarDict[TagAttrs["rettrimdata"]].Value1 = (decimal)closestValue;
+                        SerialportCommandScriptVarDict[trimReturnVar].Value1 = Array.IndexOf(data.ToArray(), closestValue);
                         break;
                     default:
                         throw new FormatException($"Unknown Command: {code}");
@@ -837,7 +851,7 @@ REGW;{i+j+3:D};{Round(j+8):D};{Max(i,j,0.5):F3};
                         // 支持表达式运算
 
                         ExpressionEvaluator evaluator = new();
-                        evaluator.Variables = SerialportCommandScriptVarDict.ToDictionary(pair => pair.Key, pair => (object)(double)pair.Value);
+                        evaluator.Variables = SerialportCommandScriptVarDict.ToDictionary(pair => pair.Value.Name, pair => (object)(double)pair.Value.Value1);
                         var result = evaluator.Evaluate(strSplit[0]);
 
                         // Double类型转整型
@@ -1161,7 +1175,7 @@ REGW;{i+j+3:D};{Round(j+8):D};{Max(i,j,0.5):F3};
                     SerialportCommandScriptVarDict.Clear();
                     foreach (var kv in tempDic)
                     {
-                        SerialportCommandScriptVarDict.Add(kv.Key, kv.Value);
+                        SerialportCommandScriptVarDict.Add(kv.Key, new(kv.Key, kv.Value));
                     }
                 }
             }

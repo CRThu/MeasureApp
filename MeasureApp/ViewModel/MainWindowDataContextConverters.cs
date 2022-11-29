@@ -1,5 +1,6 @@
 ﻿using MeasureApp.Model;
 using MeasureApp.Model.Converter;
+using MeasureApp.Model.SerialPortScript;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -254,6 +255,20 @@ namespace MeasureApp.ViewModel
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return (bool)value ? "停止" : "运行";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+
+    public class SerialPortScriptVariableConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return ((SerialPortScriptVariable)value).ValueToString();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
