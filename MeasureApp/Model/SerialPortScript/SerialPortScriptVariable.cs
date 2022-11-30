@@ -27,7 +27,10 @@ namespace MeasureApp.Model.SerialPortScript
             }
             set
             {
-                Value.Add(value);
+                if (Value.Count == 0)
+                    Value.Add(value);
+                else
+                    Value[0] = value;
             }
         }
 

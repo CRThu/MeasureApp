@@ -736,17 +736,15 @@ REGW;{i:F3};{j:F3};
                             // ForStackDict: FOR[VAR]
                             int currentLine = SerialPortCommandScriptGetCurrentLinePointer();
                             // 第一次进入此for循环
-                            if (SerialportCommandScriptForStack.Where(l => l.ForPointer == currentLine).Count() == 0)
+                            if (!SerialportCommandScriptForStack.Where(l => l.ForPointer == currentLine).Any())
                             {
-                                SerialportCommandScriptForStack.Add(new CommandScriptForStatementInfo()
-                                {
-                                    ForPointer = currentLine,
-                                    EndForPointer = -1,
-                                    Var = forVarName,
-                                    Begin = begin,
-                                    End = end,
-                                    Step = step,
-                                });
+                                SerialportCommandScriptForStack.Add(new CommandScriptForStatementInfo(
+                                    forPointer: currentLine,
+                                    endForPointer: -1,
+                                    var: forVarName,
+                                    begin: begin,
+                                    end: end,
+                                    step: step));
                                 SerialportCommandScriptVarDict[forVarName] = new SerialPortScriptVariable(forVarName, begin);
                             }
                             // 循环状态
@@ -764,6 +762,59 @@ REGW;{i:F3};{j:F3};
                             throw new InvalidOperationException("FOR do not contain key or value attribute.");
                         }
                         break;
+                    case "FOREACH":
+                        // <foreach var="..." arr="..."/>
+                        // default: var = FOR_ITERATOR
+                        // type
+                        // var:string
+                        // arr:vararr
+                        /*
+<setvar key="f1" val="999"/>
+<setvar key="i" val="[4,5,6]"/>
+<setvar key="j" val="[1,2,3,4,5]"/>
+<setvar key="ii" val="[4]"/>
+<setvar key="jj" val="[1,3,5]"/>
+A;
+<foreach var="f1" arr="i"/>
+<foreach var="f2" arr="j"/>
+REGW;{f1:X};{f2:D};
+<forend/>
+<forend/>
+B;
+<foreach var="f3" arr="ii"/>
+<foreach var="f4" arr="jj"/>
+REGW;{f3:F3};{f4:F3};
+<forend/>
+<forend/>
+                         */
+                        string forVarName1 = TagAttrs.ContainsKey("var") ? TagAttrs["var"] : "FOR_ITERATOR";
+
+                        // ForStackDict: FOR[VAR]
+                        int currentLine1 = SerialPortCommandScriptGetCurrentLinePointer();
+                        // 第一次进入此for循环
+                        if (!SerialportCommandScriptForStack.Where(l => l.ForPointer == currentLine1).Any())
+                        {
+                            SerialportCommandScriptForStack.Add(new CommandScriptForStatementInfo(
+                                forPointer: currentLine1,
+                                endForPointer: -1,
+                                var: forVarName1,
+                                varArr: TagAttrs["arr"]));
+                            decimal element = SerialportCommandScriptVarDict[TagAttrs["arr"]].Value[0];
+                            SerialportCommandScriptVarDict[forVarName1] = new SerialPortScriptVariable(forVarName1, element);
+                        }
+                        // 循环状态
+                        var getForInfoFromStack1 = SerialportCommandScriptForStack[^1];
+                        if ((getForInfoFromStack1.Type == CommandScriptForStatementType.FOR && (
+                                (SerialportCommandScriptVarDict[getForInfoFromStack1.Var].Value1 > getForInfoFromStack1.End && getForInfoFromStack1.Step > 0)
+                                || (SerialportCommandScriptVarDict[getForInfoFromStack1.Var].Value1 < getForInfoFromStack1.End && getForInfoFromStack1.Step < 0)))
+                            || (getForInfoFromStack1.Type == CommandScriptForStatementType.FOREACH && (
+                                getForInfoFromStack1.VarArrayIndex >= SerialportCommandScriptVarDict[getForInfoFromStack1.VarArray].Value.Count)))
+                        {
+                            // 循环判断语句为false
+                            SerialPortCommandScriptGotoLinePointer(getForInfoFromStack1.EndForPointer + 1);
+                            SerialportCommandScriptForStack.RemoveAt(SerialportCommandScriptForStack.Count - 1);
+                        }
+                        break;
                     case "FOREND":
                         // <forend/>
                         // 自增
@@ -771,7 +822,19 @@ REGW;{i:F3};{j:F3};
                         // 若第一次运行至forend则保存endfor指针
                         if (getForInfoFromStack.EndForPointer == -1)
                             getForInfoFromStack.EndForPointer = SerialPortCommandScriptGetCurrentLinePointer();
-                        SerialportCommandScriptVarDict[getForInfoFromStack.Var].Value1 += getForInfoFromStack.Step;
+                        if (getForInfoFromStack.Type == CommandScriptForStatementType.FOR)
+                        {
+                            // FOR
+                            SerialportCommandScriptVarDict[getForInfoFromStack.Var].Value1 += getForInfoFromStack.Step;
+                        }
+                        else
+                        {
+                            // FOREACH
+                            getForInfoFromStack.VarArrayIndex++;
+                            if (getForInfoFromStack.VarArrayIndex < SerialportCommandScriptVarDict[getForInfoFromStack.VarArray].Value.Count)
+                                SerialportCommandScriptVarDict[getForInfoFromStack.Var].Value1 =
+                                    SerialportCommandScriptVarDict[getForInfoFromStack.VarArray].Value[getForInfoFromStack.VarArrayIndex];
+                        }
                         SerialPortCommandScriptGotoLinePointer(getForInfoFromStack.ForPointer);
                         break;
                     case "TRIM":
@@ -1460,5 +1523,60 @@ REGW;{i+j+3:D};{Round(j+8):D};{Max(i,j,0.5):F3};
         /// 自增值
         /// </summary>
         public decimal Step { get; set; }
+        /// <summary>
+        /// For/ForEach类型选择
+        /// </summary>
+        public CommandScriptForStatementType Type { get; set; }
+        /// <summary>
+        /// ForEach遍历数组变量名
+        /// </summary>
+        public string VarArray { get; set; }
+        /// <summary>
+        /// ForEach遍历Index
+        /// </summary>
+        public int VarArrayIndex { get; set; }
+
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="forPointer"></param>
+        /// <param name="endForPointer"></param>
+        /// <param name="var"></param>
+        /// <param name="begin"></param>
+        /// <param name="end"></param>
+        /// <param name="step"></param>
+        public CommandScriptForStatementInfo(int forPointer, int endForPointer, string var, decimal begin, decimal end, decimal step)
+        {
+            ForPointer = forPointer;
+            EndForPointer = endForPointer;
+            Var = var;
+            Begin = begin;
+            End = end;
+            Step = step;
+            Type = CommandScriptForStatementType.FOR;
+        }
+
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="forPointer"></param>
+        /// <param name="endForPointer"></param>
+        /// <param name="var"></param>
+        /// <param name="varArr"></param>
+        public CommandScriptForStatementInfo(int forPointer, int endForPointer, string var, string varArr)
+        {
+            ForPointer = forPointer;
+            EndForPointer = endForPointer;
+            Var = var;
+            VarArray = varArr;
+            VarArrayIndex = 0;
+            Type = CommandScriptForStatementType.FOREACH;
+        }
+    }
+
+    public enum CommandScriptForStatementType
+    {
+        FOR,
+        FOREACH
     }
 }
