@@ -8,6 +8,8 @@
 		<Deterministic>false</Deterministic>
 		<AssemblyVersion>1.0.*</AssemblyVersion>
 		<SatelliteResourceLanguages>zh-Hans</SatelliteResourceLanguages>
+		<ApplicationIcon>Icon\AppIcon.ico</ApplicationIcon>
+		<PlatformTarget>AnyCPU</PlatformTarget>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -21,6 +23,10 @@
 		<Compile Remove="Model\TaskRunClassDemo.cs" />
 		<Compile Remove="PlotViewExample.cs" />
 		<Compile Remove="StatusBarProgressBarExample.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Include="Icon\AppIcon.ico" />
 	</ItemGroup>
 
 	<ItemGroup>
