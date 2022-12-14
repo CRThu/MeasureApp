@@ -1,0 +1,22 @@
+﻿<hc:BlurWindow
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CarrotProtocolCommDemo"
+        xmlns:hc="https://handyorg.github.io/handycontrol"
+        d:DataContext="{d:DesignInstance Type=local:MainWindowViewModel}"
+        x:Class="CarrotProtocolCommDemo.MainWindow"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen"
+        Style="{StaticResource WindowBlur}"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <TextBlock Text="发送16进制" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+        <hc:TextBox x:Name="InputCodeTextBox" Text="{Binding InputCode}" HorizontalAlignment="Left" Margin="10,30,0,0" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" VerticalContentAlignment="Top" VerticalAlignment="Top" Width="324" Height="321"/>
+        <Button x:Name="OpenButton" Content="打开" Command="{Binding OpenCommand}" HorizontalAlignment="Left" Margin="10,356,0,0" VerticalAlignment="Top" Width="60"/>
+        <TextBlock Text="Logger:" HorizontalAlignment="Left" Margin="370,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+        <hc:TextBox x:Name="StdOutTextBox" Text="{Binding StdOut}" HorizontalAlignment="Left" Margin="368,30,0,0" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" VerticalContentAlignment="Top" VerticalAlignment="Top" Width="422" Height="321"/>
+        <Button x:Name="SendButton" Content="发送" Command="{Binding SendCommand}" Margin="75,356,0,0" VerticalAlignment="Top" Width="60" HorizontalAlignment="Left"/>
+    </Grid>
+</hc:BlurWindow>

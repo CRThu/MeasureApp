@@ -1,0 +1,70 @@
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
+
+namespace CarrotProtocolCommDemo
+{
+    public partial class MainWindowViewModel : ObservableObject
+    {
+        SerialPortDevice spd;
+        ProtocolLogger logger;
+        DeviceProtocol protocol;
+
+        [ObservableProperty]
+        private string inputCode = "";
+
+        [ObservableProperty]
+        private string stdOut = "";
+
+        public MainWindowViewModel()
+        {
+            InputCode = GenHexPkt();
+        }
+
+        [RelayCommand]
+        private void Open()
+        {
+            //MessageBox.Show("Open");
+            spd = new("COM15", 921600);
+            spd.Open();
+            logger = new();
+            protocol = new(spd, logger);
+            logger.LoggerUpdate += Logger_LoggerUpdate;
+        }
+
+        private void Logger_LoggerUpdate(ProtocolLog log, LoggerUpdateEvent e)
+        {
+            lock(StdOut)
+            {
+                StdOut += log.ToString() + Environment.NewLine;
+            }
+        }
+
+        [RelayCommand]
+        private void Send()
+        {
+            //MessageBox.Show("Send");
+            protocol.Send(BytesEx.HexStringToBytes(InputCode));
+        }
+
+        public static string GenHexPkt()
+        {
+            string h = "3C 30 22 11 08 05 00 11 22 33 44 55 66 EE EE 3E";
+            //string h = "44 03 FF FF 08 05 00 ";
+
+            //for (int i = 0; i < 16-10; i++)
+            //{
+            //    h += "AA ";
+            //}
+
+            //h += "FF FF 55";
+            return h;
+        }
+    }
+}
