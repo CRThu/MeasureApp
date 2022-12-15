@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.IO.Ports;
+using System.Diagnostics;
 
 namespace CarrotProtocolCommDemo
 {
@@ -16,6 +18,29 @@ namespace CarrotProtocolCommDemo
         ProtocolLogger logger;
         DeviceProtocol protocol;
 
+
+        [ObservableProperty]
+        private string[] serialPortNames;
+
+        [ObservableProperty]
+        private string selectedSerialPortName;
+
+        [ObservableProperty]
+        private int[] carrotProtocols;
+
+        [ObservableProperty]
+        private int selectedCarrotProtocol;
+
+        [ObservableProperty]
+        private int[] carrotProtocolStreamIds;
+
+        [ObservableProperty]
+        private int selectedCarrotProtocolStreamId;
+
+        [ObservableProperty]
+        private string payloadString = "";
+
+
         [ObservableProperty]
         private string inputCode = "";
 
@@ -24,6 +49,12 @@ namespace CarrotProtocolCommDemo
 
         public MainWindowViewModel()
         {
+            SerialPortNames = SerialPort.GetPortNames();
+            SelectedSerialPortName = SerialPortNames.FirstOrDefault();
+            CarrotProtocols = new int[] {0x30};
+            SelectedCarrotProtocol = CarrotProtocols.FirstOrDefault();
+            CarrotProtocolStreamIds = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+            SelectedCarrotProtocolStreamId = CarrotProtocolStreamIds.FirstOrDefault();
             InputCode = GenHexPkt();
         }
 
@@ -38,9 +69,25 @@ namespace CarrotProtocolCommDemo
             logger.LoggerUpdate += Logger_LoggerUpdate;
         }
 
+        [RelayCommand]
+        private void PacketParamsChanged()
+        {
+            CarrotDataProtocol carrotDataProtocol = new()
+            {
+                FrameStart = 0x3C,
+                ProtocolId = (byte)SelectedCarrotProtocol,
+                ControlFlags = 0x1122,
+                StreamId = (byte)SelectedCarrotProtocolStreamId,
+                PayloadLength = (ushort)(PayloadString.Length + 2),
+                Payload = BytesEx.AsciiToBytes(PayloadString + "\r\n"),
+                Crc16 = 0xEEEE,
+                FrameEnd = 0x3E
+            };
+        }
+
         private void Logger_LoggerUpdate(ProtocolLog log, LoggerUpdateEvent e)
         {
-            lock(StdOut)
+            lock (StdOut)
             {
                 StdOut += log.ToString() + Environment.NewLine;
             }

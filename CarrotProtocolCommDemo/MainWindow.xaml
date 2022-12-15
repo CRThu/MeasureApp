@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CarrotProtocolCommDemo"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:hc="https://handyorg.github.io/handycontrol"
         d:DataContext="{d:DesignInstance Type=local:MainWindowViewModel}"
         x:Class="CarrotProtocolCommDemo.MainWindow"
@@ -12,11 +13,34 @@
         Style="{StaticResource WindowBlur}"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <TextBlock Text="发送16进制" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-        <hc:TextBox x:Name="InputCodeTextBox" Text="{Binding InputCode}" HorizontalAlignment="Left" Margin="10,30,0,0" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" VerticalContentAlignment="Top" VerticalAlignment="Top" Width="324" Height="321"/>
-        <Button x:Name="OpenButton" Content="打开" Command="{Binding OpenCommand}" HorizontalAlignment="Left" Margin="10,356,0,0" VerticalAlignment="Top" Width="60"/>
+        <Grid Margin="10,10,0,45" HorizontalAlignment="Left" Width="353">
+            <TextBlock Text="串口选择" HorizontalAlignment="Left" Margin="10,37,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+            <ComboBox Name="SerialPortNameComboBox" ItemsSource="{Binding SerialPortNames}" SelectedItem="{Binding SelectedSerialPortName}" HorizontalAlignment="Left" Margin="67,30,0,0" VerticalAlignment="Top" Width="267"/>
+            <TextBlock Text="协议选择" HorizontalAlignment="Left" Margin="10,72,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+            <ComboBox Name="CarrotProtocolsComboBox" ItemsSource="{Binding CarrotProtocols}" SelectedItem="{Binding SelectedCarrotProtocol}" ItemStringFormat="{}0x{0:X2}" HorizontalAlignment="Left" Margin="67,65,0,0" VerticalAlignment="Top" Width="267">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SelectionChanged">
+                        <i:InvokeCommandAction Command="{Binding PacketParamsChangedCommand}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </ComboBox>
+            <TextBlock Text="流端口号" HorizontalAlignment="Left" Margin="10,107,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+            <ComboBox Name="StreamIdsComboBox" ItemsSource="{Binding CarrotProtocolStreamIds}" SelectedItem="{Binding SelectedCarrotProtocolStreamId}" HorizontalAlignment="Left" Margin="67,100,0,0" VerticalAlignment="Top" Width="267">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SelectionChanged">
+                        <i:InvokeCommandAction Command="{Binding PacketParamsChangedCommand}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </ComboBox>
+            <TextBlock Text="Payload" HorizontalAlignment="Left" Margin="10,142,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+            <TextBox Name="PayloadStringTextBox" Text="{Binding PayloadString}" HorizontalAlignment="Left" Margin="67,135,0,0" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" VerticalContentAlignment="Top" VerticalAlignment="Top" Width="267" Height="94"/>
+
+            <TextBlock Text="发送16进制" HorizontalAlignment="Left" Margin="10,234,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+            <TextBox x:Name="InputCodeTextBox" Text="{Binding InputCode}" HorizontalAlignment="Left" Margin="10,254,0,0" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" VerticalContentAlignment="Top" VerticalAlignment="Top" Width="324" Height="116"/>
+        </Grid>
+        <Button x:Name="OpenButton" Content="打开" Command="{Binding OpenCommand}" HorizontalAlignment="Left" Margin="10,395,0,10" VerticalAlignment="Stretch" Width="60"/>
         <TextBlock Text="Logger:" HorizontalAlignment="Left" Margin="370,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-        <hc:TextBox x:Name="StdOutTextBox" Text="{Binding StdOut}" HorizontalAlignment="Left" Margin="368,30,0,0" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" VerticalContentAlignment="Top" VerticalAlignment="Top" Width="422" Height="321"/>
-        <Button x:Name="SendButton" Content="发送" Command="{Binding SendCommand}" Margin="75,356,0,0" VerticalAlignment="Top" Width="60" HorizontalAlignment="Left"/>
+        <TextBox x:Name="StdOutTextBox" Text="{Binding StdOut}" Margin="368,30,10,57" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" VerticalContentAlignment="Top"/>
+        <Button x:Name="SendButton" Content="发送" Command="{Binding SendCommand}" Margin="75,395,0,10" VerticalAlignment="Stretch" Width="60" HorizontalAlignment="Left"/>
     </Grid>
 </hc:BlurWindow>
