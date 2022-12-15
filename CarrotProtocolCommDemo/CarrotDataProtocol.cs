@@ -42,6 +42,9 @@ namespace CarrotProtocolCommDemo
         /// </summary>
         public byte FrameEnd { get; set; }
 
+
+        public byte[] Bytes => ToBytes();
+
         public CarrotDataProtocol()
         {
 
@@ -74,6 +77,29 @@ namespace CarrotProtocolCommDemo
                 0x32 => 2048,
                 _ => -1,
             };
+        }
+
+        public byte[] ToBytes()
+        {
+            int len = GetPacketLength(ProtocolId);
+            byte[] bytes = new byte[len];
+
+            if (PayloadLength + 10 > bytes.Length)
+                throw new NotImplementedException();
+
+            bytes[0] = FrameStart;
+            bytes[1] = ProtocolId;
+            bytes[2] = (byte)ControlFlags;
+            bytes[3] = (byte)(ControlFlags >> 8);
+            bytes[4] = StreamId;
+            bytes[5] = (byte)PayloadLength;
+            bytes[6] = (byte)(PayloadLength >> 8);
+            Array.Copy(Payload, 0, bytes, 7, PayloadLength);
+            bytes[^3] = (byte)Crc16;
+            bytes[^2] = (byte)(Crc16 >> 8);
+            bytes[^1] = FrameEnd;
+
+            return bytes;
         }
 
         public override string ToString()

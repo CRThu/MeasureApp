@@ -50,19 +50,20 @@ namespace CarrotProtocolCommDemo
         public MainWindowViewModel()
         {
             SerialPortNames = SerialPort.GetPortNames();
-            SelectedSerialPortName = SerialPortNames.FirstOrDefault();
-            CarrotProtocols = new int[] {0x30};
+            SelectedSerialPortName = SerialPortNames.FirstOrDefault() ?? "";
+            CarrotProtocols = new int[] { 0x30, 0x31 };
             SelectedCarrotProtocol = CarrotProtocols.FirstOrDefault();
             CarrotProtocolStreamIds = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
             SelectedCarrotProtocolStreamId = CarrotProtocolStreamIds.FirstOrDefault();
-            InputCode = GenHexPkt();
+
+            //InputCode = GenHexPkt();
         }
 
         [RelayCommand]
         private void Open()
         {
             //MessageBox.Show("Open");
-            spd = new("COM15", 921600);
+            spd = new(SelectedSerialPortName, 921600);
             spd.Open();
             logger = new();
             protocol = new(spd, logger);
@@ -83,6 +84,8 @@ namespace CarrotProtocolCommDemo
                 Crc16 = 0xEEEE,
                 FrameEnd = 0x3E
             };
+            byte[] bytes = carrotDataProtocol.ToBytes();
+            InputCode = BytesEx.BytesToHexString(bytes);
         }
 
         private void Logger_LoggerUpdate(ProtocolLog log, LoggerUpdateEvent e)

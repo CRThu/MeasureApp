@@ -33,7 +33,13 @@
                 </i:Interaction.Triggers>
             </ComboBox>
             <TextBlock Text="Payload" HorizontalAlignment="Left" Margin="10,142,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-            <TextBox Name="PayloadStringTextBox" Text="{Binding PayloadString}" HorizontalAlignment="Left" Margin="67,135,0,0" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" VerticalContentAlignment="Top" VerticalAlignment="Top" Width="267" Height="94"/>
+            <TextBox Name="PayloadStringTextBox" Text="{Binding PayloadString,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="67,135,0,0" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" VerticalContentAlignment="Top" VerticalAlignment="Top" Width="267" Height="94">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="TextChanged">
+                        <i:InvokeCommandAction Command="{Binding PacketParamsChangedCommand}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </TextBox>
 
             <TextBlock Text="发送16进制" HorizontalAlignment="Left" Margin="10,234,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
             <TextBox x:Name="InputCodeTextBox" Text="{Binding InputCode}" HorizontalAlignment="Left" Margin="10,254,0,0" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" VerticalContentAlignment="Top" VerticalAlignment="Top" Width="324" Height="116"/>
