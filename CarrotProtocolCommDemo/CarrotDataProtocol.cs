@@ -34,6 +34,7 @@ namespace CarrotProtocolCommDemo
         /// </summary>
         public byte[] Payload { get; set; }
         /// <summary>
+        /// CRC16/MODBUS
         /// protocol layout index : [7+len:8+len]
         /// </summary>
         public ushort Crc16 { get; set; }
@@ -45,11 +46,13 @@ namespace CarrotProtocolCommDemo
 
         public byte[] Bytes => ToBytes();
 
-        public CarrotDataProtocol()
-        {
-
-        }
-
+        /// <summary>
+        /// byte[]转协议
+        /// </summary>
+        /// <param name="bytes"></param>
+        /// <param name="offset"></param>
+        /// <param name="length"></param>
+        /// <exception cref="NotImplementedException"></exception>
         public CarrotDataProtocol(byte[] bytes, int offset, int length)
         {
             FrameStart = bytes[offset + 0];
@@ -68,17 +71,65 @@ namespace CarrotProtocolCommDemo
                 throw new NotImplementedException();
         }
 
+        public CarrotDataProtocol(int protocolId, int streamId, string payload, bool isCrc = true)
+        {
+            if (payload.Length < 2 || payload[^2..^1] != "\r\n")
+                payload += "\r\n";
+
+            // Payload过长
+            if (payload.Length + 10 > GetPacketLength((byte)protocolId))
+                throw new NotImplementedException();
+
+            FrameStart = 0x3C;
+            ProtocolId = (byte)protocolId;
+            ControlFlags = 0x0000;
+            StreamId = (byte)streamId;
+            PayloadLength = (ushort)payload.Length;
+            Payload = BytesEx.AsciiToBytes(payload);
+            Crc16 = (ushort)(isCrc ? GenerateCrc() : 0xCCCC);
+            FrameEnd = 0x3E;
+        }
+
+        /// <summary>
+        /// 预设协议长度
+        /// </summary>
+        /// <param name="ProtocolId"></param>
+        /// <returns></returns>
         public static int GetPacketLength(byte ProtocolId)
         {
             return ProtocolId switch
             {
                 0x30 => 16,
-                0x31 => 256,
-                0x32 => 2048,
+                0x31 => 64,
+                0x32 => 256,
+                0x33 => 2048,
                 _ => -1,
             };
         }
 
+        /// <summary>
+        /// CRC16校验生成
+        /// </summary>
+        /// <returns></returns>
+        public ushort GenerateCrc()
+        {
+            return NullFX.CRC.Crc16.ComputeChecksum(NullFX.CRC.Crc16Algorithm.Modbus, Payload);
+        }
+
+        /// <summary>
+        /// CRC16校验比对
+        /// </summary>
+        /// <returns></returns>
+        public bool CheckCrcError()
+        {
+            return GenerateCrc() != Crc16;
+        }
+
+        /// <summary>
+        /// 协议转byte[]
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
         public byte[] ToBytes()
         {
             int len = GetPacketLength(ProtocolId);

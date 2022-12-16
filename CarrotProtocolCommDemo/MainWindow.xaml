@@ -33,7 +33,7 @@
                 </i:Interaction.Triggers>
             </ComboBox>
             <TextBlock Text="Payload" HorizontalAlignment="Left" Margin="10,142,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-            <TextBox Name="PayloadStringTextBox" Text="{Binding PayloadString,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="67,135,0,0" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" VerticalContentAlignment="Top" VerticalAlignment="Top" Width="267" Height="94">
+            <TextBox Name="PayloadStringTextBox" Text="{Binding PayloadString,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="67,135,0,0" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" VerticalContentAlignment="Top" VerticalAlignment="Top" Width="267" Height="94" VerticalScrollBarVisibility="Auto">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="TextChanged">
                         <i:InvokeCommandAction Command="{Binding PacketParamsChangedCommand}"/>

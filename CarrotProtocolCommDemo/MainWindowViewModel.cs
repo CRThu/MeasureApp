@@ -51,7 +51,7 @@ namespace CarrotProtocolCommDemo
         {
             SerialPortNames = SerialPort.GetPortNames();
             SelectedSerialPortName = SerialPortNames.FirstOrDefault() ?? "";
-            CarrotProtocols = new int[] { 0x30, 0x31 };
+            CarrotProtocols = new int[] { 0x30, 0x31, 0x32, 0x33 };
             SelectedCarrotProtocol = CarrotProtocols.FirstOrDefault();
             CarrotProtocolStreamIds = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
             SelectedCarrotProtocolStreamId = CarrotProtocolStreamIds.FirstOrDefault();
@@ -73,17 +73,7 @@ namespace CarrotProtocolCommDemo
         [RelayCommand]
         private void PacketParamsChanged()
         {
-            CarrotDataProtocol carrotDataProtocol = new()
-            {
-                FrameStart = 0x3C,
-                ProtocolId = (byte)SelectedCarrotProtocol,
-                ControlFlags = 0x1122,
-                StreamId = (byte)SelectedCarrotProtocolStreamId,
-                PayloadLength = (ushort)(PayloadString.Length + 2),
-                Payload = BytesEx.AsciiToBytes(PayloadString + "\r\n"),
-                Crc16 = 0xEEEE,
-                FrameEnd = 0x3E
-            };
+            CarrotDataProtocol carrotDataProtocol = new(SelectedCarrotProtocol, SelectedCarrotProtocolStreamId, PayloadString);
             byte[] bytes = carrotDataProtocol.ToBytes();
             InputCode = BytesEx.BytesToHexString(bytes);
         }
