@@ -16,7 +16,7 @@ namespace CarrotProtocolCommDemo
         {
             return $"{{ Time: {Time}, " +
                 $"TxRx: {TxRx}, " +
-                $"Protocol: {Protocol} }}";
+                $"Protocol: {Protocol.PayloadDisplay.Replace("\r\n","\\r\\n")} }}";
         }
     }
 

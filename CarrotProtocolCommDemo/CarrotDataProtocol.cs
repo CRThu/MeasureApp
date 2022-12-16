@@ -45,6 +45,7 @@ namespace CarrotProtocolCommDemo
 
 
         public byte[] Bytes => ToBytes();
+        public string PayloadDisplay => BytesEx.BytesToAscii(Payload);
 
         /// <summary>
         /// byte[]转协议
@@ -109,11 +110,12 @@ namespace CarrotProtocolCommDemo
 
         /// <summary>
         /// CRC16校验生成
+        /// https://crccalc.com/
         /// </summary>
         /// <returns></returns>
         public ushort GenerateCrc()
         {
-            return NullFX.CRC.Crc16.ComputeChecksum(NullFX.CRC.Crc16Algorithm.Modbus, Payload);
+            return NullFX.CRC.Crc16.ComputeChecksum(NullFX.CRC.Crc16Algorithm.Modbus, ToBytes()[1..^3]);
         }
 
         /// <summary>

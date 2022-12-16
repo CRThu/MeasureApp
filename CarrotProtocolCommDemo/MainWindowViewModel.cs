@@ -63,7 +63,7 @@ namespace CarrotProtocolCommDemo
         private void Open()
         {
             //MessageBox.Show("Open");
-            spd = new(SelectedSerialPortName, 921600);
+            spd = new(SelectedSerialPortName, 115200);
             spd.Open();
             logger = new();
             protocol = new(spd, logger);
