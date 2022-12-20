@@ -140,10 +140,12 @@
   <ItemGroup>
     <ClCompile Include="CarrotProtocolForStm32.cpp" />
     <ClCompile Include="Protocol\Src\carrot_protocol.c" />
+    <ClCompile Include="Protocol\Src\payload_parse.c" />
     <ClCompile Include="Protocol\Src\ringbuffer.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Protocol\Inc\carrot_protocol.h" />
+    <ClInclude Include="Protocol\Inc\payload_parse.h" />
     <ClInclude Include="Protocol\Inc\ringbuffer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

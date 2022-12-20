@@ -30,12 +30,18 @@
     <ClCompile Include="Protocol\Src\ringbuffer.c">
       <Filter>源文件\Protocol</Filter>
     </ClCompile>
+    <ClCompile Include="Protocol\Src\payload_parse.c">
+      <Filter>源文件\Protocol</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Protocol\Inc\carrot_protocol.h">
       <Filter>头文件\Protocol</Filter>
     </ClInclude>
     <ClInclude Include="Protocol\Inc\ringbuffer.h">
+      <Filter>头文件\Protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="Protocol\Inc\payload_parse.h">
       <Filter>头文件\Protocol</Filter>
     </ClInclude>
   </ItemGroup>
