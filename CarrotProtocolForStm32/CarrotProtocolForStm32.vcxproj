@@ -71,15 +71,19 @@
   </ImportGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>$(ProjectDir)/Protocol/Inc;$(IncludePath)</IncludePath>
+    <SourcePath>$(ProjectDir)\Protocol\Src;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>$(ProjectDir)/Protocol/Inc;$(IncludePath)</IncludePath>
+    <SourcePath>$(ProjectDir)\Protocol\Src;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>$(ProjectDir)/Protocol/Inc;$(IncludePath)</IncludePath>
+    <SourcePath>$(ProjectDir)\Protocol\Src;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>$(ProjectDir)/Protocol/Inc;$(IncludePath)</IncludePath>
+    <SourcePath>$(ProjectDir)\Protocol\Src;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -138,7 +142,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="CarrotProtocolForStm32.cpp" />
+    <ClCompile Include="CarrotProtocolForStm32.c" />
     <ClCompile Include="Protocol\Src\carrot_protocol.c" />
     <ClCompile Include="Protocol\Src\payload_parse.c" />
     <ClCompile Include="Protocol\Src\ringbuffer.c" />

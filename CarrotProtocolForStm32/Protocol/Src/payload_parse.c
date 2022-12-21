@@ -1,4 +1,4 @@
-#include "payload_parse.h"
+#include "../Inc/payload_parse.h"
 
 /// <summary>
 /// 指令解析初始化
@@ -70,7 +70,45 @@ uint16_t payload_parse_string(payload_parse_t* buffer, char* buf, uint16_t len)
 	return actual_len;
 }
 
-uint16_t payload_parse_uint16(payload_parse_t* buffer)
+uint32_t payload_parse_uint32(payload_parse_t* buffer)
 {
+	char temp[256] = { 0 };
+	uint16_t len = payload_parse_string(buffer, temp, 255);
+	return strtoul(temp, NULL, 0);
+}
 
+
+uint32_t payload_parse_uint32_dec(payload_parse_t* buffer)
+{
+	char temp[256] = { 0 };
+	uint16_t len = payload_parse_string(buffer, temp, 255);
+	return strtoul(temp, NULL, 10);
+}
+
+uint32_t payload_parse_uint32_hex(payload_parse_t* buffer)
+{
+	char temp[256] = { 0 };
+	uint16_t len = payload_parse_string(buffer, temp, 255);
+	return strtoul(temp, NULL, 16);
+}
+
+int32_t payload_parse_int32(payload_parse_t* buffer)
+{
+	char temp[256] = { 0 };
+	uint16_t len = payload_parse_string(buffer, temp, 255);
+	return strtol(temp, NULL, 0);
+}
+
+int32_t payload_parse_int32_dec(payload_parse_t* buffer)
+{
+	char temp[256] = { 0 };
+	uint16_t len = payload_parse_string(buffer, temp, 255);
+	return strtol(temp, NULL, 10);
+}
+
+double payload_parse_double(payload_parse_t* buffer)
+{
+	char temp[256] = { 0 };
+	uint16_t len = payload_parse_string(buffer, temp, 255);
+	return strtod(temp, NULL);
 }

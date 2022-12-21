@@ -21,7 +21,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CarrotProtocolForStm32.cpp">
+    <ClCompile Include="CarrotProtocolForStm32.c">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Protocol\Src\carrot_protocol.c">
