@@ -15,16 +15,11 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CarrotProtocolForStm32Tests.cpp">
+    <ClCompile Include="payload_parse_test.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="ParseTest.c">
+    <ClCompile Include="dynamic_type_array_test.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="ParseTest.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>

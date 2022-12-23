@@ -6,7 +6,7 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace CarrotProtocolForStm32Tests
 {
-	TEST_CLASS(CarrotProtocolForStm32Tests)
+	TEST_CLASS(payload_parse_test)
 	{
 	public:
 

@@ -168,7 +168,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="CarrotProtocolForStm32Tests.cpp" />
+    <ClCompile Include="payload_parse_test.cpp" />
+    <ClCompile Include="dynamic_type_array_test.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CarrotProtocolForStm32\CarrotProtocolForStm32.vcxproj">
