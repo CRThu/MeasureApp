@@ -39,6 +39,9 @@
     <ClCompile Include="Protocol\Src\dynamic_call.c">
       <Filter>源文件\Protocol</Filter>
     </ClCompile>
+    <ClCompile Include="Protocol\Src\dynamic_type_array.c">
+      <Filter>源文件\Protocol</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Protocol\Inc\carrot_protocol.h">
@@ -54,6 +57,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Protocol\Inc\dynamic_call.h">
+      <Filter>头文件\Protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="Protocol\Inc\dynamic_type_array.h">
       <Filter>头文件\Protocol</Filter>
     </ClInclude>
   </ItemGroup>
