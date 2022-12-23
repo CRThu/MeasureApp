@@ -3,6 +3,9 @@
 ###############################################################################
 * text=auto
 
+# Apply override to a specific file
+echarts.js linguist-vendored
+
 ###############################################################################
 # Set default behavior for command prompt diff.
 #
