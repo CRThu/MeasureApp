@@ -8,17 +8,21 @@
 #define DYNAMIC_TYPE_ARRAY_STORAGE_MAX_BYTES 256
 #define DYNAMIC_TYPE_ARRAY_ELEMENTS_MAX_CNT 32
 
+#define DYNAMIC_TYPES_VAL_MASK(x)	(x | 1 << 0)
+#define DYNAMIC_TYPES_PTR_MASK(x)	(x | 1 << 7)
+#define DYNAMIC_TYPES_IS_PTR(x)		(x >> 7)
+
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 	typedef enum dynamic_types_t
 	{
-		NULLTYPE,
-		UINT32,
-		INT32,
-		FLOAT64,
-		STRING,
+		NULLTYPE = DYNAMIC_TYPES_VAL_MASK(0),
+		UINT32TYPE = DYNAMIC_TYPES_VAL_MASK(1),
+		INT32TYPE = DYNAMIC_TYPES_VAL_MASK(2),
+		FLOAT64TYPE = DYNAMIC_TYPES_VAL_MASK(3),
+		STRINGTYPE = DYNAMIC_TYPES_PTR_MASK(4),
 	}dynamic_types_t;
 
 
@@ -52,7 +56,7 @@ extern "C"
 
 	void dynamic_type_array_init(dynamic_type_array_t* dyn);
 	void dynamic_type_array_add(dynamic_type_array_t* dyn, void* data, uint16_t len, dynamic_types_t type);
-
+	void dynamic_type_array_get(dynamic_type_array_t* dyn, uint16_t index, void** data);
 
 #ifdef __cplusplus
 }

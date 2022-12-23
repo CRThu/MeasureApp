@@ -31,21 +31,28 @@ void dynamic_type_array_add(dynamic_type_array_t* dyn, void* data, uint16_t len,
 	dyn->len[dyn->count] = len;
 	dyn->type[dyn->count] = type;
 
-	memcpy(dyn->data[index], data, len);
+	if (DYNAMIC_TYPES_IS_PTR(type))
+		memcpy(&dyn->data[index], (char*)data, len);
+	else
+		memcpy(&dyn->data[index], data, len);
 
 	dyn->count++;
 }
 
-void dynamic_type_array_get_type(dynamic_type_array_t* dyn, uint16_t index, void* data, dynamic_types_t* type)
+/// <summary>
+/// 获取元素
+/// </summary>
+/// <param name="dyn"></param>
+/// <param name="index">元素下标</param>
+/// <param name="data"></param>
+void dynamic_type_array_get(dynamic_type_array_t* dyn, uint16_t index, void** data)
 {
 	if (index < dyn->count)
 	{
-		data = dyn->idx[index];
-		type = dyn->idx[index];
+		*data = &dyn->data[dyn->idx[index]];
 	}
 	else
 	{
-		data = NULL;
-		type = NULLTYPE;
+		*data = NULL;
 	}
 }
