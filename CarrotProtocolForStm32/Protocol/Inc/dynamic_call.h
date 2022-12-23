@@ -1,9 +1,14 @@
 #pragma once
 #include <inttypes.h>
 #include <stdio.h>
+#include "../Inc/payload_parse.h"
+#include "../Inc/dynamic_type_array.h"
 
 #ifndef DYNAMIC_CALL_H
 #define DYNAMIC_CALL_H
+
+#define FN_NAME_ISEQUAL(a,b)	(strcmp(a, b) == 0)
+#define FN_ARGS_CNT(args)		(strlen(args))
 
 #ifdef __cplusplus
 extern "C"
@@ -21,15 +26,17 @@ extern "C"
 		const char* args;
 	}callback_t;
 
-	void fnvoid();
-	void pow(double a);
-	void add(double a, double b);
+	void print();
+	void printi(int32_t* a);
+	void printff(double* a);
+	void prints(char* a);
+	void addi(int32_t* a, int32_t* b);
+	void addf(double* a, double* b);
 
-	callback_t callbacks[] = {
-		{"test", fnvoid, ""},
-		{"pow", pow, "f"},
-		{"add", add, "ff"}
-	};
+	extern callback_t callbacks[];
+
+
+	void dynamic_call(payload_parse_t* args);
 
 
 #ifdef __cplusplus
