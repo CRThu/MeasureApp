@@ -1,4 +1,4 @@
-#include "carrot_protocol.h"
+#include "../Inc/carrot_protocol.h"
 #include <string.h>
 
 #define CARROT_DATA_PROTOCOL_FUNC_GEN(len)   \

@@ -1,5 +1,4 @@
 #include "CppUnitTest.h"
-#include "ParseTest.h"
 #include <Protocol/Inc/dynamic_type_array.h>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
