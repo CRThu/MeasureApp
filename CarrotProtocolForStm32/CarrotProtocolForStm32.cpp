@@ -2,6 +2,7 @@
 #include "./Protocol/Inc/payload_parse.h"
 #include "./Protocol/Inc/dynamic_call.h"
 #include "ParseTest.h"
+#include "DynamicCallTest.h"
 
 int main()
 {
@@ -25,6 +26,7 @@ int main()
 	*/
 	
 	printf("TEST DYNAMIC CALL\n");
+	dyn_reg_test();
 
 	payload_parse_t buf;
 	const char* cmd0 = "print";

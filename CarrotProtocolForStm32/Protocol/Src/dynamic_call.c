@@ -1,42 +1,15 @@
 #include "../Inc/dynamic_call.h"
 
-callback_t callbacks[] = {
-	   {"print", print, ""},
-	   {"printi", printi, "i"},
-	   {"printff", printff, "f"},
-	   {"prints", prints, "s"},
-	   {"addi", addi, "ii"},
-	   {"addf", addf, "ff"},
-};
+callback_t callbacks[DYNAMIC_CALL_FUNC_MAX_CNT];
+uint16_t callbacks_count = 0;
 
-void print()
-{
-	printf("print() Called.\r\n");
-}
 
-void printi(int32_t* a)
+void dynamic_register(callback fn, char* name, char* args)
 {
-	printf("printi(%d) Called.\r\n", *a);
-}
-
-void printff(double* a)
-{
-	printf("printff(%.6lf) Called.\r\n", *a);
-}
-
-void prints(char* a)
-{
-	printf("printff(%s) Called.\r\n", a);
-}
-
-void addi(int32_t* a, int32_t* b)
-{
-	printf("add(%d, %d) Called.\r\n", *a, *b);
-}
-
-void addf(double* a, double* b)
-{
-	printf("addf(%f, %f) Called.\r\n", *a, *b);
+	callbacks[callbacks_count].name = name;
+	callbacks[callbacks_count].func = fn;
+	callbacks[callbacks_count].args = args;
+	callbacks_count++;
 }
 
 void dynamic_call(payload_parse_t* args)
@@ -45,7 +18,7 @@ void dynamic_call(payload_parse_t* args)
 	uint16_t len = payload_parse_string(args, fn_name, 255);
 
 	// 遍历注册方法
-	for (int i = 0; i < sizeof(callbacks) / sizeof(callbacks[0]); i++)
+	for (int i = 0; i < callbacks_count; i++)
 	{
 		// 寻找匹配方法名称
 		if (FN_NAME_ISEQUAL(callbacks[i].name, fn_name))

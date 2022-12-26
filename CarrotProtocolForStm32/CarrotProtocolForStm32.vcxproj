@@ -142,6 +142,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="DynamicCallTest.c" />
     <ClCompile Include="Protocol\Src\dynamic_call.c" />
     <ClCompile Include="ParseTest.c" />
     <ClCompile Include="CarrotProtocolForStm32.cpp" />
@@ -151,6 +152,7 @@
     <ClCompile Include="Protocol\Src\ringbuffer.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DynamicCallTest.h" />
     <ClInclude Include="Protocol\Inc\dynamic_call.h" />
     <ClInclude Include="ParseTest.h" />
     <ClInclude Include="Protocol\Inc\carrot_protocol.h" />
