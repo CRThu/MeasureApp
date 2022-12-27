@@ -1,13 +1,14 @@
 #pragma once
 #include <inttypes.h>
 #include <stdio.h>
-#include "../Inc/dynamic_call.h"
+#include "Protocol/Inc/dynamic_call.h"
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
+	extern char dynamic_call_test_buf[];
 
 	void print();
 	void printi(int32_t* a);

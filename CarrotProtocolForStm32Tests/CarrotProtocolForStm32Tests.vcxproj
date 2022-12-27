@@ -168,6 +168,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="dynamic_call_test.cpp" />
     <ClCompile Include="payload_parse_test.cpp" />
     <ClCompile Include="dynamic_type_array_test.cpp" />
   </ItemGroup>

@@ -44,4 +44,8 @@ int main()
 	const char* cmd3 = "addi 123 -456";
 	payload_parse_init(&buf, (uint8_t*)cmd3, strlen(cmd3));
 	dynamic_call(&buf);
+
+	const char* cmd4 = "addf 123 -456";
+	payload_parse_init(&buf, (uint8_t*)cmd4, strlen(cmd4));
+	dynamic_call(&buf);
 }
