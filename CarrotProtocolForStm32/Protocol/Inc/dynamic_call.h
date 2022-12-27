@@ -5,6 +5,7 @@
 #include "../Inc/dynamic_type_array.h"
 
 #define DYNAMIC_CALL_FUNC_MAX_CNT 256
+#define DYNAMIC_CALL_ARGS_MAX_CNT 9
 
 #ifndef DYNAMIC_CALL_H
 #define DYNAMIC_CALL_H
@@ -21,6 +22,13 @@ extern "C"
 	typedef void (*callback_a0r0)(void);
 	typedef void (*callback_a1r0)(void* arg1);
 	typedef void (*callback_a2r0)(void* arg1, void* arg2);
+	typedef void (*callback_a3r0)(void* arg1, void* arg2, void* arg3);
+	typedef void (*callback_a4r0)(void* arg1, void* arg2, void* arg3, void* arg4);
+	typedef void (*callback_a5r0)(void* arg1, void* arg2, void* arg3, void* arg4, void* arg5);
+	typedef void (*callback_a6r0)(void* arg1, void* arg2, void* arg3, void* arg4, void* arg5, void* arg6);
+	typedef void (*callback_a7r0)(void* arg1, void* arg2, void* arg3, void* arg4, void* arg5, void* arg6, void* arg7);
+	typedef void (*callback_a8r0)(void* arg1, void* arg2, void* arg3, void* arg4, void* arg5, void* arg6, void* arg7, void* arg8);
+	typedef void (*callback_a9r0)(void* arg1, void* arg2, void* arg3, void* arg4, void* arg5, void* arg6, void* arg7, void* arg8, void* arg9);
 
 	typedef struct {
 		const char* name;

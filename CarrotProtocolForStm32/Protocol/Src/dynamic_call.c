@@ -57,28 +57,48 @@ void dynamic_call(payload_parse_t* args)
 			}
 
 			// method invoke
-			// TESTING
+			void* args[10];
+			dynamic_type_array_get(&dyn, 0, (void**)&args[0]);
+			dynamic_type_array_get(&dyn, 1, (void**)&args[1]);
+			dynamic_type_array_get(&dyn, 2, (void**)&args[2]);
+			dynamic_type_array_get(&dyn, 3, (void**)&args[3]);
+			dynamic_type_array_get(&dyn, 4, (void**)&args[4]);
+			dynamic_type_array_get(&dyn, 5, (void**)&args[5]);
+			dynamic_type_array_get(&dyn, 6, (void**)&args[6]);
+			dynamic_type_array_get(&dyn, 7, (void**)&args[7]);
+			dynamic_type_array_get(&dyn, 8, (void**)&args[8]);
 			switch (fn_arg_cnt)
 			{
 			case 0:
 				((callback_a0r0)callbacks[i].func)();
 				break;
 			case 1:
-			{
-				void* arg1 = NULL;
-				dynamic_type_array_get(&dyn, 0, (void**)&arg1);
-				((callback_a1r0)callbacks[i].func)(arg1);
+				((callback_a1r0)callbacks[i].func)(args[0]);
 				break;
-			}
 			case 2:
-			{
-				void* arg1 = NULL;
-				void* arg2 = NULL;
-				dynamic_type_array_get(&dyn, 0, (void**)&arg1);
-				dynamic_type_array_get(&dyn, 1, (void**)&arg2);
-				((callback_a2r0)callbacks[i].func)(arg1, arg2);
+				((callback_a2r0)callbacks[i].func)(args[0], args[1]);
 				break;
-			}
+			case 3:
+				((callback_a3r0)callbacks[i].func)(args[0], args[1], args[2]);
+				break;
+			case 4:
+				((callback_a4r0)callbacks[i].func)(args[0], args[1], args[2], args[3]);
+				break;
+			case 5:
+				((callback_a5r0)callbacks[i].func)(args[0], args[1], args[2], args[3], args[4]);
+				break;
+			case 6:
+				((callback_a6r0)callbacks[i].func)(args[0], args[1], args[2], args[3], args[4], args[5]);
+				break;
+			case 7:
+				((callback_a7r0)callbacks[i].func)(args[0], args[1], args[2], args[3], args[4], args[5], args[6]);
+				break;
+			case 8:
+				((callback_a8r0)callbacks[i].func)(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7]);
+				break;
+			case 9:
+				((callback_a9r0)callbacks[i].func)(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8]);
+				break;
 			default:
 				// TODO
 				break;
