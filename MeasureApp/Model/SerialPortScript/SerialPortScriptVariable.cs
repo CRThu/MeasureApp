@@ -25,7 +25,7 @@ namespace MeasureApp.Model.SerialPortScript
             {
                 return Value[0];
             }
-            set
+            private set
             {
                 if (Value.Count == 0)
                     Value.Add(value);

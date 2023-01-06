@@ -825,15 +825,16 @@ REGW;{f3:F3};{f4:F3};
                         if (getForInfoFromStack.Type == CommandScriptForStatementType.FOR)
                         {
                             // FOR
-                            SerialportCommandScriptVarDict[getForInfoFromStack.Var].Value1 += getForInfoFromStack.Step;
+                            decimal temp1 = SerialportCommandScriptVarDict[getForInfoFromStack.Var].Value1 + getForInfoFromStack.Step;
+                            SerialportCommandScriptVarDict[getForInfoFromStack.Var] = new(getForInfoFromStack.Var, temp1);
                         }
                         else
                         {
                             // FOREACH
                             getForInfoFromStack.VarArrayIndex++;
                             if (getForInfoFromStack.VarArrayIndex < SerialportCommandScriptVarDict[getForInfoFromStack.VarArray].Value.Count)
-                                SerialportCommandScriptVarDict[getForInfoFromStack.Var].Value1 =
-                                    SerialportCommandScriptVarDict[getForInfoFromStack.VarArray].Value[getForInfoFromStack.VarArrayIndex];
+                                SerialportCommandScriptVarDict[getForInfoFromStack.Var] = new(getForInfoFromStack.Var,
+                                    SerialportCommandScriptVarDict[getForInfoFromStack.VarArray].Value[getForInfoFromStack.VarArrayIndex]);
                         }
                         SerialPortCommandScriptGotoLinePointer(getForInfoFromStack.ForPointer);
                         break;
@@ -850,8 +851,8 @@ REGW;01;{i:D};
                         IEnumerable<double> data = DataStorageInstance[trimDataKey];
                         double closestValue = data.MinBy(x => Math.Abs(x - trimTargetValue));
                         if (TagAttrs.ContainsKey("rettrimdata"))
-                            SerialportCommandScriptVarDict[TagAttrs["rettrimdata"]].Value1 = (decimal)closestValue;
-                        SerialportCommandScriptVarDict[trimReturnVar].Value1 = Array.IndexOf(data.ToArray(), closestValue);
+                            SerialportCommandScriptVarDict[TagAttrs["rettrimdata"]] = new(TagAttrs["rettrimdata"], (decimal)closestValue);
+                        SerialportCommandScriptVarDict[trimReturnVar] = new(trimReturnVar, Array.IndexOf(data.ToArray(), closestValue));
                         break;
                     default:
                         throw new FormatException($"Unknown Command: {code}");
