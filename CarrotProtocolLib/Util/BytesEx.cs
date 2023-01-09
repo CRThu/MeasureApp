@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CarrotProtocolCommDemo
+namespace CarrotProtocolLib.Util
 {
 
     // https://blog.csdn.net/qq_25482087/article/details/87925962
@@ -25,7 +25,7 @@ namespace CarrotProtocolCommDemo
             byte[] buffer = new byte[s.Length / 2];
             for (int i = 0; i < s.Length; i += 2)
             {
-                buffer[i / 2] = (byte)Convert.ToByte(s.Substring(i, 2), 16);
+                buffer[i / 2] = Convert.ToByte(s.Substring(i, 2), 16);
             }
 
             return buffer;
@@ -127,9 +127,9 @@ namespace CarrotProtocolCommDemo
         public static byte[] Int2Bytes(int i)
         {
             byte[] result = new byte[4];
-            result[0] = (byte)((i >> 24) & 0xFF);
-            result[1] = (byte)((i >> 16) & 0xFF);
-            result[2] = (byte)((i >> 8) & 0xFF);
+            result[0] = (byte)(i >> 24 & 0xFF);
+            result[1] = (byte)(i >> 16 & 0xFF);
+            result[2] = (byte)(i >> 8 & 0xFF);
             result[3] = (byte)(i & 0xFF);
             return result;
         }
@@ -144,9 +144,9 @@ namespace CarrotProtocolCommDemo
         public static int Bytes2Int(byte[] bytes)
         {
             int num = bytes[3] & 0xFF;
-            num |= ((bytes[2] << 8) & 0xFF00);
-            num |= ((bytes[1] << 16) & 0xFF0000);
-            num |= ((bytes[0] << 24) & 0xFF0000);
+            num |= bytes[2] << 8 & 0xFF00;
+            num |= bytes[1] << 16 & 0xFF0000;
+            num |= bytes[0] << 24 & 0xFF0000;
             return num;
         }
 
@@ -176,9 +176,9 @@ namespace CarrotProtocolCommDemo
         public static byte[] IntToBytes2(int value)
         {
             byte[] src = new byte[4];
-            src[0] = (byte)((value >> 24) & 0xFF);
-            src[1] = (byte)((value >> 16) & 0xFF);
-            src[2] = (byte)((value >> 8) & 0xFF);
+            src[0] = (byte)(value >> 24 & 0xFF);
+            src[1] = (byte)(value >> 16 & 0xFF);
+            src[2] = (byte)(value >> 8 & 0xFF);
             src[3] = (byte)(value & 0xFF);
             return src;
         }
@@ -194,10 +194,10 @@ namespace CarrotProtocolCommDemo
             {
                 return -1;
             }
-            return (int)((((bArr[0] & 0xff) << 24)
-                        | ((bArr[1] & 0xff) << 16)
-                        | ((bArr[2] & 0xff) << 8)
-                        | ((bArr[3] & 0xff) << 0)));
+            return (bArr[0] & 0xff) << 24
+                        | (bArr[1] & 0xff) << 16
+                        | (bArr[2] & 0xff) << 8
+                        | (bArr[3] & 0xff) << 0;
         }
 
         public static string StringToHexArray(string input)
@@ -209,7 +209,7 @@ namespace CarrotProtocolCommDemo
                 // Get the integral value of the character.
                 int value = Convert.ToInt32(letter);
                 // Convert the decimal value to a hexadecimal value in string form.
-                string hexOutput = String.Format("{0:X}", value);
+                string hexOutput = string.Format("{0:X}", value);
                 sb.Append(Convert.ToString(value, 16).PadLeft(2, '0').PadRight(3, ' '));
             }
 

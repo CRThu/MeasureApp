@@ -9,6 +9,9 @@ using System.Windows;
 using System.Windows.Input;
 using System.IO.Ports;
 using System.Diagnostics;
+using CarrotProtocolLib.Util;
+using CarrotProtocolLib.Impl;
+using CarrotProtocolLib.Driver;
 
 namespace CarrotProtocolCommDemo
 {

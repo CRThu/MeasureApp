@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CarrotProtocolCommDemo
+namespace CarrotProtocolLib.Util
 {
     /// <summary>
     /// FIFO环形缓冲区
@@ -81,7 +81,7 @@ namespace CarrotProtocolCommDemo
             }
 
             int bytesToWrite = count;
-            int bytesCount = (HeadIndex + count < Buffer.Length) ? count : (Buffer.Length - HeadIndex);
+            int bytesCount = HeadIndex + count < Buffer.Length ? count : Buffer.Length - HeadIndex;
 
             // 缓冲区写入
             Array.Copy(buffer, offset, Buffer, HeadIndex, bytesCount);
@@ -113,7 +113,7 @@ namespace CarrotProtocolCommDemo
             }
 
             int bytesToRead = count;
-            int bytesCount = (TailIndex + count < Buffer.Length) ? count : (Buffer.Length - TailIndex);
+            int bytesCount = TailIndex + count < Buffer.Length ? count : Buffer.Length - TailIndex;
 
             // 缓冲区读取
             Array.Copy(Buffer, TailIndex, buffer, offset, bytesCount);

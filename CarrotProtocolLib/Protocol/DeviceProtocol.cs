@@ -4,8 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using CarrotProtocolLib.Interface;
 
-namespace CarrotProtocolCommDemo
+namespace CarrotProtocolLib.Impl
 {
     /*
     #define CARROT_DATA_PROTOCOL_GEN(len)                              \
@@ -62,7 +63,7 @@ namespace CarrotProtocolCommDemo
                 int pktLength = CarrotDataProtocol.GetPacketLength(protocolId);
 
                 // 等待读帧尾
-                while (Device.RxByteToRead < (pktLength - 2))
+                while (Device.RxByteToRead < pktLength - 2)
                 {
                     if (cts.Token.IsCancellationRequested)
                         return -1;

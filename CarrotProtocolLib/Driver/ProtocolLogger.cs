@@ -1,10 +1,12 @@
-﻿using System;
+﻿using CarrotProtocolLib.Impl;
+using CarrotProtocolLib.Interface;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CarrotProtocolCommDemo
+namespace CarrotProtocolLib.Driver
 {
     public class ProtocolLog
     {
@@ -16,7 +18,7 @@ namespace CarrotProtocolCommDemo
         {
             return $"{{ Time: {Time}, " +
                 $"TxRx: {TxRx}, " +
-                $"Protocol: {Protocol.PayloadDisplay.Replace("\r\n","\\r\\n")} }}";
+                $"Protocol: {Protocol.PayloadDisplay.Replace("\r\n", "\\r\\n")} }}";
         }
     }
 

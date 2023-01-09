@@ -1,11 +1,13 @@
-﻿using System;
+﻿using CarrotProtocolLib.Interface;
+using CarrotProtocolLib.Util;
+using System;
 using System.Collections.Generic;
 using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CarrotProtocolCommDemo
+namespace CarrotProtocolLib.Driver
 {
     public class SerialPortDevice : IDevice
     {

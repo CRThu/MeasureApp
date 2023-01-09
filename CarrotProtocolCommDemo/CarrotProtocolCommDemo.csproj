@@ -15,4 +15,8 @@
     <PackageReference Include="System.IO.Ports" Version="5.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CarrotProtocolLib\CarrotProtocolLib.csproj" />
+  </ItemGroup>
+
 </Project>

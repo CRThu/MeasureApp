@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CarrotProtocolLib.Impl;
 
-namespace CarrotProtocolCommDemo
+namespace CarrotProtocolLib.Interface
 {
     public interface ILogger
     {
