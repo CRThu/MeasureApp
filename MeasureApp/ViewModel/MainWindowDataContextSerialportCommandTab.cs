@@ -856,16 +856,37 @@ REGW;01;{i:D};
                         SerialportCommandScriptVarDict[trimReturnVar] = new(trimReturnVar, Array.IndexOf(data.ToArray(), closestValue));
                         break;
                     case "DAC8830":
-                        // <dac8830 port="..." ch="..." volt="..."/>
+                        // <dac8830 port="..." ch="..." expr="..." volt="..."/>
                         // default: ch = 0
                         // type
                         // port:string
                         // ch:int32
                         // volt:double
                         // <dac8830 port="COM7" ch="1" volt="1.00000"/>
+                        // <dac8830 port="COM7" ch="3" volt="32768"/>
+                        /*
+<delmeasure/>
+<measure mode="NPLC 1" key="_"/>
+<measure mode="DCV 10" key="_"/>
+<for var="x" begin="0" end="65535" step="1024"/>
+<dac8830 port="COM7" ch="3" expr="true" volt="x"/>
+<measure key="_"/>
+<measure key="DAC8830"/>
+<forend/> # x
+                        */
                         int dac8830_ch = Convert.ToInt32(TagAttrs.TryGetValue("ch", out string value) ? value : "0");
-                        decimal dac8830_volt = Convert.ToDecimal(TagAttrs.TryGetValue("volt", out string value2) ? value2 : "0");
-                        CarrotDataProtocol cdp = new(0x32, dac8830_ch, dac8830_volt.ToString());
+                        string dac8830_volt =TagAttrs.TryGetValue("volt", out string value2) ? value2 : "0";
+                        string dac8830_Expr0 = TagAttrs.ContainsKey("expr") ? TagAttrs["expr"] : "false";
+
+                        if (Convert.ToBoolean(dac8830_Expr0))
+                        {
+                            // 支持表达式运算
+                            ExpressionEvaluator evaluator5 = new();
+                            evaluator5.Variables = SerialportCommandScriptVarDict.ToDictionary(pair => pair.Value.Name, pair => (object)(double)pair.Value.Value1);
+                            dac8830_volt = evaluator5.Evaluate(dac8830_volt.Replace('\'', '\"')).ToString();
+                        }
+
+                        CarrotDataProtocol cdp = new(0x32, dac8830_ch, dac8830_volt);
                         string dac8830PortName = TagAttrs["port"];
                         SerialPortsInstance.WriteBytes(dac8830PortName, cdp.ToBytes());
                         break;
@@ -891,8 +912,8 @@ REGW;{i};{j};
 REGW;{i+j+3:D};{Round(j+8):D};{Max(i,j,0.5):F3};
                      */
 
-                    // 语法解析 REGW;{i:X};{j:D};{i+2:D};
-                    var leftSymbolIndexes = code.Select((item, index) => new { item, index }).Where(t => t.item == '{').Select(t => t.index).ToArray();
+                        // 语法解析 REGW;{i:X};{j:D};{i+2:D};
+                        var leftSymbolIndexes = code.Select((item, index) => new { item, index }).Where(t => t.item == '{').Select(t => t.index).ToArray();
                     var rightSymbolIndexes = code.Select((item, index) => new { item, index }).Where(t => t.item == '}').Select(t => t.index).ToArray();
                     var symboIndexes = leftSymbolIndexes.Zip(rightSymbolIndexes).ToArray();
                     List<string> splitStrs = new();
