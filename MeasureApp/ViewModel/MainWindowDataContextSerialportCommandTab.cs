@@ -24,6 +24,7 @@ using MeasureApp.Model.Devices;
 using CodingSeb.ExpressionEvaluator;
 using MeasureApp.Model.DataStorage;
 using Newtonsoft.Json.Linq;
+using CarrotProtocolLib.Impl;
 
 namespace MeasureApp.ViewModel
 {
@@ -853,6 +854,20 @@ REGW;01;{i:D};
                         if (TagAttrs.ContainsKey("rettrimdata"))
                             SerialportCommandScriptVarDict[TagAttrs["rettrimdata"]] = new(TagAttrs["rettrimdata"], (decimal)closestValue);
                         SerialportCommandScriptVarDict[trimReturnVar] = new(trimReturnVar, Array.IndexOf(data.ToArray(), closestValue));
+                        break;
+                    case "DAC8830":
+                        // <dac8830 port="..." ch="..." volt="..."/>
+                        // default: ch = 0
+                        // type
+                        // port:string
+                        // ch:int32
+                        // volt:double
+                        // <dac8830 port="COM7" ch="1" volt="1.00000"/>
+                        int dac8830_ch = Convert.ToInt32(TagAttrs.TryGetValue("ch", out string value) ? value : "0");
+                        decimal dac8830_volt = Convert.ToDecimal(TagAttrs.TryGetValue("volt", out string value2) ? value2 : "0");
+                        CarrotDataProtocol cdp = new(0x32, dac8830_ch, dac8830_volt.ToString());
+                        string dac8830PortName = TagAttrs["port"];
+                        SerialPortsInstance.WriteBytes(dac8830PortName, cdp.ToBytes());
                         break;
                     default:
                         throw new FormatException($"Unknown Command: {code}");

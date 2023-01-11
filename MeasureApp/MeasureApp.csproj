@@ -109,6 +109,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\CarrotProtocolLib\CarrotProtocolLib.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <Page Update="View\Pages\TempControlPage.xaml">
 	    <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
 	  </Page>
