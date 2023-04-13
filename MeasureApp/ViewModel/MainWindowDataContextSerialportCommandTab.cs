@@ -410,14 +410,12 @@ namespace MeasureApp.ViewModel
                                     timescount = 0;
                                     serialportCommandScriptDelayProgressBarTimer.Stop();
                                 }
-                                Debug.WriteLine($"{delay},{DateTime.Now}:{timescount}");
+                                //Debug.WriteLine($"{delay},{DateTime.Now}:{timescount}");
                             };
                         }
                         serialportCommandScriptDelayProgressBarTimer.Start();
-                        Debug.WriteLine($"{delay}");
                         while (serialportCommandScriptDelayProgressBarTimer.Enabled)
-
-                            Debug.WriteLine($"{delay}");
+                            ;
                         break;
                     case "MSGBOX":
                         // <msgbox msg="..."/>
