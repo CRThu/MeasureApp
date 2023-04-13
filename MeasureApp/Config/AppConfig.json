@@ -1,5 +1,9 @@
 {
-  "Settings": {
+  "General": {
+    "DefaultDirectory": "./",
+    "DefaultPresetCommandsJsonPath": "./Config/AD7124-8.json"
+  },
+  "Device": {
     "VISA": {
       "Timeout": 5000
     },
@@ -37,17 +41,15 @@
     }
   },
   "Logger": {
-    "SerialPortLogger": {
-      "IsHighLight": true
-    },
-    "Keyword": {
+    "IsHighLight": true,
+    "KeywordColor": {
       "PASS": "#FF008000",
       "FAIL": "#FFFF0000",
       "__DEFAULT__": "#FFFFA500"
     }
   },
-  "TempControl":{
-    "WarningMinTemp":-55,
-    "WarningMaxTemp":125
+  "TempControl": {
+    "WarningMinTemp": -55,
+    "WarningMaxTemp": 125
   }
 }

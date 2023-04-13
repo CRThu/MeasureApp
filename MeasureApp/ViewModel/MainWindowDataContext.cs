@@ -34,7 +34,7 @@ namespace MeasureApp.ViewModel
         }
 
 
-        public MainWindowDataContext()
+        public MainWindowDataContext(AppConfig appConfig)
         {
             Pages = new(this);
 

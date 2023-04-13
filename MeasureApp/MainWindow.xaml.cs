@@ -1,4 +1,5 @@
 ﻿using MeasureApp.Model;
+using MeasureApp.Model.Common;
 using MeasureApp.ViewModel;
 using Microsoft.Xaml.Behaviors;
 using RoslynPad.Editor;
@@ -24,15 +25,22 @@ namespace MeasureApp
     /// </summary>
     public partial class MainWindow : Window
     {
+        public AppConfig AppConfig { get; set; }
+
+
         public MainWindow()
         {
             InitializeComponent();
 
-            DataContext = new MainWindowDataContext();
+            AppConfig = AppConfig.Read();
+
+            DataContext = new MainWindowDataContext(AppConfig);
+
 
             // 默认文件选择路径加载
             if (Properties.Settings.Default.DefaultDirectory == string.Empty)
                 Properties.Settings.Default.DefaultDirectory = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+
         }
     }
 }
