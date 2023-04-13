@@ -32,12 +32,15 @@ namespace MeasureApp.Model.Devices
         public IEnumerable<string> SerialPortNames => SerialPortsDict.Keys;
         public IEnumerable<SerialPort> SerialPortInstances => SerialPortsDict.Values;
 
+
         public SerialPorts()
         {
         }
 
-        public bool Open(string portName, int baudRate = 115200, Parity parity = Parity.None, int dataBits = 8, StopBits stopBits = StopBits.One)
+        public bool Open(string portName, int baudRate = 115200, Parity parity = Parity.None, int dataBits = 8, StopBits stopBits = StopBits.One, AppConfig appConfig = null)
         {
+            appConfig ??= new();
+
             if (!SerialPortsDict.ContainsKey(portName))
             {
                 SerialPort serialPort = new(portName)
@@ -46,10 +49,10 @@ namespace MeasureApp.Model.Devices
                     Parity = parity,
                     DataBits = dataBits,
                     StopBits = stopBits,
-                    ReadBufferSize = Properties.Settings.Default.SerialPortReadBufferSize,
-                    WriteBufferSize = Properties.Settings.Default.SerialPortWriteBufferSize,
-                    ReadTimeout = Properties.Settings.Default.SerialPortReadTimeout,
-                    WriteTimeout = Properties.Settings.Default.SerialPortWriteTimeout
+                    ReadBufferSize = appConfig.Device.SerialPort.Buffer,
+                    WriteBufferSize = appConfig.Device.SerialPort.Buffer,
+                    ReadTimeout = appConfig.Device.SerialPort.Timeout,
+                    WriteTimeout = appConfig.Device.SerialPort.Timeout
                 };
                 serialPort.Open();
                 SerialPortsDict.Add(portName, serialPort);

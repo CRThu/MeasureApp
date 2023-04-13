@@ -73,11 +73,11 @@ namespace MeasureApp.ViewModel
                 {
                     Title = "Open Sample File...",
                     Filter = "Text File|*.txt",
-                    InitialDirectory = Properties.Settings.Default.DefaultDirectory
+                    InitialDirectory = AppConfig.General.DefaultDirectory
                 };
                 if (openFileDialog.ShowDialog() == true)
                 {
-                    Properties.Settings.Default.DefaultDirectory = Path.GetDirectoryName(openFileDialog.FileName);
+                    AppConfig.General.DefaultDirectory = Path.GetDirectoryName(openFileDialog.FileName);
                     FftAnalysisSampleFileName = openFileDialog.FileName;
                 }
             }

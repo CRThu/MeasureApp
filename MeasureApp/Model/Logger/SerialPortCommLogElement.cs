@@ -77,24 +77,14 @@ namespace MeasureApp.Model.Logger
                 : Brushes.DarkBlue;
         }
 
-        public static void SerialPortLogLoadKeywordColorFromJson(string fileName)
+        public static void SerialPortLogLoadKeywordColor(Dictionary<string, string> keywordColors)
         {
-            if (fileName == null)
+            KeywordColor = new();
+            foreach (var keywordColorKv in keywordColors)
             {
-                // FOR TEST
-                string json = JsonConvert.SerializeObject(
-                    new Dictionary<string, Brush>()
-                    {
-                        { "PASS", Brushes.Green },
-                        { "FAIL", Brushes.Red },
-                        { "__DEFAULT__", Brushes.Orange },
-                    });
-                File.WriteAllText(fileName, json);
-            }
-            else
-            {
-                string json = File.ReadAllText(fileName);
-                KeywordColor = JsonConvert.DeserializeObject<Dictionary<string, Brush>>(json);
+                Color color = (Color)ColorConverter.ConvertFromString(keywordColorKv.Value);
+                SolidColorBrush brush = new SolidColorBrush(color);
+                KeywordColor.Add(keywordColorKv.Key, brush);
             }
         }
 

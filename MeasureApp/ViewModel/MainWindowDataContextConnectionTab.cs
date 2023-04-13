@@ -78,7 +78,7 @@ namespace MeasureApp.ViewModel
             try
             {
                 GpibDeviceConnectStatusText = $"{Measure3458AInstance.Open(GpibDevicesSelectedName)} Connected.";
-                Measure3458AInstance.Timeout = Properties.Settings.Default.GPIBTimeout;
+                Measure3458AInstance.Timeout = AppConfig.Device.VISA.Timeout;
             }
             catch (Exception ex)
             {
@@ -128,10 +128,10 @@ namespace MeasureApp.ViewModel
         public int[] SerialportDeviceBaudRateList { get; set; } = new[] { 9600, 38400, 115200, 921600 };
         public int SerialportDeviceBaudRate
         {
-            get => Properties.Settings.Default.DefaultSerialPortBaudRate;
+            get => AppConfig.Device.SerialPort.DefaultBaudRate;
             set
             {
-                Properties.Settings.Default.DefaultSerialPortBaudRate = value;
+                AppConfig.Device.SerialPort.DefaultBaudRate = value;
                 RaisePropertyChanged(() => SerialportDeviceBaudRate);
             }
         }
@@ -143,10 +143,10 @@ namespace MeasureApp.ViewModel
         // Enum.GetName(typeof(Parity), Parity.None);
         public string SerialportDeviceParitySelectedValue
         {
-            get => Properties.Settings.Default.DefaultSerialPortParity;
+            get => AppConfig.Device.SerialPort.DefaultParity;
             set
             {
-                Properties.Settings.Default.DefaultSerialPortParity = value;
+                AppConfig.Device.SerialPort.DefaultParity = value;
                 RaisePropertyChanged(() => SerialportDeviceParitySelectedValue);
             }
         }
@@ -154,13 +154,12 @@ namespace MeasureApp.ViewModel
         // 串口数据位
         public int[] SerialportDeviceDataBitsList { get; set; } = new[] { 5, 6, 7, 8 };
 
-        private int serialportDeviceDataBitsSelectItem = Properties.Settings.Default.DefaultSerialPortDataBits;
         public int SerialportDeviceDataBitsSelectedValue
         {
-            get => serialportDeviceDataBitsSelectItem;
+            get => AppConfig.Device.SerialPort.DefaultDataBits;
             set
             {
-                serialportDeviceDataBitsSelectItem = value;
+                AppConfig.Device.SerialPort.DefaultDataBits = value;
                 RaisePropertyChanged(() => SerialportDeviceDataBitsSelectedValue);
             }
         }
@@ -168,13 +167,12 @@ namespace MeasureApp.ViewModel
         // 串口停止位
         public float[] SerialportDeviceStopBitsList { get; set; } = new[] { 1.0F, 1.5F, 2.0F };
 
-        private float serialportDeviceStopBitsSelectedValue = Properties.Settings.Default.DefaultSerialPortStopBits;
         public float SerialportDeviceStopBitsSelectedValue
         {
-            get => serialportDeviceStopBitsSelectedValue;
+            get => AppConfig.Device.SerialPort.DefaultStopBits;
             set
             {
-                serialportDeviceStopBitsSelectedValue = value;
+                AppConfig.Device.SerialPort.DefaultStopBits = value;
                 RaisePropertyChanged(() => SerialportDeviceStopBitsSelectedValue);
             }
         }
@@ -211,8 +209,8 @@ namespace MeasureApp.ViewModel
                 string portName = SerialportDevicesNameSelectedValue.Split('|')[0];
                 int baudRate = SerialportDeviceBaudRate;
                 Parity parity = (Parity)Enum.Parse(typeof(Parity), SerialportDeviceParitySelectedValue);
-                int dataBits = serialportDeviceDataBitsSelectItem;
-                StopBits stopBits = serialportDeviceStopBitsSelectedValue switch
+                int dataBits = SerialportDeviceDataBitsSelectedValue;
+                StopBits stopBits = SerialportDeviceStopBitsSelectedValue switch
                 {
                     1.0F => StopBits.One,
                     1.5F => StopBits.OnePointFive,
@@ -233,7 +231,7 @@ namespace MeasureApp.ViewModel
                     SpPktCommTabSerialPortName = SerialPortsInstance.SerialPortsDict.Keys.First();
                 if (SerialPortsInstance.SerialPortNames.Any() && TempControlPortNameSelectedValue is null)
                     TempControlPortNameSelectedValue = SerialPortsInstance.SerialPortsDict.Keys.First();
-                
+
             }
             catch (Exception ex)
             {

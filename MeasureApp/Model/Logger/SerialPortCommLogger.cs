@@ -35,11 +35,6 @@ namespace MeasureApp.Model.Logger
             });
         }
 
-        public SerialPortCommLogger(string keywordConfigFile) : this()
-        {
-            LoadKeywordFile(keywordConfigFile);
-        }
-
         public bool IsLastLogContains(string host, string keyword)
         {
             SerialPortCommLogElement lastLogFromHost = LogCollection.LastOrDefault();
@@ -47,9 +42,9 @@ namespace MeasureApp.Model.Logger
             return lastLogFromHost.Host == host && lastLogFromHost is not null && ((string)lastLogFromHost.Message.ToString()).Contains(keyword, StringComparison.CurrentCultureIgnoreCase);
         }
 
-        public void LoadKeywordFile(string keywordConfigFile)
+        public void LoadKeywordColorDict(Dictionary<string,string> keywordColor)
         {
-            SerialPortCommLogElement.SerialPortLogLoadKeywordColorFromJson(keywordConfigFile);
+            SerialPortCommLogElement.SerialPortLogLoadKeywordColor(keywordColor);
         }
 
         public void Clear()

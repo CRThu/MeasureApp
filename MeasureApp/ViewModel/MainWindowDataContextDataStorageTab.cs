@@ -85,11 +85,11 @@ namespace MeasureApp.ViewModel
                 {
                     Title = "Open Json File...",
                     Filter = "Json File|*.json",
-                    InitialDirectory = Properties.Settings.Default.DefaultDirectory
+                    InitialDirectory = AppConfig.General.DefaultDirectory
                 };
                 if (openFileDialog.ShowDialog() == true)
                 {
-                    Properties.Settings.Default.DefaultDirectory = Path.GetDirectoryName(openFileDialog.FileName);
+                    AppConfig.General.DefaultDirectory = Path.GetDirectoryName(openFileDialog.FileName);
                     string json = File.ReadAllText(openFileDialog.FileName);
                     DataStorageInstance = DataStorage.DeSerialize(json);
                 }
@@ -113,11 +113,11 @@ namespace MeasureApp.ViewModel
                     FileName = $"DataStorage.{DataStorage.GenerateDateTimeNow()}.json",
                     DefaultExt = ".json",
                     Filter = "Json File|*.json",
-                    InitialDirectory = Properties.Settings.Default.DefaultDirectory
+                    InitialDirectory = AppConfig.General.DefaultDirectory
                 };
                 if (saveFileDialog.ShowDialog() == true)
                 {
-                    Properties.Settings.Default.DefaultDirectory = Path.GetDirectoryName(saveFileDialog.FileName);
+                    AppConfig.General.DefaultDirectory = Path.GetDirectoryName(saveFileDialog.FileName);
                     string json = DataStorage.Serialize(DataStorageInstance);
                     File.WriteAllText(saveFileDialog.FileName, json);
                 }
@@ -213,11 +213,11 @@ namespace MeasureApp.ViewModel
                 {
                     Title = "Open Text File...",
                     Filter = "Text File|*.txt",
-                    InitialDirectory = Properties.Settings.Default.DefaultDirectory
+                    InitialDirectory = AppConfig.General.DefaultDirectory
                 };
                 if (openFileDialog.ShowDialog() == true)
                 {
-                    Properties.Settings.Default.DefaultDirectory = Path.GetDirectoryName(openFileDialog.FileName);
+                    AppConfig.General.DefaultDirectory = Path.GetDirectoryName(openFileDialog.FileName);
                     string[] lines = File.ReadAllLines(openFileDialog.FileName);
                     DataStorageInstance.AddValues(DataStorageInstance.SelectedKey, lines);
                 }
@@ -241,11 +241,11 @@ namespace MeasureApp.ViewModel
                     FileName = DataStorage.GenerateFileName(DataStorageInstance.SelectedKey),
                     DefaultExt = ".txt",
                     Filter = "Text File|*.txt",
-                    InitialDirectory = Properties.Settings.Default.DefaultDirectory
+                    InitialDirectory = AppConfig.General.DefaultDirectory
                 };
                 if (saveFileDialog.ShowDialog() == true)
                 {
-                    Properties.Settings.Default.DefaultDirectory = Path.GetDirectoryName(saveFileDialog.FileName);
+                    AppConfig.General.DefaultDirectory = Path.GetDirectoryName(saveFileDialog.FileName);
                     File.WriteAllLines(saveFileDialog.FileName, DataStorageInstance.GetValues<string>(DataStorageInstance.SelectedKey));
                 }
             }

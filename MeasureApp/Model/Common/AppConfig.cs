@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Media;
 
 namespace MeasureApp.Model.Common
 {
@@ -41,22 +43,31 @@ namespace MeasureApp.Model.Common
         /// <returns>返回程序配置类</returns>
         public static AppConfig Read(string configFilePath)
         {
-            if (!File.Exists(configFilePath))
+            try
             {
-                return Json.DeSerializeFromFile<AppConfig>(configFilePath);
-            }
-            else
-            {
-                AppConfig appConfig = new AppConfig();
-                Json.SerializeToFile(appConfig, configFilePath);
+                AppConfig appConfig;
+                if (!File.Exists(configFilePath))
+                {
+                    appConfig = Json.DeSerializeFromFile<AppConfig>(configFilePath);
+                }
+                else
+                {
+                    appConfig = new AppConfig();
+                    Json.SerializeToFile(appConfig, configFilePath);
+                }
+                CheckPath(appConfig);
                 return appConfig;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+                return new AppConfig();
             }
         }
 
         /// <summary>
         /// 更新配置文件
         /// </summary>
-        /// <param name="appConfig">程序配置类</param>
         public void Update()
         {
             Update(DefaultAppConfigFilePath);
@@ -65,10 +76,26 @@ namespace MeasureApp.Model.Common
         /// <summary>
         /// 更新配置文件
         /// </summary>
-        /// <param name="appConfig">程序配置类</param>
         public void Update(string configFilePath)
         {
-            Json.SerializeToFile(this, configFilePath);
+            try
+            {
+                Json.SerializeToFile(this, configFilePath);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        /// <summary>
+        /// 检查默认路径是否存在
+        /// </summary>
+        /// <param name="appConfig"></param>
+        public static void CheckPath(AppConfig appConfig)
+        {
+            if (!File.Exists(appConfig.General.DefaultDirectory))
+                appConfig.General.DefaultDirectory = "./";
         }
     }
 
@@ -96,7 +123,7 @@ namespace MeasureApp.Model.Common
             public int DefaultBaudRate { get; set; } = 9600;
             public string DefaultParity { get; set; } = "None";
             public int DefaultDataBits { get; set; } = 8;
-            public int DefaultStopBits { get; set; } = 1;
+            public float DefaultStopBits { get; set; } = 1;
             public int[] BaudRate { get; set; } = new int[]
             {
                 9600,
@@ -119,11 +146,11 @@ namespace MeasureApp.Model.Common
                 7,
                 8
             };
-            public double[] StopBits { get; set; } = new double[]
+            public float[] StopBits { get; set; } = new float[]
             {
-                1,
-                1.5,
-                2
+                1.0f,
+                1.5f,
+                2.0f
             };
         }
     };

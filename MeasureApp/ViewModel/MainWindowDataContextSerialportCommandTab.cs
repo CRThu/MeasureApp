@@ -290,7 +290,7 @@ namespace MeasureApp.ViewModel
                 {
                     string[] msgCollection = SerialPortsInstance.ReadExistingString(SerialportCommandPortNameSelectedValue).Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
 
-                    SerialPortLogger.AddRange(msgCollection, "COM", Properties.Settings.Default.IsSerialPortLogKeywordHighlight);
+                    SerialPortLogger.AddRange(msgCollection, "COM", AppConfig.Logger.IsHighLight);
                 }
             }
             catch (Exception ex)
@@ -544,7 +544,7 @@ PA5.FREQ;
 
                         GPIB3458AMeasure gpibDevice = new();
                         gpibDevice.Open(gpibAddr0);
-                        gpibDevice.Timeout = Properties.Settings.Default.GPIBTimeout;
+                        gpibDevice.Timeout = AppConfig.Device.VISA.Timeout;
                         if (gpibDevice.IsOpen)
                         {
                             try
@@ -602,7 +602,7 @@ PA5.FREQ;
                         M3458AManualMeasureText = "Measuring...";
                         GPIB3458AMeasure measureDevice = new();
                         measureDevice.Open(measureGpibAddr0);
-                        measureDevice.Timeout = Properties.Settings.Default.GPIBTimeout;
+                        measureDevice.Timeout = AppConfig.Device.VISA.Timeout;
                         if (measureDevice.IsOpen)
                         {
                             try
@@ -1089,12 +1089,12 @@ REGW;{i+j+3:D};{Round(j+8):D};{Max(i,j,0.5):F3};
                 {
                     Title = "Open Json File...",
                     Filter = "Json File|*.json",
-                    InitialDirectory = Properties.Settings.Default.DefaultDirectory
+                    InitialDirectory = AppConfig.General.DefaultDirectory
                 };
                 if (openFileDialog.ShowDialog() == true)
                 {
-                    Properties.Settings.Default.DefaultDirectory = Path.GetDirectoryName(openFileDialog.FileName);
-                    Properties.Settings.Default.DefaultPresetCommandsJsonPath = openFileDialog.FileName;
+                    AppConfig.General.DefaultDirectory = Path.GetDirectoryName(openFileDialog.FileName);
+                    AppConfig.General.DefaultPresetCommandsJsonPath = openFileDialog.FileName;
                     SerialPortLoadPresetCommandsFromJson(openFileDialog.FileName);
                 }
             }
@@ -1180,11 +1180,11 @@ REGW;{i+j+3:D};{Round(j+8):D};{Max(i,j,0.5):F3};
                     FileName = "SerialPortLog",
                     DefaultExt = ".log",
                     Filter = "Log File|*.log",
-                    InitialDirectory = Properties.Settings.Default.DefaultDirectory
+                    InitialDirectory = AppConfig.General.DefaultDirectory
                 };
                 if (saveFileDialog.ShowDialog() == true)
                 {
-                    Properties.Settings.Default.DefaultDirectory = Path.GetDirectoryName(saveFileDialog.FileName);
+                    AppConfig.General.DefaultDirectory = Path.GetDirectoryName(saveFileDialog.FileName);
                     SerialPortLogger.Save(saveFileDialog.FileName);
                 }
             }
@@ -1204,11 +1204,11 @@ REGW;{i+j+3:D};{Round(j+8):D};{Max(i,j,0.5):F3};
                 {
                     Title = "Open Script File...",
                     Filter = "Code File|*.txt;*.task;*.md",
-                    InitialDirectory = Properties.Settings.Default.DefaultDirectory
+                    InitialDirectory = AppConfig.General.DefaultDirectory
                 };
                 if (openFileDialog.ShowDialog() == true)
                 {
-                    Properties.Settings.Default.DefaultDirectory = Path.GetDirectoryName(openFileDialog.FileName);
+                    AppConfig.General.DefaultDirectory = Path.GetDirectoryName(openFileDialog.FileName);
                     SerialportCommandScriptEditorDocument.Text = File.ReadAllText(openFileDialog.FileName);
                 }
             }
@@ -1228,11 +1228,11 @@ REGW;{i+j+3:D};{Round(j+8):D};{Max(i,j,0.5):F3};
                 {
                     Title = "Save Script File...",
                     Filter = "Text File|*.txt|Task Code|*.task|Markdown Code|*.md",
-                    InitialDirectory = Properties.Settings.Default.DefaultDirectory
+                    InitialDirectory = AppConfig.General.DefaultDirectory
                 };
                 if (saveFileDialog.ShowDialog() == true)
                 {
-                    Properties.Settings.Default.DefaultDirectory = Path.GetDirectoryName(saveFileDialog.FileName);
+                    AppConfig.General.DefaultDirectory = Path.GetDirectoryName(saveFileDialog.FileName);
                     File.WriteAllText(saveFileDialog.FileName, SerialportCommandScriptEditorDocument.Text);
                 }
             }
@@ -1293,11 +1293,11 @@ REGW;{i+j+3:D};{Round(j+8):D};{Max(i,j,0.5):F3};
                 {
                     Title = "Open Json File...",
                     Filter = "Json File|*.json",
-                    InitialDirectory = Properties.Settings.Default.DefaultDirectory
+                    InitialDirectory = AppConfig.General.DefaultDirectory
                 };
                 if (openFileDialog.ShowDialog() == true)
                 {
-                    Properties.Settings.Default.DefaultDirectory = Path.GetDirectoryName(openFileDialog.FileName);
+                    AppConfig.General.DefaultDirectory = Path.GetDirectoryName(openFileDialog.FileName);
                     string json = File.ReadAllText(openFileDialog.FileName);
                     //var tempDic = JsonConvert.DeserializeObject<Dictionary<string, decimal>>(json, new JsonSerializerSettings() { FloatParseHandling = FloatParseHandling.Decimal });
                     var j = JToken.Parse(json);
@@ -1328,11 +1328,11 @@ REGW;{i+j+3:D};{Round(j+8):D};{Max(i,j,0.5):F3};
                     FileName = $"DataStorage.{DataStorage.GenerateDateTimeNow()}.json",
                     DefaultExt = ".json",
                     Filter = "Json File|*.json",
-                    InitialDirectory = Properties.Settings.Default.DefaultDirectory
+                    InitialDirectory = AppConfig.General.DefaultDirectory
                 };
                 if (saveFileDialog.ShowDialog() == true)
                 {
-                    Properties.Settings.Default.DefaultDirectory = Path.GetDirectoryName(saveFileDialog.FileName);
+                    AppConfig.General.DefaultDirectory = Path.GetDirectoryName(saveFileDialog.FileName);
                     //string json = JsonConvert.SerializeObject(SerialportCommandScriptVarDict, new JsonSerializerSettings() { FloatParseHandling = FloatParseHandling.Decimal });
 
                     JObject jo = new();

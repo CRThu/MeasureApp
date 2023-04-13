@@ -48,11 +48,11 @@ namespace MeasureApp.ViewModel
                             {
                                 Title = "Open Script File...",
                                 Filter = "C# Code|*.cs|Text File|*.txt",
-                                InitialDirectory = Properties.Settings.Default.DefaultDirectory
+                                InitialDirectory = AppConfig.General.DefaultDirectory
                             };
                             if (openFileDialog.ShowDialog() == true)
                             {
-                                Properties.Settings.Default.DefaultDirectory = Path.GetDirectoryName(openFileDialog.FileName);
+                                AppConfig.General.DefaultDirectory = Path.GetDirectoryName(openFileDialog.FileName);
                                 AutomationCodeEditorText = File.ReadAllText(openFileDialog.FileName);
                             }
                         }
@@ -83,11 +83,11 @@ namespace MeasureApp.ViewModel
                             {
                                 Title = "Save Script File...",
                                 Filter = "C# Code|*.cs|Text File|*.txt",
-                                InitialDirectory = Properties.Settings.Default.DefaultDirectory
+                                InitialDirectory = AppConfig.General.DefaultDirectory
                             };
                             if (saveFileDialog.ShowDialog() == true)
                             {
-                                Properties.Settings.Default.DefaultDirectory = Path.GetDirectoryName(saveFileDialog.FileName);
+                                AppConfig.General.DefaultDirectory = Path.GetDirectoryName(saveFileDialog.FileName);
                                 File.WriteAllText(saveFileDialog.FileName, AutomationCodeEditorText);
                             }
                         }

@@ -35,12 +35,6 @@ namespace MeasureApp
             AppConfig = AppConfig.Read();
 
             DataContext = new MainWindowDataContext(AppConfig);
-
-
-            // 默认文件选择路径加载
-            if (Properties.Settings.Default.DefaultDirectory == string.Empty)
-                Properties.Settings.Default.DefaultDirectory = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
-
         }
     }
 }
