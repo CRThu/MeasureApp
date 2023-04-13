@@ -25,6 +25,7 @@ using CodingSeb.ExpressionEvaluator;
 using MeasureApp.Model.DataStorage;
 using Newtonsoft.Json.Linq;
 using CarrotProtocolLib.Impl;
+using System.Timers;
 
 namespace MeasureApp.ViewModel
 {
@@ -252,6 +253,11 @@ namespace MeasureApp.ViewModel
             }
         }
 
+        private System.Timers.Timer serialportCommandScriptDelayProgressBarTimer;
+        double delay = 0;
+        int timescount = 0;
+
+
         // 加载预设指令函数
         public void SerialPortLoadPresetCommandsFromJson(string jsonPath)
         {
@@ -389,7 +395,29 @@ namespace MeasureApp.ViewModel
                     case "DELAY":
                         // <delay time="..."/>
                         // default: time="1000"
-                        Thread.Sleep(Convert.ToInt32(TagAttrs.ContainsKey("time") ? TagAttrs["time"] : "1000"));
+                        //Thread.Sleep(Convert.ToInt32(TagAttrs.ContainsKey("time") ? TagAttrs["time"] : "1000"));
+
+                        delay = Convert.ToInt32(TagAttrs.ContainsKey("time") ? TagAttrs["time"] : "1000");
+                        if (serialportCommandScriptDelayProgressBarTimer is null)
+                        {
+                            serialportCommandScriptDelayProgressBarTimer = new();
+                            serialportCommandScriptDelayProgressBarTimer.Interval = 100;
+                            serialportCommandScriptDelayProgressBarTimer.Elapsed += (object sender, ElapsedEventArgs e) =>
+                            {
+                                timescount++;
+                                if (timescount >= delay / 100)
+                                {
+                                    timescount = 0;
+                                    serialportCommandScriptDelayProgressBarTimer.Stop();
+                                }
+                                Debug.WriteLine($"{delay},{DateTime.Now}:{timescount}");
+                            };
+                        }
+                        serialportCommandScriptDelayProgressBarTimer.Start();
+                        Debug.WriteLine($"{delay}");
+                        while (serialportCommandScriptDelayProgressBarTimer.Enabled)
+
+                            Debug.WriteLine($"{delay}");
                         break;
                     case "MSGBOX":
                         // <msgbox msg="..."/>
@@ -472,6 +500,8 @@ PA5.FREQ;
 
 <setvar key="pga_reg" val="4"/>
 <serialport port="COM250" cmd="'VOLT '+((vin/Math.Pow(2,pga_reg)+3.3)/2.0).ToString('0.000')"/>
+
+<serialport port="COM1" cmd="'SETP 25'"/>
                         */
 
                         string serialportPortName = TagAttrs["port"];
@@ -864,6 +894,7 @@ REGW;01;{i:D};
                         // volt:double
                         // <dac8830 port="COM7" ch="1" volt="1.00000"/>
                         // <dac8830 port="COM7" ch="3" volt="32768"/>
+                        // <dac8830 port="COM4" ch="5" volt="3.3"/>
                         /*
 <delmeasure/>
 <measure mode="NPLC 1" key="_"/>
@@ -875,7 +906,7 @@ REGW;01;{i:D};
 <forend/> # x
                         */
                         int dac8830_ch = Convert.ToInt32(TagAttrs.TryGetValue("ch", out string value) ? value : "0");
-                        string dac8830_volt =TagAttrs.TryGetValue("volt", out string value2) ? value2 : "0";
+                        string dac8830_volt = TagAttrs.TryGetValue("volt", out string value2) ? value2 : "0";
                         string dac8830_Expr0 = TagAttrs.ContainsKey("expr") ? TagAttrs["expr"] : "false";
 
                         if (Convert.ToBoolean(dac8830_Expr0))
@@ -912,8 +943,8 @@ REGW;{i};{j};
 REGW;{i+j+3:D};{Round(j+8):D};{Max(i,j,0.5):F3};
                      */
 
-                        // 语法解析 REGW;{i:X};{j:D};{i+2:D};
-                        var leftSymbolIndexes = code.Select((item, index) => new { item, index }).Where(t => t.item == '{').Select(t => t.index).ToArray();
+                    // 语法解析 REGW;{i:X};{j:D};{i+2:D};
+                    var leftSymbolIndexes = code.Select((item, index) => new { item, index }).Where(t => t.item == '{').Select(t => t.index).ToArray();
                     var rightSymbolIndexes = code.Select((item, index) => new { item, index }).Where(t => t.item == '}').Select(t => t.index).ToArray();
                     var symboIndexes = leftSymbolIndexes.Zip(rightSymbolIndexes).ToArray();
                     List<string> splitStrs = new();
@@ -1229,7 +1260,11 @@ REGW;{i+j+3:D};{Round(j+8):D};{Max(i,j,0.5):F3};
                                 SerialportCommandScriptIsRun = true;
                             }
                             else
+                            {
+                                serialportCommandScriptDelayProgressBarTimer.Stop();
                                 SerialportCommandScriptIsRun = false;
+                                timescount = 0;
+                            }
                             break;
                         case "RunOnce":
                             string line = SerialPortCommandScriptGetCurrentLine();
