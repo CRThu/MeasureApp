@@ -1,6 +1,6 @@
 {
   "General": {
-    "DefaultDirectory": "./",
+    "DefaultDirectory": "",
     "DefaultPresetCommandsJsonPath": "./Config/AD7124-8.json"
   },
   "Device": {

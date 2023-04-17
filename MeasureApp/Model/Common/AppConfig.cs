@@ -46,7 +46,7 @@ namespace MeasureApp.Model.Common
             try
             {
                 AppConfig appConfig;
-                if (!File.Exists(configFilePath))
+                if (File.Exists(configFilePath))
                 {
                     appConfig = Json.DeSerializeFromFile<AppConfig>(configFilePath);
                 }
@@ -94,14 +94,14 @@ namespace MeasureApp.Model.Common
         /// <param name="appConfig"></param>
         public static void CheckPath(AppConfig appConfig)
         {
-            if (!File.Exists(appConfig.General.DefaultDirectory))
-                appConfig.General.DefaultDirectory = "./";
+            if ((!Directory.Exists(appConfig.General.DefaultDirectory)) && (appConfig.General.DefaultDirectory != ""))
+                appConfig.General.DefaultDirectory = "";
         }
     }
 
     public class GeneralSettings
     {
-        public string DefaultDirectory { get; set; } = "./";
+        public string DefaultDirectory { get; set; } = "";
         public string DefaultPresetCommandsJsonPath { get; set; } = "./Config/AD7124-8.json";
     }
 
