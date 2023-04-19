@@ -1259,7 +1259,10 @@ REGW;{i+j+3:D};{Round(j+8):D};{Max(i,j,0.5):F3};
                             }
                             else
                             {
-                                serialportCommandScriptDelayProgressBarTimer.Stop();
+                                if (serialportCommandScriptDelayProgressBarTimer is not null)
+                                {
+                                    serialportCommandScriptDelayProgressBarTimer.Stop();
+                                }
                                 SerialportCommandScriptIsRun = false;
                                 timescount = 0;
                             }
