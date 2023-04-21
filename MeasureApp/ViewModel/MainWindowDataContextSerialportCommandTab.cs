@@ -253,10 +253,10 @@ namespace MeasureApp.ViewModel
             }
         }
 
-        private System.Timers.Timer serialportCommandScriptDelayProgressBarTimer;
-        double delay = 0;
-        int timescount = 0;
-
+        /// <summary>
+        /// 延时函数中断延时使用cts
+        /// </summary>
+        CancellationTokenSource SerialportCommandDelayTaskCts;
 
         // 加载预设指令函数
         public void SerialPortLoadPresetCommandsFromJson(string jsonPath)
@@ -397,25 +397,17 @@ namespace MeasureApp.ViewModel
                         // default: time="1000"
                         //Thread.Sleep(Convert.ToInt32(TagAttrs.ContainsKey("time") ? TagAttrs["time"] : "1000"));
 
-                        delay = Convert.ToInt32(TagAttrs.ContainsKey("time") ? TagAttrs["time"] : "1000");
-                        if (serialportCommandScriptDelayProgressBarTimer is null)
-                        {
-                            serialportCommandScriptDelayProgressBarTimer = new();
-                            serialportCommandScriptDelayProgressBarTimer.Interval = 100;
-                            serialportCommandScriptDelayProgressBarTimer.Elapsed += (object sender, ElapsedEventArgs e) =>
-                            {
-                                timescount++;
-                                if (timescount >= delay / 100)
-                                {
-                                    timescount = 0;
-                                    serialportCommandScriptDelayProgressBarTimer.Stop();
-                                }
-                                //Debug.WriteLine($"{delay},{DateTime.Now}:{timescount}");
-                            };
-                        }
-                        serialportCommandScriptDelayProgressBarTimer.Start();
-                        while (serialportCommandScriptDelayProgressBarTimer.Enabled)
-                            ;
+                        int delay = Convert.ToInt32(TagAttrs.ContainsKey("time") ? TagAttrs["time"] : "1000");
+
+
+                        // To use the function, you can create a CancellationTokenSource and pass its Token to the function
+                        // Then you can cancel the delay by calling CancellationTokenSource.Cancel() before the delay time elapses
+
+                        SerialportCommandDelayTaskCts = new CancellationTokenSource();
+                        var delayTask = Task.Run(()=>DelayEx.InterruptibleDelay(delay, SerialportCommandDelayTaskCts.Token));
+
+                        // To block until the delay finishes, you can await the delayTask
+                        delayTask.Wait();
                         break;
                     case "MSGBOX":
                         // <msgbox msg="..."/>
@@ -1259,12 +1251,11 @@ REGW;{i+j+3:D};{Round(j+8):D};{Max(i,j,0.5):F3};
                             }
                             else
                             {
-                                if (serialportCommandScriptDelayProgressBarTimer is not null)
+                                if (SerialportCommandDelayTaskCts is not null)
                                 {
-                                    serialportCommandScriptDelayProgressBarTimer.Stop();
+                                    SerialportCommandDelayTaskCts.Cancel();
                                 }
                                 SerialportCommandScriptIsRun = false;
-                                timescount = 0;
                             }
                             break;
                         case "RunOnce":
