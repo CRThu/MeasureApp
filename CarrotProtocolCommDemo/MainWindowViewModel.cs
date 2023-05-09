@@ -66,11 +66,17 @@ namespace CarrotProtocolCommDemo
         private void Open()
         {
             //MessageBox.Show("Open");
-            spd = new(SelectedSerialPortName, 115200);
-            spd.Open();
-            logger = new();
-            protocol = new(spd, logger);
-            logger.LoggerUpdate += Logger_LoggerUpdate;
+            if (spd is null || !spd.IsOpen)
+            {
+                spd = new(SelectedSerialPortName, 115200);
+                logger = new();
+                protocol = new(spd, logger);
+                logger.LoggerUpdate += Logger_LoggerUpdate;
+            }
+            else
+            {
+                protocol.Stop();
+            }
         }
 
         [RelayCommand]

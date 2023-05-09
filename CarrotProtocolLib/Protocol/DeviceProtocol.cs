@@ -29,18 +29,22 @@ namespace CarrotProtocolLib.Impl
         public IDevice Device { get; set; }
         public ILogger Logger { get; set; }
         private CancellationTokenSource cts { get; set; }
+        private Task<int> ReceiveTask { get; set; }
 
         public DeviceProtocol(IDevice device, ILogger logger)
         {
             Device = device;
             Logger = logger;
+            Device.Open();
             cts = new();
-            Task<int> receiveTask = Task.Run(() => ReceivePacket(), cts.Token);
+            ReceiveTask = Task.Run(() => ReceivePacket(), cts.Token);
         }
 
         public void Stop()
         {
+            Device.Close();
             cts.Cancel();
+            ReceiveTask.Wait();
         }
 
         public int ReceivePacket()
@@ -50,7 +54,7 @@ namespace CarrotProtocolLib.Impl
             {
                 //cts.Token.ThrowIfCancellationRequested();
                 if (cts.Token.IsCancellationRequested)
-                    return -1;
+                    return 0;
 
                 // 等待读帧头
                 while (Device.RxByteToRead < 2)
@@ -66,12 +70,13 @@ namespace CarrotProtocolLib.Impl
                 while (Device.RxByteToRead < pktLength - 2)
                 {
                     if (cts.Token.IsCancellationRequested)
-                        return -1;
+                        return -2;
                 }
                 Device.Read(frame, 2, pktLength - 2);
 
                 Logger.AddRx(new CarrotDataProtocol(frame, 0, pktLength));
             }
+            return -3;
         }
 
         public void Send(byte[] bytes)
