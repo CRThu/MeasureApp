@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using CarrotProtocolLib.Driver;
 using CarrotProtocolLib.Interface;
 
 namespace CarrotProtocolLib.Impl
@@ -31,10 +32,19 @@ namespace CarrotProtocolLib.Impl
         private CancellationTokenSource cts { get; set; }
         private Task<int> ReceiveTask { get; set; }
 
+
+        public delegate void ReceiveErrorHandler(Exception ex);
+        public event ReceiveErrorHandler ReceiveError;
+
+
         public DeviceProtocol(IDevice device, ILogger logger)
         {
             Device = device;
             Logger = logger;
+        }
+
+        public void Start()
+        {
             Device.Open();
             cts = new();
             ReceiveTask = Task.Run(() => ReceivePacket(), cts.Token);
@@ -49,34 +59,43 @@ namespace CarrotProtocolLib.Impl
 
         public int ReceivePacket()
         {
-            byte[] frame = new byte[65536];
-            while (true)
+            try
             {
-                //cts.Token.ThrowIfCancellationRequested();
-                if (cts.Token.IsCancellationRequested)
-                    return 0;
-
-                // 等待读帧头
-                while (Device.RxByteToRead < 2)
+                byte[] frame = new byte[65536];
+                while (true)
                 {
+                    //cts.Token.ThrowIfCancellationRequested();
                     if (cts.Token.IsCancellationRequested)
-                        return -1;
-                }
-                Device.Read(frame, 0, 2);
-                byte protocolId = frame[1];
-                int pktLength = CarrotDataProtocol.GetPacketLength(protocolId);
+                        return 0;
 
-                // 等待读帧尾
-                while (Device.RxByteToRead < pktLength - 2)
-                {
-                    if (cts.Token.IsCancellationRequested)
-                        return -2;
-                }
-                Device.Read(frame, 2, pktLength - 2);
+                    // 等待读帧头
+                    while (Device.RxByteToRead < 2)
+                    {
+                        if (cts.Token.IsCancellationRequested)
+                            return 1;
+                    }
+                    Device.Read(frame, 0, 2);
+                    byte protocolId = frame[1];
+                    int pktLength = CarrotDataProtocol.GetPacketLength(protocolId);
 
-                Logger.AddRx(new CarrotDataProtocol(frame, 0, pktLength));
+                    // 等待读帧尾
+                    while (Device.RxByteToRead < pktLength - 2)
+                    {
+                        if (cts.Token.IsCancellationRequested)
+                            return 2;
+                    }
+                    Device.Read(frame, 2, pktLength - 2);
+
+                    Logger.AddRx(new CarrotDataProtocol(frame, 0, pktLength));
+                }
+                return 3;
+
             }
-            return -3;
+            catch (Exception ex)
+            {
+                ReceiveError?.Invoke(ex);
+                return -1;
+            }
         }
 
         public void Send(byte[] bytes)

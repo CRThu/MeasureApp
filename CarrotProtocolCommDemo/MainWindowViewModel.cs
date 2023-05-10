@@ -65,26 +65,48 @@ namespace CarrotProtocolCommDemo
         [RelayCommand]
         private void Open()
         {
-            //MessageBox.Show("Open");
-            if (spd is null || !spd.IsOpen)
+            try
             {
-                spd = new(SelectedSerialPortName, 115200);
-                logger = new();
-                protocol = new(spd, logger);
-                logger.LoggerUpdate += Logger_LoggerUpdate;
+                //MessageBox.Show("Open");
+                if (spd is null || !spd.IsOpen)
+                {
+                    spd = new(SelectedSerialPortName, 115200);
+                    logger = new();
+                    protocol = new(spd, logger);
+                    protocol.ReceiveError += Protocol_ReceiveError;
+                    protocol.Start();
+                    logger.LoggerUpdate += Logger_LoggerUpdate;
+                }
+                else
+                {
+                    protocol.Stop();
+                }
             }
-            else
+            catch (Exception ex)
             {
-                protocol.Stop();
+                MessageBox.Show(ex.ToString());
             }
+        }
+
+        private void Protocol_ReceiveError(Exception ex)
+        {
+            MessageBox.Show(ex.ToString());
+            protocol.Stop();
         }
 
         [RelayCommand]
         private void PacketParamsChanged()
         {
-            CarrotDataProtocol carrotDataProtocol = new(SelectedCarrotProtocol, SelectedCarrotProtocolStreamId, PayloadString);
-            byte[] bytes = carrotDataProtocol.ToBytes();
-            InputCode = BytesEx.BytesToHexString(bytes);
+            try
+            {
+                CarrotDataProtocol carrotDataProtocol = new(SelectedCarrotProtocol, SelectedCarrotProtocolStreamId, PayloadString);
+                byte[] bytes = carrotDataProtocol.ToBytes();
+                InputCode = BytesEx.BytesToHexString(bytes);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
         }
 
         private void Logger_LoggerUpdate(ProtocolLog log, LoggerUpdateEvent e)
@@ -98,8 +120,15 @@ namespace CarrotProtocolCommDemo
         [RelayCommand]
         private void Send()
         {
-            //MessageBox.Show("Send");
-            protocol.Send(BytesEx.HexStringToBytes(InputCode));
+            try
+            {
+                //MessageBox.Show("Send");
+                protocol.Send(BytesEx.HexStringToBytes(InputCode));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
         }
 
         public static string GenHexPkt()
