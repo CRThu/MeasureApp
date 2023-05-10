@@ -11,19 +11,24 @@ namespace CarrotProtocolLib.Driver
 {
     public class SerialPortDevice : IDevice
     {
-        private readonly SerialPort Sp;
-        private RingBuffer RxBuffer;
+        private SerialPort Sp { get; set; }
+        private RingBuffer RxBuffer { get; set; }
 
         public int ReceivedByteCount { get; set; }
         public int SentByteCount { get; set; }
 
-        public bool IsOpen => Sp.IsOpen;
+        public bool IsOpen => Sp is not null && Sp.IsOpen;
         public int RxByteToRead => RxBuffer.Count;
 
-        public SerialPortDevice(string portName, int baudRate)
+        public SerialPortDevice()
         {
-            Sp = new(portName, baudRate)
-            {
+        }
+
+        public void SetDevice(string portName, int baudRate)
+        {
+            Sp = new() {
+                PortName = portName,
+                BaudRate = baudRate,
                 ReadBufferSize = 65536,
                 WriteBufferSize = 65536,
                 ReadTimeout = 500,

@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CarrotProtocolCommDemo"
+        xmlns:conv="clr-namespace:CarrotProtocolCommDemo.Converter"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:hc="https://handyorg.github.io/handycontrol"
         d:DataContext="{d:DesignInstance Type=local:MainWindowViewModel}"
@@ -12,6 +13,9 @@
         WindowStartupLocation="CenterScreen"
         Style="{StaticResource WindowBlur}"
         Title="Carrot Protocol Communication Demo" Height="450" Width="800">
+    <Window.Resources>
+        <conv:BooleanToTextConverter x:Key="BooleanToTextConverter"/>
+    </Window.Resources>
     <Grid>
         <Grid Margin="10,10,0,45" HorizontalAlignment="Left" Width="353">
             <TextBlock Text="串口选择" HorizontalAlignment="Left" Margin="10,37,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
@@ -44,7 +48,7 @@
             <TextBlock Text="16进制" HorizontalAlignment="Left" Margin="10,234,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
             <TextBox x:Name="InputCodeTextBox" Text="{Binding InputCode}" HorizontalAlignment="Left" Margin="10,254,0,10" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto" Width="324"/>
         </Grid>
-        <Button x:Name="OpenButton" Content="打开" Command="{Binding OpenCommand}" HorizontalAlignment="Left" Margin="10,0,0,10" VerticalAlignment="Bottom" Width="60" Height="30"/>
+        <Button x:Name="OpenButton" Content="{Binding IsOpen, Converter={StaticResource BooleanToTextConverter}, ConverterParameter='关闭|打开'}" Command="{Binding OpenCommand}" HorizontalAlignment="Left" Margin="10,0,0,10" VerticalAlignment="Bottom" Width="60" Height="30"/>
         <TextBlock Text="Logger:" HorizontalAlignment="Left" Margin="370,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
         <TextBox x:Name="StdOutTextBox" Text="{Binding StdOut}" Margin="368,30,10,10" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto"/>
         <Button x:Name="SendButton" Content="发送" Command="{Binding SendCommand}" Margin="75,0,0,10" VerticalAlignment="Bottom" Width="60" HorizontalAlignment="Left" Height="30"/>

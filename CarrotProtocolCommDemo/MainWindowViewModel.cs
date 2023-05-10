@@ -17,9 +17,9 @@ namespace CarrotProtocolCommDemo
 {
     public partial class MainWindowViewModel : ObservableObject
     {
-        SerialPortDevice spd;
-        ProtocolLogger logger;
-        DeviceProtocol protocol;
+        public SerialPortDevice SerialPortDevice { get; set; }
+        public ProtocolLogger Logger { get; set; }
+        public DeviceProtocol Protocol { get; set; }
 
 
         [ObservableProperty]
@@ -50,6 +50,9 @@ namespace CarrotProtocolCommDemo
         [ObservableProperty]
         private string stdOut = "";
 
+        [ObservableProperty]
+        private bool isOpen = false;
+
         public MainWindowViewModel()
         {
             SerialPortNames = SerialPort.GetPortNames();
@@ -59,6 +62,7 @@ namespace CarrotProtocolCommDemo
             CarrotProtocolStreamIds = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
             SelectedCarrotProtocolStreamId = CarrotProtocolStreamIds.FirstOrDefault();
 
+            SerialPortDevice = new();
             //InputCode = GenHexPkt();
         }
 
@@ -68,19 +72,20 @@ namespace CarrotProtocolCommDemo
             try
             {
                 //MessageBox.Show("Open");
-                if (spd is null || !spd.IsOpen)
+                if (!SerialPortDevice.IsOpen)
                 {
-                    spd = new(SelectedSerialPortName, 115200);
-                    logger = new();
-                    protocol = new(spd, logger);
-                    protocol.ReceiveError += Protocol_ReceiveError;
-                    protocol.Start();
-                    logger.LoggerUpdate += Logger_LoggerUpdate;
+                    SerialPortDevice.SetDevice(SelectedSerialPortName, 115200);
+                    Logger = new();
+                    Protocol = new(SerialPortDevice, Logger);
+                    Protocol.ReceiveError += Protocol_ReceiveError;
+                    Protocol.Start();
+                    Logger.LoggerUpdate += Logger_LoggerUpdate;
                 }
                 else
                 {
-                    protocol.Stop();
+                    Protocol.Stop();
                 }
+                IsOpen = SerialPortDevice.IsOpen;
             }
             catch (Exception ex)
             {
@@ -91,7 +96,7 @@ namespace CarrotProtocolCommDemo
         private void Protocol_ReceiveError(Exception ex)
         {
             MessageBox.Show(ex.ToString());
-            protocol.Stop();
+            Protocol.Stop();
         }
 
         [RelayCommand]
@@ -123,7 +128,7 @@ namespace CarrotProtocolCommDemo
             try
             {
                 //MessageBox.Show("Send");
-                protocol.Send(BytesEx.HexStringToBytes(InputCode));
+                Protocol.Send(BytesEx.HexStringToBytes(InputCode));
             }
             catch (Exception ex)
             {
