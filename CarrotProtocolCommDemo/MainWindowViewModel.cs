@@ -97,6 +97,7 @@ namespace CarrotProtocolCommDemo
         {
             MessageBox.Show(ex.ToString());
             Protocol.Stop();
+            IsOpen = SerialPortDevice.IsOpen;
         }
 
         [RelayCommand]

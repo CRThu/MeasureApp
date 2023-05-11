@@ -2,6 +2,7 @@
 using CarrotProtocolLib.Util;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO.Ports;
 using System.Linq;
 using System.Text;
@@ -19,6 +20,12 @@ namespace CarrotProtocolLib.Driver
 
         public bool IsOpen => Sp is not null && Sp.IsOpen;
         public int RxByteToRead => RxBuffer.Count;
+        private CancellationTokenSource DataReceiveTaskCts { get; set; }
+        private Task<int> DataReceiveTask { get; set; }
+
+
+        public delegate void ReceiveErrorHandler(Exception ex);
+        public event ReceiveErrorHandler ReceiveError;
 
         public SerialPortDevice()
         {
@@ -26,18 +33,19 @@ namespace CarrotProtocolLib.Driver
 
         public void SetDevice(string portName, int baudRate)
         {
-            Sp = new() {
+            Sp = new()
+            {
                 PortName = portName,
                 BaudRate = baudRate,
-                ReadBufferSize = 65536,
-                WriteBufferSize = 65536,
-                ReadTimeout = 500,
-                WriteTimeout = 500
+                ReadBufferSize = 1048576 * 16,
+                WriteBufferSize = 1048576 * 16,
+                ReadTimeout = 2000,
+                WriteTimeout = 2000
             };
-            Sp.DataReceived += Sp_DataReceived;
+            //Sp.DataReceived += Sp_DataReceived;
             Sp.ErrorReceived += Sp_ErrorReceived;
 
-            RxBuffer = new(1048576);
+            RxBuffer = new(1048576 * 16);
             ReceivedByteCount = 0;
             SentByteCount = 0;
         }
@@ -45,11 +53,15 @@ namespace CarrotProtocolLib.Driver
         public void Open()
         {
             Sp.Open();
+            DataReceiveTaskCts = new();
+            DataReceiveTask = Task.Run(() => DataReceiveLoop(), DataReceiveTaskCts.Token);
         }
 
         public void Close()
         {
             Sp.Close();
+            DataReceiveTaskCts.Cancel();
+            DataReceiveTask.Wait();
         }
 
         /// <summary>
@@ -104,6 +116,9 @@ namespace CarrotProtocolLib.Driver
             {
                 throw new NotImplementedException($"Read(): readBytes({readBytes}) != len({len}).");
             }
+            Debug.WriteLine($"BytesToRead = {len}, Read = {readBytes}, ReceivedByteCount = {ReceivedByteCount}");
+            int len2 = Sp.BytesToRead;
+            Debug.WriteLine($"BytesToRead2 = {len2}");
             return buf;
         }
 
@@ -134,10 +149,25 @@ namespace CarrotProtocolLib.Driver
             throw new NotImplementedException($"ERROR Sp_ErrorReceived(): EventType={e.EventType}.");
         }
 
-        private void Sp_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        private int DataReceiveLoop()
         {
-            byte[] rx = Receive();
-            RxBuffer.Write(rx);
+            try
+            {
+                while (IsOpen)
+                {
+                    if (DataReceiveTaskCts.Token.IsCancellationRequested)
+                        return 0;
+
+                    byte[] rx = Receive();
+                    RxBuffer.Write(rx);
+                }
+                return 1;
+            }
+            catch (Exception ex)
+            {
+                ReceiveError?.Invoke(ex);
+                return -1;
+            }
         }
     }
 }
