@@ -37,8 +37,8 @@ namespace CarrotProtocolLib.Driver
             {
                 PortName = portName,
                 BaudRate = baudRate,
-                ReadBufferSize = 1048576 * 16,
-                WriteBufferSize = 1048576 * 16,
+                ReadBufferSize = 1048576,
+                WriteBufferSize = 1048576,
                 ReadTimeout = 2000,
                 WriteTimeout = 2000
             };
@@ -104,25 +104,6 @@ namespace CarrotProtocolLib.Driver
         }
 
         /// <summary>
-        /// 接收现有字节
-        /// </summary>
-        /// <returns></returns>
-        private byte[] Receive()
-        {
-            int len = Sp.BytesToRead;
-            byte[] buf = new byte[len];
-            int readBytes = Receive(buf, len);
-            if (readBytes != len)
-            {
-                throw new NotImplementedException($"Read(): readBytes({readBytes}) != len({len}).");
-            }
-            Debug.WriteLine($"BytesToRead = {len}, Read = {readBytes}, ReceivedByteCount = {ReceivedByteCount}");
-            int len2 = Sp.BytesToRead;
-            Debug.WriteLine($"BytesToRead2 = {len2}");
-            return buf;
-        }
-
-        /// <summary>
         /// 读取字符串(\r\n结尾)
         /// </summary>
         /// <returns></returns>
@@ -146,7 +127,7 @@ namespace CarrotProtocolLib.Driver
 
         private void Sp_ErrorReceived(object sender, SerialErrorReceivedEventArgs e)
         {
-            throw new NotImplementedException($"ERROR Sp_ErrorReceived(): EventType={e.EventType}.");
+            ReceiveError?.Invoke(new NotImplementedException($"ERROR Sp_ErrorReceived(): EventType={e.EventType}."));
         }
 
         private int DataReceiveLoop()
@@ -158,8 +139,17 @@ namespace CarrotProtocolLib.Driver
                     if (DataReceiveTaskCts.Token.IsCancellationRequested)
                         return 0;
 
-                    byte[] rx = Receive();
-                    RxBuffer.Write(rx);
+                    int len = Sp.BytesToRead;
+                    byte[] buf = new byte[len];
+                    int readBytes = Receive(buf, len);
+                    if (readBytes != len)
+                    {
+                        throw new NotImplementedException($"Read(): readBytes({readBytes}) != len({len}).");
+                    }
+                    Debug.WriteLine($"BytesToRead = {len}, Read = {readBytes}, ReceivedByteCount = {ReceivedByteCount}");
+                    //int len2 = Sp.BytesToRead;
+                    //Debug.WriteLine($"BytesToRead2 = {len2}");
+                    //RxBuffer.Write(buf);
                 }
                 return 1;
             }
