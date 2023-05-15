@@ -7,16 +7,19 @@ using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace CarrotProtocolLib.Driver
 {
-    public class SerialPortDevice : IDevice
+    public partial class SerialPortDevice : ObservableObject, IDevice
     {
         private SerialPort Sp { get; set; }
         private RingBuffer RxBuffer { get; set; }
 
-        public int ReceivedByteCount { get; set; }
-        public int SentByteCount { get; set; }
+        [ObservableProperty]
+        public int receivedByteCount;
+        [ObservableProperty]
+        public int sentByteCount;
 
         public bool IsOpen => Sp is not null && Sp.IsOpen;
         public int RxByteToRead => RxBuffer.Count;
@@ -146,10 +149,14 @@ namespace CarrotProtocolLib.Driver
                     {
                         throw new NotImplementedException($"Read(): readBytes({readBytes}) != len({len}).");
                     }
-                    Debug.WriteLine($"BytesToRead = {len}, Read = {readBytes}, ReceivedByteCount = {ReceivedByteCount}");
+                    // Debug.WriteLine($"BytesToRead = {len}, Read = {readBytes}, ReceivedByteCount = {ReceivedByteCount}");
                     //int len2 = Sp.BytesToRead;
                     //Debug.WriteLine($"BytesToRead2 = {len2}");
-                    //RxBuffer.Write(buf);
+                    if (buf.Length > 0)
+                    {
+                        RxBuffer.Write(buf);
+                        Debug.WriteLine($"buflen = {buf.Length}");
+                    }
                 }
                 return 1;
             }

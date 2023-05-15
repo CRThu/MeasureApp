@@ -48,9 +48,15 @@
             <TextBlock Text="16进制" HorizontalAlignment="Left" Margin="10,234,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
             <TextBox x:Name="InputCodeTextBox" Text="{Binding InputCode}" HorizontalAlignment="Left" Margin="10,254,0,10" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto" Width="324"/>
         </Grid>
-        <Button x:Name="OpenButton" Content="{Binding IsOpen, Converter={StaticResource BooleanToTextConverter}, ConverterParameter='关闭|打开'}" Command="{Binding OpenCommand}" HorizontalAlignment="Left" Margin="10,0,0,10" VerticalAlignment="Bottom" Width="60" Height="30"/>
         <TextBlock Text="Logger:" HorizontalAlignment="Left" Margin="370,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
         <TextBox x:Name="StdOutTextBox" Text="{Binding StdOut}" Margin="368,30,10,10" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto"/>
+        <Button x:Name="OpenButton" Content="{Binding IsOpen, Converter={StaticResource BooleanToTextConverter}, ConverterParameter='关闭|打开'}" Command="{Binding OpenCommand}" HorizontalAlignment="Left" Margin="10,0,0,10" VerticalAlignment="Bottom" Width="60" Height="30"/>
         <Button x:Name="SendButton" Content="发送" Command="{Binding SendCommand}" Margin="75,0,0,10" VerticalAlignment="Bottom" Width="60" HorizontalAlignment="Left" Height="30"/>
+        <Grid  Margin="150,0,0,10" VerticalAlignment="Bottom" Width="193" HorizontalAlignment="Left" Height="30">
+            <TextBlock Text="Tx:" HorizontalAlignment="Left" Margin="10,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center"/>
+            <TextBlock Text="{Binding SerialPortDevice.SentByteCount}" HorizontalAlignment="Left" Margin="35,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center"/>
+            <TextBlock Text="Rx:" HorizontalAlignment="Left" Margin="100,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center"/>
+            <TextBlock Text="{Binding SerialPortDevice.ReceivedByteCount}" HorizontalAlignment="Left" Margin="125,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center"/>
+        </Grid>
     </Grid>
 </hc:BlurWindow>
