@@ -87,14 +87,5 @@ USAGE:
         }                                                                                                                                            \
     }
 
-CARROT_DATA_PROTOCOL_FUNC_GEN(64);
 CARROT_DATA_PROTOCOL_FUNC_GEN(256);
 CARROT_DATA_PROTOCOL_FUNC_GEN(2048);
-
-void gen_ack_protocol(carrot_ack_protocol *ack)
-{
-    ack->frame_start = CARROT_PROTOCOL_FRAME_START;
-    ack->protocol_id = CARROT_PROTOCOL_ID_ACK;
-    memset(ack->reserved, 0, sizeof(uint8_t) * CARROT_PROTOCOL_ACK_RESERVED_LEN);
-    ack->frame_end = CARROT_PROTOCOL_FRAME_END;
-}

@@ -5,6 +5,7 @@
 /// UART DMA CONFIG
 /// UART TX, DMA, Normal, Byte Increment Address
 /// UART RX, DMA, Circular, Byte Increment Address
+/// UART global Interrupt and dma Interrupt must enabled and have higher preemption priority then app interrupt!
 
 uint8_t uart_protocol_rx_dma_buf[UART_PROTOCOL_PKT_RX_LEN] = {0};
 carrot_data_protocol_256 *rxp = (carrot_data_protocol_256 *)uart_protocol_rx_dma_buf;

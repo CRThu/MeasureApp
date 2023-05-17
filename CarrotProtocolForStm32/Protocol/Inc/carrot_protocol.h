@@ -1,5 +1,4 @@
 #include <inttypes.h>
-#include "crc.h"
 
 #ifndef CARROT_PROTOCOL_H
 #define CARROT_PROTOCOL_H
@@ -37,7 +36,7 @@ extern "C"
 // Single input/output 32-bit data register
 // reset to 0xFFFF FFFF
 // use whole packet with crc16=0x0000 to calc crc32 and get low 16bit
-// TODO 未验证
+#include "crc.h"
 #define CRC_PROTOCOL_INSTANCE hcrc
 #define CRC_VERIFY_FUNC(ADDR, LEN) (uint16_t) HAL_CRC_Calculate(&CRC_PROTOCOL_INSTANCE, (uint32_t *)(ADDR), (uint32_t)((LEN) / 4))
 #endif
@@ -79,7 +78,6 @@ extern "C"
 	void set_data_protocol_##len(carrot_data_protocol_##len *dat, uint16_t flag, uint8_t stream_id, uint8_t verify, uint8_t *payload, uint16_t size); \
 	void protocol_##len##_print(carrot_data_protocol_##len *dat, uint16_t flag, uint8_t verify, const char *format, ...)
 
-	CARROT_DATA_PROTOCOL_GEN(64);
 	CARROT_DATA_PROTOCOL_GEN(256);
 	CARROT_DATA_PROTOCOL_GEN(2048);
 
@@ -95,8 +93,6 @@ extern "C"
 #if defined(_MSC_VER)
 #pragma pack(pop)
 #endif
-
-	void gen_ack_protocol(carrot_ack_protocol *ack);
 
 #ifdef __cplusplus
 }
