@@ -72,6 +72,7 @@ namespace CarrotProtocolLib.Impl
                     WaitProtocolStart:
                     while (Device.RxByteToRead < 2)
                     {
+                        Thread.Sleep(10);
                         if (ParseProtocolTaskCts.Token.IsCancellationRequested)
                             return 1;
                     }
@@ -90,6 +91,7 @@ namespace CarrotProtocolLib.Impl
                     // 等待读帧尾
                     while (Device.RxByteToRead < pktLength - 2)
                     {
+                        Thread.Sleep(10);
                         if (ParseProtocolTaskCts.Token.IsCancellationRequested)
                             return 2;
                     }

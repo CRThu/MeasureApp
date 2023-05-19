@@ -74,7 +74,7 @@ namespace CarrotProtocolCommDemo
                 //MessageBox.Show("Open");
                 if (!SerialPortDevice.IsOpen)
                 {
-                    SerialPortDevice.SetDevice(SelectedSerialPortName, 8000000);
+                    SerialPortDevice.SetDevice(SelectedSerialPortName, 115200, Parity.None);
                     Logger = new();
                     Protocol = new(SerialPortDevice, Logger);
                     Protocol.ReceiveError += Protocol_ReceiveError;
@@ -119,6 +119,8 @@ namespace CarrotProtocolCommDemo
         {
             lock (StdOut)
             {
+                if (StdOut.Length > 1024)
+                    StdOut = "...\n";
                 StdOut += log.ToString() + Environment.NewLine;
             }
         }

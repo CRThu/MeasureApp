@@ -34,12 +34,13 @@ namespace CarrotProtocolLib.Driver
         {
         }
 
-        public void SetDevice(string portName, int baudRate)
+        public void SetDevice(string portName, int baudRate, Parity parity)
         {
             Sp = new()
             {
                 PortName = portName,
                 BaudRate = baudRate,
+                Parity = parity,
                 ReadBufferSize = 1048576,
                 WriteBufferSize = 1048576,
                 ReadTimeout = 2000,
@@ -143,19 +144,26 @@ namespace CarrotProtocolLib.Driver
                         return 0;
 
                     int len = Sp.BytesToRead;
-                    byte[] buf = new byte[len];
-                    int readBytes = Receive(buf, len);
-                    if (readBytes != len)
+                    if (len > 0)
                     {
-                        throw new NotImplementedException($"Read(): readBytes({readBytes}) != len({len}).");
+                        byte[] buf = new byte[len];
+                        int readBytes = Receive(buf, len);
+                        if (readBytes != len)
+                        {
+                            throw new NotImplementedException($"Read(): readBytes({readBytes}) != len({len}).");
+                        }
+                        // Debug.WriteLine($"BytesToRead = {len}, Read = {readBytes}, ReceivedByteCount = {ReceivedByteCount}");
+                        //int len2 = Sp.BytesToRead;
+                        //Debug.WriteLine($"BytesToRead2 = {len2}");
+                        if (buf.Length > 0)
+                        {
+                            RxBuffer.Write(buf);
+                            Debug.WriteLine($"buflen = {buf.Length}");
+                        }
                     }
-                    // Debug.WriteLine($"BytesToRead = {len}, Read = {readBytes}, ReceivedByteCount = {ReceivedByteCount}");
-                    //int len2 = Sp.BytesToRead;
-                    //Debug.WriteLine($"BytesToRead2 = {len2}");
-                    if (buf.Length > 0)
+                    else
                     {
-                        RxBuffer.Write(buf);
-                        Debug.WriteLine($"buflen = {buf.Length}");
+                        Thread.Sleep(10);
                     }
                 }
                 return 1;
