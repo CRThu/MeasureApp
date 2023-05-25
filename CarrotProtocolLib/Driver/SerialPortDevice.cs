@@ -8,6 +8,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
+using System.Collections;
+using System.Security.Cryptography;
 
 namespace CarrotProtocolLib.Driver
 {
@@ -30,17 +32,24 @@ namespace CarrotProtocolLib.Driver
         public delegate void ReceiveErrorHandler(Exception ex);
         public event ReceiveErrorHandler ReceiveError;
 
+        public static int[] SupportedBaudRate { get; } = { 9600, 38400, 115200, 460800, 921600, 1000000, 2000000, 4000000, 8000000, 12000000 };
+        public static int[] SupportedDataBits { get; } = { 5, 6, 7, 8 };
+        public static float[] SupportedStopBits { get; } = { 0f, 1f, 1.5f, 2f };
+        public static string[] SupportedParity { get; } = { "None", "Odd", "Even", "Mark", "Space" };
+
         public SerialPortDevice()
         {
         }
 
-        public void SetDevice(string portName, int baudRate, Parity parity)
+        public void SetDevice(string portName, int baudRate, int dataBits, float stopBits, string parity)
         {
             Sp = new()
             {
                 PortName = portName,
                 BaudRate = baudRate,
-                Parity = parity,
+                DataBits = dataBits,
+                StopBits = StopBitsFloat2Enum(stopBits),
+                Parity = ParityString2Enum(parity),
                 ReadBufferSize = 1048576,
                 WriteBufferSize = 1048576,
                 ReadTimeout = 2000,
@@ -173,6 +182,31 @@ namespace CarrotProtocolLib.Driver
                 ReceiveError?.Invoke(ex);
                 return -1;
             }
+        }
+
+        public static StopBits StopBitsFloat2Enum(float stopBits)
+        {
+            return stopBits switch
+            {
+                0f => StopBits.None,
+                1f => StopBits.One,
+                2f => StopBits.Two,
+                1.5f => StopBits.OnePointFive,
+                _ => throw new NotImplementedException($"不支持的停止位: {stopBits:0.0}"),
+            };
+        }
+
+        public static Parity ParityString2Enum(string parity)
+        {
+            return parity switch
+            {
+                "None" => Parity.None,
+                "Odd" => Parity.Odd,
+                "Even" => Parity.Even,
+                "Mark" => Parity.Mark,
+                "Space" => Parity.Space,
+                _ => throw new NotImplementedException($"不支持的校验位: {parity}"),
+            };
         }
     }
 }
