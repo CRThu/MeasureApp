@@ -38,24 +38,24 @@
             </TabItem>
             <TabItem Header="数据协议调试">
                 <Grid Margin="0,0,0,0" d:Height="380">
-                    <TextBlock Text="协议选择" HorizontalAlignment="Left" Margin="10,72,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-                    <ComboBox Name="CarrotProtocolsComboBox" ItemsSource="{Binding CarrotProtocols}" SelectedItem="{Binding SelectedCarrotProtocol}" ItemStringFormat="{}0x{0:X2}" HorizontalAlignment="Left" Margin="67,65,0,0" VerticalAlignment="Top" Width="267">
+                    <TextBlock Text="协议选择" HorizontalAlignment="Left" Margin="10,37,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                    <ComboBox Name="CarrotProtocolsComboBox" ItemsSource="{Binding CarrotProtocols}" SelectedItem="{Binding SelectedCarrotProtocol}" ItemStringFormat="{}0x{0:X2}" HorizontalAlignment="Left" Margin="67,30,0,0" VerticalAlignment="Top" Width="267">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="SelectionChanged">
                                 <i:InvokeCommandAction Command="{Binding PacketParamsChangedCommand}"/>
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
                     </ComboBox>
-                    <TextBlock Text="流端口号" HorizontalAlignment="Left" Margin="10,107,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-                    <ComboBox Name="StreamIdsComboBox" ItemsSource="{Binding CarrotProtocolStreamIds}" SelectedItem="{Binding SelectedCarrotProtocolStreamId}" HorizontalAlignment="Left" Margin="67,100,0,0" VerticalAlignment="Top" Width="267">
+                    <TextBlock Text="流端口号" HorizontalAlignment="Left" Margin="10,77,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                    <ComboBox Name="StreamIdsComboBox" ItemsSource="{Binding CarrotProtocolStreamIds}" SelectedItem="{Binding SelectedCarrotProtocolStreamId}" HorizontalAlignment="Left" Margin="67,70,0,0" VerticalAlignment="Top" Width="267">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="SelectionChanged">
                                 <i:InvokeCommandAction Command="{Binding PacketParamsChangedCommand}"/>
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
                     </ComboBox>
-                    <TextBlock Text="Payload" HorizontalAlignment="Left" Margin="10,142,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-                    <TextBox Name="PayloadStringTextBox" Text="{Binding PayloadString,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="67,135,0,0" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" VerticalContentAlignment="Top" VerticalAlignment="Top" Width="267" Height="94" VerticalScrollBarVisibility="Auto">
+                    <TextBlock Text="Payload" HorizontalAlignment="Left" Margin="10,117,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                    <TextBox Name="PayloadStringTextBox" Text="{Binding PayloadString,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="67,110,0,0" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" VerticalContentAlignment="Top" VerticalAlignment="Top" Width="267" Height="94" VerticalScrollBarVisibility="Auto">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="TextChanged">
                                 <i:InvokeCommandAction Command="{Binding PacketParamsChangedCommand}"/>
@@ -63,9 +63,9 @@
                         </i:Interaction.Triggers>
                     </TextBox>
 
-                    <TextBlock Text="16进制" HorizontalAlignment="Left" Margin="10,234,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-                    <TextBox x:Name="InputCodeTextBox" Text="{Binding InputCode}" HorizontalAlignment="Left" Margin="10,254,0,45" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto" Width="324"/>
-                    <Button x:Name="SendButton" Content="发送" Command="{Binding SendCommand}" Margin="75,0,0,10" VerticalAlignment="Bottom" Width="60" HorizontalAlignment="Left" Height="30"/>
+                    <TextBlock Text="16进制" HorizontalAlignment="Left" Margin="10,211,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                    <TextBox x:Name="InputCodeTextBox" Text="{Binding InputCode}" HorizontalAlignment="Left" Margin="10,231,0,68" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto" Width="324"/>
+                    <Button x:Name="SendButton" Content="发送" Command="{Binding SendCommand}" Margin="10,0,0,10" VerticalAlignment="Bottom" Width="60" HorizontalAlignment="Left" Height="30"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Tab 3">

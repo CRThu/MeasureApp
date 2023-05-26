@@ -20,7 +20,7 @@ namespace CarrotProtocolCommDemo
     {
         public SerialPortDevice SerialPortDevice { get; set; }
         public ProtocolLogger Logger { get; set; }
-        public DeviceProtocol Protocol { get; set; }
+        public IProtocol Protocol { get; set; }
 
 
         [ObservableProperty]
@@ -91,7 +91,7 @@ namespace CarrotProtocolCommDemo
                 {
                     SerialPortDevice.SetDevice(SelectedDevice.Name, 115200, 8, 1, "None");
                     Logger = new();
-                    Protocol = new(SerialPortDevice, Logger);
+                    Protocol = new CarrotDataProtocol(SerialPortDevice, Logger);
                     Protocol.ReceiveError += Protocol_ReceiveError;
                     Protocol.Start();
                     Logger.LoggerUpdate += Logger_LoggerUpdate;
@@ -120,7 +120,7 @@ namespace CarrotProtocolCommDemo
         {
             try
             {
-                CarrotDataProtocol carrotDataProtocol = new(SelectedCarrotProtocol, SelectedCarrotProtocolStreamId, PayloadString);
+                CarrotDataProtocolLog carrotDataProtocol = new(SelectedCarrotProtocol, SelectedCarrotProtocolStreamId, PayloadString);
                 byte[] bytes = carrotDataProtocol.ToBytes();
                 InputCode = BytesEx.BytesToHexString(bytes);
             }

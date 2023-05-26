@@ -12,7 +12,7 @@ namespace CarrotProtocolLib.Driver
     {
         public DateTime Time { get; set; }
         public TxRx TxRx { get; set; }
-        public CarrotDataProtocol Protocol { get; set; }
+        public IProtocolLog Protocol { get; set; }
 
         public override string ToString()
         {
@@ -45,7 +45,7 @@ namespace CarrotProtocolLib.Driver
             ProtocolList = new();
         }
 
-        public void AddRx(CarrotDataProtocol protocol)
+        public void AddRx(CarrotDataProtocolLog protocol)
         {
             ProtocolLog protocolLog = new()
             {
@@ -57,7 +57,7 @@ namespace CarrotProtocolLib.Driver
             LoggerUpdate.Invoke(protocolLog, LoggerUpdateEvent.AddEvent);
         }
 
-        public void AddTx(CarrotDataProtocol protocol)
+        public void AddTx(CarrotDataProtocolLog protocol)
         {
             ProtocolLog protocolLog = new()
             {
