@@ -17,46 +17,64 @@
         <conv:BooleanToTextConverter x:Key="BooleanToTextConverter"/>
     </Window.Resources>
     <Grid>
-        <Grid Margin="10,10,0,45" HorizontalAlignment="Left" Width="353">
-            <TextBlock Text="串口选择" HorizontalAlignment="Left" Margin="10,37,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-            <ComboBox Name="SerialPortNameComboBox" ItemsSource="{Binding SerialPortNames}" SelectedItem="{Binding SelectedSerialPortName}" HorizontalAlignment="Left" Margin="67,30,0,0" VerticalAlignment="Top" Width="267"/>
-            <TextBlock Text="协议选择" HorizontalAlignment="Left" Margin="10,72,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-            <ComboBox Name="CarrotProtocolsComboBox" ItemsSource="{Binding CarrotProtocols}" SelectedItem="{Binding SelectedCarrotProtocol}" ItemStringFormat="{}0x{0:X2}" HorizontalAlignment="Left" Margin="67,65,0,0" VerticalAlignment="Top" Width="267">
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="SelectionChanged">
-                        <i:InvokeCommandAction Command="{Binding PacketParamsChangedCommand}"/>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
-            </ComboBox>
-            <TextBlock Text="流端口号" HorizontalAlignment="Left" Margin="10,107,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-            <ComboBox Name="StreamIdsComboBox" ItemsSource="{Binding CarrotProtocolStreamIds}" SelectedItem="{Binding SelectedCarrotProtocolStreamId}" HorizontalAlignment="Left" Margin="67,100,0,0" VerticalAlignment="Top" Width="267">
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="SelectionChanged">
-                        <i:InvokeCommandAction Command="{Binding PacketParamsChangedCommand}"/>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
-            </ComboBox>
-            <TextBlock Text="Payload" HorizontalAlignment="Left" Margin="10,142,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-            <TextBox Name="PayloadStringTextBox" Text="{Binding PayloadString,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="67,135,0,0" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" VerticalContentAlignment="Top" VerticalAlignment="Top" Width="267" Height="94" VerticalScrollBarVisibility="Auto">
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="TextChanged">
-                        <i:InvokeCommandAction Command="{Binding PacketParamsChangedCommand}"/>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
-            </TextBox>
+        <TabControl Margin="10,10,0,10" HorizontalAlignment="Left" Width="353" Style="{StaticResource TabControlInLine}">
+            <TabItem Header="设备" IsSelected="True">
+                <Grid Margin="0,0,0,0" d:Height="380">
+                    <TextBlock Text="设备" HorizontalAlignment="Left" Margin="10,37,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                    <ComboBox ItemsSource="{Binding Devices}" SelectedItem="{Binding SelectedDevice}" HorizontalAlignment="Left" Margin="67,30,0,0" VerticalAlignment="Top" Width="267"/>
 
-            <TextBlock Text="16进制" HorizontalAlignment="Left" Margin="10,234,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-            <TextBox x:Name="InputCodeTextBox" Text="{Binding InputCode}" HorizontalAlignment="Left" Margin="10,254,0,10" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto" Width="324"/>
-        </Grid>
+                    <TextBlock Text="协议" HorizontalAlignment="Left" Margin="10,77,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                    <ComboBox Name="ProtocolComboBox" ItemsSource="{Binding ProtocolNames}" SelectedItem="{Binding SelectedProtocolName}" HorizontalAlignment="Left" Margin="67,70,0,0" VerticalAlignment="Top" Width="267"/>
+
+                    <Button x:Name="RefreshButton" Content="刷新" Command="{Binding RefreshCommand}" HorizontalAlignment="Left" Margin="10,0,0,10" VerticalAlignment="Bottom" Width="60" Height="30"/>
+                    <Button x:Name="OpenButton" Content="{Binding IsOpen, Converter={StaticResource BooleanToTextConverter}, ConverterParameter='关闭|打开'}" Command="{Binding OpenCommand}" HorizontalAlignment="Left" Margin="80,0,0,10" VerticalAlignment="Bottom" Width="60" Height="30"/>
+                    <Grid Margin="150,0,0,10" VerticalAlignment="Bottom" Width="193" HorizontalAlignment="Left" Height="30">
+                        <TextBlock Text="Tx:" HorizontalAlignment="Left" Margin="10,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding SerialPortDevice.SentByteCount}" HorizontalAlignment="Left" Margin="35,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center"/>
+                        <TextBlock Text="Rx:" HorizontalAlignment="Left" Margin="100,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding SerialPortDevice.ReceivedByteCount}" HorizontalAlignment="Left" Margin="125,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center"/>
+                    </Grid>
+                </Grid>
+            </TabItem>
+            <TabItem Header="数据协议调试">
+                <Grid Margin="0,0,0,0" d:Height="380">
+                    <TextBlock Text="协议选择" HorizontalAlignment="Left" Margin="10,72,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                    <ComboBox Name="CarrotProtocolsComboBox" ItemsSource="{Binding CarrotProtocols}" SelectedItem="{Binding SelectedCarrotProtocol}" ItemStringFormat="{}0x{0:X2}" HorizontalAlignment="Left" Margin="67,65,0,0" VerticalAlignment="Top" Width="267">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="SelectionChanged">
+                                <i:InvokeCommandAction Command="{Binding PacketParamsChangedCommand}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </ComboBox>
+                    <TextBlock Text="流端口号" HorizontalAlignment="Left" Margin="10,107,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                    <ComboBox Name="StreamIdsComboBox" ItemsSource="{Binding CarrotProtocolStreamIds}" SelectedItem="{Binding SelectedCarrotProtocolStreamId}" HorizontalAlignment="Left" Margin="67,100,0,0" VerticalAlignment="Top" Width="267">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="SelectionChanged">
+                                <i:InvokeCommandAction Command="{Binding PacketParamsChangedCommand}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </ComboBox>
+                    <TextBlock Text="Payload" HorizontalAlignment="Left" Margin="10,142,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                    <TextBox Name="PayloadStringTextBox" Text="{Binding PayloadString,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="67,135,0,0" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" VerticalContentAlignment="Top" VerticalAlignment="Top" Width="267" Height="94" VerticalScrollBarVisibility="Auto">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="TextChanged">
+                                <i:InvokeCommandAction Command="{Binding PacketParamsChangedCommand}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </TextBox>
+
+                    <TextBlock Text="16进制" HorizontalAlignment="Left" Margin="10,234,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                    <TextBox x:Name="InputCodeTextBox" Text="{Binding InputCode}" HorizontalAlignment="Left" Margin="10,254,0,45" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto" Width="324"/>
+                    <Button x:Name="SendButton" Content="发送" Command="{Binding SendCommand}" Margin="75,0,0,10" VerticalAlignment="Bottom" Width="60" HorizontalAlignment="Left" Height="30"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Tab 3">
+                <Grid Margin="0,0,0,0" d:Height="380">
+
+                </Grid>
+            </TabItem>
+        </TabControl>
         <TextBlock Text="Logger:" HorizontalAlignment="Left" Margin="370,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
         <TextBox x:Name="StdOutTextBox" Text="{Binding StdOut}" Margin="368,30,10,10" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto"/>
-        <Button x:Name="OpenButton" Content="{Binding IsOpen, Converter={StaticResource BooleanToTextConverter}, ConverterParameter='关闭|打开'}" Command="{Binding OpenCommand}" HorizontalAlignment="Left" Margin="10,0,0,10" VerticalAlignment="Bottom" Width="60" Height="30"/>
-        <Button x:Name="SendButton" Content="发送" Command="{Binding SendCommand}" Margin="75,0,0,10" VerticalAlignment="Bottom" Width="60" HorizontalAlignment="Left" Height="30"/>
-        <Grid  Margin="150,0,0,10" VerticalAlignment="Bottom" Width="193" HorizontalAlignment="Left" Height="30">
-            <TextBlock Text="Tx:" HorizontalAlignment="Left" Margin="10,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center"/>
-            <TextBlock Text="{Binding SerialPortDevice.SentByteCount}" HorizontalAlignment="Left" Margin="35,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center"/>
-            <TextBlock Text="Rx:" HorizontalAlignment="Left" Margin="100,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center"/>
-            <TextBlock Text="{Binding SerialPortDevice.ReceivedByteCount}" HorizontalAlignment="Left" Margin="125,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center"/>
-        </Grid>
     </Grid>
 </hc:BlurWindow>

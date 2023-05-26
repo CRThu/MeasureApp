@@ -63,6 +63,11 @@ namespace CarrotProtocolLib.Driver
             SentByteCount = 0;
         }
 
+        public static DeviceInfo[] GetDevicesInfo()
+        {
+            return SerialPort.GetPortNames().Select(d => new DeviceInfo(InterfaceType.SerialPort, d, "串口设备")).ToArray();
+        }
+
         public void Open()
         {
             Sp.Open();

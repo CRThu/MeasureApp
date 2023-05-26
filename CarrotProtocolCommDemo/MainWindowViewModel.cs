@@ -12,6 +12,7 @@ using System.Diagnostics;
 using CarrotProtocolLib.Util;
 using CarrotProtocolLib.Impl;
 using CarrotProtocolLib.Driver;
+using CarrotProtocolLib.Interface;
 
 namespace CarrotProtocolCommDemo
 {
@@ -23,10 +24,16 @@ namespace CarrotProtocolCommDemo
 
 
         [ObservableProperty]
-        private string[] serialPortNames;
+        private DeviceInfo[] devices;
 
         [ObservableProperty]
-        private string selectedSerialPortName;
+        private DeviceInfo selectedDevice;
+
+        [ObservableProperty]
+        private string[] protocolNames;
+
+        [ObservableProperty]
+        private string selectedProtocolName;
 
         [ObservableProperty]
         private int[] carrotProtocols;
@@ -55,8 +62,9 @@ namespace CarrotProtocolCommDemo
 
         public MainWindowViewModel()
         {
-            SerialPortNames = SerialPort.GetPortNames();
-            SelectedSerialPortName = SerialPortNames.FirstOrDefault() ?? "";
+            Refresh();
+            ProtocolNames = new string[] { "CarrotDataProtocol", "AsciiProtocol", "UartBinaryProtocol" };
+            SelectedProtocolName = "CarrotDataProtocol";
             CarrotProtocols = new int[] { 0x30, 0x31, 0x32, 0x33 };
             SelectedCarrotProtocol = CarrotProtocols.FirstOrDefault();
             CarrotProtocolStreamIds = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
@@ -67,6 +75,13 @@ namespace CarrotProtocolCommDemo
         }
 
         [RelayCommand]
+        private void Refresh()
+        {
+            Devices = SerialPortDevice.GetDevicesInfo();
+            SelectedDevice = Devices.FirstOrDefault();
+        }
+
+        [RelayCommand]
         private void Open()
         {
             try
@@ -74,7 +89,7 @@ namespace CarrotProtocolCommDemo
                 //MessageBox.Show("Open");
                 if (!SerialPortDevice.IsOpen)
                 {
-                    SerialPortDevice.SetDevice(SelectedSerialPortName, 115200, 8, 1, "None");
+                    SerialPortDevice.SetDevice(SelectedDevice.Name, 115200, 8, 1, "None");
                     Logger = new();
                     Protocol = new(SerialPortDevice, Logger);
                     Protocol.ReceiveError += Protocol_ReceiveError;

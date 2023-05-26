@@ -19,4 +19,29 @@ namespace CarrotProtocolLib.Interface
         public void Write(byte[] bytes);
         public void Read(byte[] responseBytes, int offset, int bytesExpected);
     }
+
+    public enum InterfaceType
+    {
+        SerialPort,
+        FTDI_D2XX,
+    }
+
+    public class DeviceInfo
+    {
+        public InterfaceType Interface { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+
+        public override string ToString()
+        {
+            return $"{Interface} | {Name} | {Description}";
+        }
+
+        public DeviceInfo(InterfaceType @interface, string name, string description)
+        {
+            Interface = @interface;
+            Name = name;
+            Description = description;
+        }
+    }
 }
