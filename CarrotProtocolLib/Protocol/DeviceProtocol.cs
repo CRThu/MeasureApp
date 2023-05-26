@@ -62,48 +62,90 @@ namespace CarrotProtocolLib.Impl
             try
             {
                 byte[] frame = new byte[65536];
+                int frameCursor = 0;
+                int readBytes = 0;
+                int pktLength = 0;
+                int waitBytesNum = 0;
+                DataProtocolParseState state = DataProtocolParseState.WAIT_FRAME_START;
                 while (true)
                 {
-                    //cts.Token.ThrowIfCancellationRequested();
-                    if (ParseProtocolTaskCts.Token.IsCancellationRequested)
-                        return 0;
+                    // 计算触发协议读取长度
+                    switch (state)
+                    {
+                        case DataProtocolParseState.WAIT_FRAME_START:
+                        case DataProtocolParseState.WAIT_PROTOCOL_ID:
+                        case DataProtocolParseState.WAIT_FRAME_END:
+                            waitBytesNum = 1;
+                            break;
+                        case DataProtocolParseState.WAIT_PROTOCOL_DATA:
+                            waitBytesNum = pktLength - 3;
+                            break;
+                    }
 
-                    // 等待读帧头
-                    WaitProtocolStart:
-                    while (Device.RxByteToRead < 2)
+                    // 数据不满足长度要求则等待
+                    if (Device.RxByteToRead < waitBytesNum)
                     {
                         Thread.Sleep(10);
+                        //cts.Token.ThrowIfCancellationRequested();
                         if (ParseProtocolTaskCts.Token.IsCancellationRequested)
-                            return 1;
+                            return 0;
                     }
-                    Device.Read(frame, 0, 2);
-                    byte protocolId = frame[1];
-                    if (frame[0] != 0x3C)
+                    else
                     {
-                        goto WaitProtocolStart;
+                        // 帧数据处理状态机
+                        switch (state)
+                        {
+                            case DataProtocolParseState.WAIT_FRAME_START:
+                                frameCursor = 0;
+                                readBytes = 1;
+                                Device.Read(frame, frameCursor, readBytes);
+                                if (frame[frameCursor] == CarrotDataProtocol.FrameStartByte)
+                                {
+                                    state = DataProtocolParseState.WAIT_PROTOCOL_ID;
+                                    frameCursor += readBytes;
+                                }
+                                else
+                                {
+                                    state = DataProtocolParseState.WAIT_FRAME_START;
+                                }
+                                break;
+                            case DataProtocolParseState.WAIT_PROTOCOL_ID:
+                                readBytes = 1;
+                                Device.Read(frame, frameCursor, readBytes);
+                                pktLength = CarrotDataProtocol.GetPacketLength(frame[frameCursor]);
+                                if (pktLength > 0)
+                                {
+                                    state = DataProtocolParseState.WAIT_PROTOCOL_DATA;
+                                    frameCursor += readBytes;
+                                }
+                                else
+                                {
+                                    state = DataProtocolParseState.WAIT_PROTOCOL_ID;
+                                }
+                                break;
+                            case DataProtocolParseState.WAIT_PROTOCOL_DATA:
+                                readBytes = pktLength - 3;
+                                Device.Read(frame, frameCursor, readBytes);
+                                state = DataProtocolParseState.WAIT_FRAME_END;
+                                frameCursor += readBytes;
+                                break;
+                            case DataProtocolParseState.WAIT_FRAME_END:
+                                readBytes = 1;
+                                Device.Read(frame, frameCursor, readBytes);
+                                if (frame[frameCursor] == CarrotDataProtocol.FrameEndByte)
+                                {
+                                    state = DataProtocolParseState.WAIT_FRAME_START;
+                                    frameCursor += readBytes;
+                                    AddLog(new CarrotDataProtocol(frame, 0, frameCursor));
+                                }
+                                else
+                                {
+                                    state = DataProtocolParseState.WAIT_FRAME_END;
+                                }
+                                break;
+                        }
                     }
-                    int pktLength = CarrotDataProtocol.GetPacketLength(protocolId);
-                    if (pktLength < 0)
-                    {
-                        goto WaitProtocolStart;
-                    }
-
-                    // 等待读帧尾
-                    while (Device.RxByteToRead < pktLength - 2)
-                    {
-                        Thread.Sleep(10);
-                        if (ParseProtocolTaskCts.Token.IsCancellationRequested)
-                            return 2;
-                    }
-                    Device.Read(frame, 2, pktLength - 2);
-                    if (frame[pktLength - 1] != 0x3E)
-                    {
-                        goto WaitProtocolStart;
-                    }
-
-                    Logger.AddRx(new CarrotDataProtocol(frame, 0, pktLength));
                 }
-                return 3;
             }
             catch (Exception ex)
             {
@@ -121,6 +163,19 @@ namespace CarrotProtocolLib.Impl
         {
             Device.Write(bytes);
             Logger.AddTx(new CarrotDataProtocol(bytes, offset, length));
+        }
+
+        private void AddLog(CarrotDataProtocol protocol)
+        {
+            Logger.AddRx(protocol);
+        }
+
+        private enum DataProtocolParseState
+        {
+            WAIT_FRAME_START,
+            WAIT_PROTOCOL_ID,
+            WAIT_PROTOCOL_DATA,
+            WAIT_FRAME_END
         }
     }
 }

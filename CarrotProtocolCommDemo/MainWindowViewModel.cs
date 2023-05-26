@@ -138,19 +138,5 @@ namespace CarrotProtocolCommDemo
                 MessageBox.Show(ex.ToString());
             }
         }
-
-        public static string GenHexPkt()
-        {
-            string h = "3C 30 22 11 08 05 00 11 22 33 44 55 66 EE EE 3E";
-            //string h = "44 03 FF FF 08 05 00 ";
-
-            //for (int i = 0; i < 16-10; i++)
-            //{
-            //    h += "AA ";
-            //}
-
-            //h += "FF FF 55";
-            return h;
-        }
     }
 }
