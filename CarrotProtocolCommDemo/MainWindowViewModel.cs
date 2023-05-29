@@ -18,7 +18,7 @@ namespace CarrotProtocolCommDemo
 {
     public partial class MainWindowViewModel : ObservableObject
     {
-        public SerialPortDevice SerialPortDevice { get; set; }
+        public IDevice Device { get; set; }
         public ILogger Logger { get; set; }
         public IProtocol Protocol { get; set; }
 
@@ -78,7 +78,7 @@ namespace CarrotProtocolCommDemo
             CarrotProtocolStreamIds = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
             SelectedCarrotProtocolStreamId = CarrotProtocolStreamIds.FirstOrDefault();
 
-            SerialPortDevice = new();
+            // Device = new SerialPortDevice();
             //InputCode = GenHexPkt();
         }
 
@@ -103,18 +103,23 @@ namespace CarrotProtocolCommDemo
             try
             {
                 //MessageBox.Show("Open");
-                if (!SerialPortDevice.IsOpen)
+                if (Device is null)
                 {
-                    SerialPortDevice.SetDevice(SelectedDevice.Name, 115200, 8, 1, "None");
+                    Device = new SerialPortDevice();
+                }
+
+                if (!Device.IsOpen)
+                {
+                    ((SerialPortDevice)Device).SetDevice(SelectedDevice.Name, 115200, 8, 1, "None");
                     Logger = new ProtocolLogger(Logger_LoggerUpdate);
-                    Protocol = new CarrotDataProtocol(SerialPortDevice, Logger, Protocol_ReceiveError);
+                    Protocol = new CarrotDataProtocol(Device, Logger, Protocol_ReceiveError);
                     Protocol.Start();
                 }
                 else
                 {
                     Protocol.Stop();
                 }
-                IsOpen = SerialPortDevice.IsOpen;
+                IsOpen = Device.IsOpen;
             }
             catch (Exception ex)
             {
@@ -126,7 +131,7 @@ namespace CarrotProtocolCommDemo
         {
             MessageBox.Show(ex.ToString());
             Protocol.Stop();
-            IsOpen = SerialPortDevice.IsOpen;
+            IsOpen = Device.IsOpen;
         }
 
         [RelayCommand]

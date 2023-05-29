@@ -18,6 +18,8 @@ namespace CarrotProtocolLib.Interface
         public void Close();
         public void Write(byte[] bytes);
         public void Read(byte[] responseBytes, int offset, int bytesExpected);
+
+        public static abstract DeviceInfo[] GetDevicesInfo();
     }
 
     public enum InterfaceType
