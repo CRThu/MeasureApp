@@ -20,13 +20,22 @@
         <TabControl Margin="10,10,0,10" HorizontalAlignment="Left" Width="353" Style="{StaticResource TabControlInLine}">
             <TabItem Header="设备" IsSelected="True">
                 <Grid Margin="0,0,0,0" d:Height="380">
-                    <TextBlock Text="设备" HorizontalAlignment="Left" Margin="10,37,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-                    <ComboBox ItemsSource="{Binding Devices}" SelectedItem="{Binding SelectedDevice}" HorizontalAlignment="Left" Margin="67,30,0,0" VerticalAlignment="Top" Width="267"/>
+                    <TextBlock Text="外设" HorizontalAlignment="Left" Margin="10,37,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                    <ComboBox ItemsSource="{Binding Interfaces}" SelectedItem="{Binding SelectedInterface}"  HorizontalAlignment="Left" Margin="67,30,0,0" VerticalAlignment="Top" Width="267">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="SelectionChanged">
+                                <i:InvokeCommandAction Command="{Binding InterfaceChangedCommand}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </ComboBox>
 
-                    <TextBlock Text="协议" HorizontalAlignment="Left" Margin="10,77,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-                    <ComboBox Name="ProtocolComboBox" ItemsSource="{Binding ProtocolNames}" SelectedItem="{Binding SelectedProtocolName}" HorizontalAlignment="Left" Margin="67,70,0,0" VerticalAlignment="Top" Width="267"/>
+                    <TextBlock Text="设备" HorizontalAlignment="Left" Margin="10,77,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                    <ComboBox ItemsSource="{Binding Devices}" DisplayMemberPath="Name" SelectedItem="{Binding SelectedDevice}" HorizontalAlignment="Left" Margin="67,70,0,0" VerticalAlignment="Top" Width="267"/>
 
-                    <Button x:Name="RefreshButton" Content="刷新" Command="{Binding RefreshCommand}" HorizontalAlignment="Left" Margin="10,0,0,10" VerticalAlignment="Bottom" Width="60" Height="30"/>
+                    <TextBlock Text="协议" HorizontalAlignment="Left" Margin="10,117,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                    <ComboBox ItemsSource="{Binding ProtocolNames}" SelectedItem="{Binding SelectedProtocolName}" HorizontalAlignment="Left" Margin="67,110,0,0" VerticalAlignment="Top" Width="267"/>
+
+                    <Button x:Name="RefreshButton" Content="刷新" Command="{Binding InterfaceChangedCommand}" HorizontalAlignment="Left" Margin="10,0,0,10" VerticalAlignment="Bottom" Width="60" Height="30"/>
                     <Button x:Name="OpenButton" Content="{Binding IsOpen, Converter={StaticResource BooleanToTextConverter}, ConverterParameter='关闭|打开'}" Command="{Binding OpenCommand}" HorizontalAlignment="Left" Margin="80,0,0,10" VerticalAlignment="Bottom" Width="60" Height="30"/>
                     <Grid Margin="150,0,0,10" VerticalAlignment="Bottom" Width="193" HorizontalAlignment="Left" Height="30">
                         <TextBlock Text="Tx:" HorizontalAlignment="Left" Margin="10,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center"/>

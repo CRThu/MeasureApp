@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CarrotProtocolLib.Driver
 {
-    public class ProtocolLog
+    public class ProtocolLog : ILoggerRecord
     {
         public DateTime Time { get; set; }
         public TxRx TxRx { get; set; }
@@ -37,15 +37,20 @@ namespace CarrotProtocolLib.Driver
     {
         public List<ProtocolLog> ProtocolList { get; set; }
 
-        public delegate void LoggerUpdateHandler(ProtocolLog log, LoggerUpdateEvent e);
-        public event LoggerUpdateHandler LoggerUpdate;
+        // public delegate void LoggerUpdateHandler(ILoggerRecord log, LoggerUpdateEvent e);
+        public event ILogger.LoggerUpdateHandler LoggerUpdate;
 
         public ProtocolLogger()
         {
             ProtocolList = new();
         }
 
-        public void AddRx(CarrotDataProtocolLog protocol)
+        public ProtocolLogger(ILogger.LoggerUpdateHandler loggerUpdateHandler) : this()
+        {
+            LoggerUpdate += loggerUpdateHandler;
+        }
+
+        public void AddRx(IProtocolLog protocol)
         {
             ProtocolLog protocolLog = new()
             {
@@ -57,7 +62,7 @@ namespace CarrotProtocolLib.Driver
             LoggerUpdate.Invoke(protocolLog, LoggerUpdateEvent.AddEvent);
         }
 
-        public void AddTx(CarrotDataProtocolLog protocol)
+        public void AddTx(IProtocolLog protocol)
         {
             ProtocolLog protocolLog = new()
             {

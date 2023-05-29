@@ -43,6 +43,11 @@ namespace CarrotProtocolLib.Impl
             Logger = logger;
         }
 
+        public CarrotDataProtocol(IDevice device, ILogger logger, IProtocol.ReceiveErrorHandler receiveErrorHandler) : this(device, logger)
+        {
+            ReceiveError += receiveErrorHandler;
+        }
+
         public void Start()
         {
             Device.Open();

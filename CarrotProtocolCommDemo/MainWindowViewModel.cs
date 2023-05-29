@@ -19,9 +19,15 @@ namespace CarrotProtocolCommDemo
     public partial class MainWindowViewModel : ObservableObject
     {
         public SerialPortDevice SerialPortDevice { get; set; }
-        public ProtocolLogger Logger { get; set; }
+        public ILogger Logger { get; set; }
         public IProtocol Protocol { get; set; }
 
+
+        [ObservableProperty]
+        private InterfaceType[] interfaces;
+
+        [ObservableProperty]
+        private InterfaceType selectedInterface;
 
         [ObservableProperty]
         private DeviceInfo[] devices;
@@ -62,7 +68,9 @@ namespace CarrotProtocolCommDemo
 
         public MainWindowViewModel()
         {
-            Refresh();
+            Interfaces = new InterfaceType[] { InterfaceType.SerialPort, InterfaceType.FTDI_D2XX };
+            SelectedInterface = InterfaceType.SerialPort;
+            InterfaceChanged();
             ProtocolNames = new string[] { "CarrotDataProtocol", "AsciiProtocol", "UartBinaryProtocol" };
             SelectedProtocolName = "CarrotDataProtocol";
             CarrotProtocols = new int[] { 0x30, 0x31, 0x32, 0x33 };
@@ -75,9 +83,17 @@ namespace CarrotProtocolCommDemo
         }
 
         [RelayCommand]
-        private void Refresh()
+        private void InterfaceChanged()
         {
-            Devices = SerialPortDevice.GetDevicesInfo();
+            switch (SelectedInterface)
+            {
+                case InterfaceType.SerialPort:
+                    Devices = SerialPortDevice.GetDevicesInfo();
+                    break;
+                case InterfaceType.FTDI_D2XX:
+                    Devices = new DeviceInfo[] { };
+                    break;
+            }
             SelectedDevice = Devices.FirstOrDefault();
         }
 
@@ -90,11 +106,9 @@ namespace CarrotProtocolCommDemo
                 if (!SerialPortDevice.IsOpen)
                 {
                     SerialPortDevice.SetDevice(SelectedDevice.Name, 115200, 8, 1, "None");
-                    Logger = new();
-                    Protocol = new CarrotDataProtocol(SerialPortDevice, Logger);
-                    Protocol.ReceiveError += Protocol_ReceiveError;
+                    Logger = new ProtocolLogger(Logger_LoggerUpdate);
+                    Protocol = new CarrotDataProtocol(SerialPortDevice, Logger, Protocol_ReceiveError);
                     Protocol.Start();
-                    Logger.LoggerUpdate += Logger_LoggerUpdate;
                 }
                 else
                 {
@@ -130,7 +144,7 @@ namespace CarrotProtocolCommDemo
             }
         }
 
-        private void Logger_LoggerUpdate(ProtocolLog log, LoggerUpdateEvent e)
+        private void Logger_LoggerUpdate(ILoggerRecord log, LoggerUpdateEvent e)
         {
             lock (StdOut)
             {
