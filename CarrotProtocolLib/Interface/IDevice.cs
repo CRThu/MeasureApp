@@ -20,6 +20,9 @@ namespace CarrotProtocolLib.Interface
         public void Read(byte[] responseBytes, int offset, int bytesExpected);
 
         public static abstract DeviceInfo[] GetDevicesInfo();
+
+        public delegate void OnInternalPropertyChangedHandler(string name, dynamic value);
+        public event OnInternalPropertyChangedHandler InternalPropertyChanged;
     }
 
     public enum InterfaceType

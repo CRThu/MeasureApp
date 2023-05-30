@@ -23,7 +23,9 @@ namespace CarrotProtocolLib.Driver
         [ObservableProperty]
         public int sentByteCount;
 
-        public bool IsOpen => Sp is not null && Sp.IsOpen;
+        [ObservableProperty]
+        public bool isOpen;
+
         public int RxByteToRead => RxBuffer.Count;
         private CancellationTokenSource DataReceiveTaskCts { get; set; }
         private Task<int> DataReceiveTask { get; set; }
@@ -32,13 +34,33 @@ namespace CarrotProtocolLib.Driver
         public delegate void ReceiveErrorHandler(Exception ex);
         public event ReceiveErrorHandler ReceiveError;
 
+        //public delegate void OnInternalPropertyChangedHandler(string name, dynamic value);
+        public event IDevice.OnInternalPropertyChangedHandler InternalPropertyChanged;
+
         public static int[] SupportedBaudRate { get; } = { 9600, 38400, 115200, 460800, 921600, 1000000, 2000000, 4000000, 8000000, 12000000 };
         public static int[] SupportedDataBits { get; } = { 5, 6, 7, 8 };
         public static float[] SupportedStopBits { get; } = { 0f, 1f, 1.5f, 2f };
         public static string[] SupportedParity { get; } = { "None", "Odd", "Even", "Mark", "Space" };
 
+
+        partial void OnIsOpenChanged(bool value)
+        {
+            InternalPropertyChanged?.Invoke(nameof(IsOpen), value);
+        }
+
+        partial void OnReceivedByteCountChanged(int value)
+        {
+            InternalPropertyChanged?.Invoke(nameof(ReceivedByteCount), value);
+        }
+
+        partial void OnSentByteCountChanged(int value)
+        {
+            InternalPropertyChanged?.Invoke(nameof(SentByteCount), value);
+        }
+
         public SerialPortDevice()
         {
+            IsOpen = false;
         }
 
         public void SetDevice(string portName, int baudRate, int dataBits, float stopBits, string parity)
@@ -61,6 +83,8 @@ namespace CarrotProtocolLib.Driver
             RxBuffer = new(1048576 * 16);
             ReceivedByteCount = 0;
             SentByteCount = 0;
+
+            IsOpen = false;
         }
 
         public static DeviceInfo[] GetDevicesInfo()
@@ -73,6 +97,7 @@ namespace CarrotProtocolLib.Driver
             Sp.Open();
             DataReceiveTaskCts = new();
             DataReceiveTask = Task.Run(() => DataReceiveLoop(), DataReceiveTaskCts.Token);
+            IsOpen = true;
         }
 
         public void Close()
@@ -80,6 +105,8 @@ namespace CarrotProtocolLib.Driver
             Sp.Close();
             DataReceiveTaskCts.Cancel();
             DataReceiveTask.Wait();
+            IsOpen = false;
+
         }
 
         /// <summary>
@@ -146,6 +173,7 @@ namespace CarrotProtocolLib.Driver
         private void Sp_ErrorReceived(object sender, SerialErrorReceivedEventArgs e)
         {
             ReceiveError?.Invoke(new NotImplementedException($"ERROR Sp_ErrorReceived(): EventType={e.EventType}."));
+            IsOpen = Sp.IsOpen;
         }
 
         private int DataReceiveLoop()

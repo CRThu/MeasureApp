@@ -18,7 +18,23 @@ namespace CarrotProtocolCommDemo
 {
     public partial class MainWindowViewModel : ObservableObject
     {
-        public IDevice Device { get; set; }
+        private IDevice device;
+        public IDevice Device
+        {
+            get
+            {
+                return device;
+            }
+            set
+            {
+                if (device is not null)
+                    device.InternalPropertyChanged -= View_Update;
+                device = value;
+                if (device is not null)
+                    device.InternalPropertyChanged += View_Update;
+            }
+        }
+
         public ILogger Logger { get; set; }
         public IProtocol Protocol { get; set; }
 
@@ -64,7 +80,13 @@ namespace CarrotProtocolCommDemo
         private string stdOut = "";
 
         [ObservableProperty]
-        private bool isOpen = false;
+        public int receivedByteCount;
+        [ObservableProperty]
+        public int sentByteCount;
+
+        [ObservableProperty]
+        public bool isOpen;
+
 
         public MainWindowViewModel()
         {
@@ -78,6 +100,7 @@ namespace CarrotProtocolCommDemo
             CarrotProtocolStreamIds = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
             SelectedCarrotProtocolStreamId = CarrotProtocolStreamIds.FirstOrDefault();
 
+            Device = EmptyDevice.EmptyDeviceInstance;
             // Device = new SerialPortDevice();
             //InputCode = GenHexPkt();
         }
@@ -95,6 +118,13 @@ namespace CarrotProtocolCommDemo
                     break;
             }
             SelectedDevice = Devices.FirstOrDefault();
+
+            //Device ??= SelectedInterface switch
+            //{
+            //    InterfaceType.SerialPort => new SerialPortDevice(),
+            //    InterfaceType.FTDI_D2XX => throw new NotImplementedException(),
+            //    _ => throw new NotImplementedException(),
+            //};
         }
 
         [RelayCommand]
@@ -103,23 +133,34 @@ namespace CarrotProtocolCommDemo
             try
             {
                 //MessageBox.Show("Open");
-                if (Device is null)
+                if (Device.IsOpen)
                 {
-                    Device = new SerialPortDevice();
-                }
-
-                if (!Device.IsOpen)
-                {
-                    ((SerialPortDevice)Device).SetDevice(SelectedDevice.Name, 115200, 8, 1, "None");
-                    Logger = new ProtocolLogger(Logger_LoggerUpdate);
-                    Protocol = new CarrotDataProtocol(Device, Logger, Protocol_ReceiveError);
-                    Protocol.Start();
+                    // 若设备开启则关闭
+                    Protocol.Stop();
                 }
                 else
                 {
-                    Protocol.Stop();
+                    // 若设备关闭或为空则新建实例且打开
+                    Device = SelectedInterface switch
+                    {
+                        InterfaceType.SerialPort => new SerialPortDevice(),
+                        InterfaceType.FTDI_D2XX => throw new NotImplementedException(),
+                        _ => throw new NotImplementedException(),
+                    };
+
+                    switch (SelectedInterface)
+                    {
+                        case InterfaceType.SerialPort:
+                            ((SerialPortDevice)Device).SetDevice(SelectedDevice.Name, 115200, 8, 1, "None");
+                            Logger = new ProtocolLogger(Logger_LoggerUpdate);
+                            Protocol = new CarrotDataProtocol(Device, Logger, Protocol_ReceiveError);
+                            Protocol.Start();
+                            break;
+                        case InterfaceType.FTDI_D2XX:
+                            throw new NotImplementedException();
+                            break;
+                    }
                 }
-                IsOpen = Device.IsOpen;
             }
             catch (Exception ex)
             {
@@ -127,11 +168,28 @@ namespace CarrotProtocolCommDemo
             }
         }
 
+        private void View_Update(string name, dynamic value)
+        {
+            switch (name)
+            {
+                case "IsOpen":
+                    IsOpen = value;
+                    break;
+                case "ReceivedByteCount":
+                    ReceivedByteCount = value;
+                    break;
+                case "SentByteCount":
+                    SentByteCount = value;
+                    break;
+                default:
+                    break;
+            }
+        }
+
         private void Protocol_ReceiveError(Exception ex)
         {
             MessageBox.Show(ex.ToString());
             Protocol.Stop();
-            IsOpen = Device.IsOpen;
         }
 
         [RelayCommand]
