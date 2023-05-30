@@ -30,7 +30,7 @@
                     </ComboBox>
 
                     <TextBlock Text="设备" HorizontalAlignment="Left" Margin="10,77,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-                    <ComboBox ItemsSource="{Binding Devices}" DisplayMemberPath="Name" SelectedItem="{Binding SelectedDevice}" HorizontalAlignment="Left" Margin="67,70,0,0" VerticalAlignment="Top" Width="267"/>
+                    <ComboBox ItemsSource="{Binding Devices}" SelectedItem="{Binding SelectedDevice}" HorizontalAlignment="Left" Margin="67,70,0,0" VerticalAlignment="Top" Width="267"/>
 
                     <TextBlock Text="协议" HorizontalAlignment="Left" Margin="10,117,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
                     <ComboBox ItemsSource="{Binding ProtocolNames}" SelectedItem="{Binding SelectedProtocolName}" HorizontalAlignment="Left" Margin="67,110,0,0" VerticalAlignment="Top" Width="267"/>

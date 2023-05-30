@@ -12,4 +12,11 @@
 		<PackageReference Include="System.IO.Ports" Version="7.0.0" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Reference Include="FTD2XX_NET">
+	    <HintPath>..\DLL\FTD2XX\FTD2XX_NET.dll</HintPath>
+	    <Private>True</Private>
+	  </Reference>
+	</ItemGroup>
+
 </Project>

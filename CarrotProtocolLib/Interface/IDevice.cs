@@ -39,7 +39,7 @@ namespace CarrotProtocolLib.Interface
 
         public override string ToString()
         {
-            return $"{Interface} | {Name} | {Description}";
+            return $"{Name} | {Description}";
         }
 
         public DeviceInfo(InterfaceType @interface, string name, string description)

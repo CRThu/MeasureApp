@@ -115,7 +115,7 @@ namespace CarrotProtocolCommDemo
                     Devices = SerialPortDevice.GetDevicesInfo();
                     break;
                 case InterfaceType.FTDI_D2XX:
-                    Devices = new DeviceInfo[] { };
+                    Devices = FtdiD2xxDevice.GetDevicesInfo();
                     break;
             }
             SelectedDevice = Devices.FirstOrDefault();
