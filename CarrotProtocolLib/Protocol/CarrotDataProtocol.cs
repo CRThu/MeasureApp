@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using CarrotProtocolLib.Driver;
+using CarrotProtocolLib.Device;
 using CarrotProtocolLib.Interface;
 
 namespace CarrotProtocolLib.Impl
@@ -104,7 +104,7 @@ namespace CarrotProtocolLib.Impl
                                 frameCursor = 0;
                                 readBytes = 1;
                                 Device.Read(frame, frameCursor, readBytes);
-                                if (frame[frameCursor] == CarrotDataProtocolLog.FrameStartByte)
+                                if (frame[frameCursor] == CarrotDataProtocolRecord.FrameStartByte)
                                 {
                                     state = DataProtocolParseState.WAIT_PROTOCOL_ID;
                                     frameCursor += readBytes;
@@ -117,7 +117,7 @@ namespace CarrotProtocolLib.Impl
                             case DataProtocolParseState.WAIT_PROTOCOL_ID:
                                 readBytes = 1;
                                 Device.Read(frame, frameCursor, readBytes);
-                                pktLength = CarrotDataProtocolLog.GetPacketLength(frame[frameCursor]);
+                                pktLength = CarrotDataProtocolRecord.GetPacketLength(frame[frameCursor]);
                                 if (pktLength > 0)
                                 {
                                     state = DataProtocolParseState.WAIT_PROTOCOL_DATA;
@@ -137,11 +137,11 @@ namespace CarrotProtocolLib.Impl
                             case DataProtocolParseState.WAIT_FRAME_END:
                                 readBytes = 1;
                                 Device.Read(frame, frameCursor, readBytes);
-                                if (frame[frameCursor] == CarrotDataProtocolLog.FrameEndByte)
+                                if (frame[frameCursor] == CarrotDataProtocolRecord.FrameEndByte)
                                 {
                                     state = DataProtocolParseState.WAIT_FRAME_START;
                                     frameCursor += readBytes;
-                                    AddLog(new CarrotDataProtocolLog(frame, 0, frameCursor));
+                                    AddLog(new CarrotDataProtocolRecord(frame, 0, frameCursor));
                                 }
                                 else
                                 {
@@ -167,10 +167,10 @@ namespace CarrotProtocolLib.Impl
         public void Send(byte[] bytes, int offset, int length)
         {
             Device.Write(bytes);
-            Logger.AddTx(new CarrotDataProtocolLog(bytes, offset, length));
+            Logger.AddTx(new CarrotDataProtocolRecord(bytes, offset, length));
         }
 
-        private void AddLog(CarrotDataProtocolLog protocol)
+        private void AddLog(CarrotDataProtocolRecord protocol)
         {
             Logger.AddRx(protocol);
         }

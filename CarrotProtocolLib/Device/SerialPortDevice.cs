@@ -11,7 +11,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections;
 using System.Security.Cryptography;
 
-namespace CarrotProtocolLib.Driver
+namespace CarrotProtocolLib.Device
 {
     public partial class SerialPortDevice : ObservableObject, IDevice
     {

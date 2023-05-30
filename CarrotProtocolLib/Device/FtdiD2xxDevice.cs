@@ -1,5 +1,4 @@
 ﻿using CarrotProtocolLib.Interface;
-using CarrotProtocolLib.Util;
 using CommunityToolkit.Mvvm.ComponentModel;
 using System;
 using System.Collections.Generic;
@@ -7,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CarrotProtocolLib.Driver
+namespace CarrotProtocolLib.Device
 {
-    public partial class EmptyDevice : ObservableObject, IDevice
+    public partial class FtdiD2xxDevice : ObservableObject, IDevice
     {
         [ObservableProperty]
         public int receivedByteCount;
@@ -25,7 +24,7 @@ namespace CarrotProtocolLib.Driver
 
         public event IDevice.OnInternalPropertyChangedHandler InternalPropertyChanged;
 
-        public EmptyDevice()
+        public FtdiD2xxDevice()
         {
             ReceivedByteCount = 0;
             SentByteCount = 0;
@@ -56,6 +55,10 @@ namespace CarrotProtocolLib.Driver
         public static DeviceInfo[] GetDevicesInfo()
         {
             return new DeviceInfo[] { };
+        }
+
+        public void SetDevice(string name)
+        {
         }
     }
 }

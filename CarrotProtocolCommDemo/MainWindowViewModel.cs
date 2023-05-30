@@ -11,8 +11,9 @@ using System.IO.Ports;
 using System.Diagnostics;
 using CarrotProtocolLib.Util;
 using CarrotProtocolLib.Impl;
-using CarrotProtocolLib.Driver;
 using CarrotProtocolLib.Interface;
+using CarrotProtocolLib.Logger;
+using CarrotProtocolLib.Device;
 
 namespace CarrotProtocolCommDemo
 {
@@ -140,26 +141,36 @@ namespace CarrotProtocolCommDemo
                 }
                 else
                 {
-                    // 若设备关闭或为空则新建实例且打开
+                    // 若设备关闭或为空则新建实例
                     Device = SelectedInterface switch
                     {
                         InterfaceType.SerialPort => new SerialPortDevice(),
-                        InterfaceType.FTDI_D2XX => throw new NotImplementedException(),
+                        InterfaceType.FTDI_D2XX => new FtdiD2xxDevice(),
                         _ => throw new NotImplementedException(),
                     };
 
+                    // 硬件配置
                     switch (SelectedInterface)
                     {
                         case InterfaceType.SerialPort:
                             ((SerialPortDevice)Device).SetDevice(SelectedDevice.Name, 115200, 8, 1, "None");
-                            Logger = new ProtocolLogger(Logger_LoggerUpdate);
-                            Protocol = new CarrotDataProtocol(Device, Logger, Protocol_ReceiveError);
-                            Protocol.Start();
                             break;
                         case InterfaceType.FTDI_D2XX:
-                            throw new NotImplementedException();
+                            ((FtdiD2xxDevice)Device).SetDevice(SelectedDevice.Name);
                             break;
                     }
+
+                    // 记录器配置
+                    Logger = new ProtocolLogger(Logger_LoggerUpdate);
+
+                    // 解析协议配置
+                    Protocol = SelectedProtocolName switch
+                    {
+                        "CarrotDataProtocol" => new CarrotDataProtocol(Device, Logger, Protocol_ReceiveError),
+                        "AsciiProtocol" => throw new NotImplementedException(),
+                        _ => throw new NotImplementedException(),
+                    };
+                    Protocol.Start();
                 }
             }
             catch (Exception ex)
@@ -197,7 +208,7 @@ namespace CarrotProtocolCommDemo
         {
             try
             {
-                CarrotDataProtocolLog carrotDataProtocol = new(SelectedCarrotProtocol, SelectedCarrotProtocolStreamId, PayloadString);
+                CarrotDataProtocolRecord carrotDataProtocol = new(SelectedCarrotProtocol, SelectedCarrotProtocolStreamId, PayloadString);
                 byte[] bytes = carrotDataProtocol.ToBytes();
                 InputCode = BytesEx.BytesToHexString(bytes);
             }

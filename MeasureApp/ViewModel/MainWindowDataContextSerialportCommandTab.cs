@@ -907,7 +907,7 @@ REGW;01;{i:D};
                             dac8830_volt = evaluator5.Evaluate(dac8830_volt.Replace('\'', '\"')).ToString();
                         }
 
-                        CarrotDataProtocolLog cdp = new(0x32, dac8830_ch, dac8830_volt);
+                        CarrotDataProtocolRecord cdp = new(0x32, dac8830_ch, dac8830_volt);
                         string dac8830PortName = TagAttrs["port"];
                         SerialPortsInstance.WriteBytes(dac8830PortName, cdp.ToBytes());
                         break;

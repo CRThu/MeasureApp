@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CarrotProtocolLib.Driver
+namespace CarrotProtocolLib.Logger
 {
     public class ProtocolLog : ILoggerRecord
     {

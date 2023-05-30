@@ -15,7 +15,7 @@ namespace CarrotProtocolCommDemo.Tests
         public void CarrotDataProtocolTest()
         {
             byte[] bytes = new byte[] { 0x3C, 0x30, 0x22, 0x11, 0x08, 0x05, 0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x00, 0xEE, 0xEE, 0x3E };
-            CarrotDataProtocolLog carrotDataProtocol = new(bytes, 0, bytes.Length);
+            CarrotDataProtocolRecord carrotDataProtocol = new(bytes, 0, bytes.Length);
             Assert.AreEqual(0x3C, carrotDataProtocol.FrameStart);
             Assert.AreEqual(0x1122, carrotDataProtocol.ControlFlags);
             Assert.AreEqual(0x08, carrotDataProtocol.StreamId);
@@ -32,7 +32,7 @@ namespace CarrotProtocolCommDemo.Tests
         public void CrcTest()
         {
             byte[] bytes = new byte[] { 0x3C, 0x30, 0x00, 0x00, 0x00, 0x02, 0x00, 0x0D, 0x0A, 0x00, 0x00, 0x00, 0x00, 0x3C, 0x87, 0x3E };
-            CarrotDataProtocolLog carrotDataProtocol = new(bytes, 0, bytes.Length);
+            CarrotDataProtocolRecord carrotDataProtocol = new(bytes, 0, bytes.Length);
             int crc = carrotDataProtocol.GenerateCrc();
             Assert.AreEqual(0x873C,crc);
             Assert.IsFalse(carrotDataProtocol.CheckCrcError());

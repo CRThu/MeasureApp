@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using CarrotProtocolLib.Driver;
 using CarrotProtocolLib.Impl;
+using CarrotProtocolLib.Logger;
 
 namespace CarrotProtocolLib.Interface
 {
