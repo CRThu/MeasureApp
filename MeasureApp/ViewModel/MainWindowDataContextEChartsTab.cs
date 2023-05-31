@@ -94,8 +94,9 @@ namespace MeasureApp.ViewModel
                 double[] samples;
                 if (!FftAnalysisPropertyConfig.IsTestCosineWave)
                 {
-                    string[] samplesStr = File.ReadAllLines(FftAnalysisSampleFileName);
-                    samples = DataDecode.Decode(samplesStr, FftAnalysisPropertyConfig);
+                    string samplesStr = File.ReadAllText(FftAnalysisSampleFileName);
+                    string[] samplesSplit = samplesStr.Split("\r\n\t,;".ToCharArray(),StringSplitOptions.RemoveEmptyEntries);
+                    samples = DataDecode.Decode(samplesSplit, FftAnalysisPropertyConfig);
                 }
                 else
                     samples = CosineWaveGen.GenWave(FftAnalysisPropertyConfig.FftN,
