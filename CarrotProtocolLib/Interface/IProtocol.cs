@@ -8,8 +8,7 @@ namespace CarrotProtocolLib.Interface
 {
     public interface IProtocol
     {
-        public delegate void ReceiveErrorHandler(Exception ex);
-        public event ReceiveErrorHandler ReceiveError;
+        public delegate void ProtocolParseErrorHandler(Exception ex);
 
         public void Start();
         public void Stop();

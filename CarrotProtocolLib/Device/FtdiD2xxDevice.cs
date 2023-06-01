@@ -116,7 +116,7 @@ namespace CarrotProtocolLib.Device
                 .ToArray();
         }
 
-        public void SetDevice(string name)
+        public void SetDevice(string serialNumber)
         {
         }
     }

@@ -8,7 +8,7 @@ using CarrotProtocolLib.Util;
 
 namespace CarrotProtocolLib.Interface
 {
-    public interface IProtocolLog
+    public interface IProtocolRecord
     {
         public byte[] Bytes { get; }
         public string PayloadDisplay { get; }

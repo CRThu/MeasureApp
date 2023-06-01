@@ -12,7 +12,7 @@ namespace CarrotProtocolLib.Logger
     {
         public DateTime Time { get; set; }
         public TxRx TxRx { get; set; }
-        public IProtocolLog Protocol { get; set; }
+        public IProtocolRecord Protocol { get; set; }
 
         public override string ToString()
         {
@@ -50,7 +50,7 @@ namespace CarrotProtocolLib.Logger
             LoggerUpdate += loggerUpdateHandler;
         }
 
-        public void AddRx(IProtocolLog protocol)
+        public void AddRx(IProtocolRecord protocol)
         {
             ProtocolLog protocolLog = new()
             {
@@ -62,7 +62,7 @@ namespace CarrotProtocolLib.Logger
             LoggerUpdate.Invoke(protocolLog, LoggerUpdateEvent.AddEvent);
         }
 
-        public void AddTx(IProtocolLog protocol)
+        public void AddTx(IProtocolRecord protocol)
         {
             ProtocolLog protocolLog = new()
             {

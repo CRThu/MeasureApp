@@ -9,7 +9,7 @@ using CarrotProtocolLib.Util;
 
 namespace CarrotProtocolLib.Impl
 {
-    public class CarrotDataProtocolRecord : IProtocolLog
+    public class CarrotDataProtocolRecord : IProtocolRecord
     {
         /// <summary>
         /// protocol layout index : [0:0]

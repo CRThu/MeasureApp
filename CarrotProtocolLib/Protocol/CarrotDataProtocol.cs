@@ -33,9 +33,9 @@ namespace CarrotProtocolLib.Impl
         private Task<int> ParseProtocolTask { get; set; }
 
 
-        // public delegate void ReceiveErrorHandler(Exception ex);
-        // public event ReceiveErrorHandler ReceiveError;
-        public event IProtocol.ReceiveErrorHandler ReceiveError;
+        //public delegate void ProtocolParseErrorHandler(Exception ex);
+        //public event ProtocolParseErrorHandler ProtocolParseError;
+        public event IProtocol.ProtocolParseErrorHandler ProtocolParseError;
 
         public CarrotDataProtocol(IDevice device, ILogger logger)
         {
@@ -43,9 +43,9 @@ namespace CarrotProtocolLib.Impl
             Logger = logger;
         }
 
-        public CarrotDataProtocol(IDevice device, ILogger logger, IProtocol.ReceiveErrorHandler receiveErrorHandler) : this(device, logger)
+        public CarrotDataProtocol(IDevice device, ILogger logger, IProtocol.ProtocolParseErrorHandler protocolParseErrorHandler) : this(device, logger)
         {
-            ReceiveError += receiveErrorHandler;
+            ProtocolParseError += protocolParseErrorHandler;
         }
 
         public void Start()
@@ -154,7 +154,7 @@ namespace CarrotProtocolLib.Impl
             }
             catch (Exception ex)
             {
-                ReceiveError?.Invoke(ex);
+                ProtocolParseError?.Invoke(ex);
                 return -1;
             }
         }

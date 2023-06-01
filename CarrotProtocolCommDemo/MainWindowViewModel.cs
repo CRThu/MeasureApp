@@ -14,6 +14,7 @@ using CarrotProtocolLib.Impl;
 using CarrotProtocolLib.Interface;
 using CarrotProtocolLib.Logger;
 using CarrotProtocolLib.Device;
+using CarrotProtocolLib.Protocol;
 
 namespace CarrotProtocolCommDemo
 {
@@ -166,8 +167,8 @@ namespace CarrotProtocolCommDemo
                     // 解析协议配置
                     Protocol = SelectedProtocolName switch
                     {
-                        "CarrotDataProtocol" => new CarrotDataProtocol(Device, Logger, Protocol_ReceiveError),
-                        "AsciiProtocol" => throw new NotImplementedException(),
+                        "CarrotDataProtocol" => new CarrotDataProtocol(Device, Logger, ProtocolParseErrorCallback),
+                        "AsciiProtocol" => new AsciiProtocol(Device, Logger, ProtocolParseErrorCallback),
                         _ => throw new NotImplementedException(),
                     };
                     Protocol.Start();
@@ -197,7 +198,7 @@ namespace CarrotProtocolCommDemo
             }
         }
 
-        private void Protocol_ReceiveError(Exception ex)
+        private void ProtocolParseErrorCallback(Exception ex)
         {
             MessageBox.Show(ex.ToString());
             Protocol.Stop();

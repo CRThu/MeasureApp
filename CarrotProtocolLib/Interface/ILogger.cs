@@ -13,8 +13,8 @@ namespace CarrotProtocolLib.Interface
         public delegate void LoggerUpdateHandler(ILoggerRecord log, LoggerUpdateEvent e);
         public event LoggerUpdateHandler LoggerUpdate;
 
-        public void AddRx(IProtocolLog protocol);
-        public void AddTx(IProtocolLog protocol);
+        public void AddRx(IProtocolRecord protocol);
+        public void AddTx(IProtocolRecord protocol);
     }
 
     public interface ILoggerRecord
