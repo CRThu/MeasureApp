@@ -81,6 +81,12 @@ namespace CarrotProtocolCommDemo
         [ObservableProperty]
         private string stdOut = "";
 
+
+        [ObservableProperty]
+        private string asciiProtocolPayloadString = "";
+        [ObservableProperty]
+        private byte[] asciiProtocolFrameBytes = Array.Empty<byte>();
+
         [ObservableProperty]
         public int receivedByteCount;
         [ObservableProperty]
@@ -204,6 +210,17 @@ namespace CarrotProtocolCommDemo
             Protocol.Stop();
         }
 
+        private void Logger_LoggerUpdate(ILoggerRecord log, LoggerUpdateEvent e)
+        {
+            lock (StdOut)
+            {
+                if (StdOut.Length > 1024)
+                    StdOut = "...\n";
+                StdOut += log.ToString() + Environment.NewLine;
+            }
+        }
+
+
         [RelayCommand]
         private void PacketParamsChanged()
         {
@@ -219,16 +236,6 @@ namespace CarrotProtocolCommDemo
             }
         }
 
-        private void Logger_LoggerUpdate(ILoggerRecord log, LoggerUpdateEvent e)
-        {
-            lock (StdOut)
-            {
-                if (StdOut.Length > 1024)
-                    StdOut = "...\n";
-                StdOut += log.ToString() + Environment.NewLine;
-            }
-        }
-
         [RelayCommand]
         private void Send()
         {
@@ -236,6 +243,26 @@ namespace CarrotProtocolCommDemo
             {
                 //MessageBox.Show("Send");
                 Protocol.Send(BytesEx.HexStringToBytes(InputCode));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        [RelayCommand]
+        private void AsciiProtocolPayloadChanged()
+        {
+            AsciiProtocolFrameBytes = BytesEx.AsciiToBytes(AsciiProtocolPayloadString+"\r\n");
+        }
+
+        [RelayCommand]
+        private void AsciiProtocolSend()
+        {
+            try
+            {
+                //MessageBox.Show("Send");
+                Protocol.Send(AsciiProtocolFrameBytes);
             }
             catch (Exception ex)
             {
