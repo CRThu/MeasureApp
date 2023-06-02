@@ -159,6 +159,11 @@ namespace CarrotProtocolLib.Impl
             }
         }
 
+        public void Send(IProtocolRecord protocol)
+        {
+            Send(protocol.Bytes);
+        }
+
         public void Send(byte[] bytes)
         {
             Send(bytes, 0, bytes.Length);

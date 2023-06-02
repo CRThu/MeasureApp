@@ -81,7 +81,9 @@ namespace CarrotProtocolCommDemo
         [ObservableProperty]
         private string stdOut = "";
 
-
+        [ObservableProperty]
+        private AsciiProtocolRecord asciiProtocolRecord = new AsciiProtocolRecord("");
+        
         [ObservableProperty]
         private string asciiProtocolPayloadString = "";
         [ObservableProperty]
@@ -253,7 +255,8 @@ namespace CarrotProtocolCommDemo
         [RelayCommand]
         private void AsciiProtocolPayloadChanged()
         {
-            AsciiProtocolFrameBytes = BytesEx.AsciiToBytes(AsciiProtocolPayloadString+"\r\n");
+            //asciiProtocolRecord = new AsciiProtocolRecord(AsciiProtocolPayloadString);
+            //AsciiProtocolFrameBytes = asciiProtocolRecord.Bytes;
         }
 
         [RelayCommand]
@@ -262,7 +265,7 @@ namespace CarrotProtocolCommDemo
             try
             {
                 //MessageBox.Show("Send");
-                Protocol.Send(AsciiProtocolFrameBytes);
+                Protocol.Send(asciiProtocolRecord.Bytes);
             }
             catch (Exception ex)
             {

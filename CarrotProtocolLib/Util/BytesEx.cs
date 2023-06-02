@@ -22,10 +22,19 @@ namespace CarrotProtocolLib.Util
         public static byte[] HexStringToBytes(string s)
         {
             s = s.Replace(" ", "");
-            byte[] buffer = new byte[s.Length / 2];
-            for (int i = 0; i < s.Length; i += 2)
+            byte[] buffer = new byte[(int)Math.Ceiling(s.Length / 2.0)];
+            for (int i = 0; i < s.Length;)
             {
-                buffer[i / 2] = Convert.ToByte(s.Substring(i, 2), 16);
+                if (s.Length - i >= 2)
+                {
+                    buffer[i / 2] = Convert.ToByte(s.Substring(i, 2), 16);
+                    i += 2;
+                }
+                else if (s.Length - i == 1)
+                {
+                    buffer[i / 2] = Convert.ToByte(s.Substring(i, 1), 16);
+                    i += 1;
+                }
             }
 
             return buffer;

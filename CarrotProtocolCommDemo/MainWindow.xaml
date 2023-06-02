@@ -81,7 +81,7 @@
             <TabItem Header="Ascii协议调试">
                 <Grid Margin="0,0,0,0" d:Height="380">
                     <TextBlock Text="Payload" HorizontalAlignment="Left" Margin="10,21,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-                    <TextBox Text="{Binding AsciiProtocolPayloadString, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="67,14,0,0" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" VerticalContentAlignment="Top" VerticalAlignment="Top" Width="267" Height="94" VerticalScrollBarVisibility="Auto">
+                    <TextBox Text="{Binding AsciiProtocolRecord.PayloadDisplay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="67,14,0,0" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" VerticalContentAlignment="Top" VerticalAlignment="Top" Width="267" Height="94" VerticalScrollBarVisibility="Auto">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="TextChanged">
                                 <i:InvokeCommandAction Command="{Binding AsciiProtocolPayloadChangedCommand}"/>
@@ -90,7 +90,7 @@
                     </TextBox>
 
                     <TextBlock Text="16进制" HorizontalAlignment="Left" Margin="10,115,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-                    <TextBox Text="{Binding AsciiProtocolFrameBytes,Converter={StaticResource BytesToHexStringConverter}}" HorizontalAlignment="Left" Margin="10,135,0,164" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto" Width="324"/>
+                    <TextBox Text="{Binding AsciiProtocolRecord.HexDisplay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="10,135,0,164" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto" Width="324"/>
                     <Button Content="发送" Command="{Binding AsciiProtocolSendCommand}" Margin="10,0,0,10" VerticalAlignment="Bottom" Width="60" HorizontalAlignment="Left" Height="30"/>
 
                 </Grid>

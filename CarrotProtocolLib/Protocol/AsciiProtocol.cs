@@ -1,6 +1,7 @@
 ﻿using CarrotProtocolLib.Impl;
 using CarrotProtocolLib.Interface;
 using CarrotProtocolLib.Util;
+using CommunityToolkit.Mvvm.ComponentModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -74,7 +75,7 @@ namespace CarrotProtocolLib.Protocol
                             Array.Copy(rxBuffer, frame.Length, rxBuffer, 0, rxBufferCursor - frame.Length);
                             Array.Fill(rxBuffer, (byte)0x00, rxBufferCursor - frame.Length, frame.Length);
                             rxBufferCursor -= frame.Length;
-                            AddLog(new AsciiProtocolRecord(frame, 0, frame.Length));
+                            AddLog(frame, 0, frame.Length);
                         }
                     }
                 }
@@ -84,6 +85,11 @@ namespace CarrotProtocolLib.Protocol
                 ProtocolParseError?.Invoke(ex);
                 return -1;
             }
+        }
+
+        public void Send(IProtocolRecord protocol)
+        {
+            Send(protocol.Bytes);
         }
 
         public void Send(byte[] bytes)
@@ -97,22 +103,55 @@ namespace CarrotProtocolLib.Protocol
             Logger.AddTx(new AsciiProtocolRecord(bytes, offset, length));
         }
 
-        private void AddLog(AsciiProtocolRecord protocol)
+        private void AddLog(byte[] bytes, int offset, int length)
         {
+            AsciiProtocolRecord protocol = new AsciiProtocolRecord(bytes, offset, length);
             Logger.AddRx(protocol);
         }
     }
 
 
-    public class AsciiProtocolRecord : IProtocolRecord
+    public partial class AsciiProtocolRecord : ObservableObject, IProtocolRecord
     {
-        public byte[] Bytes { get; }
-        public string PayloadDisplay => BytesEx.BytesToHexString(Bytes);
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(PayloadDisplay))]
+        [NotifyPropertyChangedFor(nameof(Bytes))]
+        private string hexDisplay;
+
+        public string PayloadDisplay
+        {
+            get
+            {
+                return BytesEx.BytesToAscii(Bytes);
+            }
+            set
+            {
+                Bytes = BytesEx.AsciiToBytes(value);
+            }
+        }
+
+        public byte[] Bytes
+        {
+            get
+            {
+                return BytesEx.HexStringToBytes(HexDisplay);
+            }
+            set
+            {
+                HexDisplay = BytesEx.BytesToHexString(value);
+            }
+        }
+
+        public AsciiProtocolRecord(string payload)
+        {
+            Bytes = BytesEx.AsciiToBytes(payload);
+        }
 
         public AsciiProtocolRecord(byte[] bytes, int offset, int length)
         {
-            Bytes = new byte[length];
-            Array.Copy(bytes, offset, Bytes, 0, length);
+            byte[] bytesNew = new byte[length];
+            Array.Copy(bytes, offset, bytesNew, 0, length);
+            Bytes = bytesNew;
         }
     }
 }

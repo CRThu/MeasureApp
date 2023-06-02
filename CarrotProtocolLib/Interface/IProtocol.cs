@@ -12,6 +12,7 @@ namespace CarrotProtocolLib.Interface
 
         public void Start();
         public void Stop();
+        public void Send(IProtocolRecord protocol);
         public void Send(byte[] bytes);
         public void Send(byte[] bytes, int offset, int length);
     }
