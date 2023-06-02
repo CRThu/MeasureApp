@@ -83,7 +83,7 @@ namespace CarrotProtocolCommDemo
 
         [ObservableProperty]
         private AsciiProtocolRecord asciiProtocolRecord = new AsciiProtocolRecord("");
-        
+
         [ObservableProperty]
         private string asciiProtocolPayloadString = "";
         [ObservableProperty]
@@ -264,6 +264,11 @@ namespace CarrotProtocolCommDemo
         {
             try
             {
+                string teststr = @"12345\01\02\\\03abc\\\";
+                byte[] testarr = AsciiString.AsciiString2Bytes(teststr);
+                string test = $"{BytesEx.BytesToHexString(AsciiString.AsciiString2Bytes(teststr))}\n" +
+                    $"{AsciiString.Bytes2AsciiString(testarr)}";
+                MessageBox.Show(test);
                 //MessageBox.Show("Send");
                 Protocol.Send(asciiProtocolRecord.Bytes);
             }
