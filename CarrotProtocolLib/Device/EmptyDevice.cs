@@ -23,7 +23,7 @@ namespace CarrotProtocolLib.Device
 
         public static EmptyDevice EmptyDeviceInstance { get; } = new EmptyDevice();
 
-        public event IDevice.OnInternalPropertyChangedHandler InternalPropertyChanged;
+        public event IDevice.DevicePropertyChangedHandler DevicePropertyChanged;
 
         public EmptyDevice()
         {

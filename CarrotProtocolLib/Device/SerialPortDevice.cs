@@ -35,7 +35,7 @@ namespace CarrotProtocolLib.Device
         public event ReceiveErrorHandler ReceiveError;
 
         //public delegate void OnInternalPropertyChangedHandler(string name, dynamic value);
-        public event IDevice.OnInternalPropertyChangedHandler InternalPropertyChanged;
+        public event IDevice.DevicePropertyChangedHandler DevicePropertyChanged;
 
         public static int[] SupportedBaudRate { get; } = { 9600, 38400, 115200, 460800, 921600, 1000000, 2000000, 4000000, 8000000, 12000000 };
         public static int[] SupportedDataBits { get; } = { 5, 6, 7, 8 };
@@ -45,17 +45,17 @@ namespace CarrotProtocolLib.Device
 
         partial void OnIsOpenChanged(bool value)
         {
-            InternalPropertyChanged?.Invoke(nameof(IsOpen), value);
+            DevicePropertyChanged?.Invoke(nameof(IsOpen), value);
         }
 
         partial void OnReceivedByteCountChanged(int value)
         {
-            InternalPropertyChanged?.Invoke(nameof(ReceivedByteCount), value);
+            DevicePropertyChanged?.Invoke(nameof(ReceivedByteCount), value);
         }
 
         partial void OnSentByteCountChanged(int value)
         {
-            InternalPropertyChanged?.Invoke(nameof(SentByteCount), value);
+            DevicePropertyChanged?.Invoke(nameof(SentByteCount), value);
         }
 
         public SerialPortDevice()

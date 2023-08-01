@@ -30,10 +30,10 @@ namespace CarrotProtocolCommDemo
             set
             {
                 if (device is not null)
-                    device.InternalPropertyChanged -= View_Update;
+                    device.DevicePropertyChanged -= View_Update;
                 device = value;
                 if (device is not null)
-                    device.InternalPropertyChanged += View_Update;
+                    device.DevicePropertyChanged += View_Update;
             }
         }
 

@@ -26,7 +26,7 @@ namespace CarrotProtocolLib.Device
 
         public static EmptyDevice EmptyDeviceInstance { get; } = new EmptyDevice();
 
-        public event IDevice.OnInternalPropertyChangedHandler InternalPropertyChanged;
+        public event IDevice.DevicePropertyChangedHandler DevicePropertyChanged;
 
         public FtdiD2xxDevice()
         {
@@ -70,14 +70,13 @@ namespace CarrotProtocolLib.Device
             // Check status
             if (ftStatus == FTDI.FT_STATUS.FT_OK)
             {
-                Console.WriteLine("Number of FTDI devices: " + ftdiDeviceCount.ToString());
-                Console.WriteLine("");
+                Debug.WriteLine("Number of FTDI devices: " + ftdiDeviceCount.ToString());
+                Debug.WriteLine("");
             }
             else
             {
                 // Wait for a key press
-                Console.WriteLine("Failed to get number of devices (error " + ftStatus.ToString() + ")");
-                Console.ReadKey();
+                Debug.WriteLine("Failed to get number of devices (error " + ftStatus.ToString() + ")");
                 return new DeviceInfo[] { };
             }
 
@@ -85,8 +84,7 @@ namespace CarrotProtocolLib.Device
             if (ftdiDeviceCount == 0)
             {
                 // Wait for a key press
-                Console.WriteLine("Failed to get number of devices (error " + ftStatus.ToString() + ")");
-                Console.ReadKey();
+                Debug.WriteLine("Failed to get number of devices (error " + ftStatus.ToString() + ")");
                 return new DeviceInfo[] { };
             }
 
