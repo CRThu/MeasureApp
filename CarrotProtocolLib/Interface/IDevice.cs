@@ -1,6 +1,8 @@
 ﻿using CarrotProtocolLib.Device;
+using CarrotProtocolLib.Util;
 using System;
 using System.Collections.Generic;
+using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +11,10 @@ namespace CarrotProtocolLib.Interface
 {
     public interface IDevice
     {
+        public SerialPort Driver { get; set; }
+
+        public RingBuffer RxBuffer { get; set; }
+
         /// <summary>
         /// 接收数据字节数
         /// </summary>
