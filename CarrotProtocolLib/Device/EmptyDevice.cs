@@ -3,6 +3,7 @@ using CarrotProtocolLib.Util;
 using CommunityToolkit.Mvvm.ComponentModel;
 using System;
 using System.Collections.Generic;
+using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,6 +23,8 @@ namespace CarrotProtocolLib.Device
         public int RxByteToRead { get; set; }
 
         public static EmptyDevice EmptyDeviceInstance { get; } = new EmptyDevice();
+        public SerialPort Driver { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public RingBuffer RxBuffer { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public event IDevice.DevicePropertyChangedHandler DevicePropertyChanged;
 

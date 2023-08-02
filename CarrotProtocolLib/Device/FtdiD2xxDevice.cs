@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using FTD2XX_NET;
+using System.IO.Ports;
+using CarrotProtocolLib.Util;
 
 namespace CarrotProtocolLib.Device
 {
@@ -25,6 +27,8 @@ namespace CarrotProtocolLib.Device
         public int RxByteToRead { get; set; }
 
         public static EmptyDevice EmptyDeviceInstance { get; } = new EmptyDevice();
+        public SerialPort Driver { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public RingBuffer RxBuffer { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public event IDevice.DevicePropertyChangedHandler DevicePropertyChanged;
 
@@ -110,7 +114,7 @@ namespace CarrotProtocolLib.Device
             }
 
             return ftdiDeviceList.Select(dev =>
-            new DeviceInfo(InterfaceType.FTDI_D2XX, dev.SerialNumber, dev.Description))
+            new DeviceInfo("FTD2XX_NET.FTDI_D2XX", dev.SerialNumber, dev.Description))
                 .ToArray();
         }
 

@@ -8,20 +8,11 @@ using System.Threading.Tasks;
 namespace CarrotProtocolLib.Device
 {
     /// <summary>
-    /// 设备类型
-    /// </summary>
-    public enum InterfaceType
-    {
-        SerialPort,
-        FTDI_D2XX,
-    }
-
-    /// <summary>
     /// 设备信息
     /// </summary>
     public class DeviceInfo
     {
-        public InterfaceType Interface { get; set; }
+        public string Interface { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
 
@@ -30,7 +21,7 @@ namespace CarrotProtocolLib.Device
             return $"{Name} | {Description}";
         }
 
-        public DeviceInfo(InterfaceType @interface, string name, string description)
+        public DeviceInfo(string @interface, string name, string description)
         {
             Interface = @interface;
             Name = name;

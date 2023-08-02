@@ -31,7 +31,7 @@ namespace CarrotProtocolLib.Service
                 int len = Device.Driver.BytesToRead;
                 if (len > 0)
                 {
-                    int readBytes = Device.Driver.Receive(ReceiveDataBuffer, 0, len);
+                    int readBytes = Device.Driver.Read(ReceiveDataBuffer, 0, len);
                     if (readBytes != len)
                     {
                         throw new InvalidOperationException($"Read(): readBytes({readBytes}) != len({len}).");

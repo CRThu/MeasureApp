@@ -89,7 +89,7 @@ namespace CarrotProtocolLib.Device
 
         public static DeviceInfo[] GetDevicesInfo()
         {
-            return SerialPort.GetPortNames().Select(d => new DeviceInfo(InterfaceType.SerialPort, d, "串口设备")).ToArray();
+            return SerialPort.GetPortNames().Select(d => new DeviceInfo("SerialPort", d, "串口设备")).ToArray();
         }
 
         public void Open()

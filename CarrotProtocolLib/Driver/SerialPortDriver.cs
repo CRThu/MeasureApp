@@ -1,4 +1,5 @@
-﻿using CarrotProtocolLib.Util;
+﻿using CarrotProtocolLib.Device;
+using CarrotProtocolLib.Util;
 using CommunityToolkit.Mvvm.ComponentModel;
 using System;
 using System.Collections.Generic;
@@ -138,6 +139,10 @@ namespace CarrotProtocolLib.Driver
                 throw new DriverErrorException(this, ex.Message, ex);
             }
         }
-    }
 
+        public static DeviceInfo[] GetDevicesInfo()
+        {
+            return SerialPort.GetPortNames().Select(d => new DeviceInfo("System.IO.Ports.SerialPort", d, "串口设备")).ToArray();
+        }
+    }
 }
