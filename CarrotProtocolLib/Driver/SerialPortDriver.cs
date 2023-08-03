@@ -1,4 +1,5 @@
 ﻿using CarrotProtocolLib.Device;
+using CarrotProtocolLib.Interface;
 using CarrotProtocolLib.Util;
 using CommunityToolkit.Mvvm.ComponentModel;
 using System;
@@ -10,21 +11,39 @@ using System.Threading.Tasks;
 
 namespace CarrotProtocolLib.Driver
 {
-    public class SerialPortDriver
+    public class SerialPortDriver : IDriver
     {
+        /// <summary>
+        /// 驱动层实现
+        /// </summary>
         private SerialPort Driver { get; set; }
 
+        /// <summary>
+        /// 设备是否开启
+        /// </summary>
         public bool IsOpen { get; set; }
 
+        /// <summary>
+        /// 缓冲区未读取字节数
+        /// </summary>
         public int BytesToRead => Driver.BytesToRead;
 
+        /// <summary>
+        /// 接收字节数
+        /// </summary>
         public int ReceivedByteCount { get; set; }
 
+        /// <summary>
+        /// 发送字节数
+        /// </summary>
         public int SentByteCount { get; set; }
 
         public delegate void ErrorReceivedHandler(Exception ex);
         public event ErrorReceivedHandler? ErrorReceived;
 
+        /// <summary>
+        /// 构造函数
+        /// </summary>
         public SerialPortDriver()
         {
             Driver = new SerialPort();
@@ -32,6 +51,16 @@ namespace CarrotProtocolLib.Driver
             Driver.ErrorReceived += Driver_ErrorReceived;
         }
 
+        /// <summary>
+        /// 串口设置
+        /// </summary>
+        /// <param name="portName"></param>
+        /// <param name="baudRate"></param>
+        /// <param name="dataBits"></param>
+        /// <param name="stopBits"></param>
+        /// <param name="parity"></param>
+        /// <param name="bufferSize"></param>
+        /// <param name="timeout"></param>
         public void SetDevice(string portName, int baudRate,
             int dataBits, float stopBits, string parity,
             int bufferSize = 1048576, int timeout = 250)
@@ -140,7 +169,11 @@ namespace CarrotProtocolLib.Driver
             }
         }
 
-        public static DeviceInfo[] GetDevicesInfo()
+        /// <summary>
+        /// 获取设备列表
+        /// </summary>
+        /// <returns></returns>
+        public DeviceInfo[] GetDevicesInfo()
         {
             return SerialPort.GetPortNames().Select(d => new DeviceInfo("System.IO.Ports.SerialPort", d, "串口设备")).ToArray();
         }
