@@ -23,7 +23,7 @@ namespace CarrotProtocolLib.Service
 
         public override int ServiceLoop()
         {
-            while (Device.IsOpen)
+            while (Device.Driver.IsOpen)
             {
                 if (IsCancellationRequested)
                     return 1;

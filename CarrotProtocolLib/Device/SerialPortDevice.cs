@@ -15,231 +15,70 @@ namespace CarrotProtocolLib.Device
 {
     public partial class SerialPortDevice : ObservableObject, IDevice
     {
-        public SerialPort Driver { get; set; }
+        public IDriver Driver { get; set; }
         public RingBuffer RxBuffer { get; set; }
 
-        [ObservableProperty]
-        public int receivedByteCount;
-        [ObservableProperty]
-        public int sentByteCount;
-
-        [ObservableProperty]
-        public bool isOpen;
-
+        /// <summary>
+        /// 缓冲区待接收的数据字节数
+        /// </summary>
         public int RxByteToRead => RxBuffer.Count;
-        private CancellationTokenSource DataReceiveTaskCts { get; set; }
-        private Task<int> DataReceiveTask { get; set; }
 
+        /// <summary>
+        /// 接收数据字节数
+        /// </summary>
+        public int ReceivedByteCount => Driver.ReceivedByteCount;
+        /// <summary>
+        /// 发送数据字节数
+        /// </summary>
+        public int SentByteCount => Driver.SentByteCount;
 
-        public delegate void ReceiveErrorHandler(Exception ex);
-        public event ReceiveErrorHandler ReceiveError;
+        /// <summary>
+        /// 设备是否打开
+        /// </summary>
+        public bool IsOpen => Driver.IsOpen;
 
-        //public delegate void OnInternalPropertyChangedHandler(string name, dynamic value);
-        public event IDevice.DevicePropertyChangedHandler DevicePropertyChanged;
-
-        public static int[] SupportedBaudRate { get; } = { 9600, 38400, 115200, 460800, 921600, 1000000, 2000000, 4000000, 8000000, 12000000 };
-        public static int[] SupportedDataBits { get; } = { 5, 6, 7, 8 };
-        public static float[] SupportedStopBits { get; } = { 0f, 1f, 1.5f, 2f };
-        public static string[] SupportedParity { get; } = { "None", "Odd", "Even", "Mark", "Space" };
-
-
-        partial void OnIsOpenChanged(bool value)
+        public SerialPortDevice(IDriver driver, int bufferSize)
         {
-            DevicePropertyChanged?.Invoke(nameof(IsOpen), value);
-        }
-
-        partial void OnReceivedByteCountChanged(int value)
-        {
-            DevicePropertyChanged?.Invoke(nameof(ReceivedByteCount), value);
-        }
-
-        partial void OnSentByteCountChanged(int value)
-        {
-            DevicePropertyChanged?.Invoke(nameof(SentByteCount), value);
-        }
-
-        public SerialPortDevice()
-        {
-            IsOpen = false;
-        }
-
-        public void SetDevice(string portName, int baudRate, int dataBits, float stopBits, string parity)
-        {
-            Driver = new()
-            {
-                PortName = portName,
-                BaudRate = baudRate,
-                DataBits = dataBits,
-                StopBits = StopBitsFloat2Enum(stopBits),
-                Parity = ParityString2Enum(parity),
-                ReadBufferSize = 1048576,
-                WriteBufferSize = 1048576,
-                ReadTimeout = 2000,
-                WriteTimeout = 2000
-            };
-            //Sp.DataReceived += Sp_DataReceived;
-            Driver.ErrorReceived += Sp_ErrorReceived;
-
-            RxBuffer = new(1048576 * 16);
-            ReceivedByteCount = 0;
-            SentByteCount = 0;
-
-            IsOpen = false;
-        }
-
-        public static DeviceInfo[] GetDevicesInfo()
-        {
-            return SerialPort.GetPortNames().Select(d => new DeviceInfo("SerialPort", d, "串口设备")).ToArray();
+            Driver = driver;
+            //RxBuffer = new(1048576 * 16);
+            RxBuffer = new(bufferSize);
         }
 
         public void Open()
         {
             Driver.Open();
-            DataReceiveTaskCts = new();
-            DataReceiveTask = Task.Run(() => DataReceiveLoop(), DataReceiveTaskCts.Token);
-            IsOpen = true;
+            RxBuffer.Clear();
         }
 
         public void Close()
         {
             Driver.Close();
-            DataReceiveTaskCts.Cancel();
-            DataReceiveTask.Wait();
-            IsOpen = false;
-
         }
 
         /// <summary>
-        /// 发送字符串(\r\n结尾)
+        /// 写入字节数组
         /// </summary>
-        /// <param name="s"></param>
-        public void WriteString(string s)
+        /// <param name="buffer"></param>
+        /// <param name="offset"></param>
+        /// <param name="count"></param>
+        public void Write(byte[] buffer, int offset, int count)
         {
-            Driver.WriteLine(s);
-            SentByteCount += s.Length + 2;
+            Driver.Write(buffer, offset, count);
         }
 
         /// <summary>
-        /// 发送字节数组
+        /// 读取字节数组
         /// </summary>
-        /// <param name="bytes"></param>
-        public void Write(byte[] bytes)
-        {
-            Driver.Write(bytes, 0, bytes.Length);
-            SentByteCount += bytes.Length;
-        }
-
-        /// <summary>
-        /// 接收字节
-        /// </summary>
-        /// <param name="responseBytes"></param>
-        /// <param name="bytesExpected"></param>
-        /// <returns></returns>
-        private int Receive(byte[] responseBytes, int bytesExpected)
-        {
-            int offset = 0, bytesRead;
-            while (bytesExpected > 0)
-            {
-                bytesRead = Driver.Read(responseBytes, offset, bytesExpected);
-                offset += bytesRead;
-                bytesExpected -= bytesRead;
-            }
-            ReceivedByteCount += offset;
-            return offset;
-        }
-
-        /// <summary>
-        /// 读取字符串(\r\n结尾)
-        /// </summary>
-        /// <returns></returns>
-        private string ReceiveString()
-        {
-            string rx = Driver.ReadLine();
-            ReceivedByteCount += rx.Length;
-            return rx;
-        }
-
-        /// <summary>
-        /// 接收缓冲区读取字节
-        /// </summary>
-        /// <param name="responseBytes"></param>
+        /// <param name="buffer"></param>
         /// <param name="offset"></param>
         /// <param name="bytesExpected"></param>
-        public void Read(byte[] responseBytes, int offset, int bytesExpected)
+        /// <returns>返回实际读取字节数</returns>
+        public int Read(byte[] buffer, int offset, int bytesExpected)
         {
-            RxBuffer.Read(responseBytes, offset, bytesExpected);
-        }
-
-        private void Sp_ErrorReceived(object sender, SerialErrorReceivedEventArgs e)
-        {
-            ReceiveError?.Invoke(new NotImplementedException($"ERROR Sp_ErrorReceived(): EventType={e.EventType}."));
-            IsOpen = Driver.IsOpen;
-        }
-
-        private int DataReceiveLoop()
-        {
-            try
-            {
-                while (IsOpen)
-                {
-                    if (DataReceiveTaskCts.Token.IsCancellationRequested)
-                        return 0;
-
-                    int len = Driver.BytesToRead;
-                    if (len > 0)
-                    {
-                        byte[] buf = new byte[len];
-                        int readBytes = Receive(buf, len);
-                        if (readBytes != len)
-                        {
-                            throw new NotImplementedException($"Read(): readBytes({readBytes}) != len({len}).");
-                        }
-                        // Debug.WriteLine($"BytesToRead = {len}, Read = {readBytes}, ReceivedByteCount = {ReceivedByteCount}");
-                        //int len2 = Sp.BytesToRead;
-                        //Debug.WriteLine($"BytesToRead2 = {len2}");
-                        if (buf.Length > 0)
-                        {
-                            RxBuffer.Write(buf);
-                            Debug.WriteLine($"buflen = {buf.Length}");
-                        }
-                    }
-                    else
-                    {
-                        Thread.Sleep(10);
-                    }
-                }
-                return 1;
-            }
-            catch (Exception ex)
-            {
-                ReceiveError?.Invoke(ex);
-                return -1;
-            }
-        }
-
-        public static StopBits StopBitsFloat2Enum(float stopBits)
-        {
-            return stopBits switch
-            {
-                0f => StopBits.None,
-                1f => StopBits.One,
-                2f => StopBits.Two,
-                1.5f => StopBits.OnePointFive,
-                _ => throw new NotImplementedException($"不支持的停止位: {stopBits:0.0}"),
-            };
-        }
-
-        public static Parity ParityString2Enum(string parity)
-        {
-            return parity switch
-            {
-                "None" => Parity.None,
-                "Odd" => Parity.Odd,
-                "Even" => Parity.Even,
-                "Mark" => Parity.Mark,
-                "Space" => Parity.Space,
-                _ => throw new NotImplementedException($"不支持的校验位: {parity}"),
-            };
+            if (bytesExpected > RxByteToRead)
+                bytesExpected = RxByteToRead;
+            RxBuffer.Read(buffer, offset, bytesExpected);
+            return bytesExpected;
         }
     }
 }

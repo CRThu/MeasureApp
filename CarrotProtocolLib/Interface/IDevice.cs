@@ -11,7 +11,7 @@ namespace CarrotProtocolLib.Interface
 {
     public interface IDevice
     {
-        public SerialPort Driver { get; set; }
+        public IDriver Driver { get; set; }
 
         public RingBuffer RxBuffer { get; set; }
 
@@ -47,33 +47,18 @@ namespace CarrotProtocolLib.Interface
         /// <summary>
         /// 设备写入字节流
         /// </summary>
-        /// <param name="bytes"></param>
-        public void Write(byte[] bytes);
+        /// <param name="buffer"></param>
+        /// <param name="offset"></param>
+        /// <param name="count"></param>
+        public void Write(byte[] buffer, int offset, int count);
 
         /// <summary>
         /// 设备读取字节流存储到数组位置
         /// </summary>
-        /// <param name="responseBytes">接收数据存储数组</param>
+        /// <param name="buffer">接收数据存储数组</param>
         /// <param name="offset">偏移量</param>
         /// <param name="bytesExpected">请求读取数量</param>
-        public void Read(byte[] responseBytes, int offset, int bytesExpected);
-
-        /// <summary>
-        /// 读取设备信息
-        /// </summary>
-        /// <returns></returns>
-        public static abstract DeviceInfo[] GetDevicesInfo();
-
-        /// <summary>
-        /// 设备类内部属性更新
-        /// </summary>
-        /// <param name="name">属性名称</param>
-        /// <param name="value">属性值</param>
-        public delegate void DevicePropertyChangedHandler(string name, dynamic value);
-        /// <summary>
-        /// 设备类内部属性更新事件
-        /// </summary>
-        public event DevicePropertyChangedHandler DevicePropertyChanged;
+        public int Read(byte[] buffer, int offset, int bytesExpected);
     }
-    
+
 }

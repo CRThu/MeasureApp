@@ -41,6 +41,11 @@ namespace CarrotProtocolLib.Driver
         public delegate void ErrorReceivedHandler(Exception ex);
         public event ErrorReceivedHandler? ErrorReceived;
 
+        public static int[] SupportedBaudRate { get; } = { 9600, 38400, 115200, 460800, 921600, 1000000, 2000000, 4000000, 8000000, 12000000 };
+        public static int[] SupportedDataBits { get; } = { 5, 6, 7, 8 };
+        public static float[] SupportedStopBits { get; } = { 0f, 1f, 1.5f, 2f };
+        public static string[] SupportedParity { get; } = { "None", "Odd", "Even", "Mark", "Space" };
+
         /// <summary>
         /// 构造函数
         /// </summary>
