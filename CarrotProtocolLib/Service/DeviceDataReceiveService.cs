@@ -13,14 +13,30 @@ namespace CarrotProtocolLib.Service
     /// </summary>
     public class DeviceDataReceiveService : BaseTaskService<int>
     {
+        /// <summary>
+        /// 操作设备接口
+        /// </summary>
         private IDevice Device { get; set; }
-        private byte[] ReceiveDataBuffer = new byte[65536];
 
+        /// <summary>
+        /// 接收缓冲区(内部使用)
+        /// </summary>
+        private byte[] ReceiveDataBuffer = new byte[64 * 1024];
+
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="device"></param>
         public DeviceDataReceiveService(IDevice device) : base()
         {
             Device = device;
         }
 
+        /// <summary>
+        /// 数据接收服务程序
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
         public override int ServiceLoop()
         {
             while (Device.Driver.IsOpen)
@@ -29,6 +45,10 @@ namespace CarrotProtocolLib.Service
                     return 1;
 
                 int len = Device.Driver.BytesToRead;
+
+                if (len > ReceiveDataBuffer.Length)
+                    len = ReceiveDataBuffer.Length;
+
                 if (len > 0)
                 {
                     int readBytes = Device.Driver.Read(ReceiveDataBuffer, 0, len);
@@ -39,15 +59,12 @@ namespace CarrotProtocolLib.Service
                     // Debug.WriteLine($"BytesToRead = {len}, Read = {readBytes}, ReceivedByteCount = {ReceivedByteCount}");
                     //int len2 = Sp.BytesToRead;
                     //Debug.WriteLine($"BytesToRead2 = {len2}");
-                    if (ReceiveDataBuffer.Length > 0)
-                    {
-                        Device.RxBuffer.Write(ReceiveDataBuffer, 0, len);
-                        Debug.WriteLine($"buflen = {ReceiveDataBuffer.Length}");
-                    }
+                    Device.RxBuffer.Write(ReceiveDataBuffer, 0, len);
+                    Debug.WriteLine($"buflen = {ReceiveDataBuffer.Length}");
                 }
                 else
                 {
-                    Thread.Sleep(10);
+                    Thread.Sleep(5);
                 }
             }
             return 0;
