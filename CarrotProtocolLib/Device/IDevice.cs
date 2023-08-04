@@ -1,4 +1,4 @@
-﻿using CarrotProtocolLib.Device;
+﻿using CarrotProtocolLib.Driver;
 using CarrotProtocolLib.Util;
 using System;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CarrotProtocolLib.Interface
+namespace CarrotProtocolLib.Device
 {
     public interface IDevice
     {

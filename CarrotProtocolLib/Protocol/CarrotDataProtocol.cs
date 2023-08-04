@@ -5,7 +5,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CarrotProtocolLib.Device;
-using CarrotProtocolLib.Interface;
+using CarrotProtocolLib.Logger;
+using CarrotProtocolLib.Protocol;
 
 namespace CarrotProtocolLib.Impl
 {
@@ -171,7 +172,7 @@ namespace CarrotProtocolLib.Impl
 
         public void Send(byte[] bytes, int offset, int length)
         {
-            Device.Write(bytes);
+            Device.Write(bytes, offset, length);
             Logger.AddTx(new CarrotDataProtocolRecord(bytes, offset, length));
         }
 

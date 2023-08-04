@@ -1,5 +1,4 @@
 ﻿using CarrotProtocolLib.Device;
-using CarrotProtocolLib.Interface;
 using FTD2XX_NET;
 using System;
 using System.Collections.Generic;

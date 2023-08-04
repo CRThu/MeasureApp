@@ -11,7 +11,6 @@ using System.IO.Ports;
 using System.Diagnostics;
 using CarrotProtocolLib.Util;
 using CarrotProtocolLib.Impl;
-using CarrotProtocolLib.Interface;
 using CarrotProtocolLib.Logger;
 using CarrotProtocolLib.Device;
 using CarrotProtocolLib.Protocol;

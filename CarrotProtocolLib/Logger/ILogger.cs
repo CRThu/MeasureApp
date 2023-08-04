@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CarrotProtocolLib.Impl;
-using CarrotProtocolLib.Logger;
+using CarrotProtocolLib.Protocol;
 
-namespace CarrotProtocolLib.Interface
+namespace CarrotProtocolLib.Logger
 {
     public interface ILogger
     {

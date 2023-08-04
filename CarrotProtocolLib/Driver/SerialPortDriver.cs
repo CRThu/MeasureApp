@@ -1,5 +1,4 @@
 ﻿using CarrotProtocolLib.Device;
-using CarrotProtocolLib.Interface;
 using CarrotProtocolLib.Util;
 using CommunityToolkit.Mvvm.ComponentModel;
 using System;

@@ -1,5 +1,4 @@
-﻿using CarrotProtocolLib.Interface;
-using CarrotProtocolLib.Util;
+﻿using CarrotProtocolLib.Util;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,6 +9,7 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections;
 using System.Security.Cryptography;
+using CarrotProtocolLib.Driver;
 
 namespace CarrotProtocolLib.Device
 {

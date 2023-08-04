@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static CarrotProtocolLib.Driver.SerialPortDriver;
 
-namespace CarrotProtocolLib.Interface
+namespace CarrotProtocolLib.Driver
 {
     public interface IDriver
     {

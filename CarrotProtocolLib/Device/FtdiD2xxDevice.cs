@@ -1,5 +1,4 @@
-﻿using CarrotProtocolLib.Interface;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +8,7 @@ using System.Diagnostics;
 using FTD2XX_NET;
 using System.IO.Ports;
 using CarrotProtocolLib.Util;
+using CarrotProtocolLib.Driver;
 
 namespace CarrotProtocolLib.Device
 {

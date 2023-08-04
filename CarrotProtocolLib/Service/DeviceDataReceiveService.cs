@@ -1,4 +1,4 @@
-﻿using CarrotProtocolLib.Interface;
+﻿using CarrotProtocolLib.Device;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

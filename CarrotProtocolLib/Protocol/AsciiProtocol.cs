@@ -1,5 +1,6 @@
-﻿using CarrotProtocolLib.Impl;
-using CarrotProtocolLib.Interface;
+﻿using CarrotProtocolLib.Device;
+using CarrotProtocolLib.Impl;
+using CarrotProtocolLib.Logger;
 using CarrotProtocolLib.Util;
 using CommunityToolkit.Mvvm.ComponentModel;
 using System;
@@ -99,7 +100,7 @@ namespace CarrotProtocolLib.Protocol
 
         public void Send(byte[] bytes, int offset, int length)
         {
-            Device.Write(bytes);
+            Device.Write(bytes, offset, length);
             Logger.AddTx(new AsciiProtocolRecord(bytes, offset, length));
         }
 

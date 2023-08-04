@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using CarrotProtocolLib.Impl;
 using CarrotProtocolLib.Util;
 
-namespace CarrotProtocolLib.Interface
+namespace CarrotProtocolLib.Protocol
 {
     public interface IProtocolRecord
     {

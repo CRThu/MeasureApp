@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CarrotProtocolLib.Interface
+namespace CarrotProtocolLib.Service
 {
     /// <summary>
     /// 服务接口
