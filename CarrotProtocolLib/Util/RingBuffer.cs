@@ -29,6 +29,11 @@ namespace CarrotProtocolLib.Util
         public int TailIndex { get; set; }
 
         /// <summary>
+        /// 线程安全管理
+        /// </summary>
+        private object LockObject;
+
+        /// <summary>
         /// 缓冲区初始化
         /// </summary>
         /// <param name="bufferSize"></param>
@@ -38,6 +43,7 @@ namespace CarrotProtocolLib.Util
             HeadIndex = 0;
             TailIndex = 0;
             Buffer = new byte[bufferSize];
+            LockObject = new object();
         }
 
         /// <summary>
@@ -52,7 +58,10 @@ namespace CarrotProtocolLib.Util
             {
                 if (index >= Count)
                     throw new IndexOutOfRangeException("环形缓冲区索引溢出");
-                return Buffer[(HeadIndex + index) % Buffer.Length];
+                lock (LockObject)
+                {
+                    return Buffer[(HeadIndex + index) % Buffer.Length];
+                }
             }
         }
 
@@ -61,9 +70,12 @@ namespace CarrotProtocolLib.Util
         /// </summary>
         public void Clear()
         {
-            Count = 0;
-            HeadIndex = 0;
-            TailIndex = 0;
+            lock (LockObject)
+            {
+                Count = 0;
+                HeadIndex = 0;
+                TailIndex = 0;
+            }
         }
 
         /// <summary>
@@ -83,19 +95,22 @@ namespace CarrotProtocolLib.Util
             int bytesToWrite = count;
             int bytesCount = HeadIndex + count < Buffer.Length ? count : Buffer.Length - HeadIndex;
 
-            // 缓冲区写入
-            Array.Copy(buffer, offset, Buffer, HeadIndex, bytesCount);
-            HeadIndex += bytesCount;
-            Count += bytesCount;
-            bytesToWrite -= bytesCount;
-
-            // 跨缓冲区边界写入
-            if (bytesToWrite != 0)
+            lock (LockObject)
             {
-                HeadIndex = 0;
-                Array.Copy(buffer, offset + bytesCount, Buffer, HeadIndex, bytesToWrite);
-                HeadIndex += count;
-                Count += bytesToWrite;
+                // 缓冲区写入
+                Array.Copy(buffer, offset, Buffer, HeadIndex, bytesCount);
+                HeadIndex += bytesCount;
+                Count += bytesCount;
+                bytesToWrite -= bytesCount;
+
+                // 跨缓冲区边界写入
+                if (bytesToWrite != 0)
+                {
+                    HeadIndex = 0;
+                    Array.Copy(buffer, offset + bytesCount, Buffer, HeadIndex, bytesToWrite);
+                    HeadIndex += count;
+                    Count += bytesToWrite;
+                }
             }
         }
 
@@ -115,19 +130,22 @@ namespace CarrotProtocolLib.Util
             int bytesToRead = count;
             int bytesCount = TailIndex + count < Buffer.Length ? count : Buffer.Length - TailIndex;
 
-            // 缓冲区读取
-            Array.Copy(Buffer, TailIndex, buffer, offset, bytesCount);
-            TailIndex += bytesCount;
-            Count -= bytesCount;
-            bytesToRead -= bytesCount;
-
-            // 跨缓冲区边界读取
-            if (bytesToRead != 0)
+            lock (LockObject)
             {
-                TailIndex = 0;
-                Array.Copy(Buffer, TailIndex, buffer, offset + bytesCount, bytesToRead);
-                TailIndex += count;
-                Count -= bytesToRead;
+                // 缓冲区读取
+                Array.Copy(Buffer, TailIndex, buffer, offset, bytesCount);
+                TailIndex += bytesCount;
+                Count -= bytesCount;
+                bytesToRead -= bytesCount;
+
+                // 跨缓冲区边界读取
+                if (bytesToRead != 0)
+                {
+                    TailIndex = 0;
+                    Array.Copy(Buffer, TailIndex, buffer, offset + bytesCount, bytesToRead);
+                    TailIndex += count;
+                    Count -= bytesToRead;
+                }
             }
         }
 
