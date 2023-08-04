@@ -37,19 +37,30 @@ namespace CarrotProtocolLib.Device
         /// </summary>
         public bool IsOpen => Driver.IsOpen;
 
-        public SerialPortDevice(IDriver driver, int bufferSize)
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="driver"></param>
+        /// <param name="bufferSize"></param>
+        public SerialPortDevice(IDriver driver, int bufferSize = 1048576 * 16)
         {
             Driver = driver;
             //RxBuffer = new(1048576 * 16);
             RxBuffer = new(bufferSize);
         }
 
+        /// <summary>
+        /// 打开设备
+        /// </summary>
         public void Open()
         {
             Driver.Open();
             RxBuffer.Clear();
         }
 
+        /// <summary>
+        /// 关闭设备
+        /// </summary>
         public void Close()
         {
             Driver.Close();

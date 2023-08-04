@@ -14,52 +14,83 @@ namespace CarrotProtocolLib.Device
 {
     public partial class FtdiD2xxDevice : ObservableObject, IDevice
     {
-        private FTDI D2xx { get; set; }
+        public IDriver Driver { get; set; }
+        public RingBuffer RxBuffer { get; set; }
 
-        [ObservableProperty]
-        public int receivedByteCount;
-        [ObservableProperty]
-        public int sentByteCount;
+        /// <summary>
+        /// 缓冲区待接收的数据字节数
+        /// </summary>
+        public int RxByteToRead => RxBuffer.Count;
 
-        [ObservableProperty]
-        public bool isOpen;
+        /// <summary>
+        /// 接收数据字节数
+        /// </summary>
+        public int ReceivedByteCount => Driver.ReceivedByteCount;
 
-        public int RxByteToRead { get; set; }
+        /// <summary>
+        /// 发送数据字节数
+        /// </summary>
+        public int SentByteCount => Driver.SentByteCount;
 
-        public SerialPort Driver { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public RingBuffer RxBuffer { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        /// <summary>
+        /// 设备是否打开
+        /// </summary>
+        public bool IsOpen => Driver.IsOpen;
 
-        public FtdiD2xxDevice()
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="driver"></param>
+        /// <param name="bufferSize"></param>
+        public FtdiD2xxDevice(IDriver driver, int bufferSize = 1048576 * 16)
         {
-            ReceivedByteCount = 0;
-            SentByteCount = 0;
-            RxByteToRead = 0;
-            IsOpen = false;
+            Driver = driver;
+            //RxBuffer = new(1048576 * 16);
+            RxBuffer = new(bufferSize);
         }
 
+        /// <summary>
+        /// 打开设备
+        /// </summary>
         public void Open()
         {
-            IsOpen = true;
+            Driver.Open();
+            RxBuffer.Clear();
         }
 
+        /// <summary>
+        /// 关闭设备
+        /// </summary>
         public void Close()
         {
-            IsOpen = false;
+            Driver.Close();
         }
 
-        public void Write(byte[] bytes)
+        /// <summary>
+        /// 写入字节数组
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <param name="offset"></param>
+        /// <param name="count"></param>
+        public void Write(byte[] buffer, int offset, int count)
         {
-            SentByteCount += bytes.Length;
+            Driver.Write(buffer, offset, count);
         }
 
-        public void Read(byte[] responseBytes, int offset, int bytesExpected)
+        /// <summary>
+        /// 读取字节数组
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <param name="offset"></param>
+        /// <param name="bytesExpected"></param>
+        /// <returns>返回实际读取字节数</returns>
+        public int Read(byte[] buffer, int offset, int bytesExpected)
         {
-            throw new NotImplementedException();
+            if (bytesExpected > RxByteToRead)
+                bytesExpected = RxByteToRead;
+            RxBuffer.Read(buffer, offset, bytesExpected);
+            return bytesExpected;
         }
 
-
-        public void SetDevice(string serialNumber)
-        {
-        }
     }
 }
