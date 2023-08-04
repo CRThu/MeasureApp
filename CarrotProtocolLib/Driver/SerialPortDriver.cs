@@ -38,8 +38,7 @@ namespace CarrotProtocolLib.Driver
         /// </summary>
         public int SentByteCount { get; set; }
 
-        public delegate void ErrorReceivedHandler(Exception ex);
-        public event ErrorReceivedHandler? ErrorReceived;
+        public event IDriver.ErrorReceivedHandler? ErrorReceived;
 
         public static int[] SupportedBaudRate { get; } = { 9600, 38400, 115200, 460800, 921600, 1000000, 2000000, 4000000, 8000000, 12000000 };
         public static int[] SupportedDataBits { get; } = { 5, 6, 7, 8 };
@@ -66,7 +65,7 @@ namespace CarrotProtocolLib.Driver
         /// <param name="parity"></param>
         /// <param name="bufferSize"></param>
         /// <param name="timeout"></param>
-        public void SetDevice(string portName, int baudRate,
+        public void SetDriver(string portName, int baudRate,
             int dataBits, float stopBits, string parity,
             int bufferSize = 1048576, int timeout = 250)
         {

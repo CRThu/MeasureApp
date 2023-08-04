@@ -30,6 +30,7 @@ namespace CarrotProtocolLib.Interface
         /// </summary>
         public int SentByteCount { get; }
 
+        public delegate void ErrorReceivedHandler(Exception ex);
         public event ErrorReceivedHandler? ErrorReceived;
 
 
