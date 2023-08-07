@@ -11,6 +11,7 @@ using System.Collections;
 using System.Security.Cryptography;
 using CarrotProtocolLib.Driver;
 using CarrotProtocolLib.Service;
+using CarrotProtocolLib.Logger;
 
 namespace CarrotProtocolLib.Device
 {
@@ -20,6 +21,11 @@ namespace CarrotProtocolLib.Device
         /// 设备驱动层
         /// </summary>
         public IDriver? Driver { get; set; }
+
+        /// <summary>
+        /// 记录器
+        /// </summary>
+        public ILogger? Logger { get; set; }
 
         /// <summary>
         /// 数据接收服务

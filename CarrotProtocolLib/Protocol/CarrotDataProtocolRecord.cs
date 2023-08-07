@@ -9,6 +9,22 @@ using CarrotProtocolLib.Util;
 
 namespace CarrotProtocolLib.Impl
 {
+    /*
+    #define CARROT_DATA_PROTOCOL_GEN(len)                              \
+        typedef struct __PROTOCOL_PACKED__                             \
+        {                                                              \
+            uint8_t frame_start;                                       \
+            uint8_t protocol_id;                                       \
+            uint16_t control_flags;                                    \
+            uint8_t stream_id;                                         \
+            uint16_t payload_len;                                      \
+            uint8_t payload[len - CARROT_PROTOCOL_DATA_PKG_BYTES];     \
+            uint16_t crc16;                                            \
+            uint8_t frame_end;                                         \
+        }
+    carrot_data_protocol_##len;                                  \
+    */
+
     public class CarrotDataProtocolRecord : IProtocolRecord
     {
         /// <summary>
