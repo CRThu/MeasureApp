@@ -15,17 +15,17 @@ namespace CarrotProtocolLib.Device
         /// <summary>
         /// 设备驱动层
         /// </summary>
-        public IDriver Driver { get; }
+        public IDriver? Driver { get; }
 
         /// <summary>
         /// 数据接收服务
         /// </summary>
-        public IService DataReceiveService { get; }
+        public DeviceDataReceiveService? DataReceiveService { get; }
 
         /// <summary>
         /// 协议解码服务
         /// </summary>
-        public IService ProtocolDecodeService { get; }
+        public IService? ProtocolDecodeService { get; }
 
         /// <summary>
         /// 缓冲区

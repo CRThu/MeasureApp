@@ -19,17 +19,17 @@ namespace CarrotProtocolLib.Device
         /// <summary>
         /// 设备驱动层
         /// </summary>
-        public IDriver Driver { get; set; }
+        public IDriver? Driver { get; set; }
 
         /// <summary>
         /// 数据接收服务
         /// </summary>
-        public IService DataReceiveService { get; set; }
+        public DeviceDataReceiveService? DataReceiveService { get; set; }
 
         /// <summary>
         /// 协议解码服务
         /// </summary>
-        public IService ProtocolDecodeService { get; set; }
+        public IService? ProtocolDecodeService { get; set; }
 
         /// <summary>
         /// 缓冲区
@@ -44,27 +44,24 @@ namespace CarrotProtocolLib.Device
         /// <summary>
         /// 接收数据字节数
         /// </summary>
-        public int ReceivedByteCount => Driver.ReceivedByteCount;
+        public int ReceivedByteCount => Driver!.ReceivedByteCount;
         /// <summary>
         /// 发送数据字节数
         /// </summary>
-        public int SentByteCount => Driver.SentByteCount;
+        public int SentByteCount => Driver!.SentByteCount;
 
         /// <summary>
         /// 设备是否打开
         /// </summary>
-        public bool IsOpen => Driver.IsOpen;
+        public bool IsOpen => Driver!.IsOpen;
 
         /// <summary>
         /// 构造函数
         /// </summary>
         /// <param name="driver"></param>
         /// <param name="bufferSize"></param>
-        public SerialPortDevice(IDriver driver, IService dataReceiveService, IService protocolDecodeService, int bufferSize = 1048576 * 16)
+        public SerialPortDevice(int bufferSize = 1048576 * 16)
         {
-            Driver = driver;
-            DataReceiveService = dataReceiveService;
-            ProtocolDecodeService = protocolDecodeService;
             //RxBuffer = new(1048576 * 16);
             RxBuffer = new(bufferSize);
         }
