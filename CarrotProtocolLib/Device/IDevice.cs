@@ -1,4 +1,5 @@
 ﻿using CarrotProtocolLib.Driver;
+using CarrotProtocolLib.Service;
 using CarrotProtocolLib.Util;
 using System;
 using System.Collections.Generic;
@@ -11,8 +12,24 @@ namespace CarrotProtocolLib.Device
 {
     public interface IDevice
     {
-        public IDriver Driver { get; set; }
+        /// <summary>
+        /// 设备驱动层
+        /// </summary>
+        public IDriver Driver { get; }
 
+        /// <summary>
+        /// 数据接收服务
+        /// </summary>
+        public IService DataReceiveService { get; }
+
+        /// <summary>
+        /// 协议解码服务
+        /// </summary>
+        public IService ProtocolDecodeService { get; }
+
+        /// <summary>
+        /// 缓冲区
+        /// </summary>
         public RingBuffer RxBuffer { get; set; }
 
         /// <summary>

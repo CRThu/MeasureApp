@@ -10,12 +10,30 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections;
 using System.Security.Cryptography;
 using CarrotProtocolLib.Driver;
+using CarrotProtocolLib.Service;
 
 namespace CarrotProtocolLib.Device
 {
     public partial class SerialPortDevice : ObservableObject, IDevice
     {
+        /// <summary>
+        /// 设备驱动层
+        /// </summary>
         public IDriver Driver { get; set; }
+
+        /// <summary>
+        /// 数据接收服务
+        /// </summary>
+        public IService DataReceiveService { get; set; }
+
+        /// <summary>
+        /// 协议解码服务
+        /// </summary>
+        public IService ProtocolDecodeService { get; set; }
+
+        /// <summary>
+        /// 缓冲区
+        /// </summary>
         public RingBuffer RxBuffer { get; set; }
 
         /// <summary>
@@ -42,9 +60,11 @@ namespace CarrotProtocolLib.Device
         /// </summary>
         /// <param name="driver"></param>
         /// <param name="bufferSize"></param>
-        public SerialPortDevice(IDriver driver, int bufferSize = 1048576 * 16)
+        public SerialPortDevice(IDriver driver, IService dataReceiveService, IService protocolDecodeService, int bufferSize = 1048576 * 16)
         {
             Driver = driver;
+            DataReceiveService = dataReceiveService;
+            ProtocolDecodeService = protocolDecodeService;
             //RxBuffer = new(1048576 * 16);
             RxBuffer = new(bufferSize);
         }
