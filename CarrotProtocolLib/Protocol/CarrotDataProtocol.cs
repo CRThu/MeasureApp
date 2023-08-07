@@ -7,61 +7,30 @@ using System.Threading.Tasks;
 using CarrotProtocolLib.Device;
 using CarrotProtocolLib.Logger;
 using CarrotProtocolLib.Protocol;
+using CarrotProtocolLib.Service;
 
 namespace CarrotProtocolLib.Impl
 {
-    /*
-    #define CARROT_DATA_PROTOCOL_GEN(len)                              \
-        typedef struct __PROTOCOL_PACKED__                             \
-        {                                                              \
-            uint8_t frame_start;                                       \
-            uint8_t protocol_id;                                       \
-            uint16_t control_flags;                                    \
-            uint8_t stream_id;                                         \
-            uint16_t payload_len;                                      \
-            uint8_t payload[len - CARROT_PROTOCOL_DATA_PKG_BYTES];     \
-            uint16_t crc16;                                            \
-            uint8_t frame_end;                                         \
-        }
-    carrot_data_protocol_##len;                                  \
-    */
 
-    public class CarrotDataProtocol : IProtocol
+    public class CarrotDataProtocol
     {
-        public IDevice Device { get; set; }
-        public ILogger Logger { get; set; }
-
-
-        //public delegate void ProtocolParseErrorHandler(Exception ex);
-        //public event ProtocolParseErrorHandler ProtocolParseError;
-        public event IProtocol.ProtocolParseErrorHandler ProtocolParseError;
-
-        public CarrotDataProtocol(IDevice device, ILogger logger)
+        public CarrotDataProtocol()
         {
-            Device = device;
-            Logger = logger;
         }
 
-        public CarrotDataProtocol(IDevice device, ILogger logger, IProtocol.ProtocolParseErrorHandler protocolParseErrorHandler) : this(device, logger)
+        public static IService GetDecodeService()
         {
-            ProtocolParseError += protocolParseErrorHandler;
+            return new CarrotDataProtocolDecodeService();
         }
 
-        public void Send(IProtocolRecord protocol)
+        public static CarrotDataProtocolRecord Create(int protocolId, int streamId, string payload)
         {
-            Send(protocol.Bytes);
+            return new CarrotDataProtocolRecord(protocolId, streamId, payload);
         }
 
-        public void Send(byte[] bytes)
+        public static CarrotDataProtocolRecord Create(byte[] bytes, int offset, int length)
         {
-            Send(bytes, 0, bytes.Length);
+            return new CarrotDataProtocolRecord(bytes, offset, length);
         }
-
-        public void Send(byte[] bytes, int offset, int length)
-        {
-            Device.Write(bytes, offset, length);
-            Logger.AddTx(new CarrotDataProtocolRecord(bytes, offset, length));
-        }
-
     }
 }

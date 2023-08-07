@@ -101,7 +101,7 @@ namespace CarrotProtocolLib.Service
                         if (index >= 0)
                         {
                             Array.Copy(DecodeBuffer, DecodeBufferStartCursor, FrameBuffer, 0, index + 1 - DecodeBufferStartCursor);
-                            Logger!.AddRx(new AsciiProtocolRecord(FrameBuffer, 0, index + 1 - DecodeBufferStartCursor));
+                            Logger!.AddRx(new RawAsciiProtocolRecord(FrameBuffer, 0, index + 1 - DecodeBufferStartCursor));
                             DecodeBufferStartCursor = index + 1;
                             findFrameEndByteCursor = index + 1;
                         }

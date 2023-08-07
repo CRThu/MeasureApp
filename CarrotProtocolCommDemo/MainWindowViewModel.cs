@@ -81,7 +81,7 @@ namespace CarrotProtocolCommDemo
         private string stdOut = "";
 
         [ObservableProperty]
-        private AsciiProtocolRecord asciiProtocolRecord = new AsciiProtocolRecord("");
+        private RawAsciiProtocolRecord asciiProtocolRecord = new RawAsciiProtocolRecord("");
 
         [ObservableProperty]
         private string asciiProtocolPayloadString = "";

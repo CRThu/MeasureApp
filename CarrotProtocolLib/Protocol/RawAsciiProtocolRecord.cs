@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CarrotProtocolLib.Protocol
 {
-    public partial class AsciiProtocolRecord : ObservableObject, IProtocolRecord
+    public partial class RawAsciiProtocolRecord : ObservableObject, IProtocolRecord
     {
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(PayloadDisplay))]
@@ -39,12 +39,12 @@ namespace CarrotProtocolLib.Protocol
             }
         }
 
-        public AsciiProtocolRecord(string payload)
+        public RawAsciiProtocolRecord(string payload)
         {
             Bytes = BytesEx.AsciiToBytes(payload);
         }
 
-        public AsciiProtocolRecord(byte[] bytes, int offset, int length)
+        public RawAsciiProtocolRecord(byte[] bytes, int offset, int length)
         {
             byte[] bytesNew = new byte[length];
             Array.Copy(bytes, offset, bytesNew, 0, length);
