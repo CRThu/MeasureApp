@@ -28,7 +28,7 @@ namespace CarrotProtocolLib.Device
         /// <summary>
         /// 协议解码服务
         /// </summary>
-        public IService? ProtocolDecodeService { get; set; }
+        public ProtocolDecodeBaseService? ProtocolDecodeService { get; set; }
 
         /// <summary>
         /// 缓冲区

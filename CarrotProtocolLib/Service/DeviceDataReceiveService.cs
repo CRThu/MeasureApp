@@ -37,7 +37,7 @@ namespace CarrotProtocolLib.Service
         /// <exception cref="InvalidOperationException"></exception>
         public override int ServiceLoop()
         {
-            while (Device.Driver.IsOpen)
+            while (Device!.Driver!.IsOpen)
             {
                 if (IsCancellationRequested)
                     return 1;
