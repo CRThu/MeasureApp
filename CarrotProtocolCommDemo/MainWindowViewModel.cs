@@ -232,7 +232,7 @@ namespace CarrotProtocolCommDemo
         [RelayCommand]
         private void AsciiProtocolPayloadChanged()
         {
-            //asciiProtocolRecord = new AsciiProtocolRecord(AsciiProtocolPayloadString);
+            //asciiProtocolRecord = new RawAsciiProtocolRecord(AsciiProtocolPayloadString);
             //AsciiProtocolFrameBytes = asciiProtocolRecord.Bytes;
         }
 

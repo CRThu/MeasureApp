@@ -186,6 +186,8 @@ namespace CarrotProtocolLib.Service
                                     throw new NotImplementedException();
 
                                 Logger!.AddRx(new CarrotDataProtocolRecord(DecodeBuffer, 0, frameLength));
+
+                                DecodeBufferCursor = 0;
                             }
                             else
                             {
