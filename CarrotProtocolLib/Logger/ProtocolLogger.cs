@@ -59,7 +59,7 @@ namespace CarrotProtocolLib.Logger
                 Time = DateTime.Now
             };
             ProtocolList.Add(protocolLog);
-            LoggerUpdate.Invoke(protocolLog, LoggerUpdateEvent.AddEvent);
+            LoggerUpdate?.Invoke(protocolLog, LoggerUpdateEvent.AddEvent);
         }
 
         public void AddTx(IProtocolRecord protocol)
@@ -71,7 +71,7 @@ namespace CarrotProtocolLib.Logger
                 Time = DateTime.Now
             };
             ProtocolList.Add(protocolLog);
-            LoggerUpdate.Invoke(protocolLog, LoggerUpdateEvent.AddEvent);
+            LoggerUpdate?.Invoke(protocolLog, LoggerUpdateEvent.AddEvent);
         }
     }
 }

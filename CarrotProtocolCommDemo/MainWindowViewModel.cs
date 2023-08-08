@@ -44,20 +44,25 @@ namespace CarrotProtocolCommDemo
         [ObservableProperty]
         private string selectedProtocolName;
 
-        [ObservableProperty]
-        private int[] carrotProtocols;
+        public int[] SerialPortBaudRate => SerialPortDriver.SupportedBaudRate;
 
         [ObservableProperty]
-        private int selectedCarrotProtocol;
+        private int selectedSerialPortBaudRate;
 
         [ObservableProperty]
-        private int[] carrotProtocolStreamIds;
+        private int[] carrotDataProtocolIds;
 
         [ObservableProperty]
-        private int selectedCarrotProtocolStreamId;
+        private int selectedCarrotDataProtocolId;
 
         [ObservableProperty]
-        private string payloadString = "";
+        private int[] carrotDataProtocolStreamIds;
+
+        [ObservableProperty]
+        private int selectedCarrotDataProtocolStreamId;
+
+        [ObservableProperty]
+        private string carrotDataProtocolPayloadString = "";
 
 
         [ObservableProperty]
@@ -85,15 +90,16 @@ namespace CarrotProtocolCommDemo
 
         public MainWindowViewModel()
         {
-            drivers = new string[] { "SerialPort", "FTDI_D2xx" };
+            drivers = new string[] { "SerialPort", "FTDI_D2XX" };
             SelectedDriver = "SerialPort";
             DevicesInfoUpdate();
             ProtocolNames = new string[] { "CarrotDataProtocol", "RawAsciiProtocol" };
             SelectedProtocolName = "CarrotDataProtocol";
-            CarrotProtocols = new int[] { 0x30, 0x31, 0x32, 0x33 };
-            SelectedCarrotProtocol = CarrotProtocols.FirstOrDefault();
-            CarrotProtocolStreamIds = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-            SelectedCarrotProtocolStreamId = CarrotProtocolStreamIds.FirstOrDefault();
+            selectedSerialPortBaudRate = SerialPortBaudRate.FirstOrDefault();
+            CarrotDataProtocolIds = new int[] { 0x30, 0x31, 0x32, 0x33 };
+            SelectedCarrotDataProtocolId = CarrotDataProtocolIds.FirstOrDefault();
+            CarrotDataProtocolStreamIds = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+            SelectedCarrotDataProtocolStreamId = CarrotDataProtocolStreamIds.FirstOrDefault();
             //InputCode = GenHexPkt();
         }
 
@@ -118,19 +124,56 @@ namespace CarrotProtocolCommDemo
         {
             try
             {
-                Device = DeviceFactory.Create(
-                    nameof(GeneralBufferedDevice),
-                    nameof(SerialPortDriver),
-                    nameof(ProtocolLogger),
-                    nameof(DeviceDataReceiveService),
-                    nameof(CarrotDataProtocolDecodeService));
-                Device.Open();
-                //MessageBox.Show("Open");
-                if (Device.IsOpen)
+                if (IsOpen)
                 {
+                    // Close
+                    Debug.WriteLine("Close");
+                    Device.Close();
+                    IsOpen = false;
                 }
                 else
                 {
+                    // Open
+                    Debug.WriteLine("Open");
+
+                    string driverName = SelectedDriver switch
+                    {
+                        "SerialPort" => nameof(SerialPortDriver),
+                        "FTDI_D2XX" => nameof(SerialPortDriver),
+                        _ => throw new NotImplementedException()
+                    };
+                    string decodeServiceName = SelectedProtocolName switch
+                    {
+                        "CarrotDataProtocol" => nameof(CarrotDataProtocolDecodeService),
+                        "RawAsciiProtocol" => nameof(RawAsciiProtocolDecodeService),
+                        _ => throw new NotImplementedException()
+                    };
+
+                    if(Device is not null)
+                    {
+                        Device.Logger.LoggerUpdate -= Logger_LoggerUpdate;
+                    }
+                    Device = DeviceFactory.Create(
+                        nameof(GeneralBufferedDevice),
+                        driverName, //nameof(SerialPortDriver),
+                        nameof(ProtocolLogger),
+                        nameof(DeviceDataReceiveService),
+                        decodeServiceName); // nameof(CarrotDataProtocolDecodeService));
+                    Device.Logger.LoggerUpdate += Logger_LoggerUpdate;
+
+                    if (Device.Driver is SerialPortDriver)
+                    {
+                        (Device.Driver as SerialPortDriver)!.SetDriver(SelectedDeviceInfo.Name, SelectedSerialPortBaudRate, 8, 1, "None");
+                    }
+                    else if (Device.Driver is FtdiD2xxDriver)
+                    {
+                        (Device.Driver as FtdiD2xxDriver)!.SetDriver(SelectedDeviceInfo.Name);
+                    }
+                    else
+                        throw new NotImplementedException($"Cannot SetDriver, Class = {Device.Driver.GetType()}");
+
+                    Device.Open();
+                    IsOpen = true;
                 }
             }
             catch (Exception ex)
@@ -161,7 +204,7 @@ namespace CarrotProtocolCommDemo
         {
             try
             {
-                CarrotDataProtocolRecord carrotDataProtocol = new(SelectedCarrotProtocol, SelectedCarrotProtocolStreamId, PayloadString);
+                CarrotDataProtocolRecord carrotDataProtocol = new(SelectedCarrotDataProtocolId, SelectedCarrotDataProtocolStreamId, CarrotDataProtocolPayloadString);
                 byte[] bytes = carrotDataProtocol.ToBytes();
                 InputCode = BytesEx.BytesToHexString(bytes);
             }

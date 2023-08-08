@@ -87,9 +87,9 @@ namespace CarrotProtocolLib.Device
         /// </summary>
         public void Close()
         {
-            Driver.Close();
             DataReceiveService.Stop();
             ProtocolDecodeService.Stop();
+            Driver.Close();
         }
 
         /// <summary>
