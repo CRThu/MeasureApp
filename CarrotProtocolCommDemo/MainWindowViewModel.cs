@@ -14,43 +14,29 @@ using CarrotProtocolLib.Impl;
 using CarrotProtocolLib.Logger;
 using CarrotProtocolLib.Device;
 using CarrotProtocolLib.Protocol;
+using CarrotProtocolLib.Driver;
+using CarrotProtocolLib.Service;
 
 namespace CarrotProtocolCommDemo
 {
     public partial class MainWindowViewModel : ObservableObject
     {
-        private IDevice device;
-        public IDevice Device
-        {
-            get
-            {
-                return device;
-            }
-            set
-            {
-                if (device is not null)
-                    device.DevicePropertyChanged -= View_Update;
-                device = value;
-                if (device is not null)
-                    device.DevicePropertyChanged += View_Update;
-            }
-        }
+        public IDevice Device { get; set; }
 
         public ILogger Logger { get; set; }
-        public IProtocol Protocol { get; set; }
 
 
         [ObservableProperty]
-        private InterfaceType[] interfaces;
+        private string[] drivers;
 
         [ObservableProperty]
-        private InterfaceType selectedInterface;
+        private string selectedDriver;
 
         [ObservableProperty]
-        private DeviceInfo[] devices;
+        private DeviceInfo[] devicesInfo;
 
         [ObservableProperty]
-        private DeviceInfo selectedDevice;
+        private DeviceInfo selectedDeviceInfo;
 
         [ObservableProperty]
         private string[] protocolNames;
@@ -99,41 +85,32 @@ namespace CarrotProtocolCommDemo
 
         public MainWindowViewModel()
         {
-            Interfaces = new InterfaceType[] { InterfaceType.SerialPort, InterfaceType.FTDI_D2XX };
-            SelectedInterface = InterfaceType.SerialPort;
-            InterfaceChanged();
-            ProtocolNames = new string[] { "CarrotDataProtocol", "AsciiProtocol", "UartBinaryProtocol" };
+            drivers = new string[] { "SerialPort", "FTDI_D2xx" };
+            SelectedDriver = "SerialPort";
+            DevicesInfoUpdate();
+            ProtocolNames = new string[] { "CarrotDataProtocol", "RawAsciiProtocol" };
             SelectedProtocolName = "CarrotDataProtocol";
             CarrotProtocols = new int[] { 0x30, 0x31, 0x32, 0x33 };
             SelectedCarrotProtocol = CarrotProtocols.FirstOrDefault();
             CarrotProtocolStreamIds = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
             SelectedCarrotProtocolStreamId = CarrotProtocolStreamIds.FirstOrDefault();
-
-            Device = EmptyDevice.EmptyDeviceInstance;
-            // Device = new SerialPortDevice();
             //InputCode = GenHexPkt();
         }
 
         [RelayCommand]
-        private void InterfaceChanged()
+        private void DevicesInfoUpdate()
         {
-            switch (SelectedInterface)
+            // Interface
+            switch (SelectedDriver)
             {
-                case InterfaceType.SerialPort:
-                    Devices = SerialPortDevice.GetDevicesInfo();
+                case "SerialPort":
+                    DevicesInfo = SerialPortDriver.GetDevicesInfo();
                     break;
-                case InterfaceType.FTDI_D2XX:
-                    Devices = FtdiD2xxDevice.GetDevicesInfo();
+                case "FTDI_D2XX":
+                    DevicesInfo = FtdiD2xxDriver.GetDevicesInfo();
                     break;
             }
-            SelectedDevice = Devices.FirstOrDefault();
-
-            //Device ??= SelectedInterface switch
-            //{
-            //    InterfaceType.SerialPort => new SerialPortDevice(),
-            //    InterfaceType.FTDI_D2XX => throw new NotImplementedException(),
-            //    _ => throw new NotImplementedException(),
-            //};
+            SelectedDeviceInfo = DevicesInfo.FirstOrDefault();
         }
 
         [RelayCommand]
@@ -141,44 +118,19 @@ namespace CarrotProtocolCommDemo
         {
             try
             {
+                Device = DeviceFactory.Create(
+                    nameof(GeneralBufferedDevice),
+                    nameof(SerialPortDriver),
+                    nameof(ProtocolLogger),
+                    nameof(DeviceDataReceiveService),
+                    nameof(CarrotDataProtocolDecodeService));
+                Device.Open();
                 //MessageBox.Show("Open");
                 if (Device.IsOpen)
                 {
-                    // 若设备开启则关闭
-                    Protocol.Stop();
                 }
                 else
                 {
-                    // 若设备关闭或为空则新建实例
-                    Device = SelectedInterface switch
-                    {
-                        InterfaceType.SerialPort => new SerialPortDevice(),
-                        InterfaceType.FTDI_D2XX => new FtdiD2xxDevice(),
-                        _ => throw new NotImplementedException(),
-                    };
-
-                    // 硬件配置
-                    switch (SelectedInterface)
-                    {
-                        case InterfaceType.SerialPort:
-                            ((SerialPortDevice)Device).SetDevice(SelectedDevice.Name, 115200, 8, 1, "None");
-                            break;
-                        case InterfaceType.FTDI_D2XX:
-                            ((FtdiD2xxDevice)Device).SetDevice(SelectedDevice.Name);
-                            break;
-                    }
-
-                    // 记录器配置
-                    Logger = new ProtocolLogger(Logger_LoggerUpdate);
-
-                    // 解析协议配置
-                    Protocol = SelectedProtocolName switch
-                    {
-                        "CarrotDataProtocol" => new CarrotDataProtocol(Device, Logger, ProtocolParseErrorCallback),
-                        "AsciiProtocol" => new AsciiProtocol(Device, Logger, ProtocolParseErrorCallback),
-                        _ => throw new NotImplementedException(),
-                    };
-                    Protocol.Start();
                 }
             }
             catch (Exception ex)
@@ -187,28 +139,10 @@ namespace CarrotProtocolCommDemo
             }
         }
 
-        private void View_Update(string name, dynamic value)
-        {
-            switch (name)
-            {
-                case "IsOpen":
-                    IsOpen = value;
-                    break;
-                case "ReceivedByteCount":
-                    ReceivedByteCount = value;
-                    break;
-                case "SentByteCount":
-                    SentByteCount = value;
-                    break;
-                default:
-                    break;
-            }
-        }
-
         private void ProtocolParseErrorCallback(Exception ex)
         {
             MessageBox.Show(ex.ToString());
-            Protocol.Stop();
+            Device.Close();
         }
 
         private void Logger_LoggerUpdate(ILoggerRecord log, LoggerUpdateEvent e)
@@ -243,7 +177,8 @@ namespace CarrotProtocolCommDemo
             try
             {
                 //MessageBox.Show("Send");
-                Protocol.Send(BytesEx.HexStringToBytes(InputCode));
+                byte[] b = BytesEx.HexStringToBytes(InputCode);
+                Device.Write(b, 0, b.Length);
             }
             catch (Exception ex)
             {
@@ -267,9 +202,9 @@ namespace CarrotProtocolCommDemo
                 byte[] testarr = AsciiString.AsciiString2Bytes(teststr);
                 string test = $"{BytesEx.BytesToHexString(AsciiString.AsciiString2Bytes(teststr))}\n" +
                     $"{AsciiString.Bytes2AsciiString(testarr)}";
-                MessageBox.Show(test);
+                //MessageBox.Show(test);
                 //MessageBox.Show("Send");
-                Protocol.Send(asciiProtocolRecord.Bytes);
+                Device.Write(asciiProtocolRecord.Bytes, 0, asciiProtocolRecord.Bytes.Length);
             }
             catch (Exception ex)
             {

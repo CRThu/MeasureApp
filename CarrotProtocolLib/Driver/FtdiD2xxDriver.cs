@@ -214,12 +214,13 @@ namespace CarrotProtocolLib.Driver
             return totalBytesRead;
         }
 
-        public DeviceInfo[] GetDevicesInfo()
+        public static DeviceInfo[] GetDevicesInfo()
         {
             UInt32 ftdiDeviceCount = 0;
 
             // Create new instance of the FTDI device class
-            // FTDI ftdiDevice = new FTDI();
+            FTDI FtdiDevice = new FTDI();
+            FTDI.FT_STATUS FtStatus = FT_STATUS.FT_OK;
             Debug.WriteLine(FtdiDevice.GetType().Assembly.Location);
 
             // Determine the number of FTDI devices connected to the machine

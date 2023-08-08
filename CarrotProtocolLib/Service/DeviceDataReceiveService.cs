@@ -16,7 +16,7 @@ namespace CarrotProtocolLib.Service
         /// <summary>
         /// 操作设备接口
         /// </summary>
-        private IDevice? Device { get; set; }
+        public IDevice? Device { get; set; }
 
         /// <summary>
         /// 接收缓冲区(内部使用)

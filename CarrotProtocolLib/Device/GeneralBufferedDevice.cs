@@ -78,6 +78,8 @@ namespace CarrotProtocolLib.Device
         {
             Driver.Open();
             RxBuffer.Clear();
+            DataReceiveService.Start();
+            ProtocolDecodeService.Start();
         }
 
         /// <summary>
@@ -86,6 +88,8 @@ namespace CarrotProtocolLib.Device
         public void Close()
         {
             Driver.Close();
+            DataReceiveService.Stop();
+            ProtocolDecodeService.Stop();
         }
 
         /// <summary>

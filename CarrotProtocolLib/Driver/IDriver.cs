@@ -61,6 +61,6 @@ namespace CarrotProtocolLib.Driver
         /// 获取设备列表
         /// </summary>
         /// <returns></returns>
-        public DeviceInfo[] GetDevicesInfo();
+        public static abstract DeviceInfo[] GetDevicesInfo();
     }
 }

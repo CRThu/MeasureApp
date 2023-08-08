@@ -176,7 +176,7 @@ namespace CarrotProtocolLib.Driver
         /// 获取设备列表
         /// </summary>
         /// <returns></returns>
-        public DeviceInfo[] GetDevicesInfo()
+        public static DeviceInfo[] GetDevicesInfo()
         {
             return SerialPort.GetPortNames().Select(d => new DeviceInfo("System.IO.Ports.SerialPort", d, "串口设备")).ToArray();
         }

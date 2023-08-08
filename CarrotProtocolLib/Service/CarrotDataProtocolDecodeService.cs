@@ -14,15 +14,6 @@ namespace CarrotProtocolLib.Service
     /// </summary>
     public class CarrotDataProtocolDecodeService : ProtocolDecodeBaseService
     {
-        /// <summary>
-        /// 操作设备接口
-        /// </summary>
-        private IDevice? Device { get; set; }
-
-        /// <summary>
-        /// 数据帧存储接口
-        /// </summary>
-        private ILogger? Logger { get; set; }
 
         /// <summary>
         /// 解码缓冲区(内部使用)
