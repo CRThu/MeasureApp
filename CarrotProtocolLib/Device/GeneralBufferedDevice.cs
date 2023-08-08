@@ -1,21 +1,20 @@
-﻿using CarrotProtocolLib.Util;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using CommunityToolkit.Mvvm.ComponentModel;
-using System.Collections;
-using System.Security.Cryptography;
+using System.Diagnostics;
+using FTD2XX_NET;
+using System.IO.Ports;
+using CarrotProtocolLib.Util;
 using CarrotProtocolLib.Driver;
 using CarrotProtocolLib.Service;
 using CarrotProtocolLib.Logger;
 
 namespace CarrotProtocolLib.Device
 {
-    public partial class SerialPortDevice : ObservableObject, IDevice
+    public partial class GeneralBufferedDevice : ObservableObject, IDevice
     {
         /// <summary>
         /// 设备驱动层
@@ -51,6 +50,7 @@ namespace CarrotProtocolLib.Device
         /// 接收数据字节数
         /// </summary>
         public int ReceivedByteCount => Driver!.ReceivedByteCount;
+
         /// <summary>
         /// 发送数据字节数
         /// </summary>
@@ -64,9 +64,8 @@ namespace CarrotProtocolLib.Device
         /// <summary>
         /// 构造函数
         /// </summary>
-        /// <param name="driver"></param>
         /// <param name="bufferSize"></param>
-        public SerialPortDevice(int bufferSize = 1048576 * 16)
+        public GeneralBufferedDevice(int bufferSize = 1048576 * 16)
         {
             //RxBuffer = new(1048576 * 16);
             RxBuffer = new(bufferSize);
@@ -114,5 +113,6 @@ namespace CarrotProtocolLib.Device
             RxBuffer.Read(buffer, offset, bytesExpected);
             return bytesExpected;
         }
+
     }
 }
