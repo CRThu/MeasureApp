@@ -199,7 +199,6 @@ namespace CarrotProtocolCommDemo
             }
         }
 
-
         [RelayCommand]
         private void PacketParamsChanged()
         {
