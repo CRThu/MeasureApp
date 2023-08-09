@@ -16,6 +16,7 @@ using CarrotProtocolLib.Device;
 using CarrotProtocolLib.Protocol;
 using CarrotProtocolLib.Driver;
 using CarrotProtocolLib.Service;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace CarrotProtocolCommDemo
 {
@@ -72,7 +73,7 @@ namespace CarrotProtocolCommDemo
         private string stdOut = "";
 
         [ObservableProperty]
-        private RawAsciiProtocolRecord asciiProtocolRecord = new RawAsciiProtocolRecord("");
+        private EscapeString escapeString = new EscapeString(@"12345\01\02\\\03abc\\\");
 
         [ObservableProperty]
         private string asciiProtocolPayloadString = "";
@@ -149,7 +150,7 @@ namespace CarrotProtocolCommDemo
                         _ => throw new NotImplementedException()
                     };
 
-                    if(Device is not null)
+                    if (Device is not null)
                     {
                         Device.Logger.LoggerUpdate -= Logger_LoggerUpdate;
                     }
@@ -241,13 +242,9 @@ namespace CarrotProtocolCommDemo
         {
             try
             {
-                string teststr = @"12345\01\02\\\03abc\\\";
-                byte[] testarr = AsciiString.AsciiString2Bytes(teststr);
-                string test = $"{BytesEx.BytesToHexString(AsciiString.AsciiString2Bytes(teststr))}\n" +
-                    $"{AsciiString.Bytes2AsciiString(testarr)}";
-                //MessageBox.Show(test);
-                //MessageBox.Show("Send");
-                Device.Write(asciiProtocolRecord.Bytes, 0, asciiProtocolRecord.Bytes.Length);
+                RawAsciiProtocolRecord rec = new(EscapeString.TextString);
+                Debug.WriteLine($"RawAsciiProtocolRecord: {rec.Bytes.BytesToHexString()}");
+                Device.Write(rec.Bytes, 0, rec.Bytes.Length);
             }
             catch (Exception ex)
             {

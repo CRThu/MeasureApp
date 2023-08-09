@@ -6,16 +6,9 @@ using System.Threading.Tasks;
 
 namespace CarrotProtocolLib.Util
 {
-    public static class AsciiString
+    public static class EscapeStringEx
     {
-        //public StringBuilder BaseString { get; set; } = new();
-
-        //public AsciiString(byte[] bytes)
-        //{
-
-        //}
-
-        public static string Bytes2AsciiString(byte[] bytes)
+        public static string BytesToAsciiString(this byte[] bytes)
         {
             StringBuilder stringBuilder = new();
             for (int i = 0; i < bytes.Length; i++)
@@ -36,7 +29,7 @@ namespace CarrotProtocolLib.Util
             return stringBuilder.ToString();
         }
 
-        public static byte[] AsciiString2Bytes(string asciiString)
+        public static byte[] AsciiStringToBytes(this string asciiString)
         {
             int index = 0;
             List<byte> asciiChars = new();

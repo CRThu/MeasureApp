@@ -14,12 +14,12 @@ namespace CarrotProtocolLib.Util
         /// <summary>
         /// Convert a string of hex digits (ex: E4 CA B2) to a byte array.
         /// <code>
-        /// BytesEx.HexStringToBytes("1234567890") = new byte[] { 0x12, 0x34, 0x56, 0x78, 0x90}
+        /// BytesEx.HexStringToBytes("12 34 56 78 90") = new byte[] { 0x12, 0x34, 0x56, 0x78, 0x90}
         /// </code>
         /// </summary>
         /// <param name="s"> The string containing the hex digits (with or without spaces). </param>
         /// <returns> Returns an array of bytes. </returns>
-        public static byte[] HexStringToBytes(string s)
+        public static byte[] HexStringToBytes(this string s)
         {
             s = s.Replace(" ", "");
             byte[] buffer = new byte[(int)Math.Ceiling(s.Length / 2.0)];
@@ -48,7 +48,7 @@ namespace CarrotProtocolLib.Util
         /// </summary>
         /// <param name="data"> The array of bytes to be translated into a string of hex digits. </param>
         /// <returns> Returns a well formatted string of hex digits with spacing. </returns>
-        public static string BytesToHexString(byte[] data)
+        public static string BytesToHexString(this byte[] data)
         {
             return BitConverter.ToString(data).Replace("-", " ");
         }
@@ -61,7 +61,7 @@ namespace CarrotProtocolLib.Util
         /// </summary>
         /// <param name="arrInput">byte型数组</param>
         /// <returns>目标字符串</returns>
-        public static string BytesToAscii(byte[] arrInput)
+        public static string BytesToAscii(this byte[] arrInput)
         {
             return Encoding.ASCII.GetString(arrInput);
         }
@@ -74,7 +74,7 @@ namespace CarrotProtocolLib.Util
         /// </summary>
         /// <param name="asciis"></param>
         /// <returns></returns>
-        public static byte[] AsciiToBytes(string asciis)
+        public static byte[] AsciiToBytes(this string asciis)
         {
             return Encoding.ASCII.GetBytes(asciis);
         }
@@ -84,7 +84,7 @@ namespace CarrotProtocolLib.Util
         /// </summary>
         /// <param name="hexstring">一条十六进制字符串</param>
         /// <returns>返回一条ASCII码</returns>
-        public static string HexStringToASCII(string hexstring)
+        public static string HexStringToASCII(this string hexstring)
         {
             byte[] bt = HexStringToBinary(hexstring);
             string lin = "";
@@ -112,7 +112,7 @@ namespace CarrotProtocolLib.Util
         /// </summary>
         /// <param name="hexstring">用空格切割字符串</param>
         /// <returns>返回一个二进制字符串</returns>
-        public static byte[] HexStringToBinary(string hexstring)
+        public static byte[] HexStringToBinary(this string hexstring)
         {
 
             string[] tmpary = hexstring.Trim().Split(' ');
@@ -133,7 +133,7 @@ namespace CarrotProtocolLib.Util
         /// </summary>
         /// <param name="i">一个int数字</param>
         /// <returns>byte[]</returns>
-        public static byte[] Int2Bytes(int i)
+        public static byte[] Int2Bytes(this int i)
         {
             byte[] result = new byte[4];
             result[0] = (byte)(i >> 24 & 0xFF);
@@ -150,7 +150,7 @@ namespace CarrotProtocolLib.Util
         /// </summary>
         /// <param name="bytes">byte类型数组</param>
         /// <returns>int数字</returns>
-        public static int Bytes2Int(byte[] bytes)
+        public static int Bytes2Int(this byte[] bytes)
         {
             int num = bytes[3] & 0xFF;
             num |= bytes[2] << 8 & 0xFF00;
@@ -159,13 +159,13 @@ namespace CarrotProtocolLib.Util
             return num;
         }
 
-        public static string Int2String(int str)
+        public static string Int2String(this int str)
         {
             string S = Convert.ToString(str);
             return S;
         }
 
-        public static int String2Int(string str)
+        public static int String2Int(this string str)
         {
             int a;
             int.TryParse(str, out a);
@@ -182,7 +182,7 @@ namespace CarrotProtocolLib.Util
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static byte[] IntToBytes2(int value)
+        public static byte[] IntToBytes2(this int value)
         {
             byte[] src = new byte[4];
             src[0] = (byte)(value >> 24 & 0xFF);
@@ -197,7 +197,7 @@ namespace CarrotProtocolLib.Util
         /// </summary>
         /// <param name="bArr"></param>
         /// <returns></returns>
-        public static int BytesToInt2(byte[] bArr)
+        public static int BytesToInt2(this byte[] bArr)
         {
             if (bArr.Length != 4)
             {
@@ -209,7 +209,8 @@ namespace CarrotProtocolLib.Util
                         | (bArr[3] & 0xff) << 0;
         }
 
-        public static string StringToHexArray(string input)
+        /*
+        public static string StringToHexArray(this string input)
         {
             char[] values = input.ToCharArray();
             StringBuilder sb = new StringBuilder(input.Length * 3);
@@ -224,5 +225,6 @@ namespace CarrotProtocolLib.Util
 
             return sb.ToString().ToUpper();
         }
+        */
     }
 }
