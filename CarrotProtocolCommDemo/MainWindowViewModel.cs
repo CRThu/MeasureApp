@@ -91,6 +91,9 @@ namespace CarrotProtocolCommDemo
 
         public MainWindowViewModel()
         {
+            Device = new GeneralBufferedDevice();
+            Logger = new ProtocolLogger();
+
             drivers = new string[] { "SerialPort", "FTDI_D2XX" };
             SelectedDriver = "SerialPort";
             DevicesInfoUpdate();
