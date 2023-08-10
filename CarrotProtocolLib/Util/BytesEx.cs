@@ -41,7 +41,6 @@ namespace CarrotProtocolLib.Util
             for (int i = 0; i < s.Length; i += 2)
             {
                 buffer[i / 2] = Convert.ToByte(s.Substring(i, 2), 16);
-                i += 2;
             }
 
             return buffer;

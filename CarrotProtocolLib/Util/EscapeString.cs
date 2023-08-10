@@ -32,7 +32,7 @@ namespace CarrotProtocolLib.Util
             }
         }
 
-        //private string hexString;
+        private string hexString;
         /// <summary>
         /// 字节16进制字符串
         /// </summary>
@@ -40,15 +40,20 @@ namespace CarrotProtocolLib.Util
         {
             get
             {
-                //return hexString;
-                return RawBytes.BytesToHexString();
+                if (hexString.CheckHexString())
+                {
+                    hexString = RawBytes.BytesToHexString();
+                }
+                return hexString;
+                //return RawBytes.BytesToHexString();
             }
             set
             {
-                //hexString = value;
+                hexString = value;
 
-                //if (value.CheckHexString())
-                RawBytes = value.HexStringToBytes();
+                // 当HexString在View手动输入时，判断为有效字符串后更新至RawBytes
+                if (value.CheckHexString())
+                    RawBytes = value.HexStringToBytes();
             }
         }
 
