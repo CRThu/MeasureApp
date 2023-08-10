@@ -23,14 +23,14 @@ namespace CarrotProtocolLib.Protocol
             return new RawAsciiProtocolDecodeService();
         }
 
-        public static RawAsciiProtocolRecord Create(string payload)
+        public static RawAsciiProtocolFrame Create(string payload)
         {
-            return new RawAsciiProtocolRecord(payload);
+            return new RawAsciiProtocolFrame(payload);
         }
 
-        public static RawAsciiProtocolRecord Create(byte[] bytes, int offset, int length)
+        public static RawAsciiProtocolFrame Create(byte[] bytes, int offset, int length)
         {
-            return new RawAsciiProtocolRecord(bytes, offset, length);
+            return new RawAsciiProtocolFrame(bytes, offset, length);
         }
     }
 }

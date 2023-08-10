@@ -10,7 +10,7 @@ namespace CarrotProtocolLib.Protocol
 {
     public interface IProtocolRecord
     {
-        public byte[] Bytes { get; }
+        public byte[] FrameBytes { get; }
         public string PayloadDisplay { get; }
     }
 }

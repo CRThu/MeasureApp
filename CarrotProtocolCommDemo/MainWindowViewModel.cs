@@ -229,21 +229,17 @@ namespace CarrotProtocolCommDemo
             }
         }
 
-        [RelayCommand]
-        private void AsciiProtocolPayloadChanged()
-        {
-            //asciiProtocolRecord = new RawAsciiProtocolRecord(AsciiProtocolPayloadString);
-            //AsciiProtocolFrameBytes = asciiProtocolRecord.Bytes;
-        }
-
+        /// <summary>
+        /// 
+        /// </summary>
         [RelayCommand]
         private void AsciiProtocolSend()
         {
             try
             {
-                RawAsciiProtocolRecord rec = new(EscapeString.TextString);
-                Debug.WriteLine($"RawAsciiProtocolRecord: {rec.Bytes.BytesToHexString()}");
-                Device.Write(rec.Bytes, 0, rec.Bytes.Length);
+                RawAsciiProtocolFrame rec = new(EscapeString.RawBytes, 0, EscapeString.RawBytes.Length);
+                Debug.WriteLine($"Send {nameof(RawAsciiProtocolFrame)}: {rec.FrameBytes.BytesToHexString()}");
+                Device.Write(rec.FrameBytes, 0, rec.FrameBytes.Length);
             }
             catch (Exception ex)
             {

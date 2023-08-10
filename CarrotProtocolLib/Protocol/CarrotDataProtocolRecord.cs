@@ -62,7 +62,7 @@ namespace CarrotProtocolLib.Impl
         public byte FrameEnd { get; set; }
 
 
-        public byte[] Bytes => ToBytes();
+        public byte[] FrameBytes => ToBytes();
         public string PayloadDisplay => BytesEx.BytesToAscii(Payload);
 
         public static byte FrameStartByte = 0x3C;
