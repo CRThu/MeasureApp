@@ -151,6 +151,7 @@ namespace CarrotProtocolCommDemo
                     if (Device is not null)
                     {
                         Device.Logger.LoggerUpdate -= Logger_LoggerUpdate;
+                        
                     }
                     Device = DeviceFactory.Create(
                         nameof(GeneralBufferedDevice),

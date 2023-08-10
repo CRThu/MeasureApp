@@ -40,20 +40,6 @@ namespace CarrotProtocolLib.Device
         public RingBuffer RxBuffer { get; set; }
 
         /// <summary>
-        /// 接收数据字节数
-        /// </summary>
-        public int ReceivedByteCount { get; }
-        /// <summary>
-        /// 发送数据字节数
-        /// </summary>
-        public int SentByteCount { get; }
-
-        /// <summary>
-        /// 设备是否打开
-        /// </summary>
-        public bool IsOpen { get; }
-
-        /// <summary>
         /// 缓冲区待接收的数据字节数
         /// </summary>
         public int RxByteToRead { get; }

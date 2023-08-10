@@ -6,6 +6,10 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="Device\GeneralBufferedDevice.cs~RF66f585a2.TMP" />
+  </ItemGroup>
+
 	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.1.0-preview1" />
 		<PackageReference Include="NullFX.CRC" Version="1.1.5" />

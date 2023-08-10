@@ -15,7 +15,7 @@ using CarrotProtocolLib.Protocol;
 
 namespace CarrotProtocolLib.Device
 {
-    public partial class GeneralBufferedDevice : ObservableObject, IDevice
+    public class GeneralBufferedDevice : IDevice
     {
         /// <summary>
         /// 设备驱动层
@@ -48,21 +48,6 @@ namespace CarrotProtocolLib.Device
         public int RxByteToRead => RxBuffer.Count;
 
         /// <summary>
-        /// 接收数据字节数
-        /// </summary>
-        public int ReceivedByteCount => Driver!.ReceivedByteCount;
-
-        /// <summary>
-        /// 发送数据字节数
-        /// </summary>
-        public int SentByteCount => Driver!.SentByteCount;
-
-        /// <summary>
-        /// 设备是否打开
-        /// </summary>
-        public bool IsOpen => Driver!.IsOpen;
-
-        /// <summary>
         /// 构造函数
         /// </summary>
         /// <param name="bufferSize"></param>
@@ -70,6 +55,7 @@ namespace CarrotProtocolLib.Device
         {
             //RxBuffer = new(1048576 * 16);
             RxBuffer = new(bufferSize);
+
         }
 
         /// <summary>
