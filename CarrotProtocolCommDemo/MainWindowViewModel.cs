@@ -10,13 +10,11 @@ using System.Windows.Input;
 using System.IO.Ports;
 using System.Diagnostics;
 using CarrotProtocolLib.Util;
-using CarrotProtocolLib.Impl;
+using CarrotProtocolLib.Protocol;
 using CarrotProtocolLib.Logger;
 using CarrotProtocolLib.Device;
-using CarrotProtocolLib.Protocol;
 using CarrotProtocolLib.Driver;
 using CarrotProtocolLib.Service;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace CarrotProtocolCommDemo
 {
@@ -204,7 +202,7 @@ namespace CarrotProtocolCommDemo
         {
             try
             {
-                CarrotDataProtocolRecord carrotDataProtocol = new(SelectedCarrotDataProtocolId, SelectedCarrotDataProtocolStreamId, CarrotDataProtocolPayloadString);
+                CarrotDataProtocolFrame carrotDataProtocol = new(SelectedCarrotDataProtocolId, SelectedCarrotDataProtocolStreamId, CarrotDataProtocolPayloadString);
                 byte[] bytes = carrotDataProtocol.ToBytes();
                 InputCode = BytesEx.BytesToHexString(bytes);
             }
@@ -230,10 +228,10 @@ namespace CarrotProtocolCommDemo
         }
 
         /// <summary>
-        /// 
+        /// 发送Ascii协议
         /// </summary>
         [RelayCommand]
-        private void AsciiProtocolSend()
+        private void RawAsciiProtocolSend()
         {
             try
             {

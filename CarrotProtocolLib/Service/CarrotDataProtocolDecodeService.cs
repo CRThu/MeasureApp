@@ -1,5 +1,5 @@
 ﻿using CarrotProtocolLib.Device;
-using CarrotProtocolLib.Impl;
+using CarrotProtocolLib.Protocol;
 using CarrotProtocolLib.Logger;
 using System;
 using System.Collections.Generic;
@@ -108,7 +108,7 @@ namespace CarrotProtocolLib.Service
                         case CarrotProtocolFrameDecodeFsmState.WAIT_FRAME_START:
                             // 读取帧起始字节
                             Device.Read(DecodeBuffer, DecodeBufferCursor, requiredBytesToRead);
-                            if (DecodeBuffer[DecodeBufferCursor] == CarrotDataProtocolRecord.FrameStartByte)
+                            if (DecodeBuffer[DecodeBufferCursor] == CarrotDataProtocolFrame.FrameStartByte)
                             {
                                 frameDecodeFsmState = CarrotProtocolFrameDecodeFsmState.WAIT_FRAME_PROTOCOL_ID;
                                 DecodeBufferCursor += requiredBytesToRead;
@@ -122,7 +122,7 @@ namespace CarrotProtocolLib.Service
                         case CarrotProtocolFrameDecodeFsmState.WAIT_FRAME_PROTOCOL_ID:
                             // 读取帧ID
                             Device.Read(DecodeBuffer, DecodeBufferCursor, requiredBytesToRead);
-                            frameLength = CarrotDataProtocolRecord.GetPacketLength(DecodeBuffer[DecodeBufferCursor]);
+                            frameLength = CarrotDataProtocolFrame.GetPacketLength(DecodeBuffer[DecodeBufferCursor]);
                             if (frameLength > 0)
                             {
                                 frameDecodeFsmState = CarrotProtocolFrameDecodeFsmState.WAIT_FRAME_CTL_PREFIX;
@@ -176,7 +176,7 @@ namespace CarrotProtocolLib.Service
                         case CarrotProtocolFrameDecodeFsmState.WAIT_FRAME_END:
                             // 读取帧结束字节
                             Device.Read(DecodeBuffer, DecodeBufferCursor, requiredBytesToRead);
-                            if (DecodeBuffer[DecodeBufferCursor] == CarrotDataProtocolRecord.FrameEndByte)
+                            if (DecodeBuffer[DecodeBufferCursor] == CarrotDataProtocolFrame.FrameEndByte)
                             {
                                 frameDecodeFsmState = CarrotProtocolFrameDecodeFsmState.WAIT_FRAME_START;
                                 DecodeBufferCursor += requiredBytesToRead;
@@ -185,7 +185,7 @@ namespace CarrotProtocolLib.Service
                                     // 判断数据长度解码错误
                                     throw new NotImplementedException();
 
-                                Logger!.AddRx(new CarrotDataProtocolRecord(DecodeBuffer, 0, frameLength));
+                                Logger!.AddRx(new CarrotDataProtocolFrame(DecodeBuffer, 0, frameLength));
 
                                 DecodeBufferCursor = 0;
                             }

@@ -2,7 +2,7 @@
 
 namespace CarrotProtocolLib.Protocol
 {
-    public partial class RawAsciiProtocolFrame : IProtocolRecord
+    public partial class RawAsciiProtocolFrame : IProtocolFrame
     {
         /// <summary>
         /// payload 字节数组存储

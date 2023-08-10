@@ -4,10 +4,9 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
-using CarrotProtocolLib.Protocol;
 using CarrotProtocolLib.Util;
 
-namespace CarrotProtocolLib.Impl
+namespace CarrotProtocolLib.Protocol
 {
     /*
     #define CARROT_DATA_PROTOCOL_GEN(len)                              \
@@ -25,7 +24,7 @@ namespace CarrotProtocolLib.Impl
     carrot_data_protocol_##len;                                  \
     */
 
-    public class CarrotDataProtocolRecord : IProtocolRecord
+    public class CarrotDataProtocolFrame : IProtocolFrame
     {
         /// <summary>
         /// protocol layout index : [0:0]
@@ -75,7 +74,7 @@ namespace CarrotProtocolLib.Impl
         /// <param name="offset"></param>
         /// <param name="length"></param>
         /// <exception cref="NotImplementedException"></exception>
-        public CarrotDataProtocolRecord(byte[] bytes, int offset, int length)
+        public CarrotDataProtocolFrame(byte[] bytes, int offset, int length)
         {
             FrameStart = bytes[offset + 0];
             ProtocolId = bytes[offset + 1];
@@ -93,7 +92,7 @@ namespace CarrotProtocolLib.Impl
                 throw new NotImplementedException();
         }
 
-        public CarrotDataProtocolRecord(int protocolId, int streamId, string payload, bool isCrc = true)
+        public CarrotDataProtocolFrame(int protocolId, int streamId, string payload, bool isCrc = true)
         {
             if (payload.Length < 2 || payload[^2..^1] != "\r\n")
                 payload += "\r\n";

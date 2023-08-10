@@ -1,5 +1,5 @@
 ﻿using CarrotProtocolLib.Device;
-using CarrotProtocolLib.Impl;
+using CarrotProtocolLib.Protocol;
 using CarrotProtocolLib.Logger;
 using System;
 using System.Collections.Generic;

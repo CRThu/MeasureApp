@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using CarrotProtocolLib.Impl;
+using CarrotProtocolLib.Protocol;
 using CarrotProtocolLib.Protocol;
 
 namespace CarrotProtocolLib.Logger
@@ -13,8 +13,8 @@ namespace CarrotProtocolLib.Logger
         public delegate void LoggerUpdateHandler(ILoggerRecord log, LoggerUpdateEvent e);
         public event LoggerUpdateHandler LoggerUpdate;
 
-        public void AddRx(IProtocolRecord protocol);
-        public void AddTx(IProtocolRecord protocol);
+        public void AddRx(IProtocolFrame protocol);
+        public void AddTx(IProtocolFrame protocol);
     }
 
     public interface ILoggerRecord

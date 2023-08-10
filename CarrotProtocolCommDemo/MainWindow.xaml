@@ -88,7 +88,7 @@
 
                     <TextBlock Text="16进制" HorizontalAlignment="Left" Margin="10,135,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
                     <TextBox Text="{Binding EscapeString.HexString, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="67,135,0,164" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto" Width="267"/>
-                    <Button Content="发送" Command="{Binding AsciiProtocolSendCommand}" Margin="10,0,0,10" VerticalAlignment="Bottom" Width="60" HorizontalAlignment="Left" Height="30"/>
+                    <Button Content="发送" Command="{Binding RawAsciiProtocolSendCommand}" Margin="10,0,0,10" VerticalAlignment="Bottom" Width="60" HorizontalAlignment="Left" Height="30"/>
 
                 </Grid>
             </TabItem>

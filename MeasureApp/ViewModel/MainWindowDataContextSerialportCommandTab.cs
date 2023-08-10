@@ -24,7 +24,7 @@ using MeasureApp.Model.Devices;
 using CodingSeb.ExpressionEvaluator;
 using MeasureApp.Model.DataStorage;
 using Newtonsoft.Json.Linq;
-using CarrotProtocolLib.Impl;
+using CarrotProtocolLib.Protocol;
 using System.Timers;
 
 namespace MeasureApp.ViewModel
@@ -907,7 +907,7 @@ REGW;01;{i:D};
                             dac8830_volt = evaluator5.Evaluate(dac8830_volt.Replace('\'', '\"')).ToString();
                         }
 
-                        CarrotDataProtocolRecord cdp = new(0x32, dac8830_ch, dac8830_volt);
+                        CarrotDataProtocolFrame cdp = new(0x32, dac8830_ch, dac8830_volt);
                         string dac8830PortName = TagAttrs["port"];
                         SerialPortsInstance.WriteBytes(dac8830PortName, cdp.ToBytes());
                         break;
