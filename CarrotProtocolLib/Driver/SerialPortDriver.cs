@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace CarrotProtocolLib.Driver
 {
-    public class SerialPortDriver : IDriver
+    public partial class SerialPortDriver : ObservableObject, IDriver
     {
         /// <summary>
         /// 驱动层实现
@@ -20,7 +20,8 @@ namespace CarrotProtocolLib.Driver
         /// <summary>
         /// 设备是否开启
         /// </summary>
-        public bool IsOpen { get; set; }
+        [ObservableProperty]
+        private bool isOpen;
 
         /// <summary>
         /// 缓冲区未读取字节数
@@ -30,12 +31,14 @@ namespace CarrotProtocolLib.Driver
         /// <summary>
         /// 接收字节数
         /// </summary>
-        public int ReceivedByteCount { get; set; }
+        [ObservableProperty]
+        private int receivedByteCount;
 
         /// <summary>
         /// 发送字节数
         /// </summary>
-        public int SentByteCount { get; set; }
+        [ObservableProperty]
+        private int sentByteCount;
 
         public event IDriver.ErrorReceivedHandler? ErrorReceived;
 

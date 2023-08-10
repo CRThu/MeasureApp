@@ -1,4 +1,5 @@
 ﻿using CarrotProtocolLib.Device;
+using CommunityToolkit.Mvvm.ComponentModel;
 using FTD2XX_NET;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ namespace CarrotProtocolLib.Driver
     /// <summary>
     /// FTDI FT2232H SYNC FIFO Driver
     /// </summary>
-    public class FtdiD2xxDriver : IDriver
+    public partial class FtdiD2xxDriver : ObservableObject, IDriver
     {
         /// <summary>
         /// FTDI驱动包装类
@@ -35,7 +36,8 @@ namespace CarrotProtocolLib.Driver
         /// <summary>
         /// 设备是否打开
         /// </summary>
-        public bool IsOpen { get; set; }
+        [ObservableProperty]
+        private bool isOpen;
 
         /// <summary>
         /// FIFO待读取字节
@@ -45,12 +47,14 @@ namespace CarrotProtocolLib.Driver
         /// <summary>
         /// 接收字节数
         /// </summary>
-        public int ReceivedByteCount { get; set; }
+        [ObservableProperty]
+        private int receivedByteCount;
 
         /// <summary>
         /// 发送字节数
         /// </summary>
-        public int SentByteCount { get; set; }
+        [ObservableProperty]
+        private int sentByteCount;
 
         public event IDriver.ErrorReceivedHandler? ErrorReceived;
 

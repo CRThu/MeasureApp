@@ -43,9 +43,9 @@
                     <Button x:Name="OpenButton" Content="{Binding IsOpen, Converter={StaticResource BooleanToTextConverter}, ConverterParameter='关闭|打开'}" Command="{Binding OpenCommand}" HorizontalAlignment="Left" Margin="80,0,0,10" VerticalAlignment="Bottom" Width="60" Height="30"/>
                     <Grid Margin="150,0,0,10" VerticalAlignment="Bottom" Width="193" HorizontalAlignment="Left" Height="30">
                         <TextBlock Text="Tx:" HorizontalAlignment="Left" Margin="10,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center"/>
-                        <TextBlock Text="{Binding SentByteCount}" HorizontalAlignment="Left" Margin="35,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding Device.Driver.SentByteCount}" HorizontalAlignment="Left" Margin="35,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center"/>
                         <TextBlock Text="Rx:" HorizontalAlignment="Left" Margin="100,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center"/>
-                        <TextBlock Text="{Binding ReceivedByteCount}" HorizontalAlignment="Left" Margin="125,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding Device.Driver.ReceivedByteCount}" HorizontalAlignment="Left" Margin="125,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center"/>
                     </Grid>
                 </Grid>
             </TabItem>

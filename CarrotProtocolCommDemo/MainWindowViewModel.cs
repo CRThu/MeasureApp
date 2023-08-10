@@ -20,9 +20,11 @@ namespace CarrotProtocolCommDemo
 {
     public partial class MainWindowViewModel : ObservableObject
     {
-        public IDevice Device { get; set; }
+        [ObservableProperty]
+        private IDevice device;
 
-        public ILogger Logger { get; set; }
+        [ObservableProperty]
+        private ILogger logger;
 
 
         [ObservableProperty]
