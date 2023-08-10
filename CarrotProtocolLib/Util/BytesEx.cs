@@ -12,9 +12,24 @@ namespace CarrotProtocolLib.Util
     public static class BytesEx
     {
         /// <summary>
+        /// 检查16进制字符串格式是否符合转换要求<br/>
+        /// 正确格式: 0123 ABCD abcd<br/>
+        /// 分隔符支持空格<br/>
+        /// 错误格式: 长度为单数/出现非0-9,a-f,A-F字符<br/>
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        public static bool CheckHexString(this string s)
+        {
+            s = s.Replace(" ", "");
+            return s.All(c => c.IsHexAscii()) && (s.Length % 2 == 0);
+        }
+
+
+        /// <summary>
         /// Convert a string of hex digits (ex: E4 CA B2) to a byte array.
         /// <code>
-        /// BytesEx.HexStringToBytes("12 34 56 78 90") = new byte[] { 0x12, 0x34, 0x56, 0x78, 0x90}
+        /// BytesEx.HexStringToBytes("12 34 56 78 90") = new byte[] { 0x12, 0x34, 0x56, 0x78, 0x90 }
         /// </code>
         /// </summary>
         /// <param name="s"> The string containing the hex digits (with or without spaces). </param>
@@ -22,19 +37,11 @@ namespace CarrotProtocolLib.Util
         public static byte[] HexStringToBytes(this string s)
         {
             s = s.Replace(" ", "");
-            byte[] buffer = new byte[(int)Math.Ceiling(s.Length / 2.0)];
-            for (int i = 0; i < s.Length;)
+            byte[] buffer = new byte[s.Length / 2];
+            for (int i = 0; i < s.Length; i += 2)
             {
-                if (s.Length - i >= 2)
-                {
-                    buffer[i / 2] = Convert.ToByte(s.Substring(i, 2), 16);
-                    i += 2;
-                }
-                else if (s.Length - i == 1)
-                {
-                    buffer[i / 2] = Convert.ToByte(s.Substring(i, 1), 16);
-                    i += 1;
-                }
+                buffer[i / 2] = Convert.ToByte(s.Substring(i, 2), 16);
+                i += 2;
             }
 
             return buffer;

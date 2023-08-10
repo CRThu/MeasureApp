@@ -16,25 +16,23 @@ namespace CarrotProtocolLib.Util
         /// 转义字符字节数组存储
         /// </summary>
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(TextString))]
+        //[NotifyPropertyChangedFor(nameof(RawBytes))]
         [NotifyPropertyChangedFor(nameof(HexString))]
-        private byte[] rawBytes;
+        private string textString;
 
-        /// <summary>
-        /// 文本字符串
-        /// </summary>
-        public string TextString
+        public byte[] RawBytes
         {
             get
             {
-                return RawBytes.BytesToEscapeString();
+                return TextString.EscapeStringToBytes();
             }
             set
             {
-                RawBytes = value.EscapeStringToBytes();
+                TextString = value.BytesToEscapeString();
             }
         }
 
+        //private string hexString;
         /// <summary>
         /// 字节16进制字符串
         /// </summary>
@@ -42,10 +40,14 @@ namespace CarrotProtocolLib.Util
         {
             get
             {
+                //return hexString;
                 return RawBytes.BytesToHexString();
             }
             set
             {
+                //hexString = value;
+
+                //if (value.CheckHexString())
                 RawBytes = value.HexStringToBytes();
             }
         }
@@ -55,7 +57,8 @@ namespace CarrotProtocolLib.Util
         /// </summary>
         public EscapeString()
         {
-            rawBytes = Array.Empty<byte>();
+            TextString = "";
+            HexString = "";
         }
 
         /// <summary>

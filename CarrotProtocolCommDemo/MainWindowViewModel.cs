@@ -73,7 +73,7 @@ namespace CarrotProtocolCommDemo
         private string stdOut = "";
 
         [ObservableProperty]
-        private EscapeString escapeString = new EscapeString(@"12345\01\02\\\03abc\\\");
+        private EscapeString escapeString = new EscapeString(@"\\123\11\22\33\fF\f\\\\\s\fss\rrr\nnn\r\n000");
 
         [ObservableProperty]
         private string asciiProtocolPayloadString = "";
