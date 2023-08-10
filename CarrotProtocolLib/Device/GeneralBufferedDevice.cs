@@ -11,6 +11,7 @@ using CarrotProtocolLib.Util;
 using CarrotProtocolLib.Driver;
 using CarrotProtocolLib.Service;
 using CarrotProtocolLib.Logger;
+using CarrotProtocolLib.Protocol;
 
 namespace CarrotProtocolLib.Device
 {
@@ -104,7 +105,18 @@ namespace CarrotProtocolLib.Device
         }
 
         /// <summary>
-        /// 读取字节数组
+        /// 写入数据协议帧
+        /// </summary>
+        /// <typeparam name="T">具有IProtocolFrame接口的数据协议帧</typeparam>
+        /// <param name="frame">数据协议帧实例</param>
+        public void Write<T>(T frame) where T : IProtocolFrame
+        {
+            Write(frame.FrameBytes, 0, frame.FrameBytes.Length);
+            Logger.AddTx(frame);
+        }
+
+        /// <summary>
+        /// 读取字节数组(通过ProtocolDecodeService调用)
         /// </summary>
         /// <param name="buffer"></param>
         /// <param name="offset"></param>
@@ -117,6 +129,5 @@ namespace CarrotProtocolLib.Device
             RxBuffer.Read(buffer, offset, bytesExpected);
             return bytesExpected;
         }
-
     }
 }

@@ -228,7 +228,7 @@ namespace CarrotProtocolCommDemo
         }
 
         /// <summary>
-        /// 发送Ascii协议
+        /// 发送RawAscii协议数据
         /// </summary>
         [RelayCommand]
         private void RawAsciiProtocolSend()
@@ -237,7 +237,7 @@ namespace CarrotProtocolCommDemo
             {
                 RawAsciiProtocolFrame rec = new(EscapeString.RawBytes, 0, EscapeString.RawBytes.Length);
                 Debug.WriteLine($"Send {nameof(RawAsciiProtocolFrame)}: {rec.FrameBytes.BytesToHexString()}");
-                Device.Write(rec.FrameBytes, 0, rec.FrameBytes.Length);
+                Device.Write(rec);
             }
             catch (Exception ex)
             {

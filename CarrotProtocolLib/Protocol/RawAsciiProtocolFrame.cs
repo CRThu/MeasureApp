@@ -13,13 +13,13 @@ namespace CarrotProtocolLib.Protocol
         private readonly byte[] PayloadBytes;
 
         /// <summary>
-        /// payload 显示字符串
+        /// payload 显示转义字符串
         /// </summary>
         public string PayloadDisplay
         {
             get
             {
-                return PayloadBytes.BytesToAscii();
+                return PayloadBytes.BytesToEscapeString();
             }
         }
 

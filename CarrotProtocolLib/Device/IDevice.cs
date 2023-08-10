@@ -1,5 +1,6 @@
 ﻿using CarrotProtocolLib.Driver;
 using CarrotProtocolLib.Logger;
+using CarrotProtocolLib.Protocol;
 using CarrotProtocolLib.Service;
 using CarrotProtocolLib.Util;
 using System;
@@ -74,6 +75,13 @@ namespace CarrotProtocolLib.Device
         /// <param name="offset"></param>
         /// <param name="count"></param>
         public void Write(byte[] buffer, int offset, int count);
+
+        /// <summary>
+        /// 设备写入数据协议帧
+        /// </summary>
+        /// <typeparam name="T">具有IProtocolFrame接口的数据协议帧</typeparam>
+        /// <param name="frame">数据协议帧实例</param>
+        public void Write<T>(T frame) where T : IProtocolFrame;
 
         /// <summary>
         /// 设备读取字节流存储到数组位置
