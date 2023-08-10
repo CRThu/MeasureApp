@@ -52,7 +52,7 @@
             <TabItem Header="数据协议调试">
                 <Grid Margin="0,0,0,0" d:Height="380">
                     <TextBlock Text="协议选择" HorizontalAlignment="Left" Margin="10,37,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-                    <ComboBox Name="CarrotProtocolsComboBox" ItemsSource="{Binding CarrotDataProtocolIds}" SelectedItem="{Binding SelectedCarrotDataProtocolId}" ItemStringFormat="{}0x{0:X2}" HorizontalAlignment="Left" Margin="67,30,0,0" VerticalAlignment="Top" Width="267">
+                    <ComboBox Name="CarrotProtocolsComboBox" ItemsSource="{Binding CarrotDataProtocolIds}" SelectedItem="{Binding CdpCfgVm.ProtocolId}" ItemStringFormat="{}0x{0:X2}" HorizontalAlignment="Left" Margin="67,30,0,0" VerticalAlignment="Top" Width="267">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="SelectionChanged">
                                 <i:InvokeCommandAction Command="{Binding PacketParamsChangedCommand}"/>
@@ -60,7 +60,7 @@
                         </i:Interaction.Triggers>
                     </ComboBox>
                     <TextBlock Text="流端口号" HorizontalAlignment="Left" Margin="10,77,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-                    <ComboBox Name="StreamIdsComboBox" ItemsSource="{Binding CarrotDataProtocolStreamIds}" SelectedItem="{Binding SelectedCarrotDataProtocolStreamId}" HorizontalAlignment="Left" Margin="67,70,0,0" VerticalAlignment="Top" Width="267">
+                    <ComboBox Name="StreamIdsComboBox" ItemsSource="{Binding CarrotDataProtocolStreamIds}" SelectedItem="{Binding CdpCfgVm.StreamId}" HorizontalAlignment="Left" Margin="67,70,0,0" VerticalAlignment="Top" Width="267">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="SelectionChanged">
                                 <i:InvokeCommandAction Command="{Binding PacketParamsChangedCommand}"/>
@@ -68,16 +68,10 @@
                         </i:Interaction.Triggers>
                     </ComboBox>
                     <TextBlock Text="Payload" HorizontalAlignment="Left" Margin="10,117,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-                    <TextBox Name="PayloadStringTextBox" Text="{Binding CarrotDataProtocolPayloadString,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="67,110,0,0" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" VerticalContentAlignment="Top" VerticalAlignment="Top" Width="267" Height="94" VerticalScrollBarVisibility="Auto">
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="TextChanged">
-                                <i:InvokeCommandAction Command="{Binding PacketParamsChangedCommand}"/>
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
-                    </TextBox>
+                    <TextBox Name="PayloadStringTextBox" Text="{Binding CdpCfgVm.PayloadDisplay,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="67,110,0,0" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" VerticalContentAlignment="Top" VerticalAlignment="Top" Width="267" Height="94" VerticalScrollBarVisibility="Auto"/>
 
                     <TextBlock Text="16进制" HorizontalAlignment="Left" Margin="10,211,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-                    <TextBox x:Name="InputCodeTextBox" Text="{Binding InputCode}" HorizontalAlignment="Left" Margin="10,231,0,68" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto" Width="324"/>
+                    <TextBox x:Name="InputCodeTextBox" Text="{Binding CdpCfgVm.FrameHexDisplay,Mode=OneWay}" HorizontalAlignment="Left" Margin="10,231,0,68" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto" Width="324"/>
                     <Button x:Name="SendButton" Content="发送" Command="{Binding SendCommand}" Margin="10,0,0,10" VerticalAlignment="Bottom" Width="60" HorizontalAlignment="Left" Height="30"/>
                 </Grid>
             </TabItem>

@@ -73,17 +73,11 @@ namespace CarrotProtocolCommDemo
         private string stdOut = "";
 
         [ObservableProperty]
+        private CarrotDataProtocolConfigViewModel cdpCfgVm = new();
+
+        [ObservableProperty]
         private EscapeString escapeString = new EscapeString(@"\\123\11\22\33\fF\f\\\\\s\fss\rrr\nnn\r\n000");
 
-        [ObservableProperty]
-        private string asciiProtocolPayloadString = "";
-        [ObservableProperty]
-        private byte[] asciiProtocolFrameBytes = Array.Empty<byte>();
-
-        [ObservableProperty]
-        public int receivedByteCount;
-        [ObservableProperty]
-        public int sentByteCount;
 
         [ObservableProperty]
         public bool isOpen;
@@ -156,7 +150,7 @@ namespace CarrotProtocolCommDemo
                     if (Device is not null)
                     {
                         Device.Logger.LoggerUpdate -= Logger_LoggerUpdate;
-                        
+
                     }
                     Device = DeviceFactory.Create(
                         nameof(GeneralBufferedDevice),

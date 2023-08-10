@@ -111,6 +111,26 @@ namespace CarrotProtocolLib.Protocol
             FrameEnd = 0x3E;
         }
 
+        public CarrotDataProtocolFrame(int protocolId, int streamId, byte[] payload, bool isCrc = true)
+        {
+            byte[] newPayload = payload;
+            if (payload.Length < 1 || payload[^1] != '\n')
+                newPayload = payload.Concat("\r\n"u8.ToArray()).ToArray();
+
+            // Payload过长时截尾
+            if (newPayload.Length + 10 > GetPacketLength((byte)protocolId))
+                newPayload = newPayload.Take(GetPacketLength((byte)protocolId) - 10).ToArray();
+
+            FrameStart = 0x3C;
+            ProtocolId = (byte)protocolId;
+            ControlFlags = 0x0000;
+            StreamId = (byte)streamId;
+            PayloadLength = (ushort)newPayload.Length;
+            Payload = newPayload;
+            Crc16 = (ushort)(isCrc ? GenerateCrc() : 0xCCCC);
+            FrameEnd = 0x3E;
+        }
+
         /// <summary>
         /// 预设协议长度
         /// </summary>
