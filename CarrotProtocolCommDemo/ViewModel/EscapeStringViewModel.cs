@@ -1,16 +1,17 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CarrotProtocolLib.Util;
+using CommunityToolkit.Mvvm.ComponentModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CarrotProtocolLib.Util
+namespace CarrotProtocolCommDemo.ViewModel
 {
     /// <summary>
     /// 转义字符串
     /// </summary>
-    public partial class EscapeString : ObservableObject
+    public partial class EscapeStringViewModel : ObservableObject
     {
         /// <summary>
         /// 转义字符字节数组存储
@@ -60,7 +61,7 @@ namespace CarrotProtocolLib.Util
         /// <summary>
         /// 构造函数
         /// </summary>
-        public EscapeString()
+        public EscapeStringViewModel()
         {
             TextString = "";
             HexString = "";
@@ -70,7 +71,7 @@ namespace CarrotProtocolLib.Util
         /// 构造函数
         /// </summary>
         /// <param name="str"></param>
-        public EscapeString(string str) : this()
+        public EscapeStringViewModel(string str) : this()
         {
             TextString = str;
         }

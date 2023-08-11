@@ -1,4 +1,5 @@
 ﻿using CarrotProtocolLib.Protocol;
+using CarrotProtocolLib.Util;
 using CommunityToolkit.Mvvm.ComponentModel;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CarrotProtocolLib.Util
+namespace CarrotProtocolCommDemo.ViewModel
 {
     public partial class CarrotDataProtocolConfigViewModel : ObservableObject
     {
