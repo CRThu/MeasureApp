@@ -15,6 +15,7 @@ using CarrotProtocolLib.Logger;
 using CarrotProtocolLib.Device;
 using CarrotProtocolLib.Driver;
 using CarrotProtocolLib.Service;
+using CarrotProtocolCommDemo.ViewModel;
 
 namespace CarrotProtocolCommDemo
 {
@@ -51,32 +52,13 @@ namespace CarrotProtocolCommDemo
         private int selectedSerialPortBaudRate;
 
         [ObservableProperty]
-        private int[] carrotDataProtocolIds;
-
-        [ObservableProperty]
-        private int selectedCarrotDataProtocolId;
-
-        [ObservableProperty]
-        private int[] carrotDataProtocolStreamIds;
-
-        [ObservableProperty]
-        private int selectedCarrotDataProtocolStreamId;
-
-        [ObservableProperty]
-        private string carrotDataProtocolPayloadString = "";
-
-
-        [ObservableProperty]
-        private string inputCode = "";
-
-        [ObservableProperty]
         private string stdOut = "";
 
         [ObservableProperty]
         private CarrotDataProtocolConfigViewModel cdpCfgVm = new();
 
         [ObservableProperty]
-        private EscapeString escapeString = new EscapeString(@"\\123\11\22\33\fF\f\\\\\s\fss\rrr\nnn\r\n000");
+        private RawAsciiProtocolConfigViewModel rapCfgVm = new RawAsciiProtocolConfigViewModel(@"\\123\11\22\33\fF\f\\\\\s\fss\rrr\nnn\r\n000");
 
 
         [ObservableProperty]
@@ -94,11 +76,6 @@ namespace CarrotProtocolCommDemo
             ProtocolNames = new string[] { "CarrotDataProtocol", "RawAsciiProtocol" };
             SelectedProtocolName = "CarrotDataProtocol";
             selectedSerialPortBaudRate = SerialPortBaudRate.FirstOrDefault();
-            CarrotDataProtocolIds = new int[] { 0x30, 0x31, 0x32, 0x33 };
-            SelectedCarrotDataProtocolId = CarrotDataProtocolIds.FirstOrDefault();
-            CarrotDataProtocolStreamIds = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-            SelectedCarrotDataProtocolStreamId = CarrotDataProtocolStreamIds.FirstOrDefault();
-            //InputCode = GenHexPkt();
         }
 
         [RelayCommand]
@@ -147,11 +124,6 @@ namespace CarrotProtocolCommDemo
                         _ => throw new NotImplementedException()
                     };
 
-                    if (Device is not null)
-                    {
-                        Device.Logger.LoggerUpdate -= Logger_LoggerUpdate;
-
-                    }
                     Device = DeviceFactory.Create(
                         nameof(GeneralBufferedDevice),
                         driverName, //nameof(SerialPortDriver),
@@ -198,28 +170,13 @@ namespace CarrotProtocolCommDemo
         }
 
         [RelayCommand]
-        private void PacketParamsChanged()
+        private void CarrotDataProtocolSend()
         {
             try
             {
-                CarrotDataProtocolFrame carrotDataProtocol = new(SelectedCarrotDataProtocolId, SelectedCarrotDataProtocolStreamId, CarrotDataProtocolPayloadString);
-                byte[] bytes = carrotDataProtocol.ToBytes();
-                InputCode = BytesEx.BytesToHexString(bytes);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.ToString());
-            }
-        }
-
-        [RelayCommand]
-        private void Send()
-        {
-            try
-            {
-                //MessageBox.Show("Send");
-                byte[] b = BytesEx.HexStringToBytes(InputCode);
-                Device.Write(b, 0, b.Length);
+                CarrotDataProtocolFrame rec = CdpCfgVm.Frame;
+                Debug.WriteLine($"Send {nameof(CarrotDataProtocolFrame)}: {rec.FrameBytes.BytesToHexString()}");
+                Device.Write(rec);
             }
             catch (Exception ex)
             {
@@ -235,7 +192,7 @@ namespace CarrotProtocolCommDemo
         {
             try
             {
-                RawAsciiProtocolFrame rec = new(EscapeString.RawBytes, 0, EscapeString.RawBytes.Length);
+                RawAsciiProtocolFrame rec = new(RapCfgVm.RawBytes, 0, RapCfgVm.RawBytes.Length);
                 Debug.WriteLine($"Send {nameof(RawAsciiProtocolFrame)}: {rec.FrameBytes.BytesToHexString()}");
                 Device.Write(rec);
             }

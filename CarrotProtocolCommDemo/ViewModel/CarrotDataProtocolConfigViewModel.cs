@@ -12,16 +12,21 @@ namespace CarrotProtocolCommDemo.ViewModel
 {
     public partial class CarrotDataProtocolConfigViewModel : ObservableObject
     {
+        [ObservableProperty]
+        private int[] protocolIdList;
+
+        [ObservableProperty]
+        private int[] streamIdList;
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(Frame))]
         [NotifyPropertyChangedFor(nameof(FrameHexDisplay))]
-        private int protocolId = 0x32;
+        private int protocolId;
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(Frame))]
         [NotifyPropertyChangedFor(nameof(FrameHexDisplay))]
-        private int streamId = 0x00;
+        private int streamId;
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(PayloadBytes))]
@@ -60,7 +65,13 @@ namespace CarrotProtocolCommDemo.ViewModel
 
         public CarrotDataProtocolConfigViewModel()
         {
-            payloadDisplay = string.Empty;
+            protocolIdList = new int[] { 0x30, 0x31, 0x32, 0x33 };
+            //protocolId = protocolIdList.FirstOrDefault();
+            protocolId = 0x30;
+            streamIdList = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+            //streamId = streamIdList.FirstOrDefault();
+            streamId = 1;
+            payloadDisplay = @"123\\11";
         }
     }
 }

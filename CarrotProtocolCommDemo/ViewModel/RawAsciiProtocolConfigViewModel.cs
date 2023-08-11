@@ -11,7 +11,7 @@ namespace CarrotProtocolCommDemo.ViewModel
     /// <summary>
     /// 转义字符串
     /// </summary>
-    public partial class EscapeStringViewModel : ObservableObject
+    public partial class RawAsciiProtocolConfigViewModel : ObservableObject
     {
         /// <summary>
         /// 转义字符字节数组存储
@@ -61,7 +61,7 @@ namespace CarrotProtocolCommDemo.ViewModel
         /// <summary>
         /// 构造函数
         /// </summary>
-        public EscapeStringViewModel()
+        public RawAsciiProtocolConfigViewModel()
         {
             TextString = "";
             HexString = "";
@@ -71,7 +71,7 @@ namespace CarrotProtocolCommDemo.ViewModel
         /// 构造函数
         /// </summary>
         /// <param name="str"></param>
-        public EscapeStringViewModel(string str) : this()
+        public RawAsciiProtocolConfigViewModel(string str) : this()
         {
             TextString = str;
         }
