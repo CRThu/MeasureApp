@@ -62,7 +62,7 @@ namespace CarrotProtocolLib.Protocol
 
 
         public byte[] FrameBytes => ToBytes();
-        public string PayloadDisplay => BytesEx.BytesToAscii(Payload);
+        public string PayloadDisplay => Payload.BytesToEscapeString();
 
         public static byte FrameStartByte = 0x3C;
         public static byte FrameEndByte = 0x3E;

@@ -18,7 +18,7 @@
         <conv:BytesToHexStringConverter x:Key="BytesToHexStringConverter"/>
     </Window.Resources>
     <Grid>
-        <TabControl Margin="10,10,437,10" Style="{StaticResource TabControlInLine}">
+        <TabControl Margin="10,10,0,10" Style="{StaticResource TabControlInLine}" HorizontalAlignment="Left" Width="353">
             <TabItem Header="通信" IsSelected="True">
                 <Grid Margin="0,0,0,0" d:Height="380">
                     <TextBlock Text="外设" HorizontalAlignment="Left" Margin="10,37,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
@@ -80,11 +80,14 @@
             <TabItem Header="协议记录">
                 <Grid>
                     <TextBox x:Name="StdOutTextBox" Text="{Binding StdOut}" Margin="10,10,10,234" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto"/>
-                    <DataGrid ItemsSource="{Binding Device.Logger.ProtocolList}" d:ItemsSource="{d:Binding Device.Logger}" Margin="10,155,10,10" VerticalScrollBarVisibility="Auto">
+                    <DataGrid ItemsSource="{Binding Device.Logger.ProtocolList}" Margin="10,155,10,10" VerticalScrollBarVisibility="Auto" AutoGenerateColumns="False" RowHeight="30" ColumnHeaderHeight="30">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Time" Binding="{Binding Time}"/>
-                            <DataGridTextColumn Header="From" Binding="{Binding From}"/>
-                            <DataGridTextColumn Header="To" Binding="{Binding To}"/>
+                            <DataGridTextColumn Header="Time" Binding="{Binding Time}" IsReadOnly="True" Width="80"/>
+                            <!--<DataGridTextColumn Header="From" Binding="{Binding From}" IsReadOnly="True" Width="80"/>-->
+                            <DataGridTextColumn Header="To" Binding="{Binding To}" IsReadOnly="True" Width="80"/>
+                            <!--<DataGridTextColumn Header="Protocol" Binding="{Binding Protocol}" IsReadOnly="True" Width="80"/>-->
+                            <!--<DataGridTextColumn Header="Type" Binding="{Binding Type}" IsReadOnly="True" Width="90"/>-->
+                            <DataGridTextColumn Header="Payload" Binding="{Binding Frame.PayloadDisplay}" IsReadOnly="True" Width="120"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>
