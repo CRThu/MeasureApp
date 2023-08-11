@@ -24,7 +24,7 @@ namespace CarrotProtocolLib.Util
                 // 转义字符 '\' 转义为 '\'
                 if (bytes[i] == (byte)'\\')
                 {
-                    stringBuilder.Append(bytes[i]);
+                    stringBuilder.Append(@"\\");
                 }
                 // 转义字符 '\r' 转义为 '\r'
                 else if (bytes[i] == (byte)'\r')
