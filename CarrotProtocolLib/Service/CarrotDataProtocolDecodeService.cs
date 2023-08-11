@@ -185,7 +185,7 @@ namespace CarrotProtocolLib.Service
                                     // 判断数据长度解码错误
                                     throw new NotImplementedException();
 
-                                Logger!.AddRx(new CarrotDataProtocolFrame(DecodeBuffer, 0, frameLength));
+                                Logger!.Add(nameof(Device.Driver), "local", new CarrotDataProtocolFrame(DecodeBuffer, 0, frameLength));
 
                                 DecodeBufferCursor = 0;
                             }

@@ -18,7 +18,7 @@
         <conv:BytesToHexStringConverter x:Key="BytesToHexStringConverter"/>
     </Window.Resources>
     <Grid>
-        <TabControl Margin="10,10,0,10" HorizontalAlignment="Left" Width="353" Style="{StaticResource TabControlInLine}">
+        <TabControl Margin="10,10,437,10" Style="{StaticResource TabControlInLine}">
             <TabItem Header="通信" IsSelected="True">
                 <Grid Margin="0,0,0,0" d:Height="380">
                     <TextBlock Text="外设" HorizontalAlignment="Left" Margin="10,37,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
@@ -52,15 +52,15 @@
             <TabItem Header="数据协议调试">
                 <Grid Margin="0,0,0,0" d:Height="380">
                     <TextBlock Text="协议选择" HorizontalAlignment="Left" Margin="10,37,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-                    <ComboBox Name="CarrotProtocolsComboBox" ItemsSource="{Binding CdpCfgVm.ProtocolIdList}" SelectedItem="{Binding CdpCfgVm.ProtocolId}" ItemStringFormat="{}0x{0:X2}" HorizontalAlignment="Left" Margin="67,30,0,0" VerticalAlignment="Top" Width="267"/>
+                    <ComboBox ItemsSource="{Binding CdpCfgVm.ProtocolIdList}" SelectedItem="{Binding CdpCfgVm.ProtocolId}" ItemStringFormat="{}0x{0:X2}" HorizontalAlignment="Left" Margin="67,30,0,0" VerticalAlignment="Top" Width="267"/>
                     <TextBlock Text="流端口号" HorizontalAlignment="Left" Margin="10,77,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-                    <ComboBox Name="StreamIdsComboBox" ItemsSource="{Binding CdpCfgVm.StreamIdList}" SelectedItem="{Binding CdpCfgVm.StreamId}" HorizontalAlignment="Left" Margin="67,70,0,0" VerticalAlignment="Top" Width="267"/>
+                    <ComboBox ItemsSource="{Binding CdpCfgVm.StreamIdList}" SelectedItem="{Binding CdpCfgVm.StreamId}" HorizontalAlignment="Left" Margin="67,70,0,0" VerticalAlignment="Top" Width="267"/>
                     <TextBlock Text="Payload" HorizontalAlignment="Left" Margin="10,117,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-                    <TextBox Name="PayloadStringTextBox" Text="{Binding CdpCfgVm.PayloadDisplay,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="67,110,0,0" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" VerticalContentAlignment="Top" VerticalAlignment="Top" Width="267" Height="94" VerticalScrollBarVisibility="Auto"/>
+                    <TextBox Text="{Binding CdpCfgVm.PayloadDisplay,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="67,110,0,0" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" VerticalContentAlignment="Top" VerticalAlignment="Top" Width="267" Height="94" VerticalScrollBarVisibility="Auto"/>
 
                     <TextBlock Text="16进制" HorizontalAlignment="Left" Margin="10,211,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-                    <TextBox x:Name="InputCodeTextBox" Text="{Binding CdpCfgVm.FrameHexDisplay,Mode=OneWay}" HorizontalAlignment="Left" Margin="10,231,0,68" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto" Width="324"/>
-                    <Button x:Name="SendButton" Content="发送" Command="{Binding CarrotDataProtocolSendCommand}" Margin="10,0,0,10" VerticalAlignment="Bottom" Width="60" HorizontalAlignment="Left" Height="30"/>
+                    <TextBox Text="{Binding CdpCfgVm.FrameHexDisplay,Mode=OneWay}" HorizontalAlignment="Left" Margin="67,209,0,68" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto" Width="267"/>
+                    <Button Content="发送" Command="{Binding CarrotDataProtocolSendCommand}" Margin="10,0,0,10" VerticalAlignment="Bottom" Width="60" HorizontalAlignment="Left" Height="30"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Ascii协议调试">
@@ -75,7 +75,25 @@
                 </Grid>
             </TabItem>
         </TabControl>
-        <TextBlock Text="Logger:" HorizontalAlignment="Left" Margin="370,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-        <TextBox x:Name="StdOutTextBox" Text="{Binding StdOut}" Margin="368,30,10,10" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto"/>
+
+        <TabControl Margin="368,10,10,10" Style="{StaticResource TabControlInLine}">
+            <TabItem Header="协议记录">
+                <Grid>
+                    <TextBox x:Name="StdOutTextBox" Text="{Binding StdOut}" Margin="10,10,10,234" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto"/>
+                    <DataGrid ItemsSource="{Binding Device.Logger.ProtocolList}" d:ItemsSource="{d:Binding Device.Logger}" Margin="10,155,10,10" VerticalScrollBarVisibility="Auto">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Time" Binding="{Binding Time}"/>
+                            <DataGridTextColumn Header="From" Binding="{Binding From}"/>
+                            <DataGridTextColumn Header="To" Binding="{Binding To}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+            <TabItem Header="数据解析">
+                <Grid>
+                    <TextBlock Text="DECODE DATA"/>
+                </Grid>
+            </TabItem>
+        </TabControl>
     </Grid>
 </hc:BlurWindow>

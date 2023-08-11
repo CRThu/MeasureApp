@@ -99,7 +99,7 @@ namespace CarrotProtocolLib.Device
         public void Write<T>(T frame) where T : IProtocolFrame
         {
             Write(frame.FrameBytes, 0, frame.FrameBytes.Length);
-            Logger.AddTx(frame);
+            Logger.Add("local",nameof(Driver),frame);
         }
 
         /// <summary>

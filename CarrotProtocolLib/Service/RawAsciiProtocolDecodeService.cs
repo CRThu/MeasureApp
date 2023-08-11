@@ -93,7 +93,7 @@ namespace CarrotProtocolLib.Service
                         {
                             Array.Fill(FrameBuffer, (byte)0x00);
                             Array.Copy(DecodeBuffer, DecodeBufferStartCursor, FrameBuffer, 0, index + 1 - DecodeBufferStartCursor);
-                            Logger!.AddRx(new RawAsciiProtocolFrame(FrameBuffer, 0, index + 1 - DecodeBufferStartCursor));
+                            Logger!.Add(nameof(Device.Driver), "local", new RawAsciiProtocolFrame(FrameBuffer, 0, index + 1 - DecodeBufferStartCursor));
                             // 指向结束字符后的第一个字符
                             DecodeBufferStartCursor = index + 1;
                             findFrameEndByteCursor = index + 1;

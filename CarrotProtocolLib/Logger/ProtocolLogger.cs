@@ -1,7 +1,8 @@
 ﻿using CarrotProtocolLib.Protocol;
-using CarrotProtocolLib.Protocol;
+using CommunityToolkit.Mvvm.ComponentModel;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,21 +12,35 @@ namespace CarrotProtocolLib.Logger
     public class ProtocolLog : ILoggerRecord
     {
         public DateTime Time { get; set; }
-        public TxRx TxRx { get; set; }
-        public IProtocolFrame Protocol { get; set; }
+        public string From { get; set; }
+        public string To { get; set; }
+        public string Protocol { get; set; }
+        public TransferType Type { get; set; }
+        public IProtocolFrame? Frame { get; set; }
+
+        public ProtocolLog()
+        {
+            Time = DateTime.Now;
+            From = string.Empty;
+            To = string.Empty;
+            Protocol = string.Empty;
+        }
 
         public override string ToString()
         {
             return $"{{ Time: {Time}, " +
-                $"TxRx: {TxRx}, " +
-                $"Protocol: {Protocol.PayloadDisplay.Replace("\r\n", "\\r\\n")} }}";
+                $"From: {From}, " +
+                $"To: {To}, " +
+                $"Protocol: {Protocol}, " +
+                $"Type: {Type}, " +
+                $"Frame Payload: {(Type == TransferType.Data ? "<DATA>" : Frame.PayloadDisplay)} }}";
         }
     }
 
-    public enum TxRx
+    public enum TransferType
     {
-        Tx,
-        Rx
+        Command,
+        Data
     }
 
     public enum LoggerUpdateEvent
@@ -33,9 +48,10 @@ namespace CarrotProtocolLib.Logger
         AddEvent
     }
 
-    public class ProtocolLogger : ILogger
+    public partial class ProtocolLogger : ObservableObject, ILogger
     {
-        public List<ProtocolLog> ProtocolList { get; set; }
+        [ObservableProperty]
+        private ObservableCollection<ProtocolLog> protocolList;
 
         // public delegate void LoggerUpdateHandler(ILoggerRecord log, LoggerUpdateEvent e);
         public event ILogger.LoggerUpdateHandler LoggerUpdate;
@@ -50,28 +66,19 @@ namespace CarrotProtocolLib.Logger
             LoggerUpdate += loggerUpdateHandler;
         }
 
-        public void AddRx(IProtocolFrame protocol)
+        public void Add(string from, string to, IProtocolFrame frame)
         {
-            ProtocolLog protocolLog = new()
+            ProtocolLog log = new()
             {
-                Protocol = protocol,
-                TxRx = TxRx.Rx,
-                Time = DateTime.Now
+                Time = DateTime.Now,
+                From = from,
+                To = to,
+                Protocol = "<NULL>",
+                Type = TransferType.Command,
+                Frame = frame
             };
-            ProtocolList.Add(protocolLog);
-            LoggerUpdate?.Invoke(protocolLog, LoggerUpdateEvent.AddEvent);
-        }
-
-        public void AddTx(IProtocolFrame protocol)
-        {
-            ProtocolLog protocolLog = new()
-            {
-                Protocol = protocol,
-                TxRx = TxRx.Tx,
-                Time = DateTime.Now
-            };
-            ProtocolList.Add(protocolLog);
-            LoggerUpdate?.Invoke(protocolLog, LoggerUpdateEvent.AddEvent);
+            ProtocolList.Add(log);
+            LoggerUpdate?.Invoke(log, LoggerUpdateEvent.AddEvent);
         }
     }
 }

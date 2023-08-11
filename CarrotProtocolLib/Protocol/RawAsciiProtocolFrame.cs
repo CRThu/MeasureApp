@@ -5,6 +5,11 @@ namespace CarrotProtocolLib.Protocol
     public partial class RawAsciiProtocolFrame : IProtocolFrame
     {
         /// <summary>
+        /// stream id, default: 0x00
+        /// </summary>
+        public byte StreamId { get; set; }
+
+        /// <summary>
         /// payload 字节数组存储
         /// </summary>
         //[ObservableProperty]
