@@ -9,66 +9,34 @@ using System.Threading.Tasks;
 
 namespace CarrotProtocolLib.Logger
 {
-    public class ProtocolLog : ILoggerRecord
-    {
-        public DateTime Time { get; set; }
-        public string From { get; set; }
-        public string To { get; set; }
-        public string Protocol { get; set; }
-        public TransferType Type { get; set; }
-        public IProtocolFrame? Frame { get; set; }
-
-        public ProtocolLog()
-        {
-            Time = DateTime.Now;
-            From = string.Empty;
-            To = string.Empty;
-            Protocol = string.Empty;
-        }
-
-        public override string ToString()
-        {
-            return $"{{ Time: {Time}, " +
-                $"From: {From}, " +
-                $"To: {To}, " +
-                $"Protocol: {Protocol}, " +
-                $"Type: {Type}, " +
-                $"Frame Payload: {(Type == TransferType.Data ? "<DATA>" : Frame.PayloadDisplay)} }}";
-        }
-    }
-
-    public enum TransferType
-    {
-        Command,
-        Data
-    }
-
-    public enum LoggerUpdateEvent
-    {
-        AddEvent
-    }
-
     public partial class ProtocolLogger : ObservableObject, ILogger
     {
+        /// <summary>
+        /// 协议存储列表
+        /// </summary>
         [ObservableProperty]
-        private ObservableCollection<ProtocolLog> protocolList;
+        private ObservableCollection<IRecord> protocolList;
 
-        // public delegate void LoggerUpdateHandler(ILoggerRecord log, LoggerUpdateEvent e);
-        public event ILogger.LoggerUpdateHandler LoggerUpdate;
+        // public delegate void RecordUpdateHandler(IRecord log);
+        public event ILogger.RecordUpdateHandler RecordUpdate;
 
+        /// <summary>
+        /// 构造函数
+        /// </summary>
         public ProtocolLogger()
         {
             ProtocolList = new();
         }
 
-        public ProtocolLogger(ILogger.LoggerUpdateHandler loggerUpdateHandler) : this()
-        {
-            LoggerUpdate += loggerUpdateHandler;
-        }
-
+        /// <summary>
+        /// 新增协议记录
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <param name="frame"></param>
         public void Add(string from, string to, IProtocolFrame frame)
         {
-            ProtocolLog log = new()
+            ProtocolRecord record = new()
             {
                 Time = DateTime.Now,
                 From = from,
@@ -77,8 +45,8 @@ namespace CarrotProtocolLib.Logger
                 Type = TransferType.Command,
                 Frame = frame
             };
-            ProtocolList.Add(log);
-            LoggerUpdate?.Invoke(log, LoggerUpdateEvent.AddEvent);
+            ProtocolList.Add(record);
+            RecordUpdate?.Invoke(record);
         }
     }
 }

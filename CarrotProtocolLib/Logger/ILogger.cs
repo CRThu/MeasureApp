@@ -8,18 +8,20 @@ using CarrotProtocolLib.Protocol;
 
 namespace CarrotProtocolLib.Logger
 {
+    public enum TransferType
+    {
+        Command,
+        Data
+    }
+
     public interface ILogger
     {
-        public ObservableCollection<ProtocolLog> ProtocolList { get; }
+        public ObservableCollection<IRecord> ProtocolList { get; }
 
-        public delegate void LoggerUpdateHandler(ILoggerRecord log, LoggerUpdateEvent e);
-        public event LoggerUpdateHandler LoggerUpdate;
+        public delegate void RecordUpdateHandler(IRecord log);
+        public event RecordUpdateHandler RecordUpdate;
 
         public void Add(string from, string to, IProtocolFrame frame);
     }
 
-    public interface ILoggerRecord
-    {
-
-    }
 }
