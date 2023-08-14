@@ -41,7 +41,7 @@ namespace CarrotProtocolLib.Logger
                 Time = DateTime.Now,
                 From = from,
                 To = to,
-                Protocol = "<NULL>",
+                ProtocolName = "<NULL>",
                 Type = TransferType.Command,
                 Frame = frame
             };

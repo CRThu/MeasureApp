@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CarrotProtocolLib.Logger;
 using CarrotProtocolLib.Util;
 
 namespace CarrotProtocolLib.Protocol
@@ -21,5 +22,13 @@ namespace CarrotProtocolLib.Protocol
         /// 数据负载显示
         /// </summary>
         public string PayloadDisplay { get; }
+
+        /// <summary>
+        /// 转换为Record
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <returns></returns>
+        public IRecord ToRecord(string from, string to);
     }
 }

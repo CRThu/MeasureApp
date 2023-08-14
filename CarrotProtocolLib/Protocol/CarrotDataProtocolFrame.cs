@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using CarrotProtocolLib.Logger;
 using CarrotProtocolLib.Util;
 
 namespace CarrotProtocolLib.Protocol
@@ -64,8 +65,15 @@ namespace CarrotProtocolLib.Protocol
         public byte[] FrameBytes => ToBytes();
         public string PayloadDisplay => Payload.BytesToEscapeString();
 
-        public static byte FrameStartByte = 0x3C;
-        public static byte FrameEndByte = 0x3E;
+        public const byte FrameStartByte = 0x3C;
+        public const byte FrameEndByte = 0x3E;
+
+        public const byte ProtocolIdAsciiTransfer64 = 0x31;
+        public const byte ProtocolIdAsciiTransfer256 = 0x32;
+        public const byte ProtocolIdAsciiTransfer2048 = 0x33;
+        public const byte ProtocolIdDataTransfer74 = 0x41;
+        public const byte ProtocolIdDataTransfer266 = 0x42;
+        public const byte ProtocolIdDataTransfer2058 = 0x43;
 
         /// <summary>
         /// byte[]转协议
@@ -136,18 +144,32 @@ namespace CarrotProtocolLib.Protocol
         /// </summary>
         /// <param name="ProtocolId"></param>
         /// <returns></returns>
-        public static int GetPacketLength(byte ProtocolId)
+        public static int GetPacketLength(byte protocolId)
         {
-            return ProtocolId switch
+            return protocolId switch
             {
-                0x30 => 16,
-                0x31 => 64,
-                0x32 => 256,
-                0x33 => 2048,
-                0x41 => 64 + 10,
-                0x42 => 256 + 10,
-                0x43 => 2048 + 10,
+
+                ProtocolIdAsciiTransfer64 => 64,
+                ProtocolIdAsciiTransfer256 => 256,
+                ProtocolIdAsciiTransfer2048 => 2048,
+                ProtocolIdDataTransfer74 => 64 + 10,
+                ProtocolIdDataTransfer266 => 256 + 10,
+                ProtocolIdDataTransfer2058 => 2048 + 10,
                 _ => -1,
+            };
+        }
+
+        public static TransferType GetTransferType(byte protocolId)
+        {
+            return protocolId switch
+            {
+                ProtocolIdAsciiTransfer64 => TransferType.Command,
+                ProtocolIdAsciiTransfer256 => TransferType.Command,
+                ProtocolIdAsciiTransfer2048 => TransferType.Command,
+                ProtocolIdDataTransfer74 => TransferType.Data,
+                ProtocolIdDataTransfer266 => TransferType.Data,
+                ProtocolIdDataTransfer2058 => TransferType.Data,
+                _ => TransferType.Command
             };
         }
 
@@ -208,6 +230,20 @@ namespace CarrotProtocolLib.Protocol
                 $"Payload: 0x{BytesEx.BytesToHexString(Payload)}, " +
                 $"Crc16: 0x{Crc16:X4}, " +
                 $"FrameEnd: 0x{FrameEnd:X2} }}";
+        }
+
+        public IRecord ToRecord(string from, string to)
+        {
+            return new ProtocolRecord()
+            {
+                Time = DateTime.Now,
+                From = from,
+                To = to,
+                Stream = StreamId,
+                ProtocolName = nameof(CarrotDataProtocolFrame),
+                Type = GetTransferType(ProtocolId),
+                Frame = this
+            };
         }
     }
 }

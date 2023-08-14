@@ -1,4 +1,5 @@
-﻿using CarrotProtocolLib.Util;
+﻿using CarrotProtocolLib.Logger;
+using CarrotProtocolLib.Util;
 
 namespace CarrotProtocolLib.Protocol
 {
@@ -62,6 +63,20 @@ namespace CarrotProtocolLib.Protocol
             byte[] bytesNew = new byte[length];
             Array.Copy(bytes, offset, bytesNew, 0, length);
             PayloadBytes = bytesNew;
+        }
+
+        public IRecord ToRecord(string from, string to)
+        {
+            return new ProtocolRecord()
+            {
+                Time = DateTime.Now,
+                From = from,
+                To = to,
+                Stream = StreamId,
+                ProtocolName = nameof(RawAsciiProtocolFrame),
+                Type = TransferType.Command,
+                Frame = this
+            };
         }
     }
 }

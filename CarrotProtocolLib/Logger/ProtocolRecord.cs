@@ -12,7 +12,8 @@ namespace CarrotProtocolLib.Logger
         public DateTime Time { get; set; }
         public string From { get; set; }
         public string To { get; set; }
-        public string Protocol { get; set; }
+        public int Stream { get; set; }
+        public string ProtocolName { get; set; }
         public TransferType Type { get; set; }
         public IProtocolFrame? Frame { get; set; }
 
@@ -21,7 +22,8 @@ namespace CarrotProtocolLib.Logger
             Time = DateTime.Now;
             From = string.Empty;
             To = string.Empty;
-            Protocol = string.Empty;
+            Stream = 0;
+            ProtocolName = string.Empty;
         }
 
         public override string ToString()
@@ -29,7 +31,8 @@ namespace CarrotProtocolLib.Logger
             return $"{{ Time: {Time}, " +
                 $"From: {From}, " +
                 $"To: {To}, " +
-                $"Protocol: {Protocol}, " +
+                $"Stream: {Stream}, " +
+                $"Protocol: {ProtocolName}, " +
                 $"Type: {Type}, " +
                 $"Frame Payload: {(Type == TransferType.Data ? "<DATA>" : Frame.PayloadDisplay)} }}";
         }

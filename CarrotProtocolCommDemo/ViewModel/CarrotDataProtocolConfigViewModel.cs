@@ -65,9 +65,9 @@ namespace CarrotProtocolCommDemo.ViewModel
 
         public CarrotDataProtocolConfigViewModel()
         {
-            protocolIdList = new int[] { 0x30, 0x31, 0x32, 0x33 };
+            protocolIdList = new int[] { 0x31, 0x32, 0x33 };
             //protocolId = protocolIdList.FirstOrDefault();
-            protocolId = 0x30;
+            protocolId = 0x31;
             streamIdList = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
             //streamId = streamIdList.FirstOrDefault();
             streamId = 1;
