@@ -25,10 +25,6 @@ namespace CarrotProtocolCommDemo
         private IDevice device;
 
         [ObservableProperty]
-        private ILogger logger;
-
-
-        [ObservableProperty]
         private string[] drivers;
 
         [ObservableProperty]
@@ -68,7 +64,6 @@ namespace CarrotProtocolCommDemo
         public MainWindowViewModel()
         {
             Device = new GeneralBufferedDevice();
-            Logger = new ProtocolLogger();
 
             drivers = new string[] { "SerialPort", "FTDI_D2XX" };
             SelectedDriver = "SerialPort";
@@ -111,26 +106,12 @@ namespace CarrotProtocolCommDemo
                     // Open
                     Debug.WriteLine("Open");
 
-                    string driverName = SelectedDriver switch
-                    {
-                        "SerialPort" => nameof(SerialPortDriver),
-                        "FTDI_D2XX" => nameof(SerialPortDriver),
-                        _ => throw new NotImplementedException()
-                    };
-                    string decodeServiceName = SelectedProtocolName switch
-                    {
-                        "CarrotDataProtocol" => nameof(CarrotDataProtocolDecodeService),
-                        "RawAsciiProtocol" => nameof(RawAsciiProtocolDecodeService),
-                        _ => throw new NotImplementedException()
-                    };
-
                     Device = DeviceFactory.Create(
-                        nameof(GeneralBufferedDevice),
-                        driverName, //nameof(SerialPortDriver),
-                        nameof(ProtocolLogger),
-                        nameof(DeviceDataReceiveService),
-                        decodeServiceName); // nameof(CarrotDataProtocolDecodeService));
-                    Device.Logger.LoggerUpdate += Logger_LoggerUpdate;
+                        "GeneralBufferedDevice",
+                        SelectedDriver,
+                        "ProtocolLogger",
+                        "DataReceive",
+                        SelectedProtocolName);
 
                     if (Device.Driver is SerialPortDriver)
                     {
@@ -157,16 +138,6 @@ namespace CarrotProtocolCommDemo
         {
             MessageBox.Show(ex.ToString());
             Device.Close();
-        }
-
-        private void Logger_LoggerUpdate(ILoggerRecord log, LoggerUpdateEvent e)
-        {
-            lock (StdOut)
-            {
-                if (StdOut.Length > 1024)
-                    StdOut = "...\n";
-                StdOut += log.ToString() + Environment.NewLine;
-            }
         }
 
         [RelayCommand]

@@ -77,10 +77,9 @@
         </TabControl>
 
         <TabControl Margin="368,10,10,10" Style="{StaticResource TabControlInLine}">
-            <TabItem Header="协议记录">
+            <TabItem Header="协议记录" IsSelected="True">
                 <Grid>
-                    <TextBox x:Name="StdOutTextBox" Text="{Binding StdOut}" Margin="10,10,10,234" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto"/>
-                    <DataGrid ItemsSource="{Binding Device.Logger.ProtocolList}" Margin="10,155,10,10" VerticalScrollBarVisibility="Auto" AutoGenerateColumns="False" RowHeight="30" ColumnHeaderHeight="30">
+                    <DataGrid ItemsSource="{Binding Device.Logger.ProtocolList}" Margin="10,10,10,10" VerticalScrollBarVisibility="Auto" AutoGenerateColumns="False" RowHeight="30" ColumnHeaderHeight="30">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Time" Binding="{Binding Time}" IsReadOnly="True" Width="80"/>
                             <!--<DataGridTextColumn Header="From" Binding="{Binding From}" IsReadOnly="True" Width="80"/>-->

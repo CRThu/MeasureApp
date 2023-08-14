@@ -27,8 +27,8 @@ namespace CarrotProtocolLib.Device
         {
             return driverName switch
             {
-                "SerialPortDriver" => new SerialPortDriver(),
-                "FtdiD2xxDriver" => new FtdiD2xxDriver(),
+                "SerialPort" => new SerialPortDriver(),
+                "FTDI_D2XX" => new FtdiD2xxDriver(),
                 _ => throw new NotImplementedException()
             };
         }
@@ -46,7 +46,7 @@ namespace CarrotProtocolLib.Device
         {
             return receiveServiceName switch
             {
-                "DeviceDataReceiveService" => new DeviceDataReceiveService(),
+                "DataReceive" => new DeviceDataReceiveService(),
                 _ => throw new NotImplementedException()
             };
         }
@@ -55,8 +55,8 @@ namespace CarrotProtocolLib.Device
         {
             return decodeServiceName switch
             {
-                "CarrotDataProtocolDecodeService" => new CarrotDataProtocolDecodeService(),
-                "RawAsciiProtocolDecodeService" => new RawAsciiProtocolDecodeService(),
+                "CarrotDataProtocol" => new CarrotDataProtocolDecodeService(),
+                "RawAsciiProtocol" => new RawAsciiProtocolDecodeService(),
                 _ => throw new NotImplementedException()
             };
         }
@@ -72,6 +72,15 @@ namespace CarrotProtocolLib.Device
             var receiveService = GetReceiveService(receiveServiceName);
             var decodeService = GetDecodeService(decodeServiceName);
 
+            Create(device, driver, logger, receiveService, decodeService);
+
+            return device;
+        }
+
+        public static void Create(
+            IDevice device, IDriver driver, ILogger logger,
+            DeviceDataReceiveService receiveService, ProtocolDecodeBaseService decodeService)
+        {
             device.Driver = driver;
             device.Logger = logger;
             device.DataReceiveService = receiveService;
@@ -90,9 +99,6 @@ namespace CarrotProtocolLib.Device
             decodeService.Device = device;
             decodeService.Logger = logger;
             // decodeService.ProtocolDecodeError
-
-
-            return device;
         }
     }
 }
