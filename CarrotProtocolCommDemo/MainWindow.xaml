@@ -93,7 +93,20 @@
             </TabItem>
             <TabItem Header="数据解析">
                 <Grid>
-                    <TextBlock Text="DECODE DATA"/>
+                    <Button Content="AddKey" Width="120" Height="35" HorizontalAlignment="Left" Margin="10,269,0,0" VerticalAlignment="Top" Command="{Binding DsVm.DataSourceDebugCommand}" CommandParameter="AddKey"/>
+                    <Button Content="ChangeKey" Width="120" Height="35" HorizontalAlignment="Left" Margin="260,269,0,0" VerticalAlignment="Top" Command="{Binding DsVm.DataSourceDebugCommand}" CommandParameter="ChangeKey"/>
+                    <Button Content="RemoveKey" Width="120" Height="35" Margin="135,269,0,0" VerticalAlignment="Top" Command="{Binding DsVm.DataSourceDebugCommand}" CommandParameter="RemoveKey" HorizontalAlignment="Left"/>
+                    <Button Content="AddValue" Width="120" Height="35" HorizontalAlignment="Left" Margin="10,309,0,0" VerticalAlignment="Top" Command="{Binding DsVm.DataSourceDebugCommand}" CommandParameter="AddValue"/>
+                    <Button Content="AddValues" Width="120" Height="35" Margin="135,309,0,0" VerticalAlignment="Top" Command="{Binding DsVm.DataSourceDebugCommand}" CommandParameter="AddValues" HorizontalAlignment="Left"/>
+                    <Button Content="RemoveValues" Width="120" Height="35" HorizontalAlignment="Left" Margin="260,309,0,0" VerticalAlignment="Top" Command="{Binding DsVm.DataSourceDebugCommand}" CommandParameter="RemoveValues"/>
+                    <ListBox HorizontalAlignment="Left" Height="254" Margin="10,10,0,0" VerticalAlignment="Top" Width="136" ItemsSource="{Binding DsVm.Ds.StorageDict}" DisplayMemberPath="Key" SelectedValue="{Binding DsVm.CurrentKey}" SelectedValuePath="Key"/>
+                    <ListView HorizontalAlignment="Left" Height="254" Margin="151,10,0,0" VerticalAlignment="Top" Width="261" ItemsSource="{Binding DsVm.Ds.StorageDict[111]}">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Number" DisplayMemberBinding="{Binding}"/>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
                 </Grid>
             </TabItem>
         </TabControl>

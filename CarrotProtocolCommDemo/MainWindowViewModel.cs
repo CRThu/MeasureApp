@@ -60,6 +60,10 @@ namespace CarrotProtocolCommDemo
         [ObservableProperty]
         public bool isOpen;
 
+        [ObservableProperty]
+        private DataStorageViewModel dsVm = new();
+
+
 
         public MainWindowViewModel()
         {

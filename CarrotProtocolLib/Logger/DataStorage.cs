@@ -1,14 +1,18 @@
-﻿using System;
+﻿using CarrotProtocolLib.Util;
+using CommunityToolkit.Mvvm.ComponentModel;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace CarrotProtocolLib.Logger
 {
-    public class DataStorage<T> where T : struct
+    public partial class DataStorage<T> : ObservableObject
     {
-        public Dictionary<string, List<T>> StorageDict { get; set; }
+        [ObservableProperty]
+        private ObservableDictionary<string, ObservableCollection<T>> storageDict;
 
         /// <summary>
         /// 线程安全管理
@@ -17,32 +21,33 @@ namespace CarrotProtocolLib.Logger
 
         public DataStorage()
         {
-            StorageDict = new();
+            storageDict = new();
+            LockObject = new object();
         }
 
-        private void CreateKeyIfNotExist(string key)
+        public void AddKey(string key)
         {
             if (!StorageDict.ContainsKey(key))
-                StorageDict.Add(key, new List<T>());
+                StorageDict.Add(key, new ObservableCollection<T>());
         }
 
         public void AddValue(string key, T value)
         {
             lock (LockObject)
             {
-                CreateKeyIfNotExist(key);
+                AddKey(key);
                 StorageDict[key].Add(value);
             }
         }
 
-        public void AddValue(string key, IEnumerable<T> value)
-        {
-            lock (LockObject)
-            {
-                CreateKeyIfNotExist(key);
-                StorageDict[key].AddRange(value);
-            }
-        }
+        //public void AddValue(string key, IEnumerable<T> value)
+        //{
+        //    lock (LockObject)
+        //    {
+        //        AddKey(key);
+        //        StorageDict[key].AddRange(value);
+        //    }
+        //}
 
         public void RemoveKey(string key)
         {
