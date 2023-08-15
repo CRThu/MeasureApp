@@ -24,6 +24,7 @@ namespace CarrotProtocolCommDemo.ViewModel
             Ds.AddValue("111", 111);
             Ds.AddValue("111", 222);
             Ds.AddValue("111", 333);
+            CurrentKey = Ds.StorageDict.Keys.FirstOrDefault();
         }
 
         [RelayCommand]
@@ -36,9 +37,9 @@ namespace CarrotProtocolCommDemo.ViewModel
                     Ds.AddKey(keyName);
                     CurrentKey = keyName;
                     break;
-                case "ChangeKey":
-                    break;
                 case "RemoveKey":
+                    Ds.RemoveKey(CurrentKey);
+                    CurrentKey = Ds.StorageDict.Keys.FirstOrDefault();
                     break;
                 case "AddValue":
                     if (CurrentKey is not null)
