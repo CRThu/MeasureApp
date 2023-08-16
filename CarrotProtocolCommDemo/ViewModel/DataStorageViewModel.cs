@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -38,16 +39,17 @@ namespace CarrotProtocolCommDemo.ViewModel
                     CurrentKey = keyName;
                     break;
                 case "RemoveKey":
-                    Ds.RemoveKey(CurrentKey);
+                    if (CurrentKey is not null && Ds.StorageDict.ContainsKey(CurrentKey))
+                        Ds.RemoveKey(CurrentKey);
                     CurrentKey = Ds.StorageDict.Keys.FirstOrDefault();
                     break;
                 case "AddValue":
                     if (CurrentKey is not null)
                         ds.AddValue(CurrentKey, random.Next(255));
                     break;
-                case "AddValues":
-                    break;
                 case "RemoveValues":
+                    if (CurrentKey is not null && Ds.StorageDict.TryGetValue(CurrentKey, out ObservableCollection<double> value))
+                        value.Clear();
                     break;
                 default:
                     return;
