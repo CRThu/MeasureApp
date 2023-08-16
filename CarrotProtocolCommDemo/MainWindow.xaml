@@ -98,8 +98,8 @@
                     <Button Content="AddValue" Width="120" Height="35" HorizontalAlignment="Left" Margin="10,309,0,0" VerticalAlignment="Top" Command="{Binding DsVm.DataSourceDebugCommand}" CommandParameter="AddValue"/>
                     <Button Content="RemoveValues" Width="120" Height="35" HorizontalAlignment="Left" Margin="135,309,0,0" VerticalAlignment="Top" Command="{Binding DsVm.DataSourceDebugCommand}" CommandParameter="RemoveValues"/>
                     <ListBox HorizontalAlignment="Left" Height="254" Margin="10,10,0,0" VerticalAlignment="Top" Width="136" ItemsSource="{Binding DsVm.Ds.StorageDict}" DisplayMemberPath="Key" SelectedValue="{Binding DsVm.CurrentKey}" SelectedValuePath="Key" d:ItemsSource="{d:SampleData ItemCount=5}"/>
-                    <ListView HorizontalAlignment="Left" Height="254" Margin="151,10,0,0" VerticalAlignment="Top" Width="261" d:ItemsSource="{d:SampleData ItemCount=5}">
-                        <ListView.ItemsSource>
+                    <DataGrid HorizontalAlignment="Left" Height="254" Margin="151,10,0,0" VerticalAlignment="Top" Width="261" d:ItemsSource="{d:SampleData ItemCount=5}" VerticalScrollBarVisibility="Auto" AutoGenerateColumns="False" RowHeight="30" ColumnHeaderHeight="30">
+                        <DataGrid.ItemsSource>
                             <MultiBinding>
                                 <MultiBinding.Converter>
                                     <conv:DictionaryItemConverter/>
@@ -107,18 +107,11 @@
                                 <Binding Path="DsVm.Ds.StorageDict"/>
                                 <Binding Path="DsVm.CurrentKey"/>
                             </MultiBinding>
-                        </ListView.ItemsSource>
-                        <ListView.View>
-                            <GridView>
-                                <GridViewColumn Header="Number" DisplayMemberBinding="{Binding}"/>
-                            </GridView>
-                        </ListView.View>
-                        <ListView.ItemContainerStyle>
-                            <Style TargetType="ListViewItem" BasedOn="{StaticResource ListViewItemBaseStyle}">
-                                <Setter Property="Height" Value="10"/>
-                            </Style>
-                        </ListView.ItemContainerStyle>
-                    </ListView>
+                        </DataGrid.ItemsSource>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Number" Binding="{Binding}" IsReadOnly="True" Width="Auto"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
                 </Grid>
             </TabItem>
         </TabControl>
