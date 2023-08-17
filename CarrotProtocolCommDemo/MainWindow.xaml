@@ -109,10 +109,10 @@
                         </DataGrid.Columns>
                     </DataGrid>
                     <Grid Margin="10,0,10,10" Visibility="Visible" Height="90" VerticalAlignment="Bottom">
-                        <Button Content="AddKey" Width="120" Height="35" HorizontalAlignment="Left" Margin="60,5,0,0" VerticalAlignment="Top" Command="{Binding DsVm.DataSourceDebugCommand}" CommandParameter="AddKey"/>
-                        <Button Content="RemoveKey" Width="120" Height="35" Margin="185,5,0,0" VerticalAlignment="Top" Command="{Binding DsVm.DataSourceDebugCommand}" CommandParameter="RemoveKey" HorizontalAlignment="Left"/>
-                        <Button Content="AddValue" Width="120" Height="35" HorizontalAlignment="Left" Margin="60,45,0,0" VerticalAlignment="Top" Command="{Binding DsVm.DataSourceDebugCommand}" CommandParameter="AddValue"/>
-                        <Button Content="RemoveValues" Width="120" Height="35" HorizontalAlignment="Left" Margin="185,45,0,0" VerticalAlignment="Top" Command="{Binding DsVm.DataSourceDebugCommand}" CommandParameter="RemoveValues"/>
+                        <Button Content="AddKey" Width="120" Height="35" HorizontalAlignment="Left" Margin="60,5,0,0" VerticalAlignment="Top" Command="{Binding DataSourceDebugCommand}" CommandParameter="AddKey"/>
+                        <Button Content="RemoveKey" Width="120" Height="35" Margin="185,5,0,0" VerticalAlignment="Top" Command="{Binding DataSourceDebugCommand}" CommandParameter="RemoveKey" HorizontalAlignment="Left"/>
+                        <Button Content="AddValue" Width="120" Height="35" HorizontalAlignment="Left" Margin="60,45,0,0" VerticalAlignment="Top" Command="{Binding DataSourceDebugCommand}" CommandParameter="AddValue"/>
+                        <Button Content="RemoveValues" Width="120" Height="35" HorizontalAlignment="Left" Margin="185,45,0,0" VerticalAlignment="Top" Command="{Binding DataSourceDebugCommand}" CommandParameter="RemoveValues"/>
                     </Grid>
                 </Grid>
             </TabItem>
