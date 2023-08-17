@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CarrotProtocolLib.Protocol;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace CarrotProtocolLib.Logger
 {
@@ -17,6 +18,7 @@ namespace CarrotProtocolLib.Logger
     public interface ILogger
     {
         public ObservableCollection<IRecord> ProtocolList { get; }
+        public DataLogger DataLogger { get; }
 
         public delegate void RecordUpdateHandler(IRecord log);
         public event RecordUpdateHandler RecordUpdate;

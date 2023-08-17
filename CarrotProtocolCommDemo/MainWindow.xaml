@@ -93,15 +93,15 @@
             </TabItem>
             <TabItem Header="数据解析">
                 <Grid>
-                    <ListBox HorizontalAlignment="Left" Height="364" Margin="10,0,0,0" VerticalAlignment="Center" Width="136" ItemsSource="{Binding DsVm.Ds.StorageDict}" DisplayMemberPath="Key" SelectedValue="{Binding DsVm.CurrentKey}" SelectedValuePath="Key" d:ItemsSource="{d:SampleData ItemCount=5}"/>
+                    <ListBox HorizontalAlignment="Left" Height="364" Margin="10,0,0,0" VerticalAlignment="Center" Width="136" ItemsSource="{Binding Device.Logger.DataLogger.Ds.StorageDict}" DisplayMemberPath="Key" SelectedValue="{Binding CurrentKey}" SelectedValuePath="Key" d:ItemsSource="{d:SampleData ItemCount=5}"/>
                     <DataGrid HorizontalAlignment="Left" Height="364" Margin="151,0,0,0" VerticalAlignment="Center" Width="261" d:ItemsSource="{d:SampleData ItemCount=5}" VerticalScrollBarVisibility="Auto" AutoGenerateColumns="False" RowHeight="30" ColumnHeaderHeight="30">
                         <DataGrid.ItemsSource>
                             <MultiBinding>
                                 <MultiBinding.Converter>
                                     <conv:DictionaryItemConverter/>
                                 </MultiBinding.Converter>
-                                <Binding Path="DsVm.Ds.StorageDict"/>
-                                <Binding Path="DsVm.CurrentKey"/>
+                                <Binding Path="Device.Logger.DataLogger.Ds.StorageDict"/>
+                                <Binding Path="CurrentKey"/>
                             </MultiBinding>
                         </DataGrid.ItemsSource>
                         <DataGrid.Columns>

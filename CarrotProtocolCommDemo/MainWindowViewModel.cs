@@ -60,9 +60,13 @@ namespace CarrotProtocolCommDemo
         [ObservableProperty]
         public bool isOpen;
 
-        [ObservableProperty]
-        private DataStorageViewModel dsVm = new();
+        //[ObservableProperty]
+        //private DataStorageViewModel dsVm = new();
 
+        [ObservableProperty]
+        string? currentKey = null;
+
+        Random random = new Random();
 
 
         public MainWindowViewModel()
@@ -75,6 +79,8 @@ namespace CarrotProtocolCommDemo
             ProtocolNames = new string[] { "CarrotDataProtocol", "RawAsciiProtocol" };
             SelectedProtocolName = "CarrotDataProtocol";
             selectedSerialPortBaudRate = SerialPortBaudRate.FirstOrDefault();
+
+            CurrentKey = null;
         }
 
         [RelayCommand]

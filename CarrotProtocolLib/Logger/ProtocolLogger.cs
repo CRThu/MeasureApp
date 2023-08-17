@@ -42,15 +42,7 @@ namespace CarrotProtocolLib.Logger
         /// <param name="frame"></param>
         public void Add(string from, string to, IProtocolFrame frame)
         {
-            ProtocolRecord record = new()
-            {
-                Time = DateTime.Now,
-                From = from,
-                To = to,
-                ProtocolName = "<NULL>",
-                Type = TransferType.Command,
-                Frame = frame
-            };
+            IRecord record = frame.ToRecord(from, to);
             ProtocolList.Add(record);
             RecordUpdate?.Invoke(record);
         }

@@ -65,13 +65,13 @@ namespace CarrotProtocolCommDemo.ViewModel
 
         public CarrotDataProtocolConfigViewModel()
         {
-            protocolIdList = new int[] { 0x31, 0x32, 0x33 };
+            protocolIdList = new int[] { 0x31, 0x32, 0x33, 0x41, 0x42, 0x43 };
             //protocolId = protocolIdList.FirstOrDefault();
-            protocolId = 0x31;
+            protocolId = 0x41;
             streamIdList = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
             //streamId = streamIdList.FirstOrDefault();
             streamId = 1;
-            payloadDisplay = @"\\11";
+            payloadDisplay = @"\0A\00\00\00";
         }
     }
 }

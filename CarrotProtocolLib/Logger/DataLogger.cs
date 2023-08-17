@@ -10,7 +10,12 @@ namespace CarrotProtocolLib.Logger
     public partial class DataLogger : ObservableObject
     {
         [ObservableProperty]
-        public DataStorage<double> ds = new();
+        private DataStorage<double> ds;
+
+        public DataLogger()
+        {
+            ds = new DataStorage<double>();
+        }
 
         /// <summary>
         /// 增加记录并解析数据到DataStorage
@@ -21,7 +26,7 @@ namespace CarrotProtocolLib.Logger
             if (record.Type == TransferType.Data)
             {
                 string streamKey = $"{record.From}.{record.Stream}";
-                Ds.AddValue(streamKey,record.Frame.DecodeData());
+                Ds.AddValue(streamKey, record.Frame.DecodeData());
             }
         }
     }
