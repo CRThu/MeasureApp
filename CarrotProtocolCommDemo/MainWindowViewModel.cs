@@ -179,34 +179,5 @@ namespace CarrotProtocolCommDemo
                 MessageBox.Show(ex.ToString());
             }
         }
-
-        [RelayCommand]
-        private void DataSourceDebug(object param)
-        {
-            var Ds = Device.Logger.DataLogger.Ds;
-            switch ((string)param)
-            {
-                case "AddKey":
-                    string keyName = Guid.NewGuid().ToString()[0..6];
-                    Ds.AddKey(keyName);
-                    CurrentKey = keyName;
-                    break;
-                case "RemoveKey":
-                    if (CurrentKey is not null && Ds.StorageDict.ContainsKey(CurrentKey))
-                        Ds.RemoveKey(CurrentKey);
-                    CurrentKey = Ds.StorageDict.Keys.FirstOrDefault();
-                    break;
-                case "AddValue":
-                    if (CurrentKey is not null)
-                        Ds.AddValue(CurrentKey, random.Next(255));
-                    break;
-                case "RemoveValues":
-                    if (CurrentKey is not null && Ds.StorageDict.TryGetValue(CurrentKey, out ObservableRangeCollection<double> value))
-                        value.Clear();
-                    break;
-                default:
-                    return;
-            }
-        }
     }
 }
