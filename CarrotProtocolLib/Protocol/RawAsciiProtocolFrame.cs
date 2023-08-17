@@ -78,5 +78,14 @@ namespace CarrotProtocolLib.Protocol
                 Frame = this
             };
         }
+
+        /// <summary>
+        /// 解析为数据
+        /// </summary>
+        /// <returns></returns>
+        public double[] DecodeData()
+        {
+            return Array.Empty<double>();
+        }
     }
 }

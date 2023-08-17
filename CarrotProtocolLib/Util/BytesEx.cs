@@ -132,59 +132,41 @@ namespace CarrotProtocolLib.Util
 
 
         /// <summary>
-        /// int转byte[]
-        /// 该方法将一个int类型的数据转换为byte[]形式，因为int为32bit，而byte为8bit所以在进行类型转换时，知会获取低8位，
-        /// 丢弃高24位。通过位移的方式，将32bit的数据转换成4个8bit的数据。注意 &0xff，在这当中，&0xff简单理解为一把剪刀，
-        /// 将想要获取的8位数据截取出来。
+        /// IntToBytes(0x11223344) = [ 0x44, 0x33, 0x22, 0x11 ]
         /// </summary>
         /// <param name="i">一个int数字</param>
         /// <returns>byte[]</returns>
-        public static byte[] Int2Bytes(this int i)
+        public static byte[] IntToBytes(this int i)
         {
             byte[] result = new byte[4];
-            result[0] = (byte)(i >> 24 & 0xFF);
-            result[1] = (byte)(i >> 16 & 0xFF);
-            result[2] = (byte)(i >> 8 & 0xFF);
-            result[3] = (byte)(i & 0xFF);
+            result[3] = (byte)(i >> 24 & 0xFF);
+            result[2] = (byte)(i >> 16 & 0xFF);
+            result[1] = (byte)(i >> 8 & 0xFF);
+            result[0] = (byte)(i & 0xFF);
             return result;
         }
 
         /// <summary>
-        /// byte[]转int
-        /// 利用int2ByteArray方法，将一个int转为byte[]，但在解析时，需要将数据还原。同样使用移位的方式，将适当的位数进行还原，
-        /// 0xFF为16进制的数据，所以在其后每加上一位，就相当于二进制加上4位。同时，使用|=号拼接数据，将其还原成最终的int数据
+        /// byte[]转int <br/>
+        /// BytesToInt(new byte[] { 0x44, 0x33, 0x22, 0x11 }) = 0x11223344
         /// </summary>
         /// <param name="bytes">byte类型数组</param>
+        /// <param name="offset">数组偏移量</param>
         /// <returns>int数字</returns>
-        public static int Bytes2Int(this byte[] bytes)
+        public static int BytesToInt(this byte[] bytes, int offset)
         {
-            int num = bytes[3] & 0xFF;
-            num |= bytes[2] << 8 & 0xFF00;
-            num |= bytes[1] << 16 & 0xFF0000;
-            num |= bytes[0] << 24 & 0xFF0000;
-            return num;
-        }
-
-        public static string Int2String(this int str)
-        {
-            string S = Convert.ToString(str);
-            return S;
-        }
-
-        public static int String2Int(this string str)
-        {
-            int a;
-            int.TryParse(str, out a);
-            int a1 = Convert.ToInt32(str);
-            return a1;
+            if (bytes.Length < offset + 4)
+            {
+                return -1;
+            }
+            return (bytes[offset + 3] & 0xff) << 24
+                 | (bytes[offset + 2] & 0xff) << 16
+                 | (bytes[offset + 1] & 0xff) << 8
+                 | (bytes[offset + 0] & 0xff) << 0;
         }
 
         /// <summary>
-        /// 将int转为低字节在后，高字节在前的byte数组
-        /// b[0] = 11111111(0xff) & 01100001
-        /// b[1] = 11111111(0xff) & 00000000
-        /// b[2] = 11111111(0xff) & 00000000
-        /// b[3] = 11111111(0xff) & 00000000
+        /// IntToBytes2(0x11223344) = [ 0x11, 0x22, 0x33, 0x44 ]
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
@@ -199,38 +181,21 @@ namespace CarrotProtocolLib.Util
         }
 
         /// <summary>
-        /// 将高字节在前转为int，低字节在后的byte数组(与IntToByteArray2想对应)
+        /// BytesToInt2(new byte[] { 0x11, 0x22, 0x33, 0x44 }) = 0x11223344
         /// </summary>
-        /// <param name="bArr"></param>
+        /// <param name="bytes">byte类型数组</param>
+        /// <param name="offset">数组偏移量</param>
         /// <returns></returns>
-        public static int BytesToInt2(this byte[] bArr)
+        public static int BytesToInt2(this byte[] bytes, int offset)
         {
-            if (bArr.Length != 4)
+            if (bytes.Length < offset + 4)
             {
                 return -1;
             }
-            return (bArr[0] & 0xff) << 24
-                        | (bArr[1] & 0xff) << 16
-                        | (bArr[2] & 0xff) << 8
-                        | (bArr[3] & 0xff) << 0;
+            return (bytes[offset + 0] & 0xff) << 24
+                 | (bytes[offset + 1] & 0xff) << 16
+                 | (bytes[offset + 2] & 0xff) << 8
+                 | (bytes[offset + 3] & 0xff) << 0;
         }
-
-        /*
-        public static string StringToHexArray(this string input)
-        {
-            char[] values = input.ToCharArray();
-            StringBuilder sb = new StringBuilder(input.Length * 3);
-            foreach (char letter in values)
-            {
-                // Get the integral value of the character.
-                int value = Convert.ToInt32(letter);
-                // Convert the decimal value to a hexadecimal value in string form.
-                string hexOutput = string.Format("{0:X}", value);
-                sb.Append(Convert.ToString(value, 16).PadLeft(2, '0').PadRight(3, ' '));
-            }
-
-            return sb.ToString().ToUpper();
-        }
-        */
     }
 }

@@ -17,6 +17,9 @@ namespace CarrotProtocolLib.Logger
         [ObservableProperty]
         private ObservableCollection<IRecord> protocolList;
 
+        [ObservableProperty]
+        private DataLogger dataLogger;
+
         // public delegate void RecordUpdateHandler(IRecord log);
         public event ILogger.RecordUpdateHandler RecordUpdate;
 
@@ -26,6 +29,9 @@ namespace CarrotProtocolLib.Logger
         public ProtocolLogger()
         {
             ProtocolList = new();
+            dataLogger = new();
+            // 事件订阅
+            RecordUpdate += DataLogger.Add;
         }
 
         /// <summary>

@@ -245,5 +245,24 @@ namespace CarrotProtocolLib.Protocol
                 Frame = this
             };
         }
+
+        /// <summary>
+        /// 解析为数据
+        /// </summary>
+        /// <returns></returns>
+        public double[] DecodeData()
+        {
+            if (GetTransferType(ProtocolId) == TransferType.Data)
+            {
+                int cnt = PayloadLength / 4;
+                double[] numArray = new double[cnt];
+                for (int i = 0; i < cnt; i++)
+                {
+                    numArray[i] = Payload.BytesToInt(i * 4);
+                }
+                return numArray;
+            }
+            return Array.Empty<double>();
+        }
     }
 }

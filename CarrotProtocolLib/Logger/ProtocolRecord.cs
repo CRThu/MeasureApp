@@ -15,7 +15,7 @@ namespace CarrotProtocolLib.Logger
         public int Stream { get; set; }
         public string ProtocolName { get; set; }
         public TransferType Type { get; set; }
-        public IProtocolFrame? Frame { get; set; }
+        public IProtocolFrame Frame { get; set; }
 
         public ProtocolRecord()
         {

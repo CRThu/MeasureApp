@@ -1,4 +1,5 @@
 ﻿using CarrotProtocolLib.Logger;
+using CarrotProtocolLib.Util;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System;
@@ -48,7 +49,7 @@ namespace CarrotProtocolCommDemo.ViewModel
                         ds.AddValue(CurrentKey, random.Next(255));
                     break;
                 case "RemoveValues":
-                    if (CurrentKey is not null && Ds.StorageDict.TryGetValue(CurrentKey, out ObservableCollection<double> value))
+                    if (CurrentKey is not null && Ds.StorageDict.TryGetValue(CurrentKey, out ObservableRangeCollection<double> value))
                         value.Clear();
                     break;
                 default:

@@ -12,7 +12,7 @@ namespace CarrotProtocolLib.Logger
     public partial class DataStorage<T> : ObservableObject
     {
         [ObservableProperty]
-        private ObservableDictionary<string, ObservableCollection<T>> storageDict;
+        private ObservableDictionary<string, ObservableRangeCollection<T>> storageDict;
 
         /// <summary>
         /// 线程安全管理
@@ -28,7 +28,7 @@ namespace CarrotProtocolLib.Logger
         public void AddKey(string key)
         {
             if (!StorageDict.ContainsKey(key))
-                StorageDict.Add(key, new ObservableCollection<T>());
+                StorageDict.Add(key, new ObservableRangeCollection<T>());
         }
 
         public void AddValue(string key, T value)
@@ -40,14 +40,14 @@ namespace CarrotProtocolLib.Logger
             }
         }
 
-        //public void AddValue(string key, IEnumerable<T> value)
-        //{
-        //    lock (LockObject)
-        //    {
-        //        AddKey(key);
-        //        StorageDict[key].AddRange(value);
-        //    }
-        //}
+        public void AddValue(string key, IEnumerable<T> value)
+        {
+            lock (LockObject)
+            {
+                AddKey(key);
+                StorageDict[key].AddRange(value);
+            }
+        }
 
         public void RemoveKey(string key)
         {

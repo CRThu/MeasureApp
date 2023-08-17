@@ -30,5 +30,11 @@ namespace CarrotProtocolLib.Protocol
         /// <param name="to"></param>
         /// <returns></returns>
         public IRecord ToRecord(string from, string to);
+
+        /// <summary>
+        /// 解析为数据
+        /// </summary>
+        /// <returns></returns>
+        public double[] DecodeData();
     }
 }
