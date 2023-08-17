@@ -93,12 +93,8 @@
             </TabItem>
             <TabItem Header="数据解析">
                 <Grid>
-                    <Button Content="AddKey" Width="120" Height="35" HorizontalAlignment="Left" Margin="10,269,0,0" VerticalAlignment="Top" Command="{Binding DsVm.DataSourceDebugCommand}" CommandParameter="AddKey"/>
-                    <Button Content="RemoveKey" Width="120" Height="35" Margin="135,269,0,0" VerticalAlignment="Top" Command="{Binding DsVm.DataSourceDebugCommand}" CommandParameter="RemoveKey" HorizontalAlignment="Left"/>
-                    <Button Content="AddValue" Width="120" Height="35" HorizontalAlignment="Left" Margin="10,309,0,0" VerticalAlignment="Top" Command="{Binding DsVm.DataSourceDebugCommand}" CommandParameter="AddValue"/>
-                    <Button Content="RemoveValues" Width="120" Height="35" HorizontalAlignment="Left" Margin="135,309,0,0" VerticalAlignment="Top" Command="{Binding DsVm.DataSourceDebugCommand}" CommandParameter="RemoveValues"/>
-                    <ListBox HorizontalAlignment="Left" Height="254" Margin="10,10,0,0" VerticalAlignment="Top" Width="136" ItemsSource="{Binding DsVm.Ds.StorageDict}" DisplayMemberPath="Key" SelectedValue="{Binding DsVm.CurrentKey}" SelectedValuePath="Key" d:ItemsSource="{d:SampleData ItemCount=5}"/>
-                    <DataGrid HorizontalAlignment="Left" Height="254" Margin="151,10,0,0" VerticalAlignment="Top" Width="261" d:ItemsSource="{d:SampleData ItemCount=5}" VerticalScrollBarVisibility="Auto" AutoGenerateColumns="False" RowHeight="30" ColumnHeaderHeight="30">
+                    <ListBox HorizontalAlignment="Left" Height="364" Margin="10,0,0,0" VerticalAlignment="Center" Width="136" ItemsSource="{Binding DsVm.Ds.StorageDict}" DisplayMemberPath="Key" SelectedValue="{Binding DsVm.CurrentKey}" SelectedValuePath="Key" d:ItemsSource="{d:SampleData ItemCount=5}"/>
+                    <DataGrid HorizontalAlignment="Left" Height="364" Margin="151,0,0,0" VerticalAlignment="Center" Width="261" d:ItemsSource="{d:SampleData ItemCount=5}" VerticalScrollBarVisibility="Auto" AutoGenerateColumns="False" RowHeight="30" ColumnHeaderHeight="30">
                         <DataGrid.ItemsSource>
                             <MultiBinding>
                                 <MultiBinding.Converter>
@@ -112,6 +108,12 @@
                             <DataGridTextColumn Header="Number" Binding="{Binding}" IsReadOnly="True" Width="Auto"/>
                         </DataGrid.Columns>
                     </DataGrid>
+                    <Grid Margin="10,0,10,10" Visibility="Visible" Height="90" VerticalAlignment="Bottom">
+                        <Button Content="AddKey" Width="120" Height="35" HorizontalAlignment="Left" Margin="60,5,0,0" VerticalAlignment="Top" Command="{Binding DsVm.DataSourceDebugCommand}" CommandParameter="AddKey"/>
+                        <Button Content="RemoveKey" Width="120" Height="35" Margin="185,5,0,0" VerticalAlignment="Top" Command="{Binding DsVm.DataSourceDebugCommand}" CommandParameter="RemoveKey" HorizontalAlignment="Left"/>
+                        <Button Content="AddValue" Width="120" Height="35" HorizontalAlignment="Left" Margin="60,45,0,0" VerticalAlignment="Top" Command="{Binding DsVm.DataSourceDebugCommand}" CommandParameter="AddValue"/>
+                        <Button Content="RemoveValues" Width="120" Height="35" HorizontalAlignment="Left" Margin="185,45,0,0" VerticalAlignment="Top" Command="{Binding DsVm.DataSourceDebugCommand}" CommandParameter="RemoveValues"/>
+                    </Grid>
                 </Grid>
             </TabItem>
         </TabControl>
