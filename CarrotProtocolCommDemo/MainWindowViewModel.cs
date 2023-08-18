@@ -179,5 +179,34 @@ namespace CarrotProtocolCommDemo
                 MessageBox.Show(ex.ToString());
             }
         }
+
+        [RelayCommand]
+        private void DataSourceOperation(string param)
+        {
+            switch (param)
+            {
+                case "RemoveKey":
+                    if (CurrentKey is not null)
+                        Device.Logger.DataLogger.Ds.RemoveKey(CurrentKey);
+                    break;
+                case "RemoveValues":
+                    if (CurrentKey is not null)
+                        Device.Logger.DataLogger.Ds.RemoveValues(CurrentKey);
+                    break;
+                case "TestValues":
+                    if (Device.Logger is not null)
+                    {
+                        string keyName = Guid.NewGuid().ToString()[0..6];
+                        Device.Logger.DataLogger.Ds.AddKey(keyName);
+
+                        double[] doubles = new double[1000000];
+                        for (int i = 0; i < doubles.Length; i++)
+                            doubles[i] = random.NextDouble();
+                        Device.Logger.DataLogger.Ds.AddValue(keyName, doubles);
+                    }
+                    break;
+
+            }
+        }
     }
 }

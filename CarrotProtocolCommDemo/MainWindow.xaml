@@ -93,8 +93,8 @@
             </TabItem>
             <TabItem Header="数据解析">
                 <Grid>
-                    <ListBox HorizontalAlignment="Left" Height="364" Margin="10,0,0,0" VerticalAlignment="Center" Width="136" ItemsSource="{Binding Device.Logger.DataLogger.Ds.StorageDict}" DisplayMemberPath="Key" SelectedValue="{Binding CurrentKey}" SelectedValuePath="Key" d:ItemsSource="{d:SampleData ItemCount=5}"/>
-                    <DataGrid HorizontalAlignment="Left" Height="364" Margin="151,0,0,0" VerticalAlignment="Center" Width="261" d:ItemsSource="{d:SampleData ItemCount=5}" VerticalScrollBarVisibility="Auto" AutoGenerateColumns="False" RowHeight="30" ColumnHeaderHeight="30">
+                    <ListBox Margin="10,10,276,63" ItemsSource="{Binding Device.Logger.DataLogger.Ds.StorageDict}" DisplayMemberPath="Key" SelectedValue="{Binding CurrentKey}" SelectedValuePath="Key" d:ItemsSource="{d:SampleData ItemCount=5}"/>
+                    <DataGrid Margin="151,10,10,63" d:ItemsSource="{d:SampleData ItemCount=5}" VerticalScrollBarVisibility="Auto" Style="{StaticResource DataGrid.Small}" HeadersVisibility="All" RowHeaderWidth="60" AutoGenerateColumns="False" hc:DataGridAttach.ShowRowNumber="True">
                         <DataGrid.ItemsSource>
                             <MultiBinding>
                                 <MultiBinding.Converter>
@@ -108,6 +108,9 @@
                             <DataGridTextColumn Header="Number" Binding="{Binding}" IsReadOnly="True" Width="Auto"/>
                         </DataGrid.Columns>
                     </DataGrid>
+                    <Button Content="RemoveKey" Margin="18,0,0,13" VerticalAlignment="Bottom" Command="{Binding DataSourceOperationCommand}" CommandParameter="RemoveKey" Height="30" Width="120" HorizontalAlignment="Left"/>
+                    <Button Content="RemoveValues" Margin="148,0,0,13" VerticalAlignment="Bottom" Command="{Binding DataSourceOperationCommand}" CommandParameter="RemoveValues" Width="120" Height="30" HorizontalAlignment="Left"/>
+                    <Button Content="TestValues" Margin="278,0,0,13" VerticalAlignment="Bottom" Command="{Binding DataSourceOperationCommand}" CommandParameter="TestValues" Width="120" Height="30" HorizontalAlignment="Left"/>
                 </Grid>
             </TabItem>
         </TabControl>
