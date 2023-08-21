@@ -21,6 +21,7 @@ namespace CarrotProtocolLib.Logger
 
         public DataStorage()
         {
+            //BindingOperations.EnableCollectionSynchronization()
             storageDict = new();
             LockObject = new object();
         }

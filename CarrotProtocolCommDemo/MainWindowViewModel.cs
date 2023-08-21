@@ -16,6 +16,7 @@ using CarrotProtocolLib.Device;
 using CarrotProtocolLib.Driver;
 using CarrotProtocolLib.Service;
 using CarrotProtocolCommDemo.ViewModel;
+using System.Windows.Data;
 
 namespace CarrotProtocolCommDemo
 {
@@ -68,7 +69,7 @@ namespace CarrotProtocolCommDemo
 
         public MainWindowViewModel()
         {
-            Device = new GeneralBufferedDevice();
+            Device = new GeneralBufferedDevice("SerialPort", "CarrotDataProtocol");
 
             drivers = new string[] { "SerialPort", "FTDI_D2XX" };
             SelectedDriver = "SerialPort";
@@ -113,12 +114,7 @@ namespace CarrotProtocolCommDemo
                     // Open
                     Debug.WriteLine("Open");
 
-                    Device = DeviceFactory.Create(
-                        "GeneralBufferedDevice",
-                        SelectedDriver,
-                        "ProtocolLogger",
-                        "DataReceive",
-                        SelectedProtocolName);
+                    Device = DeviceFactory.GetDevice("GeneralBufferedDevice", SelectedDriver, SelectedProtocolName);
 
                     if (Device.Driver is SerialPortDriver)
                     {
@@ -196,13 +192,17 @@ namespace CarrotProtocolCommDemo
                 case "TestValues":
                     if (Device.Logger is not null)
                     {
-                        string keyName = Guid.NewGuid().ToString()[0..6];
-                        Device.Logger.DataLogger.Ds.AddKey(keyName);
+                        Task task = Task.Run(() =>
+                        {
+                            string keyName = Guid.NewGuid().ToString()[0..6];
+                            Device.Logger.DataLogger.Ds.AddKey(keyName);
 
-                        double[] doubles = new double[1000000];
-                        for (int i = 0; i < doubles.Length; i++)
-                            doubles[i] = random.NextDouble();
-                        Device.Logger.DataLogger.Ds.AddValue(keyName, doubles);
+                            double[] doubles = new double[1000000];
+                            for (int i = 0; i < doubles.Length; i++)
+                                doubles[i] = random.NextDouble();
+                            Device.Logger.DataLogger.Ds.AddValue(keyName, doubles);
+                        });
+                        task.Wait();
                     }
                     break;
 
