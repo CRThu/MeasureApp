@@ -22,17 +22,7 @@ namespace CarrotProtocolLib.Device
         /// <summary>
         /// 记录器
         /// </summary>
-        public ILogger Logger { get; set; }
-
-        /// <summary>
-        /// 数据接收服务
-        /// </summary>
-        public DeviceDataReceiveService DataReceiveService { get; set; }
-
-        /// <summary>
-        /// 协议解码服务
-        /// </summary>
-        public ProtocolDecodeBaseService ProtocolDecodeService { get; set; }
+        public ProtocolLogger Logger { get; set; }
 
         /// <summary>
         /// 缓冲区

@@ -25,7 +25,7 @@ namespace CarrotProtocolLib.Device
         /// <summary>
         /// 记录器
         /// </summary>
-        public ILogger Logger { get; set; }
+        public ProtocolLogger Logger { get; set; }
 
         /// <summary>
         /// 数据接收服务
@@ -51,12 +51,43 @@ namespace CarrotProtocolLib.Device
         /// 构造函数
         /// </summary>
         /// <param name="bufferSize"></param>
-        public GeneralBufferedDevice(int bufferSize = 1048576 * 16)
+        public GeneralBufferedDevice(string driverName, string decodeServiceName, int bufferSize = 1048576 * 16)
         {
             //RxBuffer = new(1048576 * 16);
             RxBuffer = new(bufferSize);
 
-            Driver = new SerialPortDriver();
+            Driver = GetDriver(driverName);
+            Logger = new ProtocolLogger();
+
+            DataReceiveService = new();
+            // DataReceiveService initial
+            DataReceiveService.Device = this;
+
+            var decodeService = GetDecodeService(decodeServiceName);
+            ProtocolDecodeService = decodeService;
+            // ProtocolDecodeService initial
+            ProtocolDecodeService.Device = this;
+            ProtocolDecodeService.Logger = Logger;
+        }
+
+        private static ProtocolDecodeBaseService GetDecodeService(string decodeServiceName)
+        {
+            return decodeServiceName switch
+            {
+                "CarrotDataProtocol" => new CarrotDataProtocolDecodeService(),
+                "RawAsciiProtocol" => new RawAsciiProtocolDecodeService(),
+                _ => throw new NotImplementedException()
+            };
+        }
+
+        private static IDriver GetDriver(string driverName)
+        {
+            return driverName switch
+            {
+                "SerialPort" => new SerialPortDriver(),
+                "FTDI_D2XX" => new FtdiD2xxDriver(),
+                _ => throw new NotImplementedException()
+            };
         }
 
         /// <summary>
@@ -99,7 +130,7 @@ namespace CarrotProtocolLib.Device
         public void Write<T>(T frame) where T : IProtocolFrame
         {
             Write(frame.FrameBytes, 0, frame.FrameBytes.Length);
-            Logger.Add("local",nameof(Driver),frame);
+            Logger.Add("local", nameof(Driver), frame);
         }
 
         /// <summary>

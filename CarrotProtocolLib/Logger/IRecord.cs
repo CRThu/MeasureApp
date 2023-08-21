@@ -7,6 +7,12 @@ using System.Threading.Tasks;
 
 namespace CarrotProtocolLib.Logger
 {
+    public enum TransferType
+    {
+        Command,
+        Data
+    }
+
     public interface IRecord
     {
         public DateTime Time { get; set; }

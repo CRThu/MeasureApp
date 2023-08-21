@@ -6,22 +6,23 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace CarrotProtocolLib.Logger
 {
-    public partial class ProtocolLogger : ObservableObject, ILogger
+    public partial class ProtocolLogger : ObservableObject
     {
         /// <summary>
         /// 协议存储列表
         /// </summary>
         [ObservableProperty]
-        private ObservableCollection<IRecord> protocolList;
+        private List<IRecord> protocolList;
 
         [ObservableProperty]
         private DataLogger dataLogger;
 
-        // public delegate void RecordUpdateHandler(IRecord log);
-        public event ILogger.RecordUpdateHandler RecordUpdate;
+        public delegate void RecordUpdateHandler(IRecord log);
+        public event RecordUpdateHandler RecordUpdate;
 
         /// <summary>
         /// 构造函数
