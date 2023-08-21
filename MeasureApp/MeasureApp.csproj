@@ -93,20 +93,22 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Reference Include="NationalInstruments.Common">
-		  <Private>True</Private>
-		</Reference>
-		<Reference Include="NationalInstruments.VisaNS">
-		  <Private>True</Private>
-		</Reference>
-	</ItemGroup>
-
-	<ItemGroup>
 	  <Folder Include="View\Web\" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <ProjectReference Include="..\CarrotProtocolLib\CarrotProtocolLib.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Reference Include="NationalInstruments.Common">
+	    <HintPath>..\DLL\NationalInstruments\NationalInstruments.Common.dll</HintPath>
+	    <Private>True</Private>
+	  </Reference>
+	  <Reference Include="NationalInstruments.VisaNS">
+	    <HintPath>..\DLL\NationalInstruments\NationalInstruments.VisaNS.dll</HintPath>
+	    <Private>True</Private>
+	  </Reference>
 	</ItemGroup>
 
 	<ItemGroup>
