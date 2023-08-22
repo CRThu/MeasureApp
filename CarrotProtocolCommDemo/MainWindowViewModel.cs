@@ -65,9 +65,6 @@ namespace CarrotProtocolCommDemo
         [ObservableProperty]
         public bool isOpen;
 
-        [ObservableProperty]
-        string? currentKey = null;
-
         Random random = new Random();
 
 
@@ -83,8 +80,6 @@ namespace CarrotProtocolCommDemo
             ProtocolNames = new string[] { "CarrotDataProtocol", "RawAsciiProtocol" };
             SelectedProtocolName = "CarrotDataProtocol";
             selectedSerialPortBaudRate = SerialPortBaudRate.FirstOrDefault();
-
-            CurrentKey = null;
         }
 
         [RelayCommand]
@@ -188,21 +183,20 @@ namespace CarrotProtocolCommDemo
             switch (param)
             {
                 case "RemoveKey":
-                    if (CurrentKey is not null)
-                        Logger.DataLogger.Ds.RemoveKey(CurrentKey);
+                    if (Logger.DataLogger.Ds.CurrentKey is not null)
+                        Logger.DataLogger.Ds.RemoveKey(Logger.DataLogger.Ds.CurrentKey);
                     break;
                 case "RemoveValues":
-                    if (CurrentKey is not null)
-                        Logger.DataLogger.Ds.RemoveValues(CurrentKey);
+                    if (Logger.DataLogger.Ds.CurrentKey is not null)
+                        Logger.DataLogger.Ds.RemoveValues(Logger.DataLogger.Ds.CurrentKey);
                     break;
                 case "TestValues":
                     if (Logger is not null)
                     {
                         Task task = Task.Run(() =>
                         {
-                            //string keyName = Guid.NewGuid().ToString()[0..6];
-                            //Logger.DataLogger.Ds.AddKey(keyName);
-                            string keyName = "111111";
+                            string keyName = Guid.NewGuid().ToString()[0..6];
+                            //string keyName = "111111";
 
                             double[] doubles = new double[1000000];
                             for (int i = 0; i < doubles.Length; i++)

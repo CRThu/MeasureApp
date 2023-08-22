@@ -8,90 +8,125 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Input;
 
 namespace CarrotProtocolCommDemo.Logger
 {
     public partial class DataStorage<T> : ObservableObject
     {
+        private Dictionary<string, List<T>> StorageDict;
+
         [ObservableProperty]
-        private ObservableDictionary<string, ObservableRangeCollection<T>> storageDict;
+        [NotifyPropertyChangedFor(nameof(DisplayData))]
+        private string currentKey;
+
+        public List<T> DisplayData
+        {
+            get
+            {
+                lock (LockObject)
+                {
+                    if (CurrentKey is not null && StorageDict.TryGetValue(CurrentKey, out var value))
+                    {
+                        return value;
+                    }
+                    else
+                    {
+                        return new List<T>();
+                    }
+                }
+            }
+        }
+
+        public string[] DisplayKeys
+        {
+            get
+            {
+                lock (LockObject)
+                {
+                    if (StorageDict is not null)
+                    {
+                        return StorageDict.Keys.ToArray();
+                    }
+                    else
+                    {
+                        return Array.Empty<string>();
+                    }
+                }
+            }
+        }
 
         /// <summary>
         /// 线程安全管理
         /// </summary>
-        private readonly object DictLockObject;
-
-        /// <summary>
-        /// 线程安全管理
-        /// </summary>
-        private readonly object ListLockObject;
+        private readonly object LockObject;
 
         public DataStorage()
         {
-            storageDict = new();
-            DictLockObject = new object();
-            ListLockObject = new object();
-            BindingOperations.EnableCollectionSynchronization(storageDict, DictLockObject);
+            StorageDict = new();
+            LockObject = new object();
         }
 
         public void CreateKeyIfNotExist(string key)
         {
-            lock (DictLockObject)
+            lock (LockObject)
             {
                 if (!StorageDict.ContainsKey(key))
                 {
-                    var list = new ObservableRangeCollection<T>();
+                    var list = new List<T>();
                     StorageDict.Add(key, list);
-                    BindingOperations.EnableCollectionSynchronization(list, ListLockObject);
                 }
             }
+
+            OnPropertyChanged(nameof(DisplayKeys));
         }
 
         public void AddValue(string key, T value)
         {
             CreateKeyIfNotExist(key);
-            lock (DictLockObject)
+
+            lock (LockObject)
             {
-                lock (ListLockObject)
-                {
-                    StorageDict[key].Add(value);
-                }
+                StorageDict[key].Add(value);
             }
+
+            OnPropertyChanged(nameof(DisplayData));
         }
 
         public void AddValue(string key, IEnumerable<T> value)
         {
             CreateKeyIfNotExist(key);
-            lock (DictLockObject)
+
+            lock (LockObject)
             {
-                lock (ListLockObject)
-                {
-                    StorageDict[key].AddRange(value);
-                }
+                StorageDict[key].AddRange(value);
             }
+
+            OnPropertyChanged(nameof(DisplayData));
         }
 
         public void RemoveKey(string key)
         {
-            lock (DictLockObject)
+            lock (LockObject)
             {
                 if (StorageDict.ContainsKey(key))
                 {
-                    BindingOperations.DisableCollectionSynchronization(StorageDict[key]);
                     StorageDict.Remove(key);
                 }
             }
+
+            OnPropertyChanged(nameof(DisplayKeys));
+            OnPropertyChanged(nameof(DisplayData));
         }
 
         public void RemoveValues(string key)
         {
-            lock (DictLockObject)
+            lock (LockObject)
             {
-                lock (ListLockObject)
-                {
-                    StorageDict[key].Clear();
-                }
+                StorageDict[key].Clear();
             }
+
+            OnPropertyChanged(nameof(DisplayData));
         }
     }
 }
