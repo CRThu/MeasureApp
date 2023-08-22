@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CarrotProtocolLib.Logger
+namespace CarrotProtocolCommDemo.Logger
 {
     public partial class DataStorageValue<T> : ObservableObject
     {

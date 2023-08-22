@@ -1,11 +1,12 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CarrotProtocolLib.Logger;
+using CommunityToolkit.Mvvm.ComponentModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CarrotProtocolLib.Logger
+namespace CarrotProtocolCommDemo.Logger
 {
     public partial class DataLogger : ObservableObject
     {

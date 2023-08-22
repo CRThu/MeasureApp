@@ -17,6 +17,7 @@ using CarrotProtocolLib.Driver;
 using CarrotProtocolLib.Service;
 using CarrotProtocolCommDemo.ViewModel;
 using System.Windows.Data;
+using CarrotProtocolCommDemo.Logger;
 
 namespace CarrotProtocolCommDemo
 {
@@ -74,7 +75,7 @@ namespace CarrotProtocolCommDemo
         {
             Device = new GeneralBufferedDevice("SerialPort", "CarrotDataProtocol", Logger);
             Logger = new ProtocolLogger();
-            Logger.DataLogger.Ds.AddKey("111111");
+            Logger.DataLogger.Ds.CreateKeyIfNotExist("111111");
 
             drivers = new string[] { "SerialPort", "FTDI_D2XX" };
             SelectedDriver = "SerialPort";
