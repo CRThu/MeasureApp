@@ -72,7 +72,6 @@ namespace CarrotProtocolCommDemo
         {
             Device = new GeneralBufferedDevice("SerialPort", "CarrotDataProtocol", Logger);
             Logger = new ProtocolLogger();
-            Logger.DataLogger.Ds.CreateKeyIfNotExist("111111");
 
             drivers = new string[] { "SerialPort", "FTDI_D2XX" };
             SelectedDriver = "SerialPort";
@@ -206,7 +205,18 @@ namespace CarrotProtocolCommDemo
                         task.Wait();
                     }
                     break;
+            }
+        }
 
+        [RelayCommand]
+        private void LoggerRecordOperation(string param)
+        {
+            switch (param)
+            {
+                case "ClearRecord":
+                    break;
+                case "TestRecords":
+                    break;
             }
         }
     }

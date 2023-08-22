@@ -79,7 +79,7 @@
         <TabControl Margin="368,10,10,10" Style="{StaticResource TabControlInLine}">
             <TabItem Header="协议记录" IsSelected="True">
                 <Grid>
-                    <DataGrid ItemsSource="{Binding Device.Logger.ProtocolList}" Margin="10,10,10,10" VerticalScrollBarVisibility="Auto" AutoGenerateColumns="False" RowHeight="30" ColumnHeaderHeight="30">
+                    <DataGrid ItemsSource="{Binding Device.Logger.ProtocolList}" Margin="10,10,10,48" VerticalScrollBarVisibility="Auto" AutoGenerateColumns="False" RowHeight="30" ColumnHeaderHeight="30">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Time" Binding="{Binding Time}" IsReadOnly="True" Width="80"/>
                             <!--<DataGridTextColumn Header="From" Binding="{Binding From}" IsReadOnly="True" Width="80"/>-->
@@ -89,6 +89,8 @@
                             <DataGridTextColumn Header="Payload" Binding="{Binding Frame.PayloadDisplay}" IsReadOnly="True" Width="120"/>
                         </DataGrid.Columns>
                     </DataGrid>
+                    <Button Content="ClearRecord" Margin="18,0,0,13" VerticalAlignment="Bottom" Command="{Binding LoggerRecordOperationCommand}" CommandParameter="ClearRecord" Height="30" Width="120" HorizontalAlignment="Left"/>
+                    <Button Content="TestRecords" Margin="148,0,0,13" VerticalAlignment="Bottom" Command="{Binding LoggerRecordOperationCommand}" CommandParameter="TestRecords" Width="120" Height="30" HorizontalAlignment="Left"/>
                 </Grid>
             </TabItem>
             <TabItem Header="数据解析">
