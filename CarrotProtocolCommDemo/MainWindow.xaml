@@ -93,14 +93,14 @@
             </TabItem>
             <TabItem Header="数据解析">
                 <Grid>
-                    <ListBox Margin="10,10,276,63" ItemsSource="{Binding Device.Logger.DataLogger.Ds.StorageDict}" DisplayMemberPath="Key" SelectedValue="{Binding CurrentKey}" SelectedValuePath="Key" d:ItemsSource="{d:SampleData ItemCount=5}"/>
+                    <ListBox Margin="10,10,276,63" ItemsSource="{Binding Logger.DataLogger.Ds.StorageDict}" DisplayMemberPath="Key" SelectedValue="{Binding CurrentKey}" SelectedValuePath="Key" d:ItemsSource="{d:SampleData ItemCount=5}"/>
                     <DataGrid Margin="151,10,10,63" d:ItemsSource="{d:SampleData ItemCount=5}" VerticalScrollBarVisibility="Auto" Style="{StaticResource DataGrid.Small}" HeadersVisibility="All" RowHeaderWidth="60" AutoGenerateColumns="False" hc:DataGridAttach.ShowRowNumber="True">
                         <DataGrid.ItemsSource>
                             <MultiBinding>
                                 <MultiBinding.Converter>
                                     <conv:DictionaryItemConverter/>
                                 </MultiBinding.Converter>
-                                <Binding Path="Device.Logger.DataLogger.Ds.StorageDict"/>
+                                <Binding Path="Logger.DataLogger.Ds.StorageDict"/>
                                 <Binding Path="CurrentKey"/>
                             </MultiBinding>
                         </DataGrid.ItemsSource>

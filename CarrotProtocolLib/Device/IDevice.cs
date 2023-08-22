@@ -22,7 +22,7 @@ namespace CarrotProtocolLib.Device
         /// <summary>
         /// 记录器
         /// </summary>
-        public ProtocolLogger Logger { get; set; }
+        public ILogger Logger { get; set; }
 
         /// <summary>
         /// 缓冲区

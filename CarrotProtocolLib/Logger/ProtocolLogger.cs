@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace CarrotProtocolLib.Logger
 {
-    public partial class ProtocolLogger : ObservableObject
+    public partial class ProtocolLogger : ObservableObject, ILogger
     {
         /// <summary>
         /// 协议存储列表

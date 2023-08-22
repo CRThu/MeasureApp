@@ -19,7 +19,7 @@ namespace CarrotProtocolLib.Service
         /// <summary>
         /// 数据帧存储接口
         /// </summary>
-        public ProtocolLogger? Logger { get; set; }
+        public ILogger Logger { get; set; }
 
         public delegate void ProtocolDecodeErrorHandler(Exception ex);
         public event ProtocolDecodeErrorHandler ProtocolDecodeError;

@@ -26,6 +26,9 @@ namespace CarrotProtocolCommDemo
         private IDevice device;
 
         [ObservableProperty]
+        private ProtocolLogger logger;
+
+        [ObservableProperty]
         private string[] drivers;
 
         [ObservableProperty]
@@ -69,7 +72,9 @@ namespace CarrotProtocolCommDemo
 
         public MainWindowViewModel()
         {
-            Device = new GeneralBufferedDevice("SerialPort", "CarrotDataProtocol");
+            Device = new GeneralBufferedDevice("SerialPort", "CarrotDataProtocol", Logger);
+            Logger = new ProtocolLogger();
+            Logger.DataLogger.Ds.AddKey("111111");
 
             drivers = new string[] { "SerialPort", "FTDI_D2XX" };
             SelectedDriver = "SerialPort";
@@ -114,7 +119,7 @@ namespace CarrotProtocolCommDemo
                     // Open
                     Debug.WriteLine("Open");
 
-                    Device = DeviceFactory.GetDevice("GeneralBufferedDevice", SelectedDriver, SelectedProtocolName);
+                    Device = DeviceFactory.GetDevice("GeneralBufferedDevice", SelectedDriver, SelectedProtocolName, Logger);
 
                     if (Device.Driver is SerialPortDriver)
                     {
@@ -183,24 +188,25 @@ namespace CarrotProtocolCommDemo
             {
                 case "RemoveKey":
                     if (CurrentKey is not null)
-                        Device.Logger.DataLogger.Ds.RemoveKey(CurrentKey);
+                        Logger.DataLogger.Ds.RemoveKey(CurrentKey);
                     break;
                 case "RemoveValues":
                     if (CurrentKey is not null)
-                        Device.Logger.DataLogger.Ds.RemoveValues(CurrentKey);
+                        Logger.DataLogger.Ds.RemoveValues(CurrentKey);
                     break;
                 case "TestValues":
-                    if (Device.Logger is not null)
+                    if (Logger is not null)
                     {
                         Task task = Task.Run(() =>
                         {
-                            string keyName = Guid.NewGuid().ToString()[0..6];
-                            Device.Logger.DataLogger.Ds.AddKey(keyName);
+                            //string keyName = Guid.NewGuid().ToString()[0..6];
+                            //Logger.DataLogger.Ds.AddKey(keyName);
+                            string keyName = "111111";
 
                             double[] doubles = new double[1000000];
                             for (int i = 0; i < doubles.Length; i++)
                                 doubles[i] = random.NextDouble();
-                            Device.Logger.DataLogger.Ds.AddValue(keyName, doubles);
+                            Logger.DataLogger.Ds.AddValue(keyName, doubles);
                         });
                         task.Wait();
                     }

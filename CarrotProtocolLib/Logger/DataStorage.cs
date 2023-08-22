@@ -28,24 +28,27 @@ namespace CarrotProtocolLib.Logger
 
         public void AddKey(string key)
         {
-            if (!StorageDict.ContainsKey(key))
-                StorageDict.Add(key, new ObservableRangeCollection<T>());
+            lock (LockObject)
+            {
+                if (!StorageDict.ContainsKey(key))
+                    StorageDict.Add(key, new ObservableRangeCollection<T>());
+            }
         }
 
         public void AddValue(string key, T value)
         {
+            AddKey(key);
             lock (LockObject)
             {
-                AddKey(key);
                 StorageDict[key].Add(value);
             }
         }
 
         public void AddValue(string key, IEnumerable<T> value)
         {
+            AddKey(key);
             lock (LockObject)
             {
-                AddKey(key);
                 StorageDict[key].AddRange(value);
             }
         }

@@ -14,11 +14,11 @@ namespace CarrotProtocolLib.Device
     /// </summary>
     public static class DeviceFactory
     {
-        public static IDevice GetDevice(string deviceName, string driverName, string decodeProtocol)
+        public static IDevice GetDevice(string deviceName, string driverName, string decodeProtocol,ILogger logger)
         {
             return deviceName switch
             {
-                "GeneralBufferedDevice" => new GeneralBufferedDevice(driverName, decodeProtocol),
+                "GeneralBufferedDevice" => new GeneralBufferedDevice(driverName, decodeProtocol, logger),
                 _ => throw new NotImplementedException()
             };
         }
