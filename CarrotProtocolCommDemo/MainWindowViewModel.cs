@@ -202,7 +202,7 @@ namespace CarrotProtocolCommDemo
                                 doubles[i] = random.NextDouble();
                             Logger.DataLogger.Ds.AddValue(keyName, doubles);
                         });
-                        task.Wait();
+                        //task.Wait();
                     }
                     break;
             }
@@ -214,19 +214,19 @@ namespace CarrotProtocolCommDemo
             switch (param)
             {
                 case "ClearRecord":
-                    Logger.ProtocolList.Clear();
+                    Logger.Clear();
                     break;
                 case "TestRecords":
                     if (Logger is not null)
                     {
                         Task task = Task.Run(() =>
                         {
-                            RawAsciiProtocolFrame[] frames = new RawAsciiProtocolFrame[10000];
-                            for (int i = 0; i < 10000; i++)
+                            RawAsciiProtocolFrame[] frames = new RawAsciiProtocolFrame[1000000];
+                            for (int i = 0; i < frames.Length; i++)
                                 frames[i] = new RawAsciiProtocolFrame("test");
                             Logger.Add("test", "test", frames);
                         });
-                        task.Wait();
+                        //task.Wait();
                     }
                     break;
             }

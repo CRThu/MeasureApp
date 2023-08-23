@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CarrotProtocolCommDemo"
         xmlns:conv="clr-namespace:CarrotProtocolCommDemo.Converter"
+        xmlns:rec="clr-namespace:CarrotProtocolLib.Logger;assembly=CarrotProtocolLib"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:hc="https://handyorg.github.io/handycontrol"
         d:DataContext="{d:DesignInstance Type=local:MainWindowViewModel}"
@@ -79,10 +80,10 @@
         <TabControl Margin="368,10,10,10" Style="{StaticResource TabControlInLine}">
             <TabItem Header="协议记录" IsSelected="True">
                 <Grid>
-                    <DataGrid ItemsSource="{Binding Device.Logger.ProtocolList}" Margin="10,10,10,48" d:ItemsSource="{d:SampleData ItemCount=5}" VerticalScrollBarVisibility="Auto" Style="{StaticResource DataGrid.Small}" HeadersVisibility="All" RowHeaderWidth="60" AutoGenerateColumns="False" hc:DataGridAttach.ShowRowNumber="True">
+                    <DataGrid ItemsSource="{Binding Path=Device.Logger.DisplayList}" Margin="10,10,10,48" d:ItemsSource="{d:SampleData ItemCount=5}" VerticalScrollBarVisibility="Auto" Style="{StaticResource DataGrid.Small}" HeadersVisibility="All" RowHeaderWidth="60" AutoGenerateColumns="False" hc:DataGridAttach.ShowRowNumber="True">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Time" Binding="{Binding Time}" IsReadOnly="True" Width="80"/>
-                            <!--<DataGridTextColumn Header="From" Binding="{Binding From}" IsReadOnly="True" Width="80"/>-->
+                            <DataGridTextColumn Header="Time" Binding="{Binding Path=Time}" IsReadOnly="True" Width="80"/>
+                            <DataGridTextColumn Header="From" Binding="{Binding Path=From}" IsReadOnly="True" Width="80"/>
                             <DataGridTextColumn Header="To" Binding="{Binding To}" IsReadOnly="True" Width="80"/>
                             <!--<DataGridTextColumn Header="Protocol" Binding="{Binding Protocol}" IsReadOnly="True" Width="80"/>-->
                             <!--<DataGridTextColumn Header="Type" Binding="{Binding Type}" IsReadOnly="True" Width="90"/>-->

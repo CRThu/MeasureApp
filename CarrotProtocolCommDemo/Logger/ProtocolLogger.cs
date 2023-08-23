@@ -16,8 +16,18 @@ namespace CarrotProtocolCommDemo.Logger
         /// <summary>
         /// 协议存储列表
         /// </summary>
-        [ObservableProperty]
-        private ObservableCollection<IRecord> protocolList;
+        public List<IRecord> protocolList;
+
+        public List<IRecord> DisplayList
+        {
+            get
+            {
+                lock (lockObject)
+                {
+                    return new(protocolList);
+                }
+            }
+        }
 
         private readonly object lockObject;
 
@@ -32,13 +42,19 @@ namespace CarrotProtocolCommDemo.Logger
         /// </summary>
         public ProtocolLogger()
         {
-            ProtocolList = new();
+            protocolList = new();
             lockObject = new();
-            BindingOperations.EnableCollectionSynchronization(protocolList, lockObject);
+            //BindingOperations.EnableCollectionSynchronization(protocolList, lockObject);
 
             dataLogger = new();
             // 事件订阅
             RecordUpdate += DataLogger.Add;
+        }
+
+        public void Clear()
+        {
+            protocolList.Clear();
+            OnPropertyChanged(nameof(DisplayList));
         }
 
         /// <summary>
@@ -52,8 +68,9 @@ namespace CarrotProtocolCommDemo.Logger
             IRecord record = frame.ToRecord(from, to);
             lock (lockObject)
             {
-                ProtocolList.Add(record);
+                protocolList.Add(record);
             }
+            OnPropertyChanged(nameof(DisplayList));
             RecordUpdate?.Invoke(record);
         }
 
@@ -70,10 +87,11 @@ namespace CarrotProtocolCommDemo.Logger
                 IRecord record = frame.ToRecord(from, to);
                 lock (lockObject)
                 {
-                    ProtocolList.Add(record);
+                    protocolList.Add(record);
                 }
                 RecordUpdate?.Invoke(record);
             }
+            OnPropertyChanged(nameof(DisplayList));
         }
     }
 }
