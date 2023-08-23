@@ -214,8 +214,20 @@ namespace CarrotProtocolCommDemo
             switch (param)
             {
                 case "ClearRecord":
+                    Logger.ProtocolList.Clear();
                     break;
                 case "TestRecords":
+                    if (Logger is not null)
+                    {
+                        Task task = Task.Run(() =>
+                        {
+                            RawAsciiProtocolFrame[] frames = new RawAsciiProtocolFrame[10000];
+                            for (int i = 0; i < 10000; i++)
+                                frames[i] = new RawAsciiProtocolFrame("test");
+                            Logger.Add("test", "test", frames);
+                        });
+                        task.Wait();
+                    }
                     break;
             }
         }

@@ -79,7 +79,7 @@
         <TabControl Margin="368,10,10,10" Style="{StaticResource TabControlInLine}">
             <TabItem Header="协议记录" IsSelected="True">
                 <Grid>
-                    <DataGrid ItemsSource="{Binding Device.Logger.ProtocolList}" Margin="10,10,10,48" VerticalScrollBarVisibility="Auto" AutoGenerateColumns="False" RowHeight="30" ColumnHeaderHeight="30">
+                    <DataGrid ItemsSource="{Binding Device.Logger.ProtocolList}" Margin="10,10,10,48" d:ItemsSource="{d:SampleData ItemCount=5}" VerticalScrollBarVisibility="Auto" Style="{StaticResource DataGrid.Small}" HeadersVisibility="All" RowHeaderWidth="60" AutoGenerateColumns="False" hc:DataGridAttach.ShowRowNumber="True">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Time" Binding="{Binding Time}" IsReadOnly="True" Width="80"/>
                             <!--<DataGridTextColumn Header="From" Binding="{Binding From}" IsReadOnly="True" Width="80"/>-->
