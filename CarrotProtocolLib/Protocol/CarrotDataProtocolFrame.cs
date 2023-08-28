@@ -74,6 +74,7 @@ namespace CarrotProtocolLib.Protocol
         public const byte ProtocolIdDataTransfer74 = 0x41;
         public const byte ProtocolIdDataTransfer266 = 0x42;
         public const byte ProtocolIdDataTransfer2058 = 0x43;
+        public const byte ProtocolIdRegister256 = 0xA0;
 
         /// <summary>
         /// byte[]转协议
@@ -155,6 +156,7 @@ namespace CarrotProtocolLib.Protocol
                 ProtocolIdDataTransfer74 => 64 + 10,
                 ProtocolIdDataTransfer266 => 256 + 10,
                 ProtocolIdDataTransfer2058 => 2048 + 10,
+                ProtocolIdRegister256 => 256,
                 _ => -1,
             };
         }
@@ -169,6 +171,7 @@ namespace CarrotProtocolLib.Protocol
                 ProtocolIdDataTransfer74 => TransferType.Data,
                 ProtocolIdDataTransfer266 => TransferType.Data,
                 ProtocolIdDataTransfer2058 => TransferType.Data,
+                ProtocolIdRegister256 => TransferType.Register,
                 _ => TransferType.Command
             };
         }

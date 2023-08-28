@@ -10,7 +10,8 @@ namespace CarrotProtocolLib.Logger
     public enum TransferType
     {
         Command,
-        Data
+        Data,
+        Register
     }
 
     public interface IRecord
