@@ -18,6 +18,7 @@ using CarrotProtocolLib.Service;
 using CarrotProtocolCommDemo.ViewModel;
 using System.Windows.Data;
 using CarrotProtocolCommDemo.Logger;
+using System.IO;
 
 namespace CarrotProtocolCommDemo
 {
@@ -205,6 +206,14 @@ namespace CarrotProtocolCommDemo
                         //task.Wait();
                     }
                     break;
+                case "SaveValues":
+                    var data = Logger.DataLogger.Ds.DisplayData;
+                    using (StreamWriter writer = new("output.values.txt"))
+                    {
+                        for (int i = 0; i < data.Count; i++)
+                            writer.WriteLine(data[i]);
+                    }
+                    break;
             }
         }
 
@@ -227,6 +236,17 @@ namespace CarrotProtocolCommDemo
                             Logger.Add("test", "test", frames);
                         });
                         //task.Wait();
+                    }
+                    break;
+                case "SaveRecords":
+                    var data = Logger.protocolList;
+                    using (StreamWriter writer = new("output.records.txt"))
+                    {
+                        for (int i = 0; i < data.Count; i++)
+                        {
+                            string hexString = BitConverter.ToString(data[i].Frame.FrameBytes).Replace("-", "");
+                            writer.WriteLine(hexString);
+                        }
                     }
                     break;
             }

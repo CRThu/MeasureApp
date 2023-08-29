@@ -62,6 +62,8 @@
                     <TextBlock Text="16进制" HorizontalAlignment="Left" Margin="10,211,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
                     <TextBox Text="{Binding CdpCfgVm.FrameHexDisplay,Mode=OneWay}" HorizontalAlignment="Left" Margin="67,209,0,68" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto" Width="267"/>
                     <Button Content="发送" Command="{Binding CarrotDataProtocolSendCommand}" Margin="10,0,0,10" VerticalAlignment="Bottom" Width="60" HorizontalAlignment="Left" Height="30"/>
+                    <CheckBox Content="CheckBox" HorizontalAlignment="Left" Margin="75,347,0,0" VerticalAlignment="Top"/>
+
                 </Grid>
             </TabItem>
             <TabItem Header="Ascii协议调试">
@@ -92,6 +94,7 @@
                     </DataGrid>
                     <Button Content="ClearRecord" Margin="18,0,0,13" VerticalAlignment="Bottom" Command="{Binding LoggerRecordOperationCommand}" CommandParameter="ClearRecord" Height="30" Width="120" HorizontalAlignment="Left"/>
                     <Button Content="TestRecords" Margin="148,0,0,13" VerticalAlignment="Bottom" Command="{Binding LoggerRecordOperationCommand}" CommandParameter="TestRecords" Width="120" Height="30" HorizontalAlignment="Left"/>
+                    <Button Content="SaveRecords" Margin="273,0,0,13" VerticalAlignment="Bottom" Command="{Binding LoggerRecordOperationCommand}" CommandParameter="SaveRecords" Width="120" Height="30" HorizontalAlignment="Left"/>
                 </Grid>
             </TabItem>
             <TabItem Header="数据解析">
@@ -102,9 +105,10 @@
                             <DataGridTextColumn Header="Number" Binding="{Binding}" IsReadOnly="True" Width="Auto"/>
                         </DataGrid.Columns>
                     </DataGrid>
-                    <Button Content="RemoveKey" Margin="18,0,0,13" VerticalAlignment="Bottom" Command="{Binding DataSourceOperationCommand}" CommandParameter="RemoveKey" Height="30" Width="120" HorizontalAlignment="Left"/>
-                    <Button Content="RemoveValues" Margin="148,0,0,13" VerticalAlignment="Bottom" Command="{Binding DataSourceOperationCommand}" CommandParameter="RemoveValues" Width="120" Height="30" HorizontalAlignment="Left"/>
-                    <Button Content="TestValues" Margin="278,0,0,13" VerticalAlignment="Bottom" Command="{Binding DataSourceOperationCommand}" CommandParameter="TestValues" Width="120" Height="30" HorizontalAlignment="Left"/>
+                    <Button Content="RemKey" Margin="18,0,0,13" VerticalAlignment="Bottom" Command="{Binding DataSourceOperationCommand}" CommandParameter="RemoveKey" Height="30" Width="75" HorizontalAlignment="Left"/>
+                    <Button Content="RemVals" Margin="98,0,0,13" VerticalAlignment="Bottom" Command="{Binding DataSourceOperationCommand}" CommandParameter="RemoveValues" Width="75" Height="30" HorizontalAlignment="Left"/>
+                    <Button Content="TestVals" Margin="178,0,0,13" VerticalAlignment="Bottom" Command="{Binding DataSourceOperationCommand}" CommandParameter="TestValues" Width="75" Height="30" HorizontalAlignment="Left"/>
+                    <Button Content="SaveVals" Margin="258,0,0,13" VerticalAlignment="Bottom" Command="{Binding DataSourceOperationCommand}" CommandParameter="SaveValues" Width="75" Height="30" HorizontalAlignment="Left"/>
                 </Grid>
             </TabItem>
         </TabControl>
