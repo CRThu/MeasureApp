@@ -62,6 +62,8 @@ namespace CarrotProtocolCommDemo
         [ObservableProperty]
         private RawAsciiProtocolConfigViewModel rapCfgVm = new RawAsciiProtocolConfigViewModel(@"\\123\11\22\33\fF\f\\\\\s\fss\rrr\nnn\r\n000");
 
+        [ObservableProperty]
+        private RegisterProtocolConfigViewModel rpCfgVm = new();
 
         [ObservableProperty]
         public bool isOpen;
@@ -169,6 +171,24 @@ namespace CarrotProtocolCommDemo
             {
                 RawAsciiProtocolFrame rec = new(RapCfgVm.RawBytes, 0, RapCfgVm.RawBytes.Length);
                 Debug.WriteLine($"Send {nameof(RawAsciiProtocolFrame)}: {rec.FrameBytes.BytesToHexString()}");
+                Device.Write(rec);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        /// <summary>
+        /// 发送协议数据
+        /// </summary>
+        [RelayCommand]
+        private void Send()
+        {
+            try
+            {
+                CarrotDataProtocolFrame rec = CdpCfgVm.Frame;
+                Debug.WriteLine($"Send {nameof(CarrotDataProtocolFrame)}: {rec.FrameBytes.BytesToHexString()}");
                 Device.Write(rec);
             }
             catch (Exception ex)

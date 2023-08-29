@@ -19,7 +19,8 @@
         <conv:BytesToHexStringConverter x:Key="BytesToHexStringConverter"/>
     </Window.Resources>
     <Grid>
-        <TabControl Margin="10,10,0,10" Style="{StaticResource TabControlInLine}" HorizontalAlignment="Left" Width="353">
+        <!--<TabControl Margin="10,10,0,10" Style="{StaticResource TabControlInLine}" HorizontalAlignment="Left" Width="353">-->
+        <TabControl Margin="10,10,0,10" HorizontalAlignment="Left" Width="353">
             <TabItem Header="通信" IsSelected="True">
                 <Grid Margin="0,0,0,0" d:Height="380">
                     <TextBlock Text="外设" HorizontalAlignment="Left" Margin="10,37,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
@@ -62,8 +63,7 @@
                     <TextBlock Text="16进制" HorizontalAlignment="Left" Margin="10,211,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
                     <TextBox Text="{Binding CdpCfgVm.FrameHexDisplay,Mode=OneWay}" HorizontalAlignment="Left" Margin="67,209,0,68" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto" Width="267"/>
                     <Button Content="发送" Command="{Binding CarrotDataProtocolSendCommand}" Margin="10,0,0,10" VerticalAlignment="Bottom" Width="60" HorizontalAlignment="Left" Height="30"/>
-                    <CheckBox Content="CheckBox" HorizontalAlignment="Left" Margin="75,347,0,0" VerticalAlignment="Top"/>
-
+                    <CheckBox Content="CheckBox" HorizontalAlignment="Left" Margin="75,0,0,17" VerticalAlignment="Bottom" Height="16"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Ascii协议调试">
@@ -74,12 +74,25 @@
                     <TextBlock Text="16进制" HorizontalAlignment="Left" Margin="10,135,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
                     <TextBox Text="{Binding RapCfgVm.HexString, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="67,135,0,164" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto" Width="267"/>
                     <Button Content="发送" Command="{Binding RawAsciiProtocolSendCommand}" Margin="10,0,0,10" VerticalAlignment="Bottom" Width="60" HorizontalAlignment="Left" Height="30"/>
-
+                </Grid>
+            </TabItem>
+            <TabItem Header="寄存器读写调试">
+                <Grid>
+                    <TextBlock Text="R/Wn" HorizontalAlignment="Left" Margin="10,31,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                    <TextBox Text="0" HorizontalAlignment="Left" Margin="89,24,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+                    <TextBlock Text="REGFILE" HorizontalAlignment="Left" Margin="10,66,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                    <TextBox Text="0" HorizontalAlignment="Left" Margin="89,59,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+                    <TextBlock Text="ADDRESS" HorizontalAlignment="Left" Margin="10,101,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                    <TextBox Text="0" HorizontalAlignment="Left" Margin="89,94,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+                    <TextBlock Text="VALUE" HorizontalAlignment="Left" Margin="10,136,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                    <TextBox Text="0" HorizontalAlignment="Left" Margin="89,129,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+                    <Button Content="发送" Command="{Binding RpCfgVm.SendCommand}" Margin="10,0,0,10" VerticalAlignment="Bottom" Width="60" HorizontalAlignment="Left" Height="30"/>
                 </Grid>
             </TabItem>
         </TabControl>
 
-        <TabControl Margin="368,10,10,10" Style="{StaticResource TabControlInLine}">
+        <!--<TabControl Margin="368,10,10,10" Style="{StaticResource TabControlInLine}">-->
+        <TabControl Margin="368,10,10,10">
             <TabItem Header="协议记录" IsSelected="True">
                 <Grid>
                     <DataGrid ItemsSource="{Binding Path=Device.Logger.DisplayList}" Margin="10,10,10,48" d:ItemsSource="{d:SampleData ItemCount=5}" VerticalScrollBarVisibility="Auto" Style="{StaticResource DataGrid.Small}" HeadersVisibility="All" RowHeaderWidth="60" AutoGenerateColumns="False" hc:DataGridAttach.ShowRowNumber="True">
@@ -109,6 +122,10 @@
                     <Button Content="RemVals" Margin="98,0,0,13" VerticalAlignment="Bottom" Command="{Binding DataSourceOperationCommand}" CommandParameter="RemoveValues" Width="75" Height="30" HorizontalAlignment="Left"/>
                     <Button Content="TestVals" Margin="178,0,0,13" VerticalAlignment="Bottom" Command="{Binding DataSourceOperationCommand}" CommandParameter="TestValues" Width="75" Height="30" HorizontalAlignment="Left"/>
                     <Button Content="SaveVals" Margin="258,0,0,13" VerticalAlignment="Bottom" Command="{Binding DataSourceOperationCommand}" CommandParameter="SaveValues" Width="75" Height="30" HorizontalAlignment="Left"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="服务状态">
+                <Grid>
                 </Grid>
             </TabItem>
         </TabControl>
