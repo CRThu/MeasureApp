@@ -51,7 +51,7 @@
                     </Grid>
                 </Grid>
             </TabItem>
-            <TabItem Header="数据协议调试">
+            <TabItem Header="数据协议">
                 <Grid Margin="0,0,0,0" d:Height="380">
                     <TextBlock Text="协议选择" HorizontalAlignment="Left" Margin="10,37,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
                     <ComboBox ItemsSource="{Binding CdpCfgVm.ProtocolIdList}" SelectedItem="{Binding CdpCfgVm.ProtocolId}" ItemStringFormat="{}0x{0:X2}" HorizontalAlignment="Left" Margin="67,30,0,0" VerticalAlignment="Top" Width="267"/>
@@ -66,7 +66,7 @@
                     <CheckBox Content="CheckBox" HorizontalAlignment="Left" Margin="75,0,0,17" VerticalAlignment="Bottom" Height="16"/>
                 </Grid>
             </TabItem>
-            <TabItem Header="Ascii协议调试">
+            <TabItem Header="Ascii协议">
                 <Grid Margin="0,0,0,0" d:Height="380">
                     <TextBlock Text="Payload" HorizontalAlignment="Left" Margin="10,21,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
                     <TextBox Text="{Binding RapCfgVm.TextString, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="67,14,0,0" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" VerticalContentAlignment="Top" VerticalAlignment="Top" Width="267" Height="94" VerticalScrollBarVisibility="Auto"/>
@@ -76,17 +76,21 @@
                     <Button Content="发送" Command="{Binding RawAsciiProtocolSendCommand}" Margin="10,0,0,10" VerticalAlignment="Bottom" Width="60" HorizontalAlignment="Left" Height="30"/>
                 </Grid>
             </TabItem>
-            <TabItem Header="寄存器读写调试">
+            <TabItem Header="寄存器读写">
                 <Grid>
                     <TextBlock Text="R/Wn" HorizontalAlignment="Left" Margin="10,31,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-                    <TextBox Text="0" HorizontalAlignment="Left" Margin="89,24,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+                    <TextBox Text="{Binding RpCfgVm.RWn, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="89,24,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
                     <TextBlock Text="REGFILE" HorizontalAlignment="Left" Margin="10,66,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-                    <TextBox Text="0" HorizontalAlignment="Left" Margin="89,59,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+                    <TextBox Text="{Binding RpCfgVm.Regfile, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="89,59,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
                     <TextBlock Text="ADDRESS" HorizontalAlignment="Left" Margin="10,101,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-                    <TextBox Text="0" HorizontalAlignment="Left" Margin="89,94,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+                    <TextBox Text="{Binding RpCfgVm.Address, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="89,94,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
                     <TextBlock Text="VALUE" HorizontalAlignment="Left" Margin="10,136,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-                    <TextBox Text="0" HorizontalAlignment="Left" Margin="89,129,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-                    <Button Content="发送" Command="{Binding RpCfgVm.SendCommand}" Margin="10,0,0,10" VerticalAlignment="Bottom" Width="60" HorizontalAlignment="Left" Height="30"/>
+                    <TextBox Text="{Binding RpCfgVm.Value, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="89,129,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+                    
+                    <TextBlock Text="16进制" HorizontalAlignment="Left" Margin="10,211,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                    <TextBox Text="{Binding RpCfgVm.FrameHexDisplay,Mode=OneWay}" HorizontalAlignment="Left" Margin="67,209,0,68" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto" Width="267"/>
+                    
+                    <Button Content="发送" Command="{Binding RegisterProtocolSendCommand}" Margin="10,0,0,10" VerticalAlignment="Bottom" Width="60" HorizontalAlignment="Left" Height="30"/>
                 </Grid>
             </TabItem>
         </TabControl>

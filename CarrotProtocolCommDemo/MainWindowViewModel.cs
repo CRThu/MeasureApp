@@ -183,11 +183,11 @@ namespace CarrotProtocolCommDemo
         /// 发送协议数据
         /// </summary>
         [RelayCommand]
-        private void Send()
+        private void RegisterProtocolSend()
         {
             try
             {
-                CarrotDataProtocolFrame rec = CdpCfgVm.Frame;
+                CarrotDataProtocolFrame rec = RpCfgVm.Frame;
                 Debug.WriteLine($"Send {nameof(CarrotDataProtocolFrame)}: {rec.FrameBytes.BytesToHexString()}");
                 Device.Write(rec);
             }
