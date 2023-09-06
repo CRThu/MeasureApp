@@ -70,6 +70,14 @@ namespace CarrotProtocolCommDemo
 
         Random random = new Random();
 
+        [ObservableProperty]
+        public bool isRun = true;
+
+        [ObservableProperty]
+        public string status = "<NULL>";
+
+        [ObservableProperty]
+        public string internalException = "<NULL>";
 
         public MainWindowViewModel()
         {

@@ -17,6 +17,7 @@
     <Window.Resources>
         <conv:BooleanToTextConverter x:Key="BooleanToTextConverter"/>
         <conv:BytesToHexStringConverter x:Key="BytesToHexStringConverter"/>
+        <conv:BytesToShapeFillColorConverter x:Key="BytesToShapeFillColorConverter"/>
     </Window.Resources>
     <Grid>
         <!--<TabControl Margin="10,10,0,10" Style="{StaticResource TabControlInLine}" HorizontalAlignment="Left" Width="353">-->
@@ -86,10 +87,10 @@
                     <TextBox Text="{Binding RpCfgVm.Address, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="89,94,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
                     <TextBlock Text="VALUE" HorizontalAlignment="Left" Margin="10,136,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
                     <TextBox Text="{Binding RpCfgVm.Value, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="89,129,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-                    
+
                     <TextBlock Text="16进制" HorizontalAlignment="Left" Margin="10,211,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
                     <TextBox Text="{Binding RpCfgVm.FrameHexDisplay,Mode=OneWay}" HorizontalAlignment="Left" Margin="67,209,0,68" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto" Width="267"/>
-                    
+
                     <Button Content="发送" Command="{Binding RegisterProtocolSendCommand}" Margin="10,0,0,10" VerticalAlignment="Bottom" Width="60" HorizontalAlignment="Left" Height="30"/>
                 </Grid>
             </TabItem>
@@ -130,6 +131,10 @@
             </TabItem>
             <TabItem Header="服务状态">
                 <Grid>
+                    <TextBlock Text="DataReceiveService" HorizontalAlignment="Left" Margin="10,12,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                    <Ellipse Width="20" Height="20" Fill="{Binding IsRun,Converter={StaticResource BytesToShapeFillColorConverter}}" Margin="130,10,0,0" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                    <TextBlock Text="{Binding Status}" HorizontalAlignment="Left" Margin="157,12,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                    <TextBlock Text="{Binding InternalException}" HorizontalAlignment="Left" Margin="222,12,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
                 </Grid>
             </TabItem>
         </TabControl>
