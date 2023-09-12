@@ -43,7 +43,7 @@ namespace CarrotProtocolCommDemo.ViewModel
         {
             get
             {
-                byte[] payload = new byte[32];
+                byte[] payload = new byte[16];
                 byte[] RwnBytes = RWn.IntToBytes();
                 byte[] RegfileBytes = Regfile.IntToBytes();
                 byte[] AddressBytes = Address.IntToBytes();
