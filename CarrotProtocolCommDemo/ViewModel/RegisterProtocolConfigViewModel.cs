@@ -21,23 +21,27 @@ namespace CarrotProtocolCommDemo.ViewModel
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(Frame))]
         [NotifyPropertyChangedFor(nameof(FrameHexDisplay))]
-        private int rWn;
+        private string rWnText = "0";
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(Frame))]
         [NotifyPropertyChangedFor(nameof(FrameHexDisplay))]
-        private int regfile;
+        private string regfileText = "0";
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(Frame))]
         [NotifyPropertyChangedFor(nameof(FrameHexDisplay))]
-        private int address;
+        private string addressText = "0";
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(Frame))]
         [NotifyPropertyChangedFor(nameof(FrameHexDisplay))]
-        private int value;
+        private string valueText = "0";
 
+        public int RWn => RWnText.ParseNum();
+        public int Regfile => RegfileText.ParseNum();
+        public int Address => AddressText.ParseNum();
+        public int Value => ValueText.ParseNum();
 
         public byte[] PayloadBytes
         {

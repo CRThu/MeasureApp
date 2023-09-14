@@ -80,13 +80,13 @@
             <TabItem Header="寄存器读写">
                 <Grid>
                     <TextBlock Text="R/Wn" HorizontalAlignment="Left" Margin="10,31,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-                    <TextBox Text="{Binding RpCfgVm.RWn, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="89,24,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+                    <TextBox Text="{Binding RpCfgVm.RWnText, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="89,24,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
                     <TextBlock Text="REGFILE" HorizontalAlignment="Left" Margin="10,66,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-                    <TextBox Text="{Binding RpCfgVm.Regfile, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="89,59,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+                    <TextBox Text="{Binding RpCfgVm.RegfileText, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="89,59,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
                     <TextBlock Text="ADDRESS" HorizontalAlignment="Left" Margin="10,101,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-                    <TextBox Text="{Binding RpCfgVm.Address, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="89,94,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+                    <TextBox Text="{Binding RpCfgVm.AddressText, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="89,94,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
                     <TextBlock Text="VALUE" HorizontalAlignment="Left" Margin="10,136,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-                    <TextBox Text="{Binding RpCfgVm.Value, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="89,129,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+                    <TextBox Text="{Binding RpCfgVm.ValueText, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="89,129,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
 
                     <TextBlock Text="16进制" HorizontalAlignment="Left" Margin="10,211,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
                     <TextBox Text="{Binding RpCfgVm.FrameHexDisplay,Mode=OneWay}" HorizontalAlignment="Left" Margin="67,209,0,68" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto" Width="267"/>
