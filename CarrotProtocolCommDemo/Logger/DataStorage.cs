@@ -20,7 +20,7 @@ namespace CarrotProtocolCommDemo.Logger
         [NotifyPropertyChangedFor(nameof(DisplayData))]
         private string currentKey;
 
-        public List<T> DisplayData
+        public ObservableCollection<T> DisplayData
         {
             get
             {
@@ -28,11 +28,11 @@ namespace CarrotProtocolCommDemo.Logger
                 {
                     if (CurrentKey is not null && StorageDict.TryGetValue(CurrentKey, out var value))
                     {
-                        return value;
+                        return new ObservableCollection<T>(value);
                     }
                     else
                     {
-                        return new List<T>();
+                        return new ObservableCollection<T>();
                     }
                 }
             }
@@ -65,6 +65,7 @@ namespace CarrotProtocolCommDemo.Logger
         {
             StorageDict = new();
             LockObject = new object();
+            //BindingOperations.EnableCollectionSynchronization(DisplayData, LockObject);
         }
 
         public void CreateKeyIfNotExist(string key)
