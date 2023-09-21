@@ -70,6 +70,76 @@ namespace CarrotProtocolCommDemo.Tests
             AssertArrayEqual(d, d_exp4);
         }
 
+        [TestMethod()]
+        public void RingBufferThreadSafeTest()
+        {
+            RingBuffer rb = new(256 * 1024);
+            ulong wr_cnt = 0;
+            ulong rd_cnt = 0;
+            Task wr_task = Task.Run(() =>
+            {
+                byte[] a = new byte[1024];
+                Random random = new Random();
+                for (int i = 0; i < a.Length; i++)
+                    random.NextBytes(a);
+
+                for (int i = 0; i < 10000000; i++)
+                {
+                    int wr_bytes = (i % 100 + 1) * 10;
+                    while (rb.Count + wr_bytes > rb.Buffer.Length)
+                        ;
+                    rb.Write(a, 0, wr_bytes);
+                    wr_cnt += (ulong)wr_bytes;
+                }
+            });
+
+
+            Task rd_task = Task.Run(() =>
+            {
+                byte[] a = new byte[1024];
+                Random random = new Random();
+                for (int i = 0; i < 10000000; i++)
+                {
+                    int rd_bytes = 505;
+                    while (rb.Count < rd_bytes)
+                        ;
+                    rb.Read(a, 0, rd_bytes);
+                    rd_cnt += (ulong)rd_bytes;
+                }
+            });
+
+            var cts = new CancellationTokenSource();
+            Task watch_task = Task.Run(() =>
+            {
+                while (true)
+                {
+                    Console.WriteLine(rb.Count);
+                    if (cts.Token.IsCancellationRequested)
+                        cts.Token.ThrowIfCancellationRequested();
+                    Thread.Sleep(100);
+                }
+            }, cts.Token);
+
+            wr_task.Wait();
+            rd_task.Wait();
+
+            if (wr_task.Status == TaskStatus.Faulted)
+                Console.WriteLine(wr_task.Exception);
+            else
+                Console.WriteLine("wr_task exited.");
+            Assert.AreEqual(wr_task.Status, TaskStatus.RanToCompletion);
+
+            if (rd_task.Status == TaskStatus.Faulted)
+                Console.WriteLine(rd_task.Exception);
+            else
+                Console.WriteLine("rd_task exited.");
+            Assert.AreEqual(rd_task.Status, TaskStatus.RanToCompletion);
+
+            Console.WriteLine($"wr_cnt = {wr_cnt}.");
+            Console.WriteLine($"rd_cnt = {rd_cnt}.");
+            Assert.AreEqual(wr_cnt, rd_cnt);
+        }
+
         public void AssertArrayEqual<T>(T exp, T act)
         {
             Assert.AreEqual(string.Join(',', exp), string.Join(',', act));

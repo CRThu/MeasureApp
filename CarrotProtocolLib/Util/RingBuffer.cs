@@ -15,14 +15,17 @@ namespace CarrotProtocolLib.Util
         /// 缓冲区
         /// </summary>
         public byte[] Buffer { get; set; }
+
         /// <summary>
         /// 数据字节数
         /// </summary>
         public int Count { get; set; }
+
         /// <summary>
         /// 数据头指针索引
         /// </summary>
         public int HeadIndex { get; set; }
+
         /// <summary>
         /// 数据尾指针索引
         /// </summary>
