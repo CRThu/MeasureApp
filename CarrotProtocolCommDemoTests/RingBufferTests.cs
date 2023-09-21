@@ -120,23 +120,24 @@ namespace CarrotProtocolCommDemo.Tests
                 }
             }, cts.Token);
 
-            wr_task.Wait();
-            rd_task.Wait();
+            wr_task.Wait(10000);
+            rd_task.Wait(10000);
 
             if (wr_task.Status == TaskStatus.Faulted)
                 Console.WriteLine(wr_task.Exception);
             else
                 Console.WriteLine("wr_task exited.");
-            Assert.AreEqual(wr_task.Status, TaskStatus.RanToCompletion);
 
             if (rd_task.Status == TaskStatus.Faulted)
                 Console.WriteLine(rd_task.Exception);
             else
                 Console.WriteLine("rd_task exited.");
-            Assert.AreEqual(rd_task.Status, TaskStatus.RanToCompletion);
 
             Console.WriteLine($"wr_cnt = {wr_cnt}.");
             Console.WriteLine($"rd_cnt = {rd_cnt}.");
+
+            Assert.AreEqual(wr_task.Status, TaskStatus.RanToCompletion);
+            Assert.AreEqual(rd_task.Status, TaskStatus.RanToCompletion);
             Assert.AreEqual(wr_cnt, rd_cnt);
         }
 
