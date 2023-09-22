@@ -21,11 +21,14 @@ namespace CarrotProtocolLib.Service
     /// <typeparam name="TReturn">返回值类型</typeparam>
     public class BaseTaskService<TReturn> : IService
     {
-        private CancellationTokenSource? Cts { get; set; }
-        private Task<TReturn?>? TaskInstance { get; set; }
+        private CancellationTokenSource Cts { get; set; }
+        private Task<TReturn?> TaskInstance { get; set; }
         public TReturn? ReturnValue { get; set; }
         public TaskServiceStatus Status { get; set; }
         public Exception? InternalException { get; set; }
+
+        public ThreadPriority Priority { get; set; } = ThreadPriority.Normal;
+        public TaskCreationOptions TaskOptions { get; set; } = TaskCreationOptions.None;
 
         /// <summary>
         /// 是否外部请求取消任务属性
@@ -43,7 +46,7 @@ namespace CarrotProtocolLib.Service
         public BaseTaskService()
         {
             Cts = new();
-            TaskInstance = null;
+            TaskInstance = new Task<TReturn?>(() => TaskRunLoop(), Cts.Token, TaskOptions);
             ReturnValue = default;
             Status = TaskServiceStatus.WaitForStart;
             InternalException = null;
@@ -52,7 +55,7 @@ namespace CarrotProtocolLib.Service
         public void Start()
         {
             Cts = new();
-            TaskInstance = Task.Run(() => TaskRunLoop(), Cts.Token);
+            TaskInstance.Start();
             Status = TaskServiceStatus.Running;
         }
 
@@ -66,6 +69,7 @@ namespace CarrotProtocolLib.Service
         {
             try
             {
+                Thread.CurrentThread.Priority = Priority;
                 var ret = ServiceLoop();
                 ReturnValue = ret;
                 Status = TaskServiceStatus.ExitSuccess;

@@ -33,6 +33,8 @@ namespace CarrotProtocolLib.Service
         /// </summary>
         public DeviceDataReceiveService() : base()
         {
+            Priority = ThreadPriority.Highest;
+            TaskOptions = TaskCreationOptions.LongRunning;
         }
 
         /// <summary>
@@ -42,6 +44,7 @@ namespace CarrotProtocolLib.Service
         /// <exception cref="InvalidOperationException"></exception>
         public override int ServiceLoop()
         {
+            /*
 #if DEBUG
             var Logger = NLog.LogManager.Setup().LoadConfiguration(builder =>
             {
@@ -56,7 +59,7 @@ namespace CarrotProtocolLib.Service
             //for (int i = 0; i < 10000; i++)
             //    Logger.Debug($"nlog test {DateTime.Now:HH:mm:ss.ffffff} : read = {0}, counter = {i}");
 #endif
-
+            */
             while (Device!.Driver!.IsOpen)
             {
                 if (IsCancellationRequested)
@@ -80,9 +83,11 @@ namespace CarrotProtocolLib.Service
                     //Debug.WriteLine($"BytesToRead2 = {len2}");
                     Device.RxBuffer.Write(ReceiveDataBuffer, 0, len);
                     Counter += (ulong)readBytes;
+/*
 #if DEBUG
                     Logger.Debug($"{DateTime.Now:HH:mm:ss.ffffff} : read = {readBytes}, counter = {Counter}");
 #endif
+*/
                     //Debug.WriteLine($"{DateTime.Now:HH:mm:ss.fff} : read = {readBytes}, counter = {Counter}");
 
                     // raw bytes
