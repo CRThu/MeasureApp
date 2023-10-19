@@ -51,7 +51,7 @@ namespace CarrotProtocolLib.Device
         /// 构造函数
         /// </summary>
         /// <param name="bufferSize"></param>
-        public GeneralBufferedDevice(string driverName, string decodeServiceName,ILogger logger, int bufferSize = 1048576 * 16)
+        public GeneralBufferedDevice(string driverName, string decodeServiceName,ILogger logger, int bufferSize = 1048576 * 512)
         {
             //RxBuffer = new(1048576 * 16);
             RxBuffer = new(bufferSize);

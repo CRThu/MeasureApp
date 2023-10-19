@@ -261,7 +261,7 @@ namespace CarrotProtocolLib.Protocol
                 double[] numArray = new double[cnt];
                 for (int i = 0; i < cnt; i++)
                 {
-                    numArray[i] = Payload.BytesToInt(i * 4);
+                    numArray[i] = Payload.BytesToInt2(i * 4);
                 }
                 return numArray;
             }

@@ -27,7 +27,7 @@ namespace CarrotProtocolLib.Service
         public ProtocolDecodeBaseService() : base()
         {
             Priority = ThreadPriority.Lowest;
-            //TaskOptions = TaskCreationOptions.LongRunning;
+            TaskOptions = TaskCreationOptions.LongRunning;
         }
     }
 
