@@ -258,6 +258,7 @@ namespace MeasureApp.ViewModel
         /// </summary>
         CancellationTokenSource SerialportCommandDelayTaskCts;
 
+
         // 加载预设指令函数
         public void SerialPortLoadPresetCommandsFromJson(string jsonPath)
         {
@@ -404,7 +405,7 @@ namespace MeasureApp.ViewModel
                         // Then you can cancel the delay by calling CancellationTokenSource.Cancel() before the delay time elapses
 
                         SerialportCommandDelayTaskCts = new CancellationTokenSource();
-                        var delayTask = Task.Run(()=>DelayEx.InterruptibleDelay(delay, SerialportCommandDelayTaskCts.Token));
+                        var delayTask = Task.Run(() => DelayEx.InterruptibleDelay(delay, SerialportCommandDelayTaskCts.Token));
 
                         // To block until the delay finishes, you can await the delayTask
                         delayTask.Wait();
@@ -910,6 +911,41 @@ REGW;01;{i:D};
                         CarrotDataProtocolFrame cdp = new(0x32, dac8830_ch, dac8830_volt);
                         string dac8830PortName = TagAttrs["port"];
                         SerialPortsInstance.WriteBytes(dac8830PortName, cdp.ToBytes());
+                        break;
+                    case "MUTEX":
+                        // <mutex mode="add/del/sync"/>
+                        if (TagAttrs.ContainsKey("mode"))
+                        {
+                            if (TagAttrs["mode"] == "add")
+                            {
+                                Application.Current.Dispatcher.Invoke(() =>
+                                {
+                                    Mutex mutex = new Mutex(false, "Carrot.Mutex.Temp", out bool createdNew);
+                                    mutex.WaitOne();
+                                });
+                            }
+                            else if (TagAttrs["mode"] == "del")
+                            {
+                                Application.Current.Dispatcher.Invoke(() =>
+                                {
+                                    Mutex mutex = new Mutex(false, "Carrot.Mutex.Temp", out bool createdNew);
+                                    mutex.ReleaseMutex();
+                                });
+                            }
+                            else
+                            {
+                                Application.Current.Dispatcher.Invoke(() =>
+                                {
+                                    Mutex mutex = new Mutex(false, "Carrot.Mutex.Temp", out bool createdNew);
+                                    mutex.WaitOne();
+                                    mutex.ReleaseMutex();
+                                });
+                            }
+                        }
+                        else
+                        {
+                            throw new InvalidOperationException("MUTEX do not contain key attribute.");
+                        }
                         break;
                     default:
                         throw new FormatException($"Unknown Command: {code}");
