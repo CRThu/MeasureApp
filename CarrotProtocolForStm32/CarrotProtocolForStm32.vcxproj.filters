@@ -27,9 +27,6 @@
     <ClCompile Include="Protocol\Src\carrot_protocol.c">
       <Filter>源文件\Protocol</Filter>
     </ClCompile>
-    <ClCompile Include="Protocol\Src\ringbuffer.c">
-      <Filter>源文件\Protocol</Filter>
-    </ClCompile>
     <ClCompile Include="Protocol\Src\payload_parse.c">
       <Filter>源文件\Protocol</Filter>
     </ClCompile>

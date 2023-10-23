@@ -149,7 +149,6 @@
     <ClCompile Include="Protocol\Src\carrot_protocol.c" />
     <ClCompile Include="Protocol\Src\dynamic_type_array.c" />
     <ClCompile Include="Protocol\Src\payload_parse.c" />
-    <ClCompile Include="Protocol\Src\ringbuffer.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DynamicCallTest.h" />
