@@ -75,5 +75,13 @@ namespace CarrotProtocolCommDemo.ViewModel
                 return Frame.FrameBytes.BytesToHexString();
             }
         }
+
+        // AD4630 TEMP
+        [ObservableProperty]
+        private string ad4630RWnText = "0";
+        [ObservableProperty]
+        private string ad4630AddressText = "0";
+        [ObservableProperty]
+        private string ad4630DataText = "0";
     }
 }

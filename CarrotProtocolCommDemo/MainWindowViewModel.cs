@@ -205,6 +205,61 @@ namespace CarrotProtocolCommDemo
             }
         }
 
+        /// <summary>
+        /// 发送协议数据
+        /// </summary>
+        [RelayCommand]
+        private void AD4630Send()
+        {
+            try
+            {
+                int ad4630RWn = RpCfgVm.Ad4630RWnText.ParseNum();
+                int ad4630Addr = RpCfgVm.Ad4630AddressText.ParseNum();
+                int ad4630Data = RpCfgVm.Ad4630DataText.ParseNum();
+
+                byte[] payload = new byte[16];
+                byte[] RwnBytes = 0.IntToBytes();
+                byte[] RegfileBytes = 0.IntToBytes();
+                byte[] AddressBytes = 0xe.IntToBytes();
+                byte[] ValueBytes = ad4630Addr.IntToBytes();
+                Array.Copy(RwnBytes, 0, payload, 0, 4);
+                Array.Copy(RegfileBytes, 0, payload, 4, 4);
+                Array.Copy(AddressBytes, 0, payload, 8, 4);
+                Array.Copy(ValueBytes, 0, payload, 12, 4);
+                CarrotDataProtocolFrame rec = new CarrotDataProtocolFrame(0xA0, 0, payload);
+                Debug.WriteLine($"Send {nameof(CarrotDataProtocolFrame)}: {rec.FrameBytes.BytesToHexString()}");
+                Device.Write(rec);
+
+                RwnBytes = 0.IntToBytes();
+                RegfileBytes = 0.IntToBytes();
+                AddressBytes = 0xf.IntToBytes();
+                ValueBytes = ad4630Data.IntToBytes();
+                Array.Copy(RwnBytes, 0, payload, 0, 4);
+                Array.Copy(RegfileBytes, 0, payload, 4, 4);
+                Array.Copy(AddressBytes, 0, payload, 8, 4);
+                Array.Copy(ValueBytes, 0, payload, 12, 4);
+                rec = new CarrotDataProtocolFrame(0xA0, 0, payload);
+                Debug.WriteLine($"Send {nameof(CarrotDataProtocolFrame)}: {rec.FrameBytes.BytesToHexString()}");
+                Device.Write(rec);
+
+                RwnBytes = 0.IntToBytes();
+                RegfileBytes = 0.IntToBytes();
+                AddressBytes = 0xd.IntToBytes();
+                ValueBytes = ad4630RWn.IntToBytes();
+                Array.Copy(RwnBytes, 0, payload, 0, 4);
+                Array.Copy(RegfileBytes, 0, payload, 4, 4);
+                Array.Copy(AddressBytes, 0, payload, 8, 4);
+                Array.Copy(ValueBytes, 0, payload, 12, 4);
+                rec = new CarrotDataProtocolFrame(0xA0, 0, payload);
+                Debug.WriteLine($"Send {nameof(CarrotDataProtocolFrame)}: {rec.FrameBytes.BytesToHexString()}");
+                Device.Write(rec);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
         [RelayCommand]
         private void DataSourceOperation(string param)
         {

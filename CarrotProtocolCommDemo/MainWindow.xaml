@@ -94,6 +94,18 @@
                     <Button Content="发送" Command="{Binding RegisterProtocolSendCommand}" Margin="10,0,0,10" VerticalAlignment="Bottom" Width="60" HorizontalAlignment="Left" Height="30"/>
                 </Grid>
             </TabItem>
+            <TabItem Header="AD4630">
+                <Grid>
+                    <TextBlock Text="r/wn" HorizontalAlignment="Left" Margin="10,31,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                    <TextBox Text="{Binding RpCfgVm.Ad4630RWnText, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="89,24,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+                    <TextBlock Text="ADDRESS" HorizontalAlignment="Left" Margin="10,67,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                    <TextBox Text="{Binding RpCfgVm.Ad4630AddressText, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="89,60,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+                    <TextBlock Text="DATA" HorizontalAlignment="Left" Margin="10,102,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                    <TextBox Text="{Binding RpCfgVm.Ad4630DataText, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="89,95,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+
+                    <Button Content="发送" Command="{Binding AD4630SendCommand}" Margin="10,0,0,10" VerticalAlignment="Bottom" Width="60" HorizontalAlignment="Left" Height="30"/>
+                </Grid>
+            </TabItem>
         </TabControl>
 
         <!--<TabControl Margin="368,10,10,10" Style="{StaticResource TabControlInLine}">-->
@@ -137,9 +149,14 @@
                     <TextBlock Text="{Binding InternalException}" HorizontalAlignment="Left" Margin="222,12,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
                 </Grid>
             </TabItem>
+            <TabItem Header="寄存器返回">
+                <Grid>
+
+                </Grid>
+            </TabItem>
             <TabItem Header="Log">
                 <Grid>
-                    
+
                 </Grid>
             </TabItem>
         </TabControl>
