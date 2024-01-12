@@ -1,100 +1,82 @@
-﻿using System;
-using System.Buffers;
+﻿using System.Buffers;
 using System.IO.Pipelines;
-using System.Threading;
+using System.Net.Sockets;
+using System.Net;
+using System.Reflection.PortableExecutable;
 using System.Threading.Channels;
-using System.Threading.Tasks;
-using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Running;
+using System.Text;
+using CarrotProtocolLib.Driver;
+using CarrotProtocolLib.Device;
+using CarrotProtocolLib.Protocol;
 using CarrotProtocolLib.Util;
+using System.Diagnostics;
+using System.IO;
 
-namespace RingBufferBenchmark
+namespace CarrotProtocolLibBenchmark
 {
-    // A class to run the benchmark tests
-    public class RingBufferTest
-    {
-        // A parameter to specify the size of the data to write and read
-        [Params(4, 16, 64, 256, 1024)]
-        public int DataSize { get; set; }
-
-        // A parameter to specify the mode of the channel
-        [Params(ChannelMode.Bounded, ChannelMode.Unbounded)]
-        public ChannelMode ChannelMode { get; set; }
-
-        // A method to write data to the ring buffer and channel
-        [Benchmark]
-        public async Task WriteDataAsync()
-        {
-            // Create a ring buffer to store and pass the data
-            var rb = new RingBuffer(DataSize * 50);
-
-            // Create a channel to store and pass the data
-            var channel = ChannelMode == ChannelMode.Bounded ?
-                Channel.CreateBounded<byte[]>(100) :
-                Channel.CreateUnbounded<byte[]>();
-
-            // Generate some random data
-            var data = new byte[DataSize];
-            new Random().NextBytes(data);
-
-            // Write the data to the ring buffer
-            rb.Write(data, 0, DataSize);
-
-            // Write the data to the channel
-            await channel.Writer.WriteAsync(data);
-
-            // Complete the channel writer
-            channel.Writer.Complete();
-        }
-
-        // A method to read data from the ring buffer and channel
-        [Benchmark]
-        public async Task ReadDataAsync()
-        {
-            // Create a ring buffer to store and pass the data
-            var rb = new RingBuffer(DataSize * 50);
-
-            // Create a channel to store and pass the data
-            var channel = ChannelMode == ChannelMode.Bounded ?
-                Channel.CreateBounded<byte[]>(100) :
-                Channel.CreateUnbounded<byte[]>();
-
-            // Generate some random data
-            var data = new byte[DataSize];
-            new Random().NextBytes(data);
-
-            // Write the data to the ring buffer
-            rb.Write(data, 0, DataSize);
-
-            // Write the data to the channel
-            await channel.Writer.WriteAsync(data);
-
-            // Complete the channel writer
-            channel.Writer.Complete();
-
-            // Read data from the ring buffer
-            rb.Read(data, 0, DataSize);
-
-            // Read data from the channel
-            await channel.Reader.ReadAsync();
-        }
-    }
-
-    // An enum to specify the mode of the channel
-    public enum ChannelMode
-    {
-        Bounded,
-        Unbounded
-    }
-
-    // The main program
-    class Program
+    internal class Program
     {
         static void Main(string[] args)
         {
-            // Run the benchmark tests
-            var summary = BenchmarkRunner.Run<RingBufferTest>();
+            CancellationTokenSource cts = new CancellationTokenSource();
+            Task.Run(() => Write(cts));
+            Task.Run(() => Read(cts));
+            Console.ReadKey();
+            cts.Cancel();
+        }
+
+        public static void Write(CancellationTokenSource cts)
+        {
+            //DeviceInfo dev = FtdiD2xxDriver.GetDevicesInfo().FirstOrDefault();
+            //FtdiD2xxStream s = new FtdiD2xxStream(dev.Name);
+            FileStream s = new FileStream("test.bin", FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite, 4096, true);
+            BinaryWriter bw = new BinaryWriter(s);
+
+            while (!cts.Token.IsCancellationRequested)
+            {
+                byte[] w = new byte[256];
+                //for (int i = 0; i < w.Length; i++)
+                //    w[i] = (byte)i;
+                //w = SetSampleControl(1).ToBytes();
+                //bw.Write(w);
+                s.Write(w);
+                bw.Flush();
+                Console.WriteLine($"Write {w.Length} Bytes to stream");
+                Task.Delay(1000, cts.Token).Wait(cts.Token);
+            }
+            s.Close();
+        }
+
+        public static void Read(CancellationTokenSource cts)
+        {
+            FileStream s = new FileStream("test.bin", FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite, 4096, true);
+            BinaryReader br = new BinaryReader(s);
+            byte[] b = new byte[1024 * 1024];
+            int b_len = 1024 * 1024;
+            int readLen = 0;
+            while ((readLen = br.Read(b, 0, b_len)) > 0)
+            {
+                //Console.WriteLine(Encoding.UTF8.GetString(b, 0, readLen));
+                //Console.WriteLine(BitConverter.ToString(b, 0, readLen).Replace("-", " "));
+                Console.WriteLine($"Read {readLen} Bytes from stream");
+            }
+            s.Close();
+        }
+
+        public static CarrotDataProtocolFrame SetSampleControl(int start)
+        {
+            byte[] payload = new byte[16];
+            byte[] RwnBytes = 0.IntToBytes();
+            byte[] RegfileBytes = 0.IntToBytes();
+            byte[] AddressBytes = 0x6.IntToBytes();
+            byte[] ValueBytes = start.IntToBytes(); ;
+            Array.Copy(RwnBytes, 0, payload, 0, 4);
+            Array.Copy(RegfileBytes, 0, payload, 4, 4);
+            Array.Copy(AddressBytes, 0, payload, 8, 4);
+            Array.Copy(ValueBytes, 0, payload, 12, 4);
+            CarrotDataProtocolFrame rec = new CarrotDataProtocolFrame(0xA0, 0, payload);
+            Debug.WriteLine($"Send {nameof(CarrotDataProtocolFrame)}: {rec.FrameBytes.BytesToHexString()}");
+            return rec;
         }
     }
 }
-

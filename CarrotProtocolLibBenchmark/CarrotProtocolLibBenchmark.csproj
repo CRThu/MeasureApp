@@ -16,4 +16,10 @@
     <ProjectReference Include="..\CarrotProtocolLib\CarrotProtocolLib.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="FTD2XX_NET">
+      <HintPath>..\DLL\FTD2XX\FTD2XX_NET.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>
