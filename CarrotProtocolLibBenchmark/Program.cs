@@ -18,18 +18,31 @@ namespace CarrotProtocolLibBenchmark
     {
         static void Main(string[] args)
         {
+            //FileStream s = new FileStream("test.bin", FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite, 4096, true);
+
+            //DeviceInfo? dev = FtdiD2xxDriver.GetDevicesInfo().FirstOrDefault();
+            //if (dev is null)
+            //{
+            //    Console.WriteLine("Device not found");
+            //    return;
+            //}
+
+            //FtdiD2xxStream s = new FtdiD2xxStream(dev.Name);
+            TcpListener listener = new TcpListener(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 8888));
+            listener.Start();
+            TcpClient tcpClient = listener.AcceptTcpClient();
+            NetworkStream s = tcpClient.GetStream();
+
             CancellationTokenSource cts = new CancellationTokenSource();
-            Task.Run(() => Write(cts));
-            Task.Run(() => Read(cts));
+            Task.Run(() => Write(s, cts));
+            Task.Run(() => Read(s, cts));
             Console.ReadKey();
             cts.Cancel();
+            s.Close();
         }
 
-        public static void Write(CancellationTokenSource cts)
+        public static void Write(Stream s, CancellationTokenSource cts)
         {
-            //DeviceInfo dev = FtdiD2xxDriver.GetDevicesInfo().FirstOrDefault();
-            //FtdiD2xxStream s = new FtdiD2xxStream(dev.Name);
-            FileStream s = new FileStream("test.bin", FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite, 4096, true);
             BinaryWriter bw = new BinaryWriter(s);
 
             while (!cts.Token.IsCancellationRequested)
@@ -37,19 +50,17 @@ namespace CarrotProtocolLibBenchmark
                 byte[] w = new byte[256];
                 //for (int i = 0; i < w.Length; i++)
                 //    w[i] = (byte)i;
-                //w = SetSampleControl(1).ToBytes();
+                w = SetSampleControl(1).ToBytes();
                 //bw.Write(w);
-                s.Write(w);
+                bw.Write(w);
                 bw.Flush();
                 Console.WriteLine($"Write {w.Length} Bytes to stream");
                 Task.Delay(1000, cts.Token).Wait(cts.Token);
             }
-            s.Close();
         }
 
-        public static void Read(CancellationTokenSource cts)
+        public static void Read(Stream s, CancellationTokenSource cts)
         {
-            FileStream s = new FileStream("test.bin", FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite, 4096, true);
             BinaryReader br = new BinaryReader(s);
             byte[] b = new byte[1024 * 1024];
             int b_len = 1024 * 1024;
@@ -60,7 +71,6 @@ namespace CarrotProtocolLibBenchmark
                 //Console.WriteLine(BitConverter.ToString(b, 0, readLen).Replace("-", " "));
                 Console.WriteLine($"Read {readLen} Bytes from stream");
             }
-            s.Close();
         }
 
         public static CarrotDataProtocolFrame SetSampleControl(int start)
