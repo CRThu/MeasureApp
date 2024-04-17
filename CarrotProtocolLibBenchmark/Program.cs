@@ -11,6 +11,7 @@ using CarrotProtocolLib.Protocol;
 using CarrotProtocolLib.Util;
 using System.Diagnostics;
 using System.IO;
+using System;
 
 namespace CarrotProtocolLibBenchmark
 {
@@ -31,14 +32,20 @@ namespace CarrotProtocolLibBenchmark
             TcpListener listener = new TcpListener(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 8888));
             listener.Start();
             TcpClient tcpClient = listener.AcceptTcpClient();
-            NetworkStream s = tcpClient.GetStream();
+            NetworkStream ns = tcpClient.GetStream();
+            Stream s = ns;
 
             CancellationTokenSource cts = new CancellationTokenSource();
             Task.Run(() => Write(s, cts));
-            Task.Run(() => Read(s, cts));
+            //Task.Run(() => Read(s, cts));
+            //Task.Run(() => ReadASync(s, cts));
+            //var fs = File.Create("store.bin");
+            var fs = new FileStream("store.bin", FileMode.Create);
+            Task.Run(() => StoreASync(s, cts, fs));
             Console.ReadKey();
             cts.Cancel();
             s.Close();
+            fs.Close();
         }
 
         public static void Write(Stream s, CancellationTokenSource cts)
@@ -70,6 +77,38 @@ namespace CarrotProtocolLibBenchmark
                 //Console.WriteLine(Encoding.UTF8.GetString(b, 0, readLen));
                 //Console.WriteLine(BitConverter.ToString(b, 0, readLen).Replace("-", " "));
                 Console.WriteLine($"Read {readLen} Bytes from stream");
+            }
+        }
+
+        public static async void ReadASync(Stream s, CancellationTokenSource cts)
+        {
+            BinaryReader br = new BinaryReader(s);
+            byte[] b = new byte[1024 * 1024];
+            int b_len = 1024 * 1024;
+            int readLen = 0;
+            while (!cts.IsCancellationRequested)
+            {
+                readLen = await s.ReadAsync(b.AsMemory(0, b_len), cts.Token);
+
+                //Console.WriteLine(Encoding.UTF8.GetString(b, 0, readLen));
+                //Console.WriteLine(BitConverter.ToString(b, 0, readLen).Replace("-", " "));
+                Console.WriteLine($"Read {readLen} Bytes from stream");
+            }
+        }
+
+        public static async void StoreASync(Stream s, CancellationTokenSource cts, Stream storeStream)
+        {
+            BinaryReader br = new BinaryReader(s);
+            byte[] b = new byte[1024 * 1024];
+            int b_len = 1024 * 1024;
+            int readLen = 0;
+            while (!cts.IsCancellationRequested)
+            {
+                await s.CopyToAsync(storeStream, cts.Token);
+
+                //Console.WriteLine(Encoding.UTF8.GetString(b, 0, readLen));
+                //Console.WriteLine(BitConverter.ToString(b, 0, readLen).Replace("-", " "));
+                //Console.WriteLine($"Read {readLen} Bytes from stream");
             }
         }
 

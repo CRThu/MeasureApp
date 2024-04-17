@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarrotProtocolCommDemoTests
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarrotProtocolLib", "CarrotProtocolLib\CarrotProtocolLib.csproj", "{EB05C2D0-F026-4E73-84C9-390FAC0B9038}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarrotProtocolLibBenchmark", "CarrotProtocolLibBenchmark\CarrotProtocolLibBenchmark.csproj", "{DD486DA0-344F-4B6D-ACD8-64F5324152A5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarrotProtocolLibBenchmark", "CarrotProtocolLibBenchmark\CarrotProtocolLibBenchmark.csproj", "{DD486DA0-344F-4B6D-ACD8-64F5324152A5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IOStreamDemo", "IOStreamDemo\IOStreamDemo.csproj", "{3C0A1459-2F1A-488C-8777-9105D0102370}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -83,6 +85,18 @@ Global
 		{DD486DA0-344F-4B6D-ACD8-64F5324152A5}.Release|x64.Build.0 = Release|Any CPU
 		{DD486DA0-344F-4B6D-ACD8-64F5324152A5}.Release|x86.ActiveCfg = Release|Any CPU
 		{DD486DA0-344F-4B6D-ACD8-64F5324152A5}.Release|x86.Build.0 = Release|Any CPU
+		{3C0A1459-2F1A-488C-8777-9105D0102370}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C0A1459-2F1A-488C-8777-9105D0102370}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C0A1459-2F1A-488C-8777-9105D0102370}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{3C0A1459-2F1A-488C-8777-9105D0102370}.Debug|x64.Build.0 = Debug|Any CPU
+		{3C0A1459-2F1A-488C-8777-9105D0102370}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3C0A1459-2F1A-488C-8777-9105D0102370}.Debug|x86.Build.0 = Debug|Any CPU
+		{3C0A1459-2F1A-488C-8777-9105D0102370}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C0A1459-2F1A-488C-8777-9105D0102370}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C0A1459-2F1A-488C-8777-9105D0102370}.Release|x64.ActiveCfg = Release|Any CPU
+		{3C0A1459-2F1A-488C-8777-9105D0102370}.Release|x64.Build.0 = Release|Any CPU
+		{3C0A1459-2F1A-488C-8777-9105D0102370}.Release|x86.ActiveCfg = Release|Any CPU
+		{3C0A1459-2F1A-488C-8777-9105D0102370}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
