@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IOStreamDemo
+namespace IOStreamDemo.Streams
 {
     public enum StreamStatus
     {
@@ -19,12 +19,12 @@ namespace IOStreamDemo
     /// </summary>
     public interface IDriverCommStream
     {
-        public DeviceInfo DeviceInfo { get; set; }
+        public DeviceInfo DeviceInfo { get; }
 
-        public StreamStatus Status { get; set; }
+        public StreamStatus Status { get; }
 
-        public ulong RxCount { get; set; }
-        public ulong TxCount { get; set; }
+        public ulong RxCount { get; }
+        public ulong TxCount { get; }
 
         public delegate void StreamErrorReceivedHandler(Exception ex);
         public event StreamErrorReceivedHandler? StreamErrorReceived;

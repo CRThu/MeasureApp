@@ -1,13 +1,50 @@
 ﻿using System.Net.Sockets;
 using System.Net;
 using System.Net.Http;
+using DryIoc;
+using IOStreamDemo.Streams;
+using IOStreamDemo.Drivers;
+using IOStreamDemo.Loggers;
 
 namespace IOStreamDemo
 {
-    internal class Program
+    public class Program
     {
         static void Main(string[] args)
         {
+            SessionContainer sc = new();
+            string loggerName = "ContainerLogger";
+
+            // logger注册以及ioc模块日志创建object记录
+            sc.container.Register<ILogger, ConsoleLogger>(Reuse.Singleton, serviceKey: loggerName);
+            sc.container.RegisterInitializer<object>(
+                (anyObj, resolver) => resolver.Resolve<ILogger>(loggerName).Log($"Object {{{anyObj}}} Resolved."),
+                condition: request => !loggerName.Equals(request.ServiceKey));
+
+            // 单例注册
+            sc.container.Register<IDriver, SerialDriver>(serviceKey: "SerialDriver", reuse: Reuse.Singleton);
+            sc.container.Register<IDriver, GpibDriver>(serviceKey: "GpibDriver", reuse: Reuse.Singleton);
+
+            // 驱动通信流注册
+            sc.container.Register<IDriverCommStream, SerialStream>(serviceKey: "SerialStream");
+            sc.container.Register<IDriverCommStream, VisaGpibStream>(serviceKey: "VisaGpibStream");
+
+            Console.WriteLine(sc.container.Resolve<IDriver>("SerialDriver").GetType().ToString());
+            Console.WriteLine(sc.container.Resolve<IDriver>("GpibDriver").GetType().ToString());
+
+            Console.WriteLine(sc.container.Resolve<IDriverCommStream>("SerialStream").GetType().ToString());
+            Console.WriteLine(sc.container.Resolve<IDriverCommStream>("VisaGpibStream").GetType().ToString());
+
+
+            //var a = DeviceManager.FindDevices("");
+            //foreach (var device in a)
+            //{
+            //    Console.WriteLine(device.Name);
+            //}
+
+            //var session = DeviceManager.CreateSession("com://9", "console", "cdpv1");
+
+            /*
             Console.WriteLine("Press any key to start reading data...");
             Console.ReadKey();
             TcpListener listener = new TcpListener(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 8888));
@@ -36,6 +73,7 @@ namespace IOStreamDemo
                     Console.WriteLine($"Reading stopped. Total packets received: {tcpStreamHandler.TotalPacketsReceived}");
                 }
             }
+            */
         }
     }
 
