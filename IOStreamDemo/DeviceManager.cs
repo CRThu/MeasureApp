@@ -14,7 +14,7 @@ namespace IOStreamDemo
         public static (string name, IDriver type)[] RegisteredResources =
         [
             //("TCP", typeof(TcpStream) ),
-            ("SERIAL", new SerialDriver() ),
+            ("COM", new SerialDriver() ),
             ("GPIB", new GpibDriver() ),
             //("FTDI", typeof(FtdiSyncFifoStream) ),
         ];
@@ -35,13 +35,18 @@ namespace IOStreamDemo
             return devices.ToArray();
         }
 
-        public static void CreateSession(string address, string logger, string service)
+        public static void CreateSession(SessionContainer container, string address, string logger, string service)
         {
-            if (address.StartsWith("com://"))
-            {
-            }
-            else
-                return;
+            // COM://7
+            // TCP://127.0.0.1:8888
+            // GPIB://22
+
+            string[] addrInfo = address.ToUpper().Split("://", 2);
+            
+            if (addrInfo.Length != 2)
+                throw new NotImplementedException();
+
+            //container.
         }
     }
 }

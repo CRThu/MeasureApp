@@ -1,5 +1,4 @@
-﻿using CarrotProtocolLib.Service;
-using DryIoc;
+﻿using DryIoc;
 using IOStreamDemo.Drivers;
 using IOStreamDemo.Loggers;
 using IOStreamDemo.Services;
@@ -19,11 +18,7 @@ namespace IOStreamDemo
         private static readonly SessionContainer current = new();
         public static SessionContainer Current => current;
 
-        public readonly Container container = new Container();
-
-        private Dictionary<string, IDriverCommStream> Stream { get; set; } = new();
-        private Dictionary<string, ILogger> Logger { get; set; } = new();
-        private Dictionary<string, IService> Service { get; set; } = new();
+        public readonly Container Container = new Container();
 
         public SessionContainer()
         {
@@ -31,15 +26,22 @@ namespace IOStreamDemo
 
         public IDriverCommStream GetStream(string name)
         {
-            return Stream[name];
+            return Container.Resolve<IDriverCommStream>(serviceKey: name);
         }
+
         public ILogger GetLogger(string name)
         {
-            return Logger[name];
+            return Container.Resolve<ILogger>(serviceKey: name);
         }
+
         public IService GetService(string name)
         {
-            return Service[name];
+            return Container.Resolve<IService>(serviceKey: name);
+        }
+
+        public void Add<T>(string name)
+        {
+            Container.Register<T>(serviceKey: name);
         }
     }
 

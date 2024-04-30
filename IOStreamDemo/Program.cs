@@ -16,33 +16,33 @@ namespace IOStreamDemo
             string loggerName = "ContainerLogger";
 
             // logger注册以及ioc模块日志创建object记录
-            sc.container.Register<ILogger, ConsoleLogger>(Reuse.Singleton, serviceKey: loggerName);
-            sc.container.RegisterInitializer<object>(
+            sc.Container.Register<ILogger, ConsoleLogger>(Reuse.Singleton, serviceKey: loggerName);
+            sc.Container.RegisterInitializer<object>(
                 (anyObj, resolver) => resolver.Resolve<ILogger>(loggerName).Log($"Object {{{anyObj}}} Resolved."),
                 condition: request => !loggerName.Equals(request.ServiceKey));
 
             // 单例注册
-            sc.container.Register<IDriver, SerialDriver>(serviceKey: "SerialDriver", reuse: Reuse.Singleton);
-            sc.container.Register<IDriver, GpibDriver>(serviceKey: "GpibDriver", reuse: Reuse.Singleton);
+            sc.Container.Register<IDriver, SerialDriver>(serviceKey: "SerialDriver", reuse: Reuse.Singleton);
+            sc.Container.Register<IDriver, GpibDriver>(serviceKey: "GpibDriver", reuse: Reuse.Singleton);
 
             // 驱动通信流注册
-            sc.container.Register<IDriverCommStream, SerialStream>(serviceKey: "SerialStream");
-            sc.container.Register<IDriverCommStream, VisaGpibStream>(serviceKey: "VisaGpibStream");
+            sc.Container.Register<IDriverCommStream, SerialStream>(serviceKey: "SerialStream");
+            sc.Container.Register<IDriverCommStream, VisaGpibStream>(serviceKey: "VisaGpibStream");
 
-            Console.WriteLine(sc.container.Resolve<IDriver>("SerialDriver").GetType().ToString());
-            Console.WriteLine(sc.container.Resolve<IDriver>("GpibDriver").GetType().ToString());
+            Console.WriteLine(sc.Container.Resolve<IDriver>("SerialDriver").GetType().ToString());
+            Console.WriteLine(sc.Container.Resolve<IDriver>("GpibDriver").GetType().ToString());
 
-            Console.WriteLine(sc.container.Resolve<IDriverCommStream>("SerialStream").GetType().ToString());
-            Console.WriteLine(sc.container.Resolve<IDriverCommStream>("VisaGpibStream").GetType().ToString());
+            Console.WriteLine(sc.Container.Resolve<IDriverCommStream>("SerialStream").GetType().ToString());
+            Console.WriteLine(sc.Container.Resolve<IDriverCommStream>("VisaGpibStream").GetType().ToString());
 
 
-            //var a = DeviceManager.FindDevices("");
-            //foreach (var device in a)
-            //{
-            //    Console.WriteLine(device.Name);
-            //}
+            var a = DeviceManager.FindDevices("");
+            foreach (var device in a)
+            {
+                Console.WriteLine(device.Name);
+            }
 
-            //var session = DeviceManager.CreateSession("com://9", "console", "cdpv1");
+            DeviceManager.CreateSession(SessionContainer.Current,"com://9", "console", "cdpv1");
 
             /*
             Console.WriteLine("Press any key to start reading data...");
