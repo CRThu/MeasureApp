@@ -9,12 +9,8 @@ namespace IOStreamDemo.Streams
 {
     public class SerialStream : IDriverCommStream
     {
-        public DeviceInfo DeviceInfo { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public StreamStatus Status { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public ulong RxCount { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public ulong TxCount { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-        public event IDriverCommStream.StreamErrorReceivedHandler? StreamErrorReceived;
+        public string Address { get; set; }
+        public string LoggerKey { get; set; }
 
         public void Close()
         {
@@ -26,12 +22,12 @@ namespace IOStreamDemo.Streams
             throw new NotImplementedException();
         }
 
-        public int Read(Span<byte> buffer, int offset, int bytesExpected)
+        public int Read(string s)
         {
             throw new NotImplementedException();
         }
 
-        public void Write(Span<byte> buffer, int offset, int count)
+        public void Write(string s)
         {
             throw new NotImplementedException();
         }

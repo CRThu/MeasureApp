@@ -1,4 +1,5 @@
 ﻿using CarrotProtocolLib.Device;
+using IOStreamDemo.Streams;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,5 @@ namespace IOStreamDemo.Drivers
     public interface IDriver
     {
         public DeviceInfo[] FindDevices();
-
     }
 }

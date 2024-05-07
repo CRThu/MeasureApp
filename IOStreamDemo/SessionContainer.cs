@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Formats.Asn1;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,30 +19,48 @@ namespace IOStreamDemo
         private static readonly SessionContainer current = new();
         public static SessionContainer Current => current;
 
-        public readonly Container Container = new Container();
+        public Dictionary<string, IDriverCommStream> StreamsContainer = [];
+        public Dictionary<string, ILogger> LogsContainer = [];
+        //public Dictionary<string, IService> ServicesContainer = [];
 
         public SessionContainer()
         {
         }
 
-        public IDriverCommStream GetStream(string name)
+        public T? GetOrCreate<T>(Type implType, string key)
         {
-            return Container.Resolve<IDriverCommStream>(serviceKey: name);
+            if (typeof(T).Name == nameof(IDriverCommStream))
+            {
+                if (StreamsContainer.TryGetValue(key, out IDriverCommStream? value))
+                    return (T)value;
+                else
+                {
+                    StreamsContainer[key] = (implType.Assembly.CreateInstance(implType.FullName!) as IDriverCommStream)!;
+                    return (T)StreamsContainer[key];
+                }
+            }
+            else if (typeof(T).Name == nameof(ILogger))
+            {
+                if (LogsContainer.TryGetValue(key, out ILogger? value))
+                    return (T)value;
+                else
+                {
+                    LogsContainer[key] = (implType.Assembly.CreateInstance(implType.FullName!) as ILogger)!;
+                    return (T)LogsContainer[key];
+                }
+            }
+            else
+                return default;
         }
 
-        public ILogger GetLogger(string name)
+        public void Delete<T>(string key)
         {
-            return Container.Resolve<ILogger>(serviceKey: name);
-        }
-
-        public IService GetService(string name)
-        {
-            return Container.Resolve<IService>(serviceKey: name);
-        }
-
-        public void Add<T>(string name)
-        {
-            Container.Register<T>(serviceKey: name);
+            if (typeof(T).Name == nameof(IDriverCommStream))
+            {
+                StreamsContainer.Remove(key);
+            }
+            else
+                return;
         }
     }
 

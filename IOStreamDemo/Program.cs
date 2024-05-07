@@ -5,6 +5,7 @@ using DryIoc;
 using IOStreamDemo.Streams;
 using IOStreamDemo.Drivers;
 using IOStreamDemo.Loggers;
+using CarrotProtocolLib.Device;
 
 namespace IOStreamDemo
 {
@@ -12,71 +13,57 @@ namespace IOStreamDemo
     {
         static void Main(string[] args)
         {
-            SessionContainer sc = new();
-            string loggerName = "ContainerLogger";
-
-            // logger注册以及ioc模块日志创建object记录
-            sc.Container.Register<ILogger, ConsoleLogger>(Reuse.Singleton, serviceKey: loggerName);
-            sc.Container.RegisterInitializer<object>(
-                (anyObj, resolver) => resolver.Resolve<ILogger>(loggerName).Log($"Object {{{anyObj}}} Resolved."),
-                condition: request => !loggerName.Equals(request.ServiceKey));
-
-            // 单例注册
-            sc.Container.Register<IDriver, SerialDriver>(serviceKey: "SerialDriver", reuse: Reuse.Singleton);
-            sc.Container.Register<IDriver, GpibDriver>(serviceKey: "GpibDriver", reuse: Reuse.Singleton);
-
-            // 驱动通信流注册
-            sc.Container.Register<IDriverCommStream, SerialStream>(serviceKey: "SerialStream");
-            sc.Container.Register<IDriverCommStream, VisaGpibStream>(serviceKey: "VisaGpibStream");
-
-            Console.WriteLine(sc.Container.Resolve<IDriver>("SerialDriver").GetType().ToString());
-            Console.WriteLine(sc.Container.Resolve<IDriver>("GpibDriver").GetType().ToString());
-
-            Console.WriteLine(sc.Container.Resolve<IDriverCommStream>("SerialStream").GetType().ToString());
-            Console.WriteLine(sc.Container.Resolve<IDriverCommStream>("VisaGpibStream").GetType().ToString());
-
+            DeviceManager.CreateSession(SessionContainer.Current, "com://9", "console", "cdpv1");
 
             var a = DeviceManager.FindDevices("");
             foreach (var device in a)
             {
                 Console.WriteLine(device.Name);
             }
-
-            DeviceManager.CreateSession(SessionContainer.Current,"com://9", "console", "cdpv1");
-
-            /*
-            Console.WriteLine("Press any key to start reading data...");
-            Console.ReadKey();
-            TcpListener listener = new TcpListener(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 8888));
-
-            string ipAddress = "127.0.0.1"; // Example IP Address
-            int port = 13000; // Example Port
-
-            CustomProgress<int> progressReporter = new CustomProgress<int>(bytesReceived => Console.WriteLine($"Progress: Received {bytesReceived} bytes of data."));
-            TcpStreamHandler tcpStreamHandler = new TcpStreamHandler(ipAddress, port, progressReporter);
-
-            CancellationTokenSource cts = new CancellationTokenSource();
-            Task readTask = tcpStreamHandler.StartReadingAsync(cts.Token);
-
-            Console.WriteLine("Press any key to stop reading data...");
-            Console.ReadKey();
-
-            cts.Cancel();
-            try
+            var sc = SessionContainer.Current.StreamsContainer;
+            foreach (var s in sc)
             {
-                readTask.Wait(cts.Token); // Ensure any cleanup or final operations are completed
+                Console.WriteLine($"{s.Key} {s.Value.Address}");
             }
-            catch (Exception e)
+            var lc = SessionContainer.Current.LogsContainer;
+            foreach (var l in lc)
             {
-                if (e is OperationCanceledException)
-                {
-                    Console.WriteLine($"Reading stopped. Total packets received: {tcpStreamHandler.TotalPacketsReceived}");
-                }
+                Console.WriteLine($"{l.Key} {l.Value}");
             }
-            */
+
         }
     }
 
+    /*
+    Console.WriteLine("Press any key to start reading data...");
+    Console.ReadKey();
+    TcpListener listener = new TcpListener(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 8888));
+
+    string ipAddress = "127.0.0.1"; // Example IP Address
+    int port = 13000; // Example Port
+
+    CustomProgress<int> progressReporter = new CustomProgress<int>(bytesReceived => Console.WriteLine($"Progress: Received {bytesReceived} bytes of data."));
+    TcpStreamHandler tcpStreamHandler = new TcpStreamHandler(ipAddress, port, progressReporter);
+
+    CancellationTokenSource cts = new CancellationTokenSource();
+    Task readTask = tcpStreamHandler.StartReadingAsync(cts.Token);
+
+    Console.WriteLine("Press any key to stop reading data...");
+    Console.ReadKey();
+
+    cts.Cancel();
+    try
+    {
+        readTask.Wait(cts.Token); // Ensure any cleanup or final operations are completed
+    }
+    catch (Exception e)
+    {
+        if (e is OperationCanceledException)
+        {
+            Console.WriteLine($"Reading stopped. Total packets received: {tcpStreamHandler.TotalPacketsReceived}");
+        }
+    }
+    */
     public class TcpStreamHandler
     {
         private TcpClient tcpClient;

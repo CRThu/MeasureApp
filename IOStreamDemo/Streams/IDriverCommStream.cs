@@ -19,15 +19,8 @@ namespace IOStreamDemo.Streams
     /// </summary>
     public interface IDriverCommStream
     {
-        public DeviceInfo DeviceInfo { get; }
-
-        public StreamStatus Status { get; }
-
-        public ulong RxCount { get; }
-        public ulong TxCount { get; }
-
-        public delegate void StreamErrorReceivedHandler(Exception ex);
-        public event StreamErrorReceivedHandler? StreamErrorReceived;
+        public string Address { get; set; }
+        public string LoggerKey { get; set; }
 
         /// <summary>
         /// 打开串口
@@ -44,7 +37,7 @@ namespace IOStreamDemo.Streams
         /// <param name="buffer"></param>
         /// <param name="offset"></param>
         /// <param name="count"></param>
-        public abstract void Write(Span<byte> buffer, int offset, int count);
+        public abstract void Write(string s);
         /// <summary>
         /// 读取字节数组
         /// </summary>
@@ -52,7 +45,7 @@ namespace IOStreamDemo.Streams
         /// <param name="offset"></param>
         /// <param name="bytesExpected"></param>
         /// <returns>返回实际读取字节数</returns>
-        public abstract int Read(Span<byte> buffer, int offset, int bytesExpected);
+        public abstract int Read(string s);
 
     }
 }
