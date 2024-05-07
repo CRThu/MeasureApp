@@ -49,6 +49,19 @@ namespace IOStreamDemo
             return devices.ToArray();
         }
 
+        public static void RegisterResources(SessionContainer container)
+        {
+            for (int i = 0; i < RegisteredResources.Length; i++)
+            {
+                container.RegisterService(typeof(Drivers.IDriver),
+                    RegisteredResources[i].DriverType!,
+                    RegisteredResources[i].Name!);
+                container.RegisterService(typeof(IDriverCommStream),
+                    RegisteredResources[i].StreamType!,
+                    RegisteredResources[i].Name!);
+            }
+        }
+
         public static void CreateSession(SessionContainer container, string address, string logger, string service)
         {
 
@@ -71,11 +84,6 @@ namespace IOStreamDemo
 
             var streamType = RegisteredResources.Where(res => res.Name == addrInfo[0]).FirstOrDefault()!.StreamType;
 
-            var s = container.GetOrCreate<IDriverCommStream>(streamType!, address);
-            var l = container.GetOrCreate<Loggers.ILogger>(typeof(ConsoleLogger), loggerKey);
-
-            s.Address = address;
-            s.LoggerKey = loggerKey;
         }
     }
 }

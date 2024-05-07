@@ -19,48 +19,31 @@ namespace IOStreamDemo
         private static readonly SessionContainer current = new();
         public static SessionContainer Current => current;
 
-        public Dictionary<string, IDriverCommStream> StreamsContainer = [];
-        public Dictionary<string, ILogger> LogsContainer = [];
-        //public Dictionary<string, IService> ServicesContainer = [];
+        public Container Container { get; private set; } = new();
 
         public SessionContainer()
         {
         }
 
-        public T? GetOrCreate<T>(Type implType, string key)
+        public void RegisterService(Type serviceType, Type implType, string serviceKey, bool isSingleton = true)
         {
-            if (typeof(T).Name == nameof(IDriverCommStream))
-            {
-                if (StreamsContainer.TryGetValue(key, out IDriverCommStream? value))
-                    return (T)value;
-                else
-                {
-                    StreamsContainer[key] = (implType.Assembly.CreateInstance(implType.FullName!) as IDriverCommStream)!;
-                    return (T)StreamsContainer[key];
-                }
-            }
-            else if (typeof(T).Name == nameof(ILogger))
-            {
-                if (LogsContainer.TryGetValue(key, out ILogger? value))
-                    return (T)value;
-                else
-                {
-                    LogsContainer[key] = (implType.Assembly.CreateInstance(implType.FullName!) as ILogger)!;
-                    return (T)LogsContainer[key];
-                }
-            }
-            else
-                return default;
+            Container.Register(
+                serviceType: serviceType,
+                implementationType: implType,
+                serviceKey: serviceKey,
+                reuse: isSingleton ? Reuse.Singleton : null);
         }
 
-        public void Delete<T>(string key)
+        public TService GetService<TService>(string serviceKey)
         {
-            if (typeof(T).Name == nameof(IDriverCommStream))
-            {
-                StreamsContainer.Remove(key);
-            }
-            else
-                return;
+            return Container.Resolve<TService>(serviceKey: serviceKey);
+        }
+
+        public void CreateSession(string streamKey, string loggerKey, string serviceKey)
+        {
+            var streamInstance = Container.Resolve<IDriverCommStream>(serviceKey: streamKey);
+            var loggerInstance = Container.Resolve<ILogger>(serviceKey: loggerKey);
+            //var serviceInstance = Container.Resolve<IService>(serviceKey: serviceKey);
         }
     }
 

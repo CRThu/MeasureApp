@@ -13,23 +13,24 @@ namespace IOStreamDemo
     {
         static void Main(string[] args)
         {
-            DeviceManager.CreateSession(SessionContainer.Current, "com://9", "console", "cdpv1");
+            Container container = SessionContainer.Current.Container;
+            string loggerName = "CONSOLE";
 
-            var a = DeviceManager.FindDevices("");
-            foreach (var device in a)
-            {
-                Console.WriteLine(device.Name);
-            }
-            var sc = SessionContainer.Current.StreamsContainer;
-            foreach (var s in sc)
-            {
-                Console.WriteLine($"{s.Key} {s.Value.Address}");
-            }
-            var lc = SessionContainer.Current.LogsContainer;
-            foreach (var l in lc)
-            {
-                Console.WriteLine($"{l.Key} {l.Value}");
-            }
+            // logger注册以及ioc模块日志创建object记录
+            container.Register<ILogger, ConsoleLogger>(Reuse.Singleton, serviceKey: loggerName);
+            container.RegisterInitializer<object>(
+                (anyObj, resolver) => resolver.Resolve<ILogger>(loggerName).Log($"Object {{{anyObj}}} Resolved."),
+                condition: request => !loggerName.Equals(request.ServiceKey));
+
+            DeviceManager.RegisterResources(SessionContainer.Current);
+            //DeviceManager.CreateSession(SessionContainer.Current, "com://9", "console", "cdpv1");
+
+
+            var streamInstance = container.Resolve<IDriverCommStream>(serviceKey: "COM");
+            var loggerInstance = container.Resolve<ILogger>(serviceKey: "CONSOLE");
+
+            Console.WriteLine($"{streamInstance}");
+            Console.WriteLine($"{loggerInstance}");
 
         }
     }
