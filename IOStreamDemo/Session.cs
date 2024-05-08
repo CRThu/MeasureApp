@@ -15,6 +15,8 @@ namespace IOStreamDemo
 
         public Session(IDriverCommStream stream, ILogger logger)
         {
+            Stream = stream;
+            Logger = logger;
         }
     }
 }

@@ -49,20 +49,20 @@ namespace IOStreamDemo
             return devices.ToArray();
         }
 
-        public static void RegisterResources(SessionContainer container)
+        public static void RegisterResources(SessionManager container)
         {
             for (int i = 0; i < RegisteredResources.Length; i++)
             {
-                container.RegisterService(typeof(Drivers.IDriver),
+                container.Register(typeof(Drivers.IDriver),
                     RegisteredResources[i].DriverType!,
                     RegisteredResources[i].Name!);
-                container.RegisterService(typeof(IDriverCommStream),
+                container.Register(typeof(IDriverCommStream),
                     RegisteredResources[i].StreamType!,
-                    RegisteredResources[i].Name!);
+                    RegisteredResources[i].Name!, isSingleton: false);
             }
         }
 
-        public static void CreateSession(SessionContainer container, string address, string logger, string service)
+        public static Session CreateSession(SessionManager container, string address, string logger, string protocol)
         {
 
             // ADDRESS
@@ -76,14 +76,19 @@ namespace IOStreamDemo
             // SERVICE
             // CDPV1
 
-            string[] addrInfo = address.ToUpper().Split("://", 2);
-            string loggerKey = logger.ToUpper();
+            string[] devInfo = address.ToUpper().Split("://", 2);
+            string[] loggerInfo = logger.ToUpper().Split("://", 2);
+            string protocolInfo = protocol.ToUpper();
 
-            if (addrInfo.Length != 2)
+            if (devInfo.Length != 2 || loggerInfo.Length != 2)
                 throw new NotImplementedException();
 
-            var streamType = RegisteredResources.Where(res => res.Name == addrInfo[0]).FirstOrDefault()!.StreamType;
+            var resName = devInfo[0];
+            var loggerName = loggerInfo[0];
 
+            var s = container.Add(address, resName, loggerName, protocolInfo);
+
+            return s;
         }
     }
 }

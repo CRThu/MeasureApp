@@ -14,18 +14,21 @@ using System.Threading.Tasks;
 
 namespace IOStreamDemo
 {
-    public class SessionContainer
+    public class SessionManager
     {
-        private static readonly SessionContainer current = new();
-        public static SessionContainer Current => current;
+        private static readonly SessionManager current = new();
+        public static SessionManager Current => current;
 
         public Container Container { get; private set; } = new();
 
-        public SessionContainer()
+        public Dictionary<string, Session> Sessions { get; private set; } = new();
+
+
+        public SessionManager()
         {
         }
 
-        public void RegisterService(Type serviceType, Type implType, string serviceKey, bool isSingleton = true)
+        public void Register(Type serviceType, Type implType, string serviceKey, bool isSingleton = true)
         {
             Container.Register(
                 serviceType: serviceType,
@@ -34,17 +37,20 @@ namespace IOStreamDemo
                 reuse: isSingleton ? Reuse.Singleton : null);
         }
 
-        public TService GetService<TService>(string serviceKey)
-        {
-            return Container.Resolve<TService>(serviceKey: serviceKey);
-        }
-
-        public void CreateSession(string streamKey, string loggerKey, string serviceKey)
+        public Session Add(string id, string streamKey, string loggerKey, string serviceKey)
         {
             var streamInstance = Container.Resolve<IDriverCommStream>(serviceKey: streamKey);
             var loggerInstance = Container.Resolve<ILogger>(serviceKey: loggerKey);
             //var serviceInstance = Container.Resolve<IService>(serviceKey: serviceKey);
+
+            Session s = new(streamInstance, loggerInstance);
+            Sessions.Add(id, s);
+            return s;
+        }
+        
+        public bool TryGet(string id, out Session? session)
+        {
+            return Sessions.TryGetValue(id, out session);
         }
     }
-
 }

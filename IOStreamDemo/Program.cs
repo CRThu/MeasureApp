@@ -13,7 +13,7 @@ namespace IOStreamDemo
     {
         static void Main(string[] args)
         {
-            Container container = SessionContainer.Current.Container;
+            Container container = SessionManager.Current.Container;
             string loggerName = "CONSOLE";
 
             // logger注册以及ioc模块日志创建object记录
@@ -22,15 +22,12 @@ namespace IOStreamDemo
                 (anyObj, resolver) => resolver.Resolve<ILogger>(loggerName).Log($"Object {{{anyObj}}} Resolved."),
                 condition: request => !loggerName.Equals(request.ServiceKey));
 
-            DeviceManager.RegisterResources(SessionContainer.Current);
-            //DeviceManager.CreateSession(SessionContainer.Current, "com://9", "console", "cdpv1");
+            DeviceManager.RegisterResources(SessionManager.Current);
 
+            DeviceManager.CreateSession(SessionManager.Current,"COM://9@9600,8,N,1","CONSOLE://1","RAWV1");
 
-            var streamInstance = container.Resolve<IDriverCommStream>(serviceKey: "COM");
-            var loggerInstance = container.Resolve<ILogger>(serviceKey: "CONSOLE");
-
-            Console.WriteLine($"{streamInstance}");
-            Console.WriteLine($"{loggerInstance}");
+            Console.WriteLine($"{SessionManager.Current.Sessions.First().Value.Stream}");
+            Console.WriteLine($"{SessionManager.Current.Sessions.First().Value.Logger}");
 
         }
     }
