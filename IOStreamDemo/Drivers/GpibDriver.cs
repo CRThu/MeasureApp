@@ -18,7 +18,8 @@ namespace IOStreamDemo.Drivers
         {
             return
             [
-                new DeviceInfo("GPIB","GPIB722","ni visa gpib 722 test")
+                new DeviceInfo("GPIB","GPIB://701","NI VISA GPIB 701 FOR TEST"),
+                new DeviceInfo("GPIB","GPIB://702","NI VISA GPIB 702 FOR TEST"),
             ];
         }
     }

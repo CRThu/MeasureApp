@@ -22,9 +22,18 @@ namespace IOStreamDemo
                 (anyObj, resolver) => resolver.Resolve<ILogger>(loggerName).Log($"Object {{{anyObj}}} Resolved."),
                 condition: request => !loggerName.Equals(request.ServiceKey));
 
+            // 注册资源
             DeviceManager.RegisterResources(SessionManager.Current);
 
-            DeviceManager.CreateSession(SessionManager.Current,"COM://9@9600,8,N,1","CONSOLE://1","RAWV1");
+            // 查找现有设备
+            var deviceInfos = DeviceManager.FindDevices(SessionManager.Current);
+            foreach (var deviceInfo in deviceInfos)
+            {
+                Console.WriteLine($"{deviceInfo}");
+            }
+
+            // 创建Session
+            DeviceManager.CreateSession(SessionManager.Current, "COM://9@9600,8,N,1", "CONSOLE://1", "RAWV1");
 
             Console.WriteLine($"{SessionManager.Current.Sessions.First().Value.Stream}");
             Console.WriteLine($"{SessionManager.Current.Sessions.First().Value.Logger}");

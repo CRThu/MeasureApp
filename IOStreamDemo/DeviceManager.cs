@@ -38,15 +38,16 @@ namespace IOStreamDemo
         /// </summary>
         /// <param name="filter"></param>
         /// <returns></returns>
-        public static DeviceInfo[] FindDevices(string filter)
+        public static DeviceInfo[] FindDevices(SessionManager container, string filter = null)
         {
-            List<DeviceInfo> devices = new();
-            for (int i = 0; i < RegisteredResources.Length; i++)
+            List<DeviceInfo> devicesFound = [];
+            var drivers = container.Container.Resolve<Drivers.IDriver[]>();
+            for (int i = 0; i < drivers.Length; i++)
             {
-                //var devs = RegisteredResources[i].type.FindDevices();
-                //devices.AddRange(devs);
+                var devs = drivers[i].FindDevices();
+                devicesFound.AddRange(devs);
             }
-            return devices.ToArray();
+            return devicesFound.ToArray();
         }
 
         public static void RegisterResources(SessionManager container)
@@ -55,7 +56,7 @@ namespace IOStreamDemo
             {
                 container.Register(typeof(Drivers.IDriver),
                     RegisteredResources[i].DriverType!,
-                    RegisteredResources[i].Name!);
+                    RegisteredResources[i].Name!, isSingleton: true);
                 container.Register(typeof(IDriverCommStream),
                     RegisteredResources[i].StreamType!,
                     RegisteredResources[i].Name!, isSingleton: false);

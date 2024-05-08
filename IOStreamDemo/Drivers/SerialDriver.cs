@@ -18,7 +18,8 @@ namespace IOStreamDemo.Drivers
         {
             return
             [
-                new DeviceInfo("SERIAL","COM999","serial port com test")
+                new DeviceInfo("SERIAL","COM://200","SERIALPORT COM200 FOR TEST"),
+                new DeviceInfo("SERIAL","COM://201","SERIALPORT COM201 FOR TEST")
             ];
         }
     }

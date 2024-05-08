@@ -28,7 +28,7 @@ namespace IOStreamDemo
         {
         }
 
-        public void Register(Type serviceType, Type implType, string serviceKey, bool isSingleton = true)
+        public void Register(Type serviceType, Type implType, string serviceKey, bool isSingleton)
         {
             Container.Register(
                 serviceType: serviceType,
