@@ -1,4 +1,5 @@
-﻿using DryIoc;
+﻿using CarrotProtocolLib.Device;
+using DryIoc;
 using IOStreamDemo.Drivers;
 using IOStreamDemo.Loggers;
 using IOStreamDemo.Services;
@@ -12,7 +13,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IOStreamDemo
+namespace IOStreamDemo.Sessions
 {
     public class SessionManager
     {
@@ -21,6 +22,11 @@ namespace IOStreamDemo
 
         public Container Container { get; private set; } = new();
 
+        public Dictionary<string, IDriver> Drivers { get; private set; } = new();
+        public Dictionary<string, IDriverCommStream> Streams { get; private set; } = new();
+        public Dictionary<string, ILogger> Loggers { get; private set; } = new();
+        //public Dictionary<string, IService> Services { get; private set; } = new();
+
         public Dictionary<string, Session> Sessions { get; private set; } = new();
 
 
@@ -28,16 +34,16 @@ namespace IOStreamDemo
         {
         }
 
-        public void Register(Type serviceType, Type implType, string serviceKey, bool isSingleton)
+        public void Register<TService>(Type implType, string serviceKey, bool isSingleton)
         {
             Container.Register(
-                serviceType: serviceType,
+                serviceType: typeof(TService),
                 implementationType: implType,
                 serviceKey: serviceKey,
                 reuse: isSingleton ? Reuse.Singleton : null);
         }
 
-        public Session Add(string id, string streamKey, string loggerKey, string serviceKey)
+        public Session Create(string id, string streamKey, string loggerKey, string serviceKey)
         {
             var streamInstance = Container.Resolve<IDriverCommStream>(serviceKey: streamKey);
             var loggerInstance = Container.Resolve<ILogger>(serviceKey: loggerKey);
@@ -47,10 +53,13 @@ namespace IOStreamDemo
             Sessions.Add(id, s);
             return s;
         }
-        
+
         public bool TryGet(string id, out Session? session)
         {
             return Sessions.TryGetValue(id, out session);
         }
+
+        public static DeviceInfo[] FindDevices(SessionManager current)
+            => DriverManager.FindDevices(current);
     }
 }

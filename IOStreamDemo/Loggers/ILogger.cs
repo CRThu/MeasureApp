@@ -8,6 +8,7 @@ namespace IOStreamDemo.Loggers
 {
     public interface ILogger
     {
+        public string Name { get; set; }
         public void Log(string message);
     }
 }

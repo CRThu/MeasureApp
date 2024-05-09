@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace IOStreamDemo.Loggers
 {
-    public class ConsoleLogger : ILogger
+    public class NLogLogger : ILogger
     {
         public string Name { get; set; }
 

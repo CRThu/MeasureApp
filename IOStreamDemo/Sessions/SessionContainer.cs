@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IOStreamDemo.Services
+namespace IOStreamDemo.Sessions
 {
-    // TODO
-    public interface IService
+    public class SessionContainer
     {
     }
 }

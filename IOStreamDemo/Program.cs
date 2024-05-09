@@ -5,7 +5,7 @@ using DryIoc;
 using IOStreamDemo.Streams;
 using IOStreamDemo.Drivers;
 using IOStreamDemo.Loggers;
-using CarrotProtocolLib.Device;
+using IOStreamDemo.Sessions;
 
 namespace IOStreamDemo
 {
@@ -13,31 +13,55 @@ namespace IOStreamDemo
     {
         static void Main(string[] args)
         {
-            Container container = SessionManager.Current.Container;
-            string loggerName = "CONSOLE";
-
-            // logger注册以及ioc模块日志创建object记录
-            container.Register<ILogger, ConsoleLogger>(Reuse.Singleton, serviceKey: loggerName);
-            container.RegisterInitializer<object>(
-                (anyObj, resolver) => resolver.Resolve<ILogger>(loggerName).Log($"Object {{{anyObj}}} Resolved."),
-                condition: request => !loggerName.Equals(request.ServiceKey));
-
             // 注册资源
-            DeviceManager.RegisterResources(SessionManager.Current);
+            SessionManager.Current.Container.RegisterInitializer<object>(
+                            (anyObj, resolver) => Console.WriteLine($"Object {{{anyObj}}} Resolved."));
+            DriverManager.RegisterResources(SessionManager.Current);
+            LoggerManager.RegisterResources(SessionManager.Current);
+            StreamManager.RegisterResources(SessionManager.Current);
 
             // 查找现有设备
-            var deviceInfos = DeviceManager.FindDevices(SessionManager.Current);
+            var deviceInfos = SessionManager.FindDevices(SessionManager.Current);
             foreach (var deviceInfo in deviceInfos)
             {
                 Console.WriteLine($"{deviceInfo}");
             }
 
             // 创建Session
-            DeviceManager.CreateSession(SessionManager.Current, "COM://9@9600,8,N,1", "CONSOLE://1", "RAWV1");
+            CreateSession(SessionManager.Current, "COM://9@9600,8,N,1", "CONSOLE://1", "RAWV1");
 
             Console.WriteLine($"{SessionManager.Current.Sessions.First().Value.Stream}");
             Console.WriteLine($"{SessionManager.Current.Sessions.First().Value.Logger}");
 
+        }
+
+        public static Session CreateSession(SessionManager container, string address, string logger, string protocol)
+        {
+
+            // ADDRESS
+            // COM://7@9600
+            // TCP://127.0.0.1:8888
+            // GPIB://22
+
+            // LOGGER
+            // CONSOLE://1
+
+            // SERVICE
+            // CDPV1
+
+            string[] devInfo = address.ToUpper().Split("://", 2);
+            string[] loggerInfo = logger.ToUpper().Split("://", 2);
+            string protocolInfo = protocol.ToUpper();
+
+            if (devInfo.Length != 2 || loggerInfo.Length != 2)
+                throw new NotImplementedException();
+
+            var resName = devInfo[0];
+            var loggerName = loggerInfo[0];
+
+            var s = container.Create(address, resName, loggerName, protocolInfo);
+
+            return s;
         }
     }
 
