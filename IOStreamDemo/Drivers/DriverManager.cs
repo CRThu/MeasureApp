@@ -38,10 +38,10 @@ namespace IOStreamDemo.Drivers
         public static DeviceInfo[] FindDevices(SessionManager container, string filter = null)
         {
             List<DeviceInfo> devicesFound = [];
-            var drivers = container.Container.Resolve<IDriver[]>();
-            for (int i = 0; i < drivers.Length; i++)
+            var drivers = container.Drivers;
+            foreach (var driver in drivers)
             {
-                var devs = drivers[i].FindDevices();
+                var devs = driver.Value.FindDevices();
                 devicesFound.AddRange(devs);
             }
             return devicesFound.ToArray();

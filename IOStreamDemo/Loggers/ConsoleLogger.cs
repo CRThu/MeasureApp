@@ -12,7 +12,7 @@ namespace IOStreamDemo.Loggers
 
         public void Log(string message)
         {
-            Console.WriteLine(message);
+            Console.WriteLine($"{nameof(ConsoleLogger)}: " + message);
         }
     }
 }

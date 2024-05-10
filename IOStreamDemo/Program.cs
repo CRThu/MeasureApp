@@ -14,8 +14,8 @@ namespace IOStreamDemo
         static void Main(string[] args)
         {
             // 注册资源
-            SessionManager.Current.Container.RegisterInitializer<object>(
-                            (anyObj, resolver) => Console.WriteLine($"Object {{{anyObj}}} Resolved."));
+            //SessionManager.Current.Container.RegisterInitializer<object>(
+            //                (anyObj, resolver) => Console.WriteLine($"Object {{{anyObj}}} Resolved."));
             DriverManager.RegisterResources(SessionManager.Current);
             LoggerManager.RegisterResources(SessionManager.Current);
             StreamManager.RegisterResources(SessionManager.Current);
@@ -28,6 +28,7 @@ namespace IOStreamDemo
             }
 
             // 创建Session
+            // 地址格式: 服务名称://服务地址@服务配置
             CreateSession(SessionManager.Current, "COM://9@9600,8,N,1", "CONSOLE://1", "RAWV1");
 
             Console.WriteLine($"{SessionManager.Current.Sessions.First().Value.Stream}");
@@ -49,17 +50,7 @@ namespace IOStreamDemo
             // SERVICE
             // CDPV1
 
-            string[] devInfo = address.ToUpper().Split("://", 2);
-            string[] loggerInfo = logger.ToUpper().Split("://", 2);
-            string protocolInfo = protocol.ToUpper();
-
-            if (devInfo.Length != 2 || loggerInfo.Length != 2)
-                throw new NotImplementedException();
-
-            var resName = devInfo[0];
-            var loggerName = loggerInfo[0];
-
-            var s = container.Create(address, resName, loggerName, protocolInfo);
+            var s = container.CreateSession(address, address, logger, protocol);
 
             return s;
         }
