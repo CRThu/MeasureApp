@@ -6,6 +6,7 @@ using IOStreamDemo.Streams;
 using IOStreamDemo.Drivers;
 using IOStreamDemo.Loggers;
 using IOStreamDemo.Sessions;
+using System.ComponentModel;
 
 namespace IOStreamDemo
 {
@@ -28,16 +29,7 @@ namespace IOStreamDemo
             }
 
             // 创建Session
-            // 地址格式: 服务名称://服务地址@服务配置
-            CreateSession(SessionManager.Current, "COM://9@9600,8,N,1", "CONSOLE://1", "RAWV1");
-
-            Console.WriteLine($"{SessionManager.Current.Sessions.First().Value.Stream}");
-            Console.WriteLine($"{SessionManager.Current.Sessions.First().Value.Logger}");
-
-        }
-
-        public static Session CreateSession(SessionManager container, string address, string logger, string protocol)
-        {
+            // 地址格式: 服务名称://服务地址[,配置][,配置]
 
             // ADDRESS
             // COM://7@9600
@@ -50,9 +42,23 @@ namespace IOStreamDemo
             // SERVICE
             // CDPV1
 
-            var s = container.CreateSession(address, address, logger, protocol);
+            //var s = SessionManager.Current.CreateSession("ID-01", "COM://COM9,9600,8,N,1", "CONSOLE://1", "RAWV1");
+            var s = SessionManager.Current.CreateSession("ID-01", "COM://COM250", "CONSOLE://1", "RAWV1");
+            s.Stream.Open();
 
-            return s;
+            byte[] b = [0x01, 0x02, 0x03, 0x04, 0x05];
+            s.Stream.Write(b);
+            byte[] rdBuf = new byte[256000000];
+            Span<byte> rdSpan = new(rdBuf);
+            var readLen = s.Stream.Read(rdSpan);
+            Console.WriteLine($"{readLen}");
+            s.Stream.Close();
+
+
+
+            Console.WriteLine($"{SessionManager.Current.Sessions.First().Value.Stream}");
+            Console.WriteLine($"{SessionManager.Current.Sessions.First().Value.Logger}");
+
         }
     }
 

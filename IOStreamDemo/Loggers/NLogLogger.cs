@@ -10,6 +10,13 @@ namespace IOStreamDemo.Loggers
     {
         public string Name { get; set; }
 
+        public void Config(string? cfg)
+        {
+            if (cfg == null)
+                return;
+
+        }
+
         public void Log(string message)
         {
             Console.WriteLine(message);

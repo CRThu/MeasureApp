@@ -1,6 +1,7 @@
 ﻿using CarrotProtocolLib.Device;
 using System;
 using System.Collections.Generic;
+using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,25 +12,38 @@ namespace IOStreamDemo.Streams
     {
         public string Address { get; set; }
         public string LoggerKey { get; set; }
+        /// <summary>
+        /// 驱动层实现
+        /// </summary>
+        private SerialPort Driver { get; set; } = new();
+
+        public void Config(string? cfg)
+        {
+            if (cfg == null)
+                return;
+
+            Driver = new SerialPort(cfg);
+        }
 
         public void Close()
         {
-            throw new NotImplementedException();
+            Driver.Close();
         }
 
-        public void Open(string addr)
+        public void Open()
         {
-            throw new NotImplementedException();
+            Driver.Open();
         }
 
-        public int Read(string s)
+        public void Write(ReadOnlySpan<byte> buffer)
         {
-            throw new NotImplementedException();
+            Driver.BaseStream.Write(buffer);
         }
 
-        public void Write(string s)
+        public int Read(Span<byte> buffer)
         {
-            throw new NotImplementedException();
+            return Driver.BaseStream.Read(buffer);
         }
+
     }
 }

@@ -29,7 +29,6 @@ namespace IOStreamDemo.Sessions
         public Dictionary<string, IDriverCommStream> Streams { get; private set; } = new();
         public Dictionary<string, ILogger> Loggers { get; private set; } = new();
 
-
         public SessionManager()
         {
         }
@@ -64,7 +63,7 @@ namespace IOStreamDemo.Sessions
             return instance;
         }
 
-        public TService GetService<TService>(string serviceKey, string instanceKey)
+        public TService GetService<TService>(string serviceKey, string instanceKey, string? args = null)
         {
             var t = typeof(TService);
             switch (t.Name)
@@ -74,21 +73,32 @@ namespace IOStreamDemo.Sessions
                         if (Drivers.TryGetValue(instanceKey, out var instance))
                             return (TService)instance;
                         else
-                            return CreateService<TService>(serviceKey!, instanceKey);
+                        {
+                            var service = CreateService<TService>(serviceKey!, instanceKey) as IDriver;
+                            return (TService)service!;
+                        }
                     }
                 case nameof(IDriverCommStream):
                     {
                         if (Streams.TryGetValue(instanceKey, out var instance))
                             return (TService)instance;
                         else
-                            return CreateService<TService>(serviceKey!, instanceKey);
+                        {
+                            var service = CreateService<TService>(serviceKey!, instanceKey) as IDriverCommStream;
+                            service!.Config(args);
+                            return (TService)service;
+                        }
                     }
                 case nameof(ILogger):
                     {
                         if (Loggers.TryGetValue(instanceKey, out var instance))
                             return (TService)instance;
                         else
-                            return CreateService<TService>(serviceKey!, instanceKey);
+                        {
+                            var service = CreateService<TService>(serviceKey!, instanceKey) as ILogger;
+                            service!.Config(args);
+                            return (TService)service;
+                        }
                     }
                 default:
                     throw new InvalidOperationException($"{t.Name}");
@@ -98,7 +108,7 @@ namespace IOStreamDemo.Sessions
 
         private string[] ParseAddr(string addr)
         {
-            string[] devInfo = addr.ToUpper().Split(":/@".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+            string[] devInfo = addr.ToUpper().Split("://", 2);
             //foreach(string dev in devInfo)
             //    Console.Write(dev + "\t");
             //Console.WriteLine();
@@ -111,7 +121,7 @@ namespace IOStreamDemo.Sessions
             string[] loggerAddrInfo = ParseAddr(loggerAddr);
             string[] serviceAddrInfo = ParseAddr(serviceAddr);
 
-            var stream = GetService<IDriverCommStream>(streamAddrInfo[0], streamAddrInfo[1]);
+            var stream = GetService<IDriverCommStream>(streamAddrInfo[0], streamAddrInfo[1], streamAddrInfo[1]);
             var logger = GetService<ILogger>(loggerAddrInfo[0], loggerAddrInfo[1]);
             //var service = GetService<IService>(serviceKey);
 
