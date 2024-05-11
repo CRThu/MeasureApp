@@ -46,14 +46,26 @@ namespace IOStreamDemo
             var s = SessionManager.Current.CreateSession("ID-01", "COM://COM250", "CONSOLE://1", "RAWV1");
             s.Stream.Open();
 
-            byte[] b = [0x01, 0x02, 0x03, 0x04, 0x05];
-            s.Stream.Write(b);
-            byte[] rdBuf = new byte[256000000];
-            Span<byte> rdSpan = new(rdBuf);
-            var readLen = s.Stream.Read(rdSpan);
-            Console.WriteLine($"{readLen}");
-            s.Stream.Close();
+            //byte[] b = [0x01, 0x02, 0x03, 0x04, 0x05];
+            //s.Stream.Write(b);
+            //byte[] rdBuf = new byte[256000000];
+            //Span<byte> rdSpan = new(rdBuf);
+            //var readLen = s.Stream.Read(rdSpan);
+            //Console.WriteLine($"{readLen}");
+            //s.Stream.Close();
 
+            
+            Streams.BufferedStream bufferedStream = new(s.Stream);
+            bufferedStream.Open();
+            byte[] b = [0x01, 0x02, 0x03, 0x04, 0x05];
+            bufferedStream.Write(b,0,5);
+            byte[] rdBuf = new byte[256000000];
+            Thread.Sleep(10000);
+            int len = bufferedStream.Rb.Count;
+            bufferedStream.Read(rdBuf,0, len);
+            Console.WriteLine($"{len}");
+            bufferedStream.Close();
+            s.Stream.Close();
 
 
             Console.WriteLine($"{SessionManager.Current.Sessions.First().Value.Stream}");

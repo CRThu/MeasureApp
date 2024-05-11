@@ -13,6 +13,8 @@ namespace IOStreamDemo.Streams
         public string Address { get; set; }
         public string LoggerKey { get; set; }
 
+        public bool ReadAvailable { get; set; } = true;
+
         public void Config(string? cfg)
         {
             if (cfg == null)
@@ -30,12 +32,12 @@ namespace IOStreamDemo.Streams
             throw new NotImplementedException();
         }
 
-        public void Write(ReadOnlySpan<byte> buffer)
+        public void Write(byte[] buffer, int offset, int count)
         {
             throw new NotImplementedException();
         }
 
-        public int Read(Span<byte> buffer)
+        public int Read(byte[] buffer, int offset, int count)
         {
             throw new NotImplementedException();
         }

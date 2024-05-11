@@ -12,6 +12,8 @@ namespace IOStreamDemo.Streams
     {
         public string Address { get; set; }
         public string LoggerKey { get; set; }
+
+        public bool ReadAvailable => Driver.BytesToRead > 0;
         /// <summary>
         /// 驱动层实现
         /// </summary>
@@ -35,14 +37,14 @@ namespace IOStreamDemo.Streams
             Driver.Open();
         }
 
-        public void Write(ReadOnlySpan<byte> buffer)
+        public void Write(byte[] buffer, int offset, int count)
         {
-            Driver.BaseStream.Write(buffer);
+            Driver.BaseStream.Write(buffer, offset, count);
         }
 
-        public int Read(Span<byte> buffer)
+        public int Read(byte[] buffer, int offset, int count)
         {
-            return Driver.BaseStream.Read(buffer);
+            return Driver.BaseStream.Read(buffer, offset, count);
         }
 
     }

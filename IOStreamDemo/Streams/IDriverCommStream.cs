@@ -22,6 +22,7 @@ namespace IOStreamDemo.Streams
         public string Address { get; set; }
         public string LoggerKey { get; set; }
 
+        public bool ReadAvailable { get; }
 
         /// <summary>
         /// 配置
@@ -44,7 +45,7 @@ namespace IOStreamDemo.Streams
         /// <param name="buffer"></param>
         /// <param name="offset"></param>
         /// <param name="count"></param>
-        public abstract void Write(ReadOnlySpan<byte> buffer);
+        public abstract void Write(byte[] buffer, int offset, int count);
         /// <summary>
         /// 读取字节数组
         /// </summary>
@@ -52,7 +53,7 @@ namespace IOStreamDemo.Streams
         /// <param name="offset"></param>
         /// <param name="bytesExpected"></param>
         /// <returns>返回实际读取字节数</returns>
-        public int Read(Span<byte> buffer);
+        public int Read(byte[] buffer, int offset, int count);
 
     }
 }
