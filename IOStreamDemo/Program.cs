@@ -44,7 +44,7 @@ namespace IOStreamDemo
 
             //var s = SessionManager.Current.CreateSession("ID-01", "COM://COM9,9600,8,N,1", "CONSOLE://1", "RAWV1");
             var s = SessionManager.Current.CreateSession("ID-01", "COM://COM250", "CONSOLE://1", "RAWV1");
-            s.Stream.Open();
+            //s.Stream.Open();
 
             //byte[] b = [0x01, 0x02, 0x03, 0x04, 0x05];
             //s.Stream.Write(b);
