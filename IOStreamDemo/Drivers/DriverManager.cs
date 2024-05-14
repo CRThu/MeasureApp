@@ -3,7 +3,7 @@ using CarrotProtocolLib.Driver;
 using CarrotProtocolLib.Logger;
 using DryIoc;
 using IOStreamDemo.Loggers;
-using IOStreamDemo.Services;
+using IOStreamDemo.Protocols;
 using IOStreamDemo.Sessions;
 using IOStreamDemo.Streams;
 using System;
@@ -55,6 +55,9 @@ namespace IOStreamDemo.Drivers
                     RegisteredResources[i].Type!,
                     RegisteredResources[i].Name!,
                     isSingleton: true);
+                container.GetService<IDriver>(
+                    RegisteredResources[i].Name!,
+                    RegisteredResources[i].Name!);
             }
         }
 

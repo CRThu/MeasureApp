@@ -59,8 +59,8 @@ namespace IOStreamDemo
             bufferedStream.Open();
             byte[] b = [0x01, 0x02, 0x03, 0x04, 0x05];
             bufferedStream.Write(b,0,5);
-            byte[] rdBuf = new byte[256000000];
-            Thread.Sleep(10000);
+            byte[] rdBuf = new byte[16777216];
+            Thread.Sleep(5000);
             int len = bufferedStream.Rb.Count;
             bufferedStream.Read(rdBuf,0, len);
             Console.WriteLine($"{len}");
