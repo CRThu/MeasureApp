@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="DryIoc" Version="5.1.0" />
+    <PackageReference Include="System.IO.Pipelines" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
