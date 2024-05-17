@@ -27,8 +27,8 @@ namespace IOStreamDemo.Protocols
                 }
 
                 Packet pkt = new(buffer.Slice(buffer.Start, pos.Value).ToArray());
-                buffer.Slice(buffer.GetPosition(1, pos.Value));
-                packetsList.Append(pkt);
+                buffer = buffer.Slice(buffer.GetPosition(1, pos.Value));
+                packetsList.Add(pkt);
             }
 
             packets = packetsList;

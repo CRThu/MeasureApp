@@ -7,6 +7,7 @@ using IOStreamDemo.Drivers;
 using IOStreamDemo.Loggers;
 using IOStreamDemo.Sessions;
 using System.ComponentModel;
+using IOStreamDemo.Protocols;
 
 namespace IOStreamDemo
 {
@@ -44,29 +45,21 @@ namespace IOStreamDemo
 
             //var s = SessionManager.Current.CreateSession("ID-01", "COM://COM9,9600,8,N,1", "CONSOLE://1", "RAWV1");
             var s = SessionManager.Current.CreateSession("ID-01", "COM://COM250", "CONSOLE://1", "RAWV1");
-            //s.Stream.Open();
+
+            IAsyncStream serialStream = (s.Stream as IAsyncStream)!;
+
+            serialStream.Open();
+
+            ProtocolRecvService service = new();
+            service.Run(serialStream, new RawAsciiProtocol());
 
             //byte[] b = [0x01, 0x02, 0x03, 0x04, 0x05];
-            //s.Stream.Write(b);
-            //byte[] rdBuf = new byte[256000000];
-            //Span<byte> rdSpan = new(rdBuf);
-            //var readLen = s.Stream.Read(rdSpan);
+            //s.Stream.Write(b, 0, 5);
+            //Thread.Sleep(5000);
+            //byte[] rdBuf = new byte[256];
+            //var readLen = s.Stream.Read(rdBuf, 0, rdBuf.Length);
             //Console.WriteLine($"{readLen}");
             //s.Stream.Close();
-
-            
-            Streams.BufferedStream bufferedStream = new(s.Stream);
-            bufferedStream.Open();
-            byte[] b = [0x01, 0x02, 0x03, 0x04, 0x05];
-            bufferedStream.Write(b,0,5);
-            byte[] rdBuf = new byte[16777216];
-            Thread.Sleep(5000);
-            int len = bufferedStream.Rb.Count;
-            bufferedStream.Read(rdBuf,0, len);
-            Console.WriteLine($"{len}");
-            bufferedStream.Close();
-            s.Stream.Close();
-
 
             Console.WriteLine($"{SessionManager.Current.Sessions.First().Value.Stream}");
             Console.WriteLine($"{SessionManager.Current.Sessions.First().Value.Logger}");

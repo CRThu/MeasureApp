@@ -3,12 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.IO.Ports;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace IOStreamDemo.Streams
 {
-    public class SerialStream : IDriverCommStream
+    public class SerialStream : IDriverCommStream, IAsyncStream
     {
         public string Address { get; set; }
         public string LoggerKey { get; set; }
@@ -47,5 +48,9 @@ namespace IOStreamDemo.Streams
             return Driver.BaseStream.Read(buffer, offset, count);
         }
 
+        public Task<int> ReadAsync(byte[] buffer, int offset, int count)
+        {
+            return Task.Run(() => Read(buffer, offset, count));
+        }
     }
 }

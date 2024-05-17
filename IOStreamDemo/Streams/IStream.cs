@@ -44,5 +44,23 @@ namespace IOStreamDemo.Streams
         /// <param name="bytesExpected"></param>
         /// <returns>返回实际读取字节数</returns>
         public int Read(byte[] buffer, int offset, int count);
+
+    }
+    public interface IAsyncStream
+    {
+        public bool ReadAvailable { get; }
+
+        /// <summary>
+        /// 打开流
+        /// </summary>
+        /// <param name="addr"></param>
+        public abstract void Open();
+
+        /// <summary>
+        /// 关闭流
+        /// </summary>
+        public abstract void Close();
+
+        public Task<int> ReadAsync(byte[] buffer, int offset, int count);
     }
 }

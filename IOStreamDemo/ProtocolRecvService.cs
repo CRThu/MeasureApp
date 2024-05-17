@@ -15,22 +15,31 @@ namespace IOStreamDemo
     public class ProtocolRecvService
     {
         public Pipe Pipe { get; set; }
+
         public ProtocolRecvService()
         {
             Pipe = new Pipe();
         }
 
-        public void Run(IDriverCommStream socket, IProtocol protocol)
+        public void Run(IAsyncStream stream, IProtocol protocol)
         {
-            Task wr = FillPipeASync(socket, Pipe.Writer);
+            Task wr = FillPipeASync(stream, Pipe.Writer);
             Task rd = ReadPipeASync(protocol, Pipe.Reader);
+
+            Console.WriteLine("RECV...");
+            Console.WriteLine("PRESS ANY KEY TO EXIT");
+            Console.ReadKey();
+            Pipe.Reader.Complete();
+            Console.WriteLine("COMPLETE REQUEST...");
+
 
             Task task = Task.WhenAll(wr, rd);
             task.Wait();
+            Console.WriteLine("EXIT.");
         }
 
         // Read From IDriverCommStream and write to pipewriter
-        public async Task FillPipeASync(IDriverCommStream stream, PipeWriter writer)
+        public async Task FillPipeASync(IAsyncStream stream, PipeWriter writer)
         {
             const int BUFSIZE = 1048576;
             // TODO:临时缓冲区 后续重构
@@ -43,7 +52,7 @@ namespace IOStreamDemo
                 try
                 {
                     // 读取数据
-                    int bytesRead = stream.Read(rxTemp, 0, BUFSIZE);
+                    int bytesRead = await stream.ReadAsync(rxTemp, 0, BUFSIZE);
                     if (bytesRead == 0)
                     {
                         break;
@@ -63,15 +72,16 @@ namespace IOStreamDemo
                 // Flush数据到PipeReader
                 FlushResult result = await writer.FlushAsync();
 
-                // 来自PiprReader的EOF处理
+                // 来自PipeReader的EOF处理
                 if (result.IsCompleted)
                 {
+                    await writer.CompleteAsync();
                     break;
                 }
             }
 
             // PipeWriter EOF数据传输结束指示
-            await writer.CompleteAsync();
+            // await writer.CompleteAsync();
         }
 
         // PipeReader Read From PipeWriter and Process data
@@ -83,10 +93,13 @@ namespace IOStreamDemo
                 ReadResult result = await reader.ReadAsync();
                 ReadOnlySequence<byte> buffer = result.Buffer;
 
-                while (protocol.TryParse(ref buffer, out IEnumerable<Packet> line))
+                while (protocol.TryParse(ref buffer, out IEnumerable<Packet> pkts))
                 {
                     // 处理数据流
-                    Console.WriteLine(line);
+                    foreach (Packet packet in pkts)
+                    {
+                        Console.WriteLine($"RECV PACKET: {packet.Message}");
+                    }
                 }
 
                 // 通知PipeWriter已读取字节流长度
@@ -96,12 +109,13 @@ namespace IOStreamDemo
                 // 来自PiprWriter EOF数据传输结束
                 if (result.IsCompleted)
                 {
+                    await reader.CompleteAsync();
                     break;
                 }
             }
 
             // PipeReader EOF数据传输结束指示
-            await reader.CompleteAsync();
+            // await reader.CompleteAsync();
         }
     }
 }
