@@ -48,9 +48,19 @@ namespace IOStreamDemo.Streams
             return Driver.BaseStream.Read(buffer, offset, count);
         }
 
-        public Task<int> ReadAsync(byte[] buffer, int offset, int count)
+        public Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
         {
-            return Task.Run(() => Read(buffer, offset, count));
+            return Task.Run(() =>
+            {
+                while (true)
+                {
+                    if (cancellationToken.IsCancellationRequested)
+                        return 0;
+
+                    if (ReadAvailable)
+                        return Read(buffer, offset, count);
+                }
+            },cancellationToken);
         }
     }
 }

@@ -23,23 +23,29 @@ namespace IOStreamDemo
 
         public void Run(IAsyncStream stream, IProtocol protocol)
         {
-            Task wr = FillPipeASync(stream, Pipe.Writer);
-            Task rd = ReadPipeASync(protocol, Pipe.Reader);
+            CancellationTokenSource cts = new CancellationTokenSource();
+
+            Task wr = FillPipeASync(stream, Pipe.Writer, cts.Token);
+            Task rd = ReadPipeASync(protocol, Pipe.Reader, cts.Token);
 
             Console.WriteLine("RECV...");
             Console.WriteLine("PRESS ANY KEY TO EXIT");
             Console.ReadKey();
-            Pipe.Reader.Complete();
+            cts.Cancel();
             Console.WriteLine("COMPLETE REQUEST...");
 
+            while (true)
+            {
+                if (wr.Status == TaskStatus.RanToCompletion || wr.Status == TaskStatus.Canceled)
+                    if (rd.Status == TaskStatus.RanToCompletion || rd.Status == TaskStatus.Canceled)
+                        break;
+            }
 
-            Task task = Task.WhenAll(wr, rd);
-            task.Wait();
             Console.WriteLine("EXIT.");
         }
 
         // Read From IDriverCommStream and write to pipewriter
-        public async Task FillPipeASync(IAsyncStream stream, PipeWriter writer)
+        public async Task FillPipeASync(IAsyncStream stream, PipeWriter writer, CancellationToken token)
         {
             const int BUFSIZE = 1048576;
             // TODO:临时缓冲区 后续重构
@@ -47,12 +53,17 @@ namespace IOStreamDemo
 
             while (true)
             {
+                if (token.IsCancellationRequested)
+                {
+                    break;
+                }
+
                 // PipeWriter获取BUFSIZE大小的内存
                 Memory<byte> buffer = writer.GetMemory(BUFSIZE);
                 try
                 {
                     // 读取数据
-                    int bytesRead = await stream.ReadAsync(rxTemp, 0, BUFSIZE);
+                    int bytesRead = await stream.ReadAsync(rxTemp, 0, BUFSIZE, token);
                     if (bytesRead == 0)
                     {
                         break;
@@ -70,7 +81,7 @@ namespace IOStreamDemo
                 }
 
                 // Flush数据到PipeReader
-                FlushResult result = await writer.FlushAsync();
+                FlushResult result = await writer.FlushAsync(token);
 
                 // 来自PipeReader的EOF处理
                 if (result.IsCompleted)
@@ -81,16 +92,21 @@ namespace IOStreamDemo
             }
 
             // PipeWriter EOF数据传输结束指示
-            // await writer.CompleteAsync();
+            await writer.CompleteAsync();
         }
 
         // PipeReader Read From PipeWriter and Process data
-        private async Task ReadPipeASync(IProtocol protocol, PipeReader reader)
+        private async Task ReadPipeASync(IProtocol protocol, PipeReader reader, CancellationToken token)
         {
             while (true)
             {
+                if (token.IsCancellationRequested)
+                {
+                    break;
+                }
+
                 // 读取数据, 返回buffer和是否EOF
-                ReadResult result = await reader.ReadAsync();
+                ReadResult result = await reader.ReadAsync(token);
                 ReadOnlySequence<byte> buffer = result.Buffer;
 
                 while (protocol.TryParse(ref buffer, out IEnumerable<Packet> pkts))
@@ -115,7 +131,7 @@ namespace IOStreamDemo
             }
 
             // PipeReader EOF数据传输结束指示
-            // await reader.CompleteAsync();
+            await reader.CompleteAsync();
         }
     }
 }

@@ -61,6 +61,6 @@ namespace IOStreamDemo.Streams
         /// </summary>
         public abstract void Close();
 
-        public Task<int> ReadAsync(byte[] buffer, int offset, int count);
+        public Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken);
     }
 }
