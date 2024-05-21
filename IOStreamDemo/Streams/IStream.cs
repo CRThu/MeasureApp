@@ -61,6 +61,14 @@ namespace IOStreamDemo.Streams
         /// </summary>
         public abstract void Close();
 
+        /// <summary>
+        /// 异步读取流
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <param name="offset"></param>
+        /// <param name="count"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken);
     }
 }

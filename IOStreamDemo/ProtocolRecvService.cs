@@ -36,9 +36,8 @@ namespace IOStreamDemo
 
             while (true)
             {
-                if (wr.Status == TaskStatus.RanToCompletion || wr.Status == TaskStatus.Canceled)
-                    if (rd.Status == TaskStatus.RanToCompletion || rd.Status == TaskStatus.Canceled)
-                        break;
+                if (wr.IsCompleted && rd.IsCompleted)
+                    break;
             }
 
             Console.WriteLine("EXIT.");
