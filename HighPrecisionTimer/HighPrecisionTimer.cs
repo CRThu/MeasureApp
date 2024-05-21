@@ -112,6 +112,25 @@ namespace HighPrecisionTimer
         {
             Tick?.Invoke(this, new TickEventArgs());
         }
+
+        public static Task Delay(int milliSeconds = 1)
+        {
+            if (milliSeconds < 0)
+                throw new InvalidOperationException($"Invalid Delay");
+            else if (milliSeconds == 0)
+                milliSeconds = 1;
+
+            HighPrecisionTimer timer = new((uint)milliSeconds);
+            TaskCompletionSource taskCompletionSource = new();
+            timer.Tick += (object? sender, TickEventArgs e) =>
+            {
+                timer.Stop();
+                //taskCompletionSource.TrySetResult();
+                taskCompletionSource.SetResult();
+            };
+            timer.Start();
+            return taskCompletionSource.Task;
+        }
     }
 
     public class TickEventArgs : EventArgs

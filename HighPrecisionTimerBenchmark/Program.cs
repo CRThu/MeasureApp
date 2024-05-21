@@ -11,6 +11,39 @@ namespace HighPrecisionTimerBenchmark
             Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.High;
             Thread.CurrentThread.Priority = ThreadPriority.Highest;
 
+            Task t = RunTimer();
+
+            while (true)
+            {
+                if (t.IsCompleted)
+                    break;
+                else
+                {
+                    Thread.Sleep(250);
+                }
+            }
+
+            Console.WriteLine("EXIT.");
+        }
+
+        static async Task RunTimer()
+        {
+            int count = 1000;
+
+            // run
+            long start = Stopwatch.GetTimestamp();
+            for (int i = 0; i < count; i++)
+            {
+                await HighPrecisionTimer.HighPrecisionTimer.Delay();
+            }
+            long end = Stopwatch.GetTimestamp();
+
+            long elapsedNs = (end - start) * 1000L * 1000L * 1000L / Stopwatch.Frequency;
+            Console.WriteLine($"Average Elapsed: {elapsedNs / count / 1000.0:F2} us.");
+        }
+
+        static void RunHist()
+        {
             int tick = 0;
             long[] list = new long[1048576];
             int[] pid = new int[1048576];
