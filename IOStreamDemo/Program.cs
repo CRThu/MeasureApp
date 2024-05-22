@@ -4,10 +4,12 @@ using System.Net.Http;
 using DryIoc;
 using IOStreamDemo.Streams;
 using IOStreamDemo.Drivers;
-using IOStreamDemo.Loggers;
+using IOStreamDemo.Protocols;
 using IOStreamDemo.Sessions;
 using System.ComponentModel;
 using IOStreamDemo.Protocols;
+using IOStreamDemo.Services;
+using IOStreamDemo.Loggers;
 
 namespace IOStreamDemo
 {
@@ -21,6 +23,7 @@ namespace IOStreamDemo
             DriverManager.RegisterResources(SessionManager.Current);
             LoggerManager.RegisterResources(SessionManager.Current);
             StreamManager.RegisterResources(SessionManager.Current);
+            ProtocolManager.RegisterResources(SessionManager.Current);
 
             // 查找现有设备
             var deviceInfos = SessionManager.FindDevices(SessionManager.Current);
@@ -39,19 +42,27 @@ namespace IOStreamDemo
 
             // LOGGER
             // CONSOLE://1
+            // CONSOLE://1@CH1+CONSOLE://2@CH2
 
             // SERVICE
+            // RAPV1
             // CDPV1
 
             //var s = SessionManager.Current.CreateSession("ID-01", "COM://COM9,9600,8,N,1", "CONSOLE://1", "RAWV1");
-            var s = SessionManager.Current.CreateSession("ID-01", "COM://COM250", "CONSOLE://1", "RAWV1");
+            var s = SessionManager.Current.CreateSession("ID-01", "COM://COM250", "CONSOLE://1", "RAPV1");
 
-            IAsyncStream serialStream = (s.Stream as IAsyncStream)!;
+            s.Open();
 
-            serialStream.Open();
+            Console.WriteLine("RECV...");
+            Console.WriteLine("PRESS ANY KEY TO EXIT");
+            Console.ReadKey();
+            Console.WriteLine("COMPLETE REQUEST...");
+            s.Close();
 
-            ProtocolRecvService service = new();
-            service.Run(serialStream, new RawAsciiProtocol());
+            Console.WriteLine("EXIT.");
+
+            //DataRecvService service = new();
+            //service.Run(serialStream, new RawAsciiProtocol());
 
             //byte[] b = [0x01, 0x02, 0x03, 0x04, 0x05];
             //s.Stream.Write(b, 0, 5);

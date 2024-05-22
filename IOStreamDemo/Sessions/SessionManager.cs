@@ -3,6 +3,7 @@ using DryIoc;
 using IOStreamDemo.Drivers;
 using IOStreamDemo.Loggers;
 using IOStreamDemo.Protocols;
+using IOStreamDemo.Protocols;
 using IOStreamDemo.Streams;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -28,6 +29,7 @@ namespace IOStreamDemo.Sessions
         public Dictionary<string, IDriver> Drivers { get; private set; } = new();
         public Dictionary<string, IDriverCommStream> Streams { get; private set; } = new();
         public Dictionary<string, ILogger> Loggers { get; private set; } = new();
+        public Dictionary<string, IProtocol> Protocols { get; private set; } = new();
 
         public SessionManager()
         {
@@ -55,6 +57,9 @@ namespace IOStreamDemo.Sessions
                     break;
                 case nameof(ILogger):
                     Loggers.Add(instanceKey, (ILogger)instance!);
+                    break;
+                case nameof(IProtocol):
+                    Protocols.Add(instanceKey, (IProtocol)instance!);
                     break;
                 default:
                     throw new InvalidOperationException($"Create {t.Name} error");
@@ -100,6 +105,16 @@ namespace IOStreamDemo.Sessions
                             return (TService)service;
                         }
                     }
+                case nameof(IProtocol):
+                    {
+                        if (Protocols.TryGetValue(instanceKey, out var instance))
+                            return (TService)instance;
+                        else
+                        {
+                            var service = CreateService<TService>(serviceKey!, instanceKey) as IProtocol;
+                            return (TService)service;
+                        }
+                    }
                 default:
                     throw new InvalidOperationException($"{t.Name}");
             }
@@ -115,17 +130,17 @@ namespace IOStreamDemo.Sessions
             return devInfo;
         }
 
-        public Session CreateSession(string id, string streamAddr, string loggerAddr, string serviceAddr)
+        public Session CreateSession(string id, string streamAddr, string loggerAddr, string protocolAddr)
         {
             string[] streamAddrInfo = ParseAddr(streamAddr);
             string[] loggerAddrInfo = ParseAddr(loggerAddr);
-            string[] serviceAddrInfo = ParseAddr(serviceAddr);
+            string[] protocolAddrInfo = ParseAddr(protocolAddr);
 
             var stream = GetService<IDriverCommStream>(streamAddrInfo[0], streamAddrInfo[1], streamAddrInfo[1]);
             var logger = GetService<ILogger>(loggerAddrInfo[0], loggerAddrInfo[1]);
-            //var service = GetService<IService>(serviceKey);
+            var service = GetService<IProtocol>(protocolAddrInfo[0], protocolAddrInfo[0]);
 
-            Session s = new(stream, logger);
+            Session s = new(stream, logger, service);
             Sessions.Add(id, s);
             return s;
         }

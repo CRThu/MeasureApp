@@ -1,33 +1,33 @@
 ﻿using IOStreamDemo.Drivers;
-using IOStreamDemo.Protocols;
 using IOStreamDemo.Sessions;
+using IOStreamDemo.Streams;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IOStreamDemo.Streams
+namespace IOStreamDemo.Protocols
 {
-    public class StreamResourceInfo(string name, Type type)
+    public class ProtocolResourceInfo(string name, Type type)
     {
         public string? Name { get; set; } = name;
         public Type? Type { get; set; } = type;
     }
 
-    public class StreamManager
+    public class ProtocolManager
     {
-        public static StreamResourceInfo[] RegisteredResources =
+        public static ProtocolResourceInfo[] RegisteredResources =
         [
-            new StreamResourceInfo("COM", typeof(SerialStream)),
-            new StreamResourceInfo("GPIB", typeof(VisaGpibStream)),
+            new ProtocolResourceInfo("RAPV1", typeof(RawAsciiProtocol)),
+            new ProtocolResourceInfo("CDPV1", typeof(CarrotDataProtocol)),
         ];
 
         public static void RegisterResources(SessionManager container)
         {
             for (int i = 0; i < RegisteredResources.Length; i++)
             {
-                container.Register<IDriverCommStream>(
+                container.Register<IProtocol>(
                     RegisteredResources[i].Type!,
                     RegisteredResources[i].Name!,
                     isSingleton: false);
