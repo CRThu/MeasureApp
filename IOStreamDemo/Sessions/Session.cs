@@ -29,7 +29,7 @@ namespace IOStreamDemo.Sessions
             Services = [];
             Pipe pipe = new();
             Services.Add(new DataRecvService(pipe, (IAsyncStream)Stream));
-            Services.Add(new ProtocolParseService(pipe, Protocol));
+            Services.Add(new ProtocolParseService(pipe, Protocol, Logger));
         }
 
         public void Open()
@@ -55,7 +55,7 @@ namespace IOStreamDemo.Sessions
             {
                 while (!service.Task.IsCompleted)
                     ;
-                Console.WriteLine(service.ToString()+" IS STOPPED.");
+                Console.WriteLine(service.ToString() + " IS STOPPED.");
             }
         }
     }

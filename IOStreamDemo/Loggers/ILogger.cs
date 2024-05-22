@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IOStreamDemo.Protocols;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,6 @@ namespace IOStreamDemo.Loggers
         /// </summary>
         /// <param name="addr"></param>
         public void Config(string? cfg);
-        public void Log(string message);
+        public void Log(Packet message);
     }
 }

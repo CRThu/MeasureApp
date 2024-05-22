@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IOStreamDemo.Protocols;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,7 +18,7 @@ namespace IOStreamDemo.Loggers
 
         }
 
-        public void Log(string message)
+        public void Log(Packet message)
         {
             Console.WriteLine(message);
         }

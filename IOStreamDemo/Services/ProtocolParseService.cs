@@ -1,4 +1,5 @@
-﻿using IOStreamDemo.Protocols;
+﻿using IOStreamDemo.Loggers;
+using IOStreamDemo.Protocols;
 using System;
 using System.Buffers;
 using System.Collections.Generic;
@@ -17,13 +18,16 @@ namespace IOStreamDemo.Services
 
         public IProtocol Protocol { get; set; }
 
+        public ILogger Logger { get; set; }
+
         public Task Task { get; set; }
 
-        public ProtocolParseService(Pipe pipe, IProtocol protocol)
+        public ProtocolParseService(Pipe pipe, IProtocol protocol, ILogger logger)
         {
             Pipe = pipe;
             Cts = new CancellationTokenSource();
             Protocol = protocol;
+            Logger = logger;
         }
 
         public void Run()
@@ -55,7 +59,8 @@ namespace IOStreamDemo.Services
                     // 处理数据流
                     foreach (Packet packet in pkts)
                     {
-                        Console.WriteLine($"RECV PACKET: {packet.Message}");
+                        //Console.WriteLine($"RECV PACKET: {packet.Message}");
+                        Logger.Log(packet);
                     }
                 }
 
