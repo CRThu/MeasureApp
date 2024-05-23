@@ -11,6 +11,13 @@ namespace IOStreamDemo.Protocols
     {
         public static string Version { get; } = "CDPV1";
 
+        public string Name { get; set; }
+
+        public CarrotDataProtocol(string name)
+        {
+            Name = name;
+        }
+
         // TODO
         public bool TryParse(ref ReadOnlySequence<byte> buffer, out IEnumerable<Packet> packets)
         {

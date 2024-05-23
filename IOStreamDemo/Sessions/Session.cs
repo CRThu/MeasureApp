@@ -15,13 +15,13 @@ namespace IOStreamDemo.Sessions
 {
     public class Session
     {
-        public IDriverCommStream Stream { get; set; }
+        public IStream Stream { get; set; }
         public ILogger Logger { get; set; }
         public IProtocol Protocol { get; set; }
         public List<Services.IService> Services { get; set; }
 
 
-        public Session(IDriverCommStream stream, ILogger logger, IProtocol protocol)
+        public Session(IStream stream, ILogger logger, IProtocol protocol)
         {
             Stream = stream;
             Logger = logger;

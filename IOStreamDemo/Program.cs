@@ -1,7 +1,6 @@
 ﻿using System.Net.Sockets;
 using System.Net;
 using System.Net.Http;
-using DryIoc;
 using IOStreamDemo.Streams;
 using IOStreamDemo.Drivers;
 using IOStreamDemo.Protocols;
@@ -17,16 +16,8 @@ namespace IOStreamDemo
     {
         static void Main(string[] args)
         {
-            // 注册资源
-            //SessionManager.Current.Container.RegisterInitializer<object>(
-            //                (anyObj, resolver) => Console.WriteLine($"Object {{{anyObj}}} Resolved."));
-            DriverManager.RegisterResources(SessionManager.Current);
-            LoggerManager.RegisterResources(SessionManager.Current);
-            StreamManager.RegisterResources(SessionManager.Current);
-            ProtocolManager.RegisterResources(SessionManager.Current);
-
             // 查找现有设备
-            var deviceInfos = SessionManager.FindDevices(SessionManager.Current);
+            var deviceInfos = DriverFactory.Current.FindDevices();
             foreach (var deviceInfo in deviceInfos)
             {
                 Console.WriteLine($"{deviceInfo}");
@@ -49,7 +40,7 @@ namespace IOStreamDemo
             // CDPV1
 
             //var s = SessionManager.Current.CreateSession("ID-01", "COM://COM9,9600,8,N,1", "CONSOLE://1", "RAWV1");
-            var s = SessionManager.Current.CreateSession("ID-01", "COM://COM250", "CONSOLE://1", "RAPV1");
+            var s = SessionFactory.Current.CreateSession("ID-01", "COM://COM250", "CONSOLE://1", "RAPV1");
 
             s.Open();
 
@@ -71,10 +62,6 @@ namespace IOStreamDemo
             //var readLen = s.Stream.Read(rdBuf, 0, rdBuf.Length);
             //Console.WriteLine($"{readLen}");
             //s.Stream.Close();
-
-            Console.WriteLine($"{SessionManager.Current.Sessions.First().Value.Stream}");
-            Console.WriteLine($"{SessionManager.Current.Sessions.First().Value.Logger}");
-
         }
     }
 

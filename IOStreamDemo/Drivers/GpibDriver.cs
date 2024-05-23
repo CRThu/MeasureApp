@@ -10,8 +10,11 @@ namespace IOStreamDemo.Drivers
 {
     public class GpibDriver : IDriver
     {
-        public GpibDriver()
+        public string Name { get; set; }
+
+        public GpibDriver(string name)
         {
+            Name = name;
         }
 
         public DeviceInfo[] FindDevices()

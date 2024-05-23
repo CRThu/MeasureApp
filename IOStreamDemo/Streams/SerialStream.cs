@@ -10,10 +10,15 @@ using System.Threading.Tasks;
 
 namespace IOStreamDemo.Streams
 {
-    public class SerialStream : IDriverCommStream, IAsyncStream
+    public class SerialStream : IStream, IAsyncStream
     {
         public string Address { get; set; }
-        public string LoggerKey { get; set; }
+        public string Name { get; set; }
+
+        public SerialStream(string name)
+        {
+            Name = name;
+        }
 
         /// <summary>
         /// 流指示有数据

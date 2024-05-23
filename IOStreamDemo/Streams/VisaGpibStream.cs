@@ -8,10 +8,16 @@ using System.Threading.Tasks;
 
 namespace IOStreamDemo.Streams
 {
-    public class VisaGpibStream : IDriverCommStream
+    public class VisaGpibStream : IStream
     {
         public string Address { get; set; }
-        public string LoggerKey { get; set; }
+        public string Name { get; set; }
+
+        public VisaGpibStream(string name)
+        {
+            Name = name;
+        }
+
 
         public bool ReadAvailable { get; set; } = true;
 

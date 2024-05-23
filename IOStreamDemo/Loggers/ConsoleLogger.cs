@@ -11,6 +11,11 @@ namespace IOStreamDemo.Loggers
     {
         public string Name { get; set; }
 
+        public ConsoleLogger(string name)
+        {
+            Name = name;
+        }
+
         public void Config(string? cfg)
         {
             if (cfg == null)

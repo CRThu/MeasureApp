@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace IOStreamDemo.Streams
 {
-    public class TcpStream : IDriverCommStream
+    public class TcpStream : IStream
     {
         public string Address { get; set; }
         public string LoggerKey { get; set; }

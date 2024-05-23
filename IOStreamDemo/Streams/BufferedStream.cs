@@ -10,9 +10,9 @@ namespace IOStreamDemo.Streams
     /// <summary>
     /// FIFO环形缓冲区
     /// </summary>
-    public class BufferedStream : IDriverCommStream
+    public class BufferedStream : IStream
     {
-        public IDriverCommStream BaseStream { get; private set; }
+        public IStream BaseStream { get; private set; }
         public RingBuffer Rb { get; set; }
         public string Address { get; set; }
         public string LoggerKey { get; set; }
@@ -27,7 +27,7 @@ namespace IOStreamDemo.Streams
 
         private readonly CancellationTokenSource cts = new();
 
-        public BufferedStream(IDriverCommStream stream, int bufferSize = 16 * 1048576)
+        public BufferedStream(IStream stream, int bufferSize = 16 * 1048576)
         {
             BaseStream = stream;
             BufferSize = bufferSize;

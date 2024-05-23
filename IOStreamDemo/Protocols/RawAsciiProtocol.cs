@@ -11,6 +11,13 @@ namespace IOStreamDemo.Protocols
     {
         public static string Version { get; } = "RAPV1";
 
+        public string Name { get; set; }
+
+        public RawAsciiProtocol(string name)
+        {
+            Name = name;
+        }
+
         public bool TryParse(ref ReadOnlySequence<byte> buffer, out IEnumerable<Packet> packets)
         {
             List<Packet> packetsList = new();

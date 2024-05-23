@@ -11,9 +11,13 @@ namespace IOStreamDemo.Drivers
 {
     public class SerialDriver : IDriver
     {
-        public SerialDriver()
+        public string Name { get; set; }
+
+        public SerialDriver(string name)
         {
+            Name = name;
         }
+
 
         public DeviceInfo[] FindDevices()
         {

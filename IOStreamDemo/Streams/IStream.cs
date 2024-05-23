@@ -18,6 +18,12 @@ namespace IOStreamDemo.Streams
         public bool ReadAvailable { get; }
 
         /// <summary>
+        /// 配置解析和初始化
+        /// </summary>
+        /// <param name="cfg"></param>
+        public void Config(string? cfg);
+
+        /// <summary>
         /// 打开流
         /// </summary>
         /// <param name="addr"></param>
