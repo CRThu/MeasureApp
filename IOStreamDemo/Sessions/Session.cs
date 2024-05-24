@@ -1,4 +1,5 @@
 ﻿using CarrotProtocolLib.Service;
+using CarrotProtocolLib.Util;
 using IOStreamDemo.Loggers;
 using IOStreamDemo.Protocols;
 using IOStreamDemo.Services;
@@ -70,6 +71,29 @@ namespace IOStreamDemo.Sessions
                 while (!service.Task.IsCompleted)
                     ;
                 Console.WriteLine(service.ToString() + " IS STOPPED.");
+            }
+        }
+
+        public void Write(string s)
+        {
+            foreach (var stream in Streams)
+            {
+                var tx = s.AsciiToBytes();
+                stream.Write(tx, 0, tx.Length);
+            }
+        }
+
+        public bool TryReadLast(string filter, out Packet? packet)
+        {
+            int loggerNo = Convert.ToInt16(filter);
+            if (Loggers.Count > loggerNo)
+            {
+                return Loggers[loggerNo].TryGet(-1, out packet);
+            }
+            else
+            {
+                packet = null;
+                return false;
             }
         }
     }

@@ -7,28 +7,13 @@ using System.Threading.Tasks;
 
 namespace IOStreamDemo.Loggers
 {
-    public class NLogLogger : ILogger
+    public class NLogLogger : LoggerBase
     {
-        public string Name { get; set; }
-
-        public NLogLogger(string name)
-        {
-            Name = name;
-        }
-
-        public void Config(string? cfg)
-        {
-            if (cfg == null)
-                return;
-
-        }
-
-        public void Log(object sender, LogEventArgs e)
-        {
-            Console.WriteLine($"{nameof(NLogLogger)}: " + e.Packet.Message);
-        }
-
-        public void Config(string[] @params = null)
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="name">实例唯一名称</param>
+        public NLogLogger(string name) : base(name)
         {
 
         }

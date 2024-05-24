@@ -25,6 +25,8 @@ namespace IOStreamDemo
 
             s.Open();
 
+            Console.WriteLine("WRITE...");
+            s.Write("ABCDE");
             Console.WriteLine("RECV...");
             Console.WriteLine("PRESS ANY KEY TO EXIT");
             Console.ReadKey();

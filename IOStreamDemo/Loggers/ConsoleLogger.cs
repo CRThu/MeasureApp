@@ -7,28 +7,13 @@ using System.Threading.Tasks;
 
 namespace IOStreamDemo.Loggers
 {
-    public class ConsoleLogger : ILogger
+    public class ConsoleLogger : LoggerBase
     {
-        public string Name { get; set; }
-
-        public ConsoleLogger(string name)
-        {
-            Name = name;
-        }
-
-        public void Config(string? cfg)
-        {
-            if (cfg == null)
-                return;
-
-        }
-
-        public void Log(object sender, LogEventArgs e)
-        {
-            Console.WriteLine($"{nameof(ConsoleLogger)}: " + e.Packet.Message);
-        }
-
-        public void Config(string[] @params = null)
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="name">实例唯一名称</param>
+        public ConsoleLogger(string name) : base(name)
         {
 
         }

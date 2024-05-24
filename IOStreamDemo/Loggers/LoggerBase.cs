@@ -1,5 +1,4 @@
 ﻿using IOStreamDemo.Protocols;
-using IOStreamDemo.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +8,9 @@ using System.Threading.Tasks;
 namespace IOStreamDemo.Loggers
 {
     /// <summary>
-    /// 记录器接口
+    /// 记录器基础类
     /// </summary>
-    public interface ILogger
+    public class LoggerBase : ILogger
     {
         /// <summary>
         /// 实例唯一名称
@@ -19,24 +18,32 @@ namespace IOStreamDemo.Loggers
         public string Name { get; set; }
 
         /// <summary>
-        /// 配置解析和初始化
+        /// 构造函数
         /// </summary>
-        /// <param name="params"></param>
-        public void Config(string[] @params = default!);
+        /// <param name="name">实例唯一名称</param>
+        public LoggerBase(string name)
+        {
+            Name = name;
+        }
 
         /// <summary>
-        /// 记录事件回调委托
+        /// 记录器配置方法
         /// </summary>
-        /// <param name="sender">发送者</param>
-        /// <param name="e">数据包</param>
-        public delegate void LogEventHandler(object sender, LogEventArgs e);
+        /// <param name="params">配置参数</param>
+        public virtual void Config(string[] @params = null)
+        {
+
+        }
 
         /// <summary>
         /// 记录器回调方法
         /// </summary>
         /// <param name="sender">发送者</param>
         /// <param name="e">数据包</param>
-        public void Log(object sender, LogEventArgs e);
+        public virtual void Log(object sender, LogEventArgs e)
+        {
+            Console.WriteLine($"{GetType().FullName}: " + e.Packet.Message);
+        }
 
         /// <summary>
         /// 获取历史数据包
@@ -44,11 +51,11 @@ namespace IOStreamDemo.Loggers
         /// <param name="idx">消息记录索引</param>
         /// <param name="packet">数据包</param>
         /// <returns></returns>
-        public bool TryGet(int idx, out Packet? packet);
-    }
-
-    public class LogEventArgs : EventArgs
-    {
-        public Packet? Packet { get; set; }
+        public bool TryGet(int idx, out Packet? packet)
+        {
+            // TODO
+            packet = null;
+            return false;
+        }
     }
 }
