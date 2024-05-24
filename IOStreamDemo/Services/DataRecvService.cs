@@ -23,12 +23,14 @@ namespace IOStreamDemo.Services
 
         public Task Task { get; set; }
 
-        public DataRecvService(Pipe pipe, IAsyncStream stream)
+        public string Name { get; set; }
+
+        public DataRecvService(string name)
         {
-            Pipe = pipe;
-            Stream = stream;
-            Cts = new CancellationTokenSource();
+            Name = name;
         }
+
+        public event IService.LogEventHandler Logging;
 
         public void Run()
         {
@@ -91,5 +93,11 @@ namespace IOStreamDemo.Services
             await writer.CompleteAsync();
         }
 
+        public void Bind(IStream stream, IProtocol protocol)
+        {
+            Pipe = stream.Pipe;
+            Stream = (IAsyncStream)stream;
+            Cts = new CancellationTokenSource();
+        }
     }
 }

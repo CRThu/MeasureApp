@@ -1,5 +1,6 @@
 ﻿using IOStreamDemo.Loggers;
 using IOStreamDemo.Protocols;
+using IOStreamDemo.Streams;
 using System;
 using System.Buffers;
 using System.Collections.Generic;
@@ -18,17 +19,16 @@ namespace IOStreamDemo.Services
 
         public IProtocol Protocol { get; set; }
 
-        public ILogger Logger { get; set; }
-
         public Task Task { get; set; }
 
-        public ProtocolParseService(Pipe pipe, IProtocol protocol, ILogger logger)
+        public string Name { get; set; }
+
+        public ProtocolParseService(string name)
         {
-            Pipe = pipe;
-            Cts = new CancellationTokenSource();
-            Protocol = protocol;
-            Logger = logger;
+            Name = name;
         }
+
+        public event IService.LogEventHandler Logging;
 
         public void Run()
         {
@@ -60,7 +60,7 @@ namespace IOStreamDemo.Services
                     foreach (Packet packet in pkts)
                     {
                         //Console.WriteLine($"RECV PACKET: {packet.Message}");
-                        Logger.Log(packet);
+                        Logging?.Invoke(this, new LogEventArgs() { Packet = packet });
                     }
                 }
 
@@ -78,6 +78,13 @@ namespace IOStreamDemo.Services
 
             // PipeReader EOF数据传输结束指示
             await reader.CompleteAsync();
+        }
+
+        public void Bind(IStream stream, IProtocol protocol)
+        {
+            Pipe = stream.Pipe;
+            Protocol = protocol;
+            Cts = new CancellationTokenSource();
         }
     }
 }

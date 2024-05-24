@@ -23,9 +23,14 @@ namespace IOStreamDemo.Loggers
 
         }
 
-        public void Log(Packet packet)
+        public void Log(object sender, LogEventArgs e)
         {
-            Console.WriteLine($"{nameof(ConsoleLogger)}: " + packet.Message);
+            Console.WriteLine($"{nameof(ConsoleLogger)}: " + e.Packet.Message);
+        }
+
+        public void Config(string[] @params = null)
+        {
+
         }
     }
 }

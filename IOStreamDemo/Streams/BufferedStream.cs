@@ -1,6 +1,7 @@
 ﻿using IOStreamDemo.Streams;
 using System;
 using System.Collections.Generic;
+using System.IO.Pipelines;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,8 @@ namespace IOStreamDemo.Streams
     /// </summary>
     public class BufferedStream : IStream
     {
+        public Pipe Pipe { get; set; } = new();
+
         public IStream BaseStream { get; private set; }
         public RingBuffer Rb { get; set; }
         public string Address { get; set; }
@@ -78,6 +81,11 @@ namespace IOStreamDemo.Streams
         }
 
         public void Config(string? cfg)
+        {
+
+        }
+
+        public void Config(string[] @params = null)
         {
 
         }

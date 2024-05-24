@@ -1,7 +1,6 @@
 ﻿using CarrotProtocolLib.Service;
 using IOStreamDemo.Loggers;
 using IOStreamDemo.Protocols;
-using IOStreamDemo.Protocols;
 using IOStreamDemo.Services;
 using IOStreamDemo.Streams;
 using System;
@@ -10,6 +9,7 @@ using System.IO.Pipelines;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using IService = IOStreamDemo.Services.IService;
 
 namespace IOStreamDemo.Sessions
 {
@@ -19,20 +19,36 @@ namespace IOStreamDemo.Sessions
         public List<IStream> Streams { get; set; }
         public List<ILogger> Loggers { get; set; }
         public List<IProtocol> Protocols { get; set; }
-        public List<Services.IService> Services { get; set; }
+        public List<IService> Services { get; set; }
 
 
         public Session()
         {
+            Streams = [];
+            Loggers = [];
+            Protocols = [];
             Services = [];
-            Pipe pipe = new();
-            Services.Add(new DataRecvService(pipe, (IAsyncStream)Streams));
-            Services.Add(new ProtocolParseService(pipe, Protocols, Loggers));
+        }
+
+        public void Setup()
+        {
+            foreach (var (stream, protocol) in Streams.Zip(Protocols))
+            {
+                foreach (var service in Services)
+                {
+                    service.Bind(stream, protocol);
+
+                    foreach (var logger in Loggers)
+                    {
+                        service.Logging += logger.Log;
+                    }
+                }
+            }
         }
 
         public void Open()
         {
-            Streams.Open();
+            Streams![0].Open();
             foreach (var service in Services)
             {
                 service.Run();
@@ -46,7 +62,7 @@ namespace IOStreamDemo.Sessions
                 service.Stop();
             }
 
-            Streams.Close();
+            Streams![0].Close();
 
             // Wait
             foreach (var service in Services)

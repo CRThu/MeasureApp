@@ -1,5 +1,6 @@
 ﻿using IOStreamDemo.Loggers;
 using IOStreamDemo.Protocols;
+using IOStreamDemo.Services;
 using IOStreamDemo.Streams;
 using System.Collections.Generic;
 
@@ -10,7 +11,8 @@ namespace IOStreamDemo.Sessions
         SESSION,
         STREAM,
         LOGGER,
-        PROTOCOL
+        PROTOCOL,
+        SERVICE
     }
 
     public class AddrInfo
@@ -28,20 +30,28 @@ namespace IOStreamDemo.Sessions
             Index = index;
 
             int idx = addr.IndexOf("://");
-
-            ServiceKey = addr[..idx];
-
-            string temp = addr[(idx + 2)..];
-            string[] strs = temp.Split('@', 2);
-
-            if (strs.Length == 1)
+            if (idx == -1)
             {
-                InstanceKey = temp;
+                ServiceKey = addr;
             }
             else
             {
-                InstanceKey = strs[0];
-                Params = [.. (string[])[InstanceKey, .. strs[1].Split(',')]];
+                ServiceKey = addr[..idx];
+
+                string temp = addr[(idx + 3)..];
+                string[] strs = temp.Split('@', 2);
+
+                if (strs.Length == 1)
+                {
+                    InstanceKey = temp;
+                    Params = [InstanceKey];
+                }
+                else
+                {
+                    InstanceKey = strs[0];
+                    Params = [.. (string[])[InstanceKey, .. strs[1].Split(',')]];
+                }
+
             }
 
         }
@@ -78,9 +88,6 @@ namespace IOStreamDemo.Sessions
 
             string[] addrs = addr.ToUpper().Split('+');
 
-            if (addrs.Length != 4)
-                throw new KeyNotFoundException("地址解析错误,未解析四个地址");
-
             for (int i = 0; i < addrs.Length; i++)
                 AddrInfos.AddRange(addrs[i].Split(';').Select(addr => new AddrInfo((AddrType)i, addr)));
 
@@ -99,24 +106,34 @@ namespace IOStreamDemo.Sessions
                 {
                     case AddrType.SESSION:
                         s.Name = info.InstanceKey;
+                        Console.WriteLine($"Create Session: {info.InstanceKey}");
                         break;
                     case AddrType.STREAM:
                         var stream = StreamFactory.Current.Get(info.ServiceKey, info.InstanceKey, info.Params);
+                        Console.WriteLine($"Create Stream: {info.ServiceKey}:{info.InstanceKey}");
                         s.Streams.Add(stream);
                         break;
                     case AddrType.LOGGER:
                         var logger = LoggerFactory.Current.Get(info.ServiceKey, info.InstanceKey, info.Params);
+                        Console.WriteLine($"Create Logger: {info.ServiceKey}:{info.InstanceKey}");
                         s.Loggers.Add(logger);
                         break;
                     case AddrType.PROTOCOL:
                         var protocol = ProtocolFactory.Current.Get(info.ServiceKey, info.ServiceKey, info.Params);
+                        Console.WriteLine($"Create Protocol: {info.ServiceKey}:{info.InstanceKey}");
                         s.Protocols.Add(protocol);
+                        break;
+                    case AddrType.SERVICE:
+                        var service = ServiceFactory.Current.Get(info.ServiceKey, info.ServiceKey, info.Params);
+                        Console.WriteLine($"Create Service: {info.ServiceKey}:{info.InstanceKey}");
+                        s.Services.Add(service);
                         break;
                     default:
                         throw new NotImplementedException();
                 }
             }
 
+            s.Setup();
             Sessions.Add(s.Name, s);
             return s;
         }

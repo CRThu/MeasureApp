@@ -32,7 +32,7 @@ namespace IOStreamDemo
             // RAPV1
             // CDPV1
 
-            var s = SessionFactory.Current.CreateSession("ID-01+COM://COM250+CONSOLE://1+RAPV1");
+            var s = SessionFactory.Current.CreateSession("SESSION://SESSION01+COM://COM250+CONSOLE://CONSOLE.1;NLOG://NLOG.1+RAPV1://RAPV1+RECV;PARSE");
 
             s.Open();
 

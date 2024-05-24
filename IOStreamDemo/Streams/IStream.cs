@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO.Pipelines;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,6 +17,8 @@ namespace IOStreamDemo.Streams
     public interface IStream
     {
         public bool ReadAvailable { get; }
+
+        public Pipe Pipe { get; }
 
         /// <summary>
         /// 配置解析和初始化

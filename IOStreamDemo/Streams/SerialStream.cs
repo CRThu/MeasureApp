@@ -3,6 +3,7 @@ using CarrotProtocolLib.Driver;
 using HighPrecisionTimer;
 using System;
 using System.Collections.Generic;
+using System.IO.Pipelines;
 using System.IO.Ports;
 using System.Linq;
 using System.Net.Sockets;
@@ -15,6 +16,7 @@ namespace IOStreamDemo.Streams
     {
         public string Address { get; set; }
         public string Name { get; set; }
+        public Pipe Pipe { get; set; } = new();
 
         public SerialStream(string name)
         {
@@ -40,14 +42,18 @@ namespace IOStreamDemo.Streams
             if (@params.Length == 0)
                 return;
 
-            Driver = new SerialPort
-            {
-                PortName = @params[0],
-                BaudRate = Convert.ToInt32(@params[1]),
-                DataBits = Convert.ToInt32(@params[2]),
-                Parity = SerialPortHelper.ParityString2Enum(@params[3]),
-                StopBits = SerialPortHelper.StopBitsFloat2Enum(Convert.ToDouble(@params[4]))
-            };
+            Driver = new SerialPort();
+
+            if (@params.Length > 0)
+                Driver.PortName = @params[0];
+            if (@params.Length > 1)
+                Driver.BaudRate = Convert.ToInt32(@params[1]);
+            if (@params.Length > 2)
+                Driver.DataBits = Convert.ToInt32(@params[2]);
+            if (@params.Length > 3)
+                Driver.Parity = SerialPortHelper.ParityString2Enum(@params[3]);
+            if (@params.Length > 4)
+                Driver.StopBits = SerialPortHelper.StopBitsFloat2Enum(Convert.ToDouble(@params[4]));
         }
 
         /// <summary>

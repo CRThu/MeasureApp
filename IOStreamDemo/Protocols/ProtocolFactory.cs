@@ -16,7 +16,7 @@ namespace IOStreamDemo.Protocols
         public static ProtocolFactory Current => current;
 
         /// <summary>
-        /// Loggers存储 Key:InstanceKey Value:IProtocol 接口派生类
+        /// Protocols存储 Key:InstanceKey Value:IProtocol 接口派生类
         /// </summary>
         public Dictionary<string, IProtocol> Protocols { get; private set; } = new();
 
