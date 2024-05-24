@@ -10,8 +10,8 @@ namespace IOStreamDemo.Sessions
     {
         SESSION,
         STREAM,
-        LOGGER,
         PROTOCOL,
+        LOGGER,
         SERVICE
     }
 
@@ -105,8 +105,8 @@ namespace IOStreamDemo.Sessions
                 switch (info.Index)
                 {
                     case AddrType.SESSION:
-                        s.Name = info.InstanceKey;
-                        Console.WriteLine($"Create Session: {info.InstanceKey}");
+                        s.Name = info.ServiceKey;
+                        Console.WriteLine($"Create Session: {info.ServiceKey}");
                         break;
                     case AddrType.STREAM:
                         var stream = StreamFactory.Current.Get(info.ServiceKey, info.InstanceKey, info.Params);

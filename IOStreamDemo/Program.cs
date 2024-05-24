@@ -16,23 +16,12 @@ namespace IOStreamDemo
                 Console.WriteLine($"{deviceInfo}");
             }
 
-            // 创建Session
-            // 地址格式: 服务名称://服务地址[,配置][,配置]
-
-            // ADDRESS
-            // COM://7@9600
-            // TCP://127.0.0.1:8888
-            // GPIB://22
-
-            // LOGGER
-            // CONSOLE://1
-            // CONSOLE://1@CH1+CONSOLE://2@CH2
-
-            // SERVICE
-            // RAPV1
-            // CDPV1
-
-            var s = SessionFactory.Current.CreateSession("SESSION://SESSION01+COM://COM250+CONSOLE://CONSOLE.1;NLOG://NLOG.1+RAPV1://RAPV1+RECV;PARSE");
+            var s = SessionFactory.Current.CreateSession(
+                "S" +
+                "+COM://COM250" +
+                "+RAPV1://RAPV1" +
+                "+CONSOLE://CONSOLE.1;NLOG://NLOG.1" +
+                "+RECV;PARSE");
 
             s.Open();
 
