@@ -12,10 +12,10 @@ namespace IOStreamDemo.Loggers
         public string Name { get; set; }
 
         /// <summary>
-        /// 配置
+        /// 配置解析和初始化
         /// </summary>
-        /// <param name="addr"></param>
-        public void Config(string? cfg);
+        /// <param name="params"></param>
+        public void Config(string[] @params = default!);
         public void Log(Packet message);
     }
 }

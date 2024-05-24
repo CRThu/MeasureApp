@@ -1,4 +1,5 @@
 ﻿using CarrotProtocolLib.Device;
+using CarrotProtocolLib.Driver;
 using HighPrecisionTimer;
 using System;
 using System.Collections.Generic;
@@ -33,13 +34,20 @@ namespace IOStreamDemo.Streams
         /// <summary>
         /// 配置解析和初始化
         /// </summary>
-        /// <param name="cfg"></param>
-        public void Config(string? cfg)
+        /// <param name="params"></param>
+        public void Config(string[] @params = default!)
         {
-            if (cfg == null)
+            if (@params.Length == 0)
                 return;
 
-            Driver = new SerialPort(cfg);
+            Driver = new SerialPort
+            {
+                PortName = @params[0],
+                BaudRate = Convert.ToInt32(@params[1]),
+                DataBits = Convert.ToInt32(@params[2]),
+                Parity = SerialPortHelper.ParityString2Enum(@params[3]),
+                StopBits = SerialPortHelper.StopBitsFloat2Enum(Convert.ToDouble(@params[4]))
+            };
         }
 
         /// <summary>

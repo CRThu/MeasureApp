@@ -15,26 +15,24 @@ namespace IOStreamDemo.Sessions
 {
     public class Session
     {
-        public IStream Stream { get; set; }
-        public ILogger Logger { get; set; }
-        public IProtocol Protocol { get; set; }
+        public string Name { get; set; }
+        public List<IStream> Streams { get; set; }
+        public List<ILogger> Loggers { get; set; }
+        public List<IProtocol> Protocols { get; set; }
         public List<Services.IService> Services { get; set; }
 
 
-        public Session(IStream stream, ILogger logger, IProtocol protocol)
+        public Session()
         {
-            Stream = stream;
-            Logger = logger;
-            Protocol = protocol;
             Services = [];
             Pipe pipe = new();
-            Services.Add(new DataRecvService(pipe, (IAsyncStream)Stream));
-            Services.Add(new ProtocolParseService(pipe, Protocol, Logger));
+            Services.Add(new DataRecvService(pipe, (IAsyncStream)Streams));
+            Services.Add(new ProtocolParseService(pipe, Protocols, Loggers));
         }
 
         public void Open()
         {
-            Stream.Open();
+            Streams.Open();
             foreach (var service in Services)
             {
                 service.Run();
@@ -48,7 +46,7 @@ namespace IOStreamDemo.Sessions
                 service.Stop();
             }
 
-            Stream.Close();
+            Streams.Close();
 
             // Wait
             foreach (var service in Services)

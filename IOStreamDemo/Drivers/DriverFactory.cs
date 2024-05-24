@@ -47,6 +47,7 @@ namespace IOStreamDemo.Drivers
             else
             {
                 var service = Create(serviceKey!, instanceKey);
+                Drivers.Add(instanceKey, service);
                 return service;
             }
         }

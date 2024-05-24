@@ -30,13 +30,15 @@ namespace IOStreamDemo.Loggers
                 throw new NotImplementedException($"No Logger {serviceKey}.");
         }
 
-        public ILogger Get(string serviceKey, string instanceKey)
+        public ILogger Get(string serviceKey, string instanceKey, string[] @params = default!)
         {
             if (Loggers.TryGetValue(instanceKey, out var instance))
                 return instance;
             else
             {
                 var service = Create(serviceKey!, instanceKey);
+                service.Config(@params);
+                Loggers.Add(instanceKey, service);
                 return service;
             }
         }

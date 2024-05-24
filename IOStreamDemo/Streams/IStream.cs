@@ -20,8 +20,8 @@ namespace IOStreamDemo.Streams
         /// <summary>
         /// 配置解析和初始化
         /// </summary>
-        /// <param name="cfg"></param>
-        public void Config(string? cfg);
+        /// <param name="params"></param>
+        public void Config(string[] @params = default!);
 
         /// <summary>
         /// 打开流
@@ -52,21 +52,8 @@ namespace IOStreamDemo.Streams
         public int Read(byte[] buffer, int offset, int count);
 
     }
-    public interface IAsyncStream
+    public interface IAsyncStream : IStream
     {
-        public bool ReadAvailable { get; }
-
-        /// <summary>
-        /// 打开流
-        /// </summary>
-        /// <param name="addr"></param>
-        public abstract void Open();
-
-        /// <summary>
-        /// 关闭流
-        /// </summary>
-        public abstract void Close();
-
         /// <summary>
         /// 异步读取流
         /// </summary>

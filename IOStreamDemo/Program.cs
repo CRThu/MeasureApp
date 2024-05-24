@@ -1,14 +1,7 @@
 ﻿using System.Net.Sockets;
 using System.Net;
-using System.Net.Http;
-using IOStreamDemo.Streams;
 using IOStreamDemo.Drivers;
-using IOStreamDemo.Protocols;
 using IOStreamDemo.Sessions;
-using System.ComponentModel;
-using IOStreamDemo.Protocols;
-using IOStreamDemo.Services;
-using IOStreamDemo.Loggers;
 
 namespace IOStreamDemo
 {
@@ -39,8 +32,7 @@ namespace IOStreamDemo
             // RAPV1
             // CDPV1
 
-            //var s = SessionManager.Current.CreateSession("ID-01", "COM://COM9,9600,8,N,1", "CONSOLE://1", "RAWV1");
-            var s = SessionFactory.Current.CreateSession("ID-01", "COM://COM250", "CONSOLE://1", "RAPV1");
+            var s = SessionFactory.Current.CreateSession("ID-01+COM://COM250+CONSOLE://1+RAPV1");
 
             s.Open();
 

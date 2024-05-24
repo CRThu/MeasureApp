@@ -27,13 +27,15 @@ namespace IOStreamDemo.Streams
                 throw new NotImplementedException($"No Stream {serviceKey}.");
         }
 
-        public IStream Get(string serviceKey, string instanceKey)
+        public IStream Get(string serviceKey, string instanceKey, string[] @params = default!)
         {
             if (Streams.TryGetValue(instanceKey, out var instance))
                 return instance;
             else
             {
                 var service = Create(serviceKey!, instanceKey);
+                service.Config(@params);
+                Streams.Add(instanceKey, service);
                 return service;
             }
         }

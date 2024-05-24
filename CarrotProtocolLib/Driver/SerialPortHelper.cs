@@ -9,7 +9,7 @@ namespace CarrotProtocolLib.Driver
 {
     public static class SerialPortHelper
     {
-        public static StopBits StopBitsFloat2Enum(float stopBits)
+        public static StopBits StopBitsFloat2Enum(double stopBits)
         {
             return stopBits switch
             {
@@ -21,17 +21,21 @@ namespace CarrotProtocolLib.Driver
             };
         }
 
-        public static Parity ParityString2Enum(string parity)
+        public static Parity ParityString2Enum(string parity) => parity switch
         {
-            return parity switch
-            {
-                "None" => Parity.None,
-                "Odd" => Parity.Odd,
-                "Even" => Parity.Even,
-                "Mark" => Parity.Mark,
-                "Space" => Parity.Space,
-                _ => throw new DriverErrorException(nameof(SerialPortHelper), $"不支持的校验位: {parity}"),
-            };
-        }
+            "N" => Parity.None,
+            "O" => Parity.Odd,
+            "E" => Parity.Even,
+            "M" => Parity.Mark,
+            "S" => Parity.Space,
+
+            "None" => Parity.None,
+            "Odd" => Parity.Odd,
+            "Even" => Parity.Even,
+            "Mark" => Parity.Mark,
+            "Space" => Parity.Space,
+
+            _ => throw new DriverErrorException(nameof(SerialPortHelper), $"不支持的校验位: {parity}"),
+        };
     }
 }
