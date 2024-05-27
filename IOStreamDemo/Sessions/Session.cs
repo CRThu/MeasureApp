@@ -10,7 +10,6 @@ using System.IO.Pipelines;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using IService = IOStreamDemo.Services.IService;
 
 namespace IOStreamDemo.Sessions
 {
@@ -52,7 +51,7 @@ namespace IOStreamDemo.Sessions
             Streams![0].Open();
             foreach (var service in Services)
             {
-                service.Run();
+                service.Start();
             }
         }
 

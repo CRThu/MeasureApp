@@ -32,7 +32,7 @@ namespace IOStreamDemo.Services
 
         public event IService.LogEventHandler Logging;
 
-        public void Run()
+        public void Start()
         {
             Task = FillPipeASync(Stream, Pipe.Writer, Cts.Token);
         }
