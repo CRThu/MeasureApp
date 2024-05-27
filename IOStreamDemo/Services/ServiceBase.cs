@@ -1,4 +1,4 @@
-﻿using CarrotProtocolLib.Service;
+﻿using IOStreamDemo.Loggers;
 using IOStreamDemo.Protocols;
 using IOStreamDemo.Streams;
 using System;
@@ -10,61 +10,125 @@ using System.Threading.Tasks;
 
 namespace IOStreamDemo.Services
 {
-    public enum TaskServiceStatus
+    /// <summary>
+    /// 服务状态
+    /// </summary>
+    public enum ServiceStatus
     {
         WaitForStart,
         Running,
+        Cancelling,
         ExitSuccess,
-        CancelledByCancellationTokenSource,
+        Cancelled,
         ThrowException
     }
 
-    public class ServiceBase<TReturn>
+    /// <summary>
+    /// 服务接口
+    /// </summary>
+    public interface IServiceBase<TReturn>
     {
-        public CancellationTokenSource Cts { get; set; }
-        private Task<TReturn?> TaskInstance { get; set; }
-        public TReturn? ReturnValue { get; set; }
-        public TaskServiceStatus Status { get; set; }
-        public Exception? InternalException { get; set; }
-
-        public ThreadPriority Priority { get; set; } = ThreadPriority.Normal;
-        public TaskCreationOptions TaskOptions { get; set; } = TaskCreationOptions.None;
+        /// <summary>
+        /// 服务返回值
+        /// </summary>
+        public TReturn? ReturnValue { get; }
 
         /// <summary>
-        /// 是否外部请求取消任务属性
+        /// 服务状态
+        /// </summary>
+        public ServiceStatus Status { get; }
+
+        /// <summary>
+        /// 服务异常
+        /// </summary>
+        public Exception? InternalException { get; }
+
+        /// <summary>
+        /// 打开服务
+        /// </summary>
+        void Start();
+
+        /// <summary>
+        /// 停止服务
+        /// </summary>
+        void Stop();
+    }
+
+    /// <summary>
+    /// 服务基类
+    /// </summary>
+    /// <typeparam name="TReturn"></typeparam>
+    public abstract class ServiceBase<TReturn> : IServiceBase<TReturn>
+    {
+        /// <summary>
+        /// 取消信号
+        /// </summary>
+        public CancellationTokenSource Cts { get; set; }
+
+        /// <summary>
+        /// 服务实例
+        /// </summary>
+        private Task<TReturn?>? Service { get; set; }
+
+        /// <summary>
+        /// 服务返回值
+        /// </summary>
+        public TReturn? ReturnValue { get; set; }
+
+        /// <summary>
+        /// 服务状态
+        /// </summary>
+        public ServiceStatus Status { get; set; }
+
+        /// <summary>
+        /// 服务异常
+        /// </summary>
+        public Exception? InternalException { get; set; }
+
+        /// <summary>
+        /// 是否外部请求取消任务
         /// </summary>
         public bool IsCancellationRequested
         {
             get
             {
                 if (Cts.Token.IsCancellationRequested)
-                    Status = TaskServiceStatus.CancelledByCancellationTokenSource;
+                    Status = ServiceStatus.Cancelling;
                 return Cts.Token.IsCancellationRequested;
             }
         }
 
 
+        /// <summary>
+        /// 构造函数
+        /// </summary>
         public ServiceBase()
         {
             Cts = new();
             ReturnValue = default;
-            Status = TaskServiceStatus.WaitForStart;
+            Status = ServiceStatus.WaitForStart;
             InternalException = null;
         }
 
+        /// <summary>
+        /// 打开服务
+        /// </summary>
         public void Start()
         {
             Cts = new();
-            TaskInstance = Impl(Cts.Token);
-            Status = TaskServiceStatus.Running;
+            Service = Impl(Cts.Token);
+            Status = ServiceStatus.Running;
         }
 
+        /// <summary>
+        /// 停止服务
+        /// </summary>
         public void Stop()
         {
             Cts.Cancel();
             try
             {
-                TaskInstance.Wait();
+                Service?.Wait();
             }
             catch (Exception)
             {
@@ -72,28 +136,29 @@ namespace IOStreamDemo.Services
             }
         }
 
-
-        public async Task<TReturn?> Impl(CancellationToken ct)
+        /// <summary>
+        /// 服务实现方法
+        /// </summary>
+        /// <param name="ct">返回</param>
+        /// <returns>返回值</returns>
+        public virtual async Task<TReturn?> Impl(CancellationToken ct)
         {
-            for (int i = 0; i < 5; i++)
-            {
-                Console.WriteLine("Hello");
-                await Task.Delay(500, ct);
-            }
-            return await Task.FromResult(default(TReturn)!);
+            return await Task.FromResult<TReturn>(default(TReturn?));
         }
 
-        //public Task<TReturn?> Impl(CancellationToken ct)
+        //public async Task<TReturn?> Impl(CancellationToken ct)
         //{
-        //    return Task.Run<TReturn?>(async () =>
+        //    for (int i = 0; i < 5; i++)
         //    {
-        //        for (int i = 0; i < 5; i++)
-        //        {
-        //            Console.WriteLine("Hello");
-        //            await Task.Delay(500, ct);
-        //        }
-        //        return default;
-        //    }, ct);
+        //        Console.WriteLine("Hello");
+        //        await Task.Delay(500, ct);
+        //    }
+        //    return await Task.FromResult(default(TReturn?));
+        //}
+
+        //public async Task<TReturn?> ImplTask(CancellationToken ct)
+        //{
+        //    return await Task<TReturn?>.Run(() => Impl(ct), ct);
         //}
     }
 }
