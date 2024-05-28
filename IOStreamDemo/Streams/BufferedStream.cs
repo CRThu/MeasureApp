@@ -11,7 +11,7 @@ namespace IOStreamDemo.Streams
     /// <summary>
     /// FIFO环形缓冲区
     /// </summary>
-    public class BufferedStream : IStream
+    public class BufferedStream : StreamBase
     {
         public Pipe Pipe { get; set; } = new();
 
@@ -39,13 +39,13 @@ namespace IOStreamDemo.Streams
             RxArray = new byte[RxArrayLength];
         }
 
-        public void Open()
+        public override void Open()
         {
             BaseStream.Open();
             Task.Run(RecvService, cts.Token);
         }
 
-        public void Close()
+        public override void Close()
         {
             cts.Cancel();
         }
@@ -69,23 +69,18 @@ namespace IOStreamDemo.Streams
             }
         }
 
-        public int Read(byte[] buffer, int offset, int count)
+        public override int Read(byte[] buffer, int offset, int count)
         {
             Rb.Read(buffer, offset, count);
             return count;
         }
 
-        public void Write(byte[] buffer, int offset, int count)
+        public override void Write(byte[] buffer, int offset, int count)
         {
             BaseStream.Write(buffer, offset, count);
         }
 
-        public void Config(string? cfg)
-        {
-
-        }
-
-        public void Config(string[] @params = null)
+        public override void Config(string[] @params = null)
         {
 
         }

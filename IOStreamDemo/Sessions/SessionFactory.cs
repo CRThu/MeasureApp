@@ -133,7 +133,7 @@ namespace IOStreamDemo.Sessions
                 }
             }
 
-            s.Setup();
+            s.Bind();
             Sessions.Add(s.Name, s);
             return s;
         }

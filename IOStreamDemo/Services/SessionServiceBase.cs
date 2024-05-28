@@ -32,7 +32,7 @@ namespace IOStreamDemo.Services
         /// </summary>
         /// <param name="stream"></param>
         /// <param name="protocol"></param>
-        public void Bind(IStream? stream, IProtocol? protocol = null);
+        public void Bind(IAsyncStream? stream, IProtocol? protocol = null);
     }
 
     /// <summary>
@@ -43,7 +43,7 @@ namespace IOStreamDemo.Services
         /// <summary>
         /// 数据流接口
         /// </summary>
-        public IStream? Stream { get; set; }
+        public IAsyncStream? Stream { get; set; }
 
         /// <summary>
         /// 数据协议接口
@@ -61,7 +61,7 @@ namespace IOStreamDemo.Services
         /// </summary>
         /// <param name="stream"></param>
         /// <param name="protocol"></param>
-        public virtual void Bind(IStream? stream, IProtocol? protocol = null)
+        public virtual void Bind(IAsyncStream? stream, IProtocol? protocol = null)
         {
             Stream = stream;
             Protocol = protocol;

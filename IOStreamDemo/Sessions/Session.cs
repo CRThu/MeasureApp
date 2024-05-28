@@ -16,7 +16,7 @@ namespace IOStreamDemo.Sessions
     public class Session
     {
         public string Name { get; set; }
-        public List<IStream> Streams { get; set; }
+        public List<IAsyncStream> Streams { get; set; }
         public List<ILogger> Loggers { get; set; }
         public List<IProtocol> Protocols { get; set; }
         public List<ISessionServiceBase> Services { get; set; }
@@ -30,7 +30,7 @@ namespace IOStreamDemo.Sessions
             Services = [];
         }
 
-        public void Setup()
+        public void Bind()
         {
             foreach (var (stream, protocol) in Streams.Zip(Protocols))
             {
