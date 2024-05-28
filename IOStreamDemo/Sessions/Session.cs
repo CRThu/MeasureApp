@@ -19,7 +19,7 @@ namespace IOStreamDemo.Sessions
         public List<IStream> Streams { get; set; }
         public List<ILogger> Loggers { get; set; }
         public List<IProtocol> Protocols { get; set; }
-        public List<IService> Services { get; set; }
+        public List<ISessionServiceBase> Services { get; set; }
 
 
         public Session()
@@ -67,7 +67,7 @@ namespace IOStreamDemo.Sessions
             // Wait
             foreach (var service in Services)
             {
-                while (!service.Task.IsCompleted)
+                while (service.Status != ServiceStatus.Running)
                     ;
                 Console.WriteLine(service.ToString() + " IS STOPPED.");
             }

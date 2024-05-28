@@ -15,9 +15,9 @@ namespace IOStreamDemo.Services
         /// <summary>
         /// Services 存储 Key:InstanceKey Value:IProtocol 接口派生类
         /// </summary>
-        public Dictionary<string, IService> Services { get; private set; } = new();
+        public Dictionary<string, ISessionServiceBase> Services { get; private set; } = new();
 
-        public IService Create(string serviceKey, string instanceKey)
+        public ISessionServiceBase Create(string serviceKey, string instanceKey)
         {
             serviceKey = serviceKey.ToUpper();
             if (serviceKey == "RECV")
@@ -28,7 +28,7 @@ namespace IOStreamDemo.Services
                 throw new NotImplementedException($"No Service {serviceKey}.");
         }
 
-        public IService Get(string serviceKey, string instanceKey, string[] @params = default!)
+        public ISessionServiceBase Get(string serviceKey, string instanceKey, string[] @params = default!)
         {
             if (Services.TryGetValue(instanceKey, out var instance))
                 return instance;

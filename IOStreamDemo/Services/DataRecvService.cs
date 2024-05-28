@@ -13,14 +13,8 @@ using System.IO;
 
 namespace IOStreamDemo.Services
 {
-    public class DataRecvService : IService
+    public class DataRecvService : SessionServiceBase
     {
-        public Pipe Pipe { get; set; }
-
-        public CancellationTokenSource Cts { get; set; }
-
-        public IAsyncStream Stream { get; set; }
-
         public Task Task { get; set; }
 
         public string Name { get; set; }
@@ -30,28 +24,18 @@ namespace IOStreamDemo.Services
             Name = name;
         }
 
-        public event IService.LogEventHandler Logging;
-
-        public void Start()
-        {
-            Task = FillPipeASync(Stream, Pipe.Writer, Cts.Token);
-        }
-
-        public void Stop()
-        {
-            Cts.Cancel();
-        }
-
         // Read From IDriverCommStream and write to pipewriter
-        public async Task FillPipeASync(IAsyncStream stream, PipeWriter writer, CancellationToken token)
+        public override async Task Impl()
         {
+            PipeWriter writer = Stream!.Pipe.Writer;
+
             const int BUFSIZE = 1048576;
             // TODO:临时缓冲区 后续重构
             byte[] rxTemp = new byte[BUFSIZE];
 
             while (true)
             {
-                if (token.IsCancellationRequested)
+                if (Cts.Token.IsCancellationRequested)
                 {
                     break;
                 }
@@ -61,7 +45,7 @@ namespace IOStreamDemo.Services
                 try
                 {
                     // 读取数据
-                    int bytesRead = await stream.ReadAsync(rxTemp, 0, BUFSIZE, token);
+                    int bytesRead = await ((IAsyncStream)Stream!)!.ReadAsync(rxTemp, 0, BUFSIZE, Cts.Token);
                     if (bytesRead == 0)
                     {
                         break;
@@ -79,7 +63,7 @@ namespace IOStreamDemo.Services
                 }
 
                 // Flush数据到PipeReader
-                FlushResult result = await writer.FlushAsync(token);
+                FlushResult result = await writer.FlushAsync(Cts.Token);
 
                 // 来自PipeReader的EOF处理
                 if (result.IsCompleted)
@@ -91,13 +75,6 @@ namespace IOStreamDemo.Services
 
             // PipeWriter EOF数据传输结束指示
             await writer.CompleteAsync();
-        }
-
-        public void Bind(IStream stream, IProtocol protocol)
-        {
-            Pipe = stream.Pipe;
-            Stream = (IAsyncStream)stream;
-            Cts = new CancellationTokenSource();
         }
     }
 }
