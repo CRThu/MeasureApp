@@ -28,12 +28,18 @@ namespace IOStreamDemo.Sessions
     {
         public static SessionConfig Default { get; set; } = new()
         {
+            PresetSessionCommands = ["DEFAULT_SESSION"],
+            PresetProtocolCommands = ["RAPV1://RAPV1"],
+            PresetLoggerCommands = ["CONSOLE://CON1", "NLOG://NLOG1"],
             PresetServiceCommands = ["RECV", "PARSE"]
         };
+
+        public static SessionConfig Empty { get; set; } = new();
 
         public List<string> PresetSessionCommands { get; set; } = [];
         public List<string> PresetStreamCommands { get; set; } = [];
         public List<string> PresetProtocolCommands { get; set; } = [];
+        public List<string> PresetLoggerCommands { get; set; } = [];
         public List<string> PresetServiceCommands { get; set; } = [];
 
         public SessionConfig()

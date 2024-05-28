@@ -22,11 +22,11 @@ namespace IOStreamDemo.Sessions
         {
             if (config == null)
             {
-                config = SessionConfig.Default;
+                config = SessionConfig.Empty;
             }
 
-            List<SessionComponentInfo> addrInfo = SessionConfigParser.Parse(addrs);
-            addrInfo.AddRange(SessionConfigParser.Parse(config));
+            List<SessionComponentInfo> addrInfo = SessionConfigParser.Parse(config);
+            addrInfo.AddRange(SessionConfigParser.Parse(addrs));
 
 
             Session s = new();

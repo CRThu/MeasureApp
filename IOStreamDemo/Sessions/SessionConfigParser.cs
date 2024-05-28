@@ -25,6 +25,7 @@ namespace IOStreamDemo.Sessions
                 .. config.PresetSessionCommands.Select(c => ParseOne(ComponentType.SESSION, c)),
                 .. config.PresetStreamCommands.Select(c => ParseOne(ComponentType.STREAM, c)),
                 .. config.PresetProtocolCommands.Select(c => ParseOne(ComponentType.PROTOCOL, c)),
+                .. config.PresetLoggerCommands.Select(c => ParseOne(ComponentType.LOGGER, c)),
                 .. config.PresetServiceCommands.Select(c => ParseOne(ComponentType.SERVICE, c)),
             ];
             return infos;

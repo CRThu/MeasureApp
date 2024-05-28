@@ -16,12 +16,16 @@ namespace IOStreamDemo
                 Console.WriteLine($"{deviceInfo}");
             }
 
+            //var s = SessionFactory.Current.CreateSession(
+            //    "S"
+            //    + "+COM://COM250"
+            //    + "+RAPV1://RAPV1"
+            //    + "+CONSOLE://CONSOLE.1;NLOG://NLOG.1"
+            //    + "+RECV;PARSE"
+            //    , SessionConfig.Empty);
+            
             var s = SessionFactory.Current.CreateSession(
-                "S"
-                + "+COM://COM250"
-                + "+RAPV1://RAPV1"
-                + "+CONSOLE://CONSOLE.1;NLOG://NLOG.1"
-                //+ "+RECV;PARSE"
+                "SESSION1+COM://COM250"
                 , SessionConfig.Default);
 
             s.Open();
