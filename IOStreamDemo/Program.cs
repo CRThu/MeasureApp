@@ -17,11 +17,12 @@ namespace IOStreamDemo
             }
 
             var s = SessionFactory.Current.CreateSession(
-                "S" +
-                "+COM://COM250" +
-                "+RAPV1://RAPV1" +
-                "+CONSOLE://CONSOLE.1;NLOG://NLOG.1" +
-                "+RECV;PARSE");
+                "S"
+                + "+COM://COM250"
+                + "+RAPV1://RAPV1"
+                + "+CONSOLE://CONSOLE.1;NLOG://NLOG.1"
+                //+ "+RECV;PARSE"
+                , SessionConfig.Default);
 
             s.Open();
 

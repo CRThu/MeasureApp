@@ -73,7 +73,7 @@ namespace IOStreamDemo.Streams
         public string Address { get; set; }
         public string Name { get; set; }
 
-        public bool ReadAvailable { get; set; }
+        public virtual bool ReadAvailable { get; }
 
         public Pipe Pipe { get; set; } = new();
 

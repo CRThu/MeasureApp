@@ -22,7 +22,7 @@ namespace IOStreamDemo.Streams
         /// <summary>
         /// 流指示有数据
         /// </summary>
-        public new bool ReadAvailable => Driver.BytesToRead > 0;
+        public override bool ReadAvailable => Driver.BytesToRead > 0;
 
         /// <summary>
         /// 驱动层实现
@@ -39,6 +39,8 @@ namespace IOStreamDemo.Streams
                 return;
 
             Driver = new SerialPort();
+            //Driver.ReadTimeout = 10;
+            //Driver.WriteTimeout = 10;
 
             if (@params.Length > 0)
                 Driver.PortName = @params[0];

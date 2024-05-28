@@ -45,7 +45,7 @@ namespace IOStreamDemo.Services
                 try
                 {
                     // 读取数据
-                    int bytesRead = await ((IAsyncStream)Stream!)!.ReadAsync(rxTemp, 0, BUFSIZE, Cts.Token);
+                    int bytesRead = await Stream!.ReadAsync(rxTemp, 0, BUFSIZE, Cts.Token);
                     if (bytesRead == 0)
                     {
                         break;
