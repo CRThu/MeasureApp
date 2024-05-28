@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace IOStreamDemo.Drivers
 {
-    public class SerialDriver : IDriver
+    public class SerialDriver : DriverBase
     {
         public string Name { get; set; }
 
@@ -19,7 +19,7 @@ namespace IOStreamDemo.Drivers
         }
 
 
-        public DeviceInfo[] FindDevices()
+        public override DeviceInfo[] FindDevices()
         {
             return SerialPort.GetPortNames().Select(d => new DeviceInfo("SERIAL", $"COM://{d[3..]}", "串口设备")).ToArray();
             //return

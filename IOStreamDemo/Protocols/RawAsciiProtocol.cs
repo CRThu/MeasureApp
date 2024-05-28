@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace IOStreamDemo.Protocols
 {
-    public class RawAsciiProtocol : IProtocol
+    public class RawAsciiProtocol : ProtocolBase
     {
-        public static string Version { get; } = "RAPV1";
+        public new static string Version { get; } = "RAPV1";
 
         public string Name { get; set; }
 
@@ -18,7 +18,7 @@ namespace IOStreamDemo.Protocols
             Name = name;
         }
 
-        public bool TryParse(ref ReadOnlySequence<byte> buffer, out IEnumerable<Packet> packets)
+        public override bool TryParse(ref ReadOnlySequence<byte> buffer, out IEnumerable<Packet>? packets)
         {
             List<Packet> packetsList = new();
 

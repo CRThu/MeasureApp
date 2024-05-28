@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace IOStreamDemo.Protocols
 {
-    public class CarrotDataProtocol : IProtocol
+    public class CarrotDataProtocol : ProtocolBase
     {
-        public static string Version { get; } = "CDPV1";
+        public static new string Version { get; } = "CDPV1";
 
         public string Name { get; set; }
 
@@ -19,7 +19,7 @@ namespace IOStreamDemo.Protocols
         }
 
         // TODO
-        public bool TryParse(ref ReadOnlySequence<byte> buffer, out IEnumerable<Packet> packets)
+        public override bool TryParse(ref ReadOnlySequence<byte> buffer, out IEnumerable<Packet>? packets)
         {
             List<Packet> packetsList = new();
 

@@ -12,4 +12,9 @@ namespace IOStreamDemo.Drivers
     {
         public DeviceInfo[] FindDevices();
     }
+
+    public abstract class DriverBase : IDriver
+    {
+        public abstract DeviceInfo[] FindDevices();
+    }
 }

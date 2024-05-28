@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace IOStreamDemo.Drivers
 {
-    public class GpibDriver : IDriver
+    public class GpibDriver : DriverBase
     {
         public string Name { get; set; }
 
@@ -17,7 +17,7 @@ namespace IOStreamDemo.Drivers
             Name = name;
         }
 
-        public DeviceInfo[] FindDevices()
+        public override DeviceInfo[] FindDevices()
         {
             return
             [
