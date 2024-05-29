@@ -24,7 +24,6 @@ using MeasureApp.Model.Devices;
 using CodingSeb.ExpressionEvaluator;
 using MeasureApp.Model.DataStorage;
 using Newtonsoft.Json.Linq;
-using CarrotProtocolLib.Protocol;
 using System.Timers;
 
 namespace MeasureApp.ViewModel

@@ -1,29 +1,33 @@
-﻿using CarrotCommFramework.Protocols;
+﻿using CarrotCommFramework.Loggers;
+using CarrotCommFramework.Protocols;
+using CommunityToolkit.Mvvm.ComponentModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CarrotCommFramework.Loggers
+namespace CarrotProtocolCommDemo.Logger
 {
-    /// <summary>
-    /// 记录器基础类
-    /// </summary>
-    public class LoggerBase : ILogger
+    public class ObservableLoggerBase : ObservableObject, ILogger
     {
-        /// <summary>
-        /// 实例唯一名称
-        /// </summary>
-        public string Name { get; set; }
+        public LoggerBase Logger { get; set; }
 
-        /// <summary>
-        /// 构造函数
-        /// </summary>
-        /// <param name="name">实例唯一名称</param>
-        public LoggerBase(string name)
+        public ObservableLoggerBase(string name)
         {
-            Name = name;
+            Logger = new LoggerBase(name);
+        }
+
+        public string Name
+        {
+            get
+            {
+                return Logger.Name;
+            }
+            set
+            {
+                SetProperty(Logger.Name, value, Logger, (u, n) => u.Name = n);
+            }
         }
 
         /// <summary>
@@ -32,8 +36,9 @@ namespace CarrotCommFramework.Loggers
         /// <param name="params">配置参数</param>
         public virtual void Config(string[] @params = null)
         {
-
+            Logger.Config(@params);
         }
+
 
         /// <summary>
         /// 记录器回调方法
@@ -42,7 +47,7 @@ namespace CarrotCommFramework.Loggers
         /// <param name="e">数据包</param>
         public virtual void Log(object sender, LogEventArgs e)
         {
-            Console.WriteLine($"{GetType().FullName}: " + e.Packet.Message);
+            Logger.Log(sender, e);
         }
 
         /// <summary>
@@ -53,9 +58,7 @@ namespace CarrotCommFramework.Loggers
         /// <returns></returns>
         public virtual bool TryGet(int idx, out Packet? packet)
         {
-            // TODO
-            packet = null;
-            return false;
+            return Logger.TryGet(idx, out packet);
         }
     }
 }

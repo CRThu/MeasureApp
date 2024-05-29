@@ -1,33 +1,54 @@
-﻿using CarrotProtocolLib.Logger;
+﻿using CarrotCommFramework.Loggers;
+using CarrotCommFramework.Protocols;
 using CommunityToolkit.Mvvm.ComponentModel;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace CarrotProtocolCommDemo.Logger
 {
-    public partial class DataLogger : ObservableObject
+    public partial class DataLogger : ObservableLoggerBase
     {
         [ObservableProperty]
-        private DataStorage<double> ds;
+        private ObservableCollection<Packet> ds;
 
-        public DataLogger()
+        public DataLogger(string name) :
+            base(name)
         {
-            ds = new DataStorage<double>();
+            ds = [];
         }
 
         /// <summary>
-        /// 增加记录并解析数据到DataStorage
+        /// 记录器回调方法
         /// </summary>
-        /// <param name="record"></param>
-        public void Add(IRecord record)
+        /// <param name="sender">发送者</param>
+        /// <param name="e">数据包</param>
+        public override void Log(object sender, LogEventArgs e)
         {
-            if (record.Type == TransferType.Data)
+            Logger.Log(sender, e);
+            Ds.Add(e.Packet!);
+        }
+
+        /// <summary>
+        /// 获取历史数据包
+        /// </summary>
+        /// <param name="idx">消息记录索引</param>
+        /// <param name="packet">数据包</param>
+        /// <returns></returns>
+        public override bool TryGet(int idx, out Packet? packet)
+        {
+            if (idx < 0 || idx >= Ds.Count)
             {
-                string streamKey = $"{record.From}.{record.Stream}";
-                Ds.AddValue(streamKey, record.Frame.DecodeData());
+                packet = null;
+                return false;
+            }
+            else
+            {
+                packet = Ds[idx];
+                return packet is not null;
             }
         }
     }
