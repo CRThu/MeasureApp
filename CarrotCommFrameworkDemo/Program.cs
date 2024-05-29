@@ -1,9 +1,9 @@
-﻿using System.Net.Sockets;
-using System.Net;
-using CarrotCommFramework.Drivers;
+﻿using CarrotCommFramework.Drivers;
 using CarrotCommFramework.Sessions;
+using System.Net.Sockets;
+using System.Net;
 
-namespace CarrotCommFramework
+namespace CarrotCommFrameworkDemo
 {
     public class Program
     {
@@ -23,7 +23,7 @@ namespace CarrotCommFramework
             //    + "+CONSOLE://CONSOLE.1;NLOG://NLOG.1"
             //    + "+RECV;PARSE"
             //    , SessionConfig.Empty);
-            
+
             var s = SessionFactory.Current.CreateSession(
                 "SESSION1+COM://COM250"
                 , SessionConfig.Default);
