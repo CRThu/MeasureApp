@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IOStreamDemo.Util
+namespace CarrotCommFramework.Util
 {
 
     // https://blog.csdn.net/qq_25482087/article/details/87925962

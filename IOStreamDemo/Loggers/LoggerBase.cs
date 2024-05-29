@@ -1,11 +1,11 @@
-﻿using IOStreamDemo.Protocols;
+﻿using CarrotCommFramework.Protocols;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IOStreamDemo.Loggers
+namespace CarrotCommFramework.Loggers
 {
     /// <summary>
     /// 记录器基础类

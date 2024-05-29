@@ -1,9 +1,9 @@
 ﻿using System.Net.Sockets;
 using System.Net;
-using IOStreamDemo.Drivers;
-using IOStreamDemo.Sessions;
+using CarrotCommFramework.Drivers;
+using CarrotCommFramework.Sessions;
 
-namespace IOStreamDemo
+namespace CarrotCommFramework
 {
     public class Program
     {

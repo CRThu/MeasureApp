@@ -1,13 +1,13 @@
-﻿using IOStreamDemo.Drivers;
-using IOStreamDemo.Sessions;
-using IOStreamDemo.Streams;
+﻿using CarrotCommFramework.Drivers;
+using CarrotCommFramework.Sessions;
+using CarrotCommFramework.Streams;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IOStreamDemo.Loggers
+namespace CarrotCommFramework.Loggers
 {
     public class LoggerFactory
     {

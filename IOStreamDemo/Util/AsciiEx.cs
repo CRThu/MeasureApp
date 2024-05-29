@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IOStreamDemo.Util
+namespace CarrotCommFramework.Util
 {
     public static class AsciiEx
     {

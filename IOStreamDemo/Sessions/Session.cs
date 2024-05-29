@@ -1,8 +1,8 @@
-﻿using IOStreamDemo.Loggers;
-using IOStreamDemo.Protocols;
-using IOStreamDemo.Services;
-using IOStreamDemo.Streams;
-using IOStreamDemo.Util;
+﻿using CarrotCommFramework.Loggers;
+using CarrotCommFramework.Protocols;
+using CarrotCommFramework.Services;
+using CarrotCommFramework.Streams;
+using CarrotCommFramework.Util;
 using System;
 using System.Collections.Generic;
 using System.IO.Pipelines;
@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IOStreamDemo.Sessions
+namespace CarrotCommFramework.Sessions
 {
     public class Session
     {

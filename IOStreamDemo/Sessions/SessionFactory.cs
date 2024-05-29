@@ -1,10 +1,10 @@
-﻿using IOStreamDemo.Loggers;
-using IOStreamDemo.Protocols;
-using IOStreamDemo.Services;
-using IOStreamDemo.Streams;
+﻿using CarrotCommFramework.Loggers;
+using CarrotCommFramework.Protocols;
+using CarrotCommFramework.Services;
+using CarrotCommFramework.Streams;
 using System.Collections.Generic;
 
-namespace IOStreamDemo.Sessions
+namespace CarrotCommFramework.Sessions
 {
 
     public class SessionFactory

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IOStreamDemo.Drivers
+namespace CarrotCommFramework.Drivers
 {
     /// <summary>
     /// 设备信息

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IOStreamDemo.Sessions
+namespace CarrotCommFramework.Sessions
 {
     public enum ComponentType
     {

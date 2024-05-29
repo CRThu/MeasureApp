@@ -7,11 +7,11 @@ using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO.Pipelines;
-using IOStreamDemo.Streams;
-using IOStreamDemo.Protocols;
+using CarrotCommFramework.Streams;
+using CarrotCommFramework.Protocols;
 using System.IO;
 
-namespace IOStreamDemo.Services
+namespace CarrotCommFramework.Services
 {
     public class DataRecvService : SessionServiceBase
     {

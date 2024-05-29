@@ -1,6 +1,6 @@
-﻿using IOStreamDemo.Loggers;
-using IOStreamDemo.Protocols;
-using IOStreamDemo.Streams;
+﻿using CarrotCommFramework.Loggers;
+using CarrotCommFramework.Protocols;
+using CarrotCommFramework.Streams;
 using System;
 using System.Collections.Generic;
 using System.IO.Pipelines;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IOStreamDemo.Services
+namespace CarrotCommFramework.Services
 {
     /// <summary>
     /// 服务状态

@@ -1,13 +1,13 @@
-﻿using IOStreamDemo.Drivers;
-using IOStreamDemo.Protocols;
-using IOStreamDemo.Sessions;
+﻿using CarrotCommFramework.Drivers;
+using CarrotCommFramework.Protocols;
+using CarrotCommFramework.Sessions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IOStreamDemo.Streams
+namespace CarrotCommFramework.Streams
 {
     public class StreamFactory
     {

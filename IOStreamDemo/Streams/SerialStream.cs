@@ -1,5 +1,5 @@
 ﻿using HighPrecisionTimer;
-using IOStreamDemo.Util;
+using CarrotCommFramework.Util;
 using System;
 using System.Collections.Generic;
 using System.IO.Pipelines;
@@ -9,7 +9,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IOStreamDemo.Streams
+namespace CarrotCommFramework.Streams
 {
     public class SerialStream : StreamBase
     {

@@ -13,11 +13,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarrotProtocolLib", "Carrot
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarrotProtocolLibBenchmark", "CarrotProtocolLibBenchmark\CarrotProtocolLibBenchmark.csproj", "{DD486DA0-344F-4B6D-ACD8-64F5324152A5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IOStreamDemo", "IOStreamDemo\IOStreamDemo.csproj", "{3C0A1459-2F1A-488C-8777-9105D0102370}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarrotCommFramework", "IOStreamDemo\CarrotCommFramework.csproj", "{3C0A1459-2F1A-488C-8777-9105D0102370}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HighPrecisionTimer", "HighPrecisionTimer\HighPrecisionTimer.csproj", "{D3897B36-E173-44C8-8BD3-D276F8E9C54F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HighPrecisionTimer", "HighPrecisionTimer\HighPrecisionTimer.csproj", "{D3897B36-E173-44C8-8BD3-D276F8E9C54F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HighPrecisionTimerBenchmark", "HighPrecisionTimerBenchmark\HighPrecisionTimerBenchmark.csproj", "{5B2F4E6D-23B3-4CBF-83FC-42BE15EFAC47}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HighPrecisionTimerBenchmark", "HighPrecisionTimerBenchmark\HighPrecisionTimerBenchmark.csproj", "{5B2F4E6D-23B3-4CBF-83FC-42BE15EFAC47}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
