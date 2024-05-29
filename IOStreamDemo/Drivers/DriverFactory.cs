@@ -1,7 +1,4 @@
-﻿using CarrotProtocolLib.Device;
-using CarrotProtocolLib.Driver;
-using CarrotProtocolLib.Logger;
-using IOStreamDemo.Loggers;
+﻿using IOStreamDemo.Loggers;
 using IOStreamDemo.Protocols;
 using IOStreamDemo.Sessions;
 using IOStreamDemo.Streams;

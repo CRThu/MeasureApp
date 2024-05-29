@@ -1,9 +1,8 @@
-﻿using CarrotProtocolLib.Service;
-using CarrotProtocolLib.Util;
-using IOStreamDemo.Loggers;
+﻿using IOStreamDemo.Loggers;
 using IOStreamDemo.Protocols;
 using IOStreamDemo.Services;
 using IOStreamDemo.Streams;
+using IOStreamDemo.Util;
 using System;
 using System.Collections.Generic;
 using System.IO.Pipelines;

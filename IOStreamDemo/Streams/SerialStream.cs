@@ -1,6 +1,5 @@
-﻿using CarrotProtocolLib.Device;
-using CarrotProtocolLib.Driver;
-using HighPrecisionTimer;
+﻿using HighPrecisionTimer;
+using IOStreamDemo.Util;
 using System;
 using System.Collections.Generic;
 using System.IO.Pipelines;
