@@ -13,9 +13,9 @@ namespace CarrotProtocolCommDemo.Logger
     {
         public LoggerBase Logger { get; set; }
 
-        public ObservableLoggerBase(string name)
+        public ObservableLoggerBase()
         {
-            Logger = new LoggerBase(name);
+            Logger = new LoggerBase();
         }
 
         public string Name

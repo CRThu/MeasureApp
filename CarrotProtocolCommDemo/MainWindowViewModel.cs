@@ -15,6 +15,7 @@ using System.IO;
 using CarrotCommFramework.Drivers;
 using CarrotCommFramework.Sessions;
 using CarrotCommFramework.Factory;
+using CarrotCommFramework.Loggers;
 
 namespace CarrotProtocolCommDemo
 {
@@ -36,7 +37,14 @@ namespace CarrotProtocolCommDemo
         {
             LoggerText += "CONFIG CLICKED\n";
 
-            SessionInstance = SessionFactory.Current.CreateSession(DeviceConfigText, SessionConfig.Default);
+            ProductProvider.Current.Register<ILogger, DataLogger>("DL");
+
+            SessionConfig config = new(SessionConfig.Default)
+            {
+                PresetLoggerCommands = ["DL://DL1"]
+            };
+
+            SessionInstance = SessionFactory.Current.CreateSession(DeviceConfigText, config);
             SessionInstance.Open();
         }
         [RelayCommand]

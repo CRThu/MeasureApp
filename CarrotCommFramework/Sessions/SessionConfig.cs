@@ -45,5 +45,13 @@ namespace CarrotCommFramework.Sessions
         public SessionConfig()
         {
         }
+        public SessionConfig(SessionConfig config)
+        {
+            PresetSessionCommands = new List<string>(config.PresetSessionCommands);
+            PresetStreamCommands = new List<string>(config.PresetStreamCommands);
+            PresetProtocolCommands = new List<string>(config.PresetProtocolCommands);
+            PresetLoggerCommands = new List<string>(config.PresetLoggerCommands);
+            PresetServiceCommands = new List<string>(config.PresetServiceCommands);
+        }
     }
 }

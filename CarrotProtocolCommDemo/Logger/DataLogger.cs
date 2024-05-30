@@ -1,4 +1,5 @@
-﻿using CarrotCommFramework.Loggers;
+﻿using CarrotCommFramework.Factory;
+using CarrotCommFramework.Loggers;
 using CarrotCommFramework.Protocols;
 using CommunityToolkit.Mvvm.ComponentModel;
 using System;
@@ -15,8 +16,8 @@ namespace CarrotProtocolCommDemo.Logger
         [ObservableProperty]
         private ObservableCollection<Packet> ds;
 
-        public DataLogger(string name) :
-            base(name)
+        public DataLogger() :
+            base()
         {
             ds = [];
         }
