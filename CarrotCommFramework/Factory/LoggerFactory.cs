@@ -1,5 +1,5 @@
 ﻿using CarrotCommFramework.Drivers;
-using CarrotCommFramework.Factory;
+using CarrotCommFramework.Loggers;
 using CarrotCommFramework.Sessions;
 using CarrotCommFramework.Streams;
 using System;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CarrotCommFramework.Loggers
+namespace CarrotCommFramework.Factory
 {
     public class LoggerFactory
     {

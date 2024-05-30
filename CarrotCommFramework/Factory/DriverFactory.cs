@@ -1,4 +1,4 @@
-﻿using CarrotCommFramework.Factory;
+﻿using CarrotCommFramework.Drivers;
 using CarrotCommFramework.Loggers;
 using CarrotCommFramework.Protocols;
 using CarrotCommFramework.Sessions;
@@ -11,7 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace CarrotCommFramework.Drivers
+namespace CarrotCommFramework.Factory
 {
     public class DriverFactory
     {

@@ -1,13 +1,13 @@
-﻿using CarrotCommFramework.Factory;
-using CarrotCommFramework.Loggers;
+﻿using CarrotCommFramework.Loggers;
 using CarrotCommFramework.Protocols;
+using CarrotCommFramework.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CarrotCommFramework.Services
+namespace CarrotCommFramework.Factory
 {
     public class ServiceFactory
     {

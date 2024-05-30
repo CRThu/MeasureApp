@@ -1,6 +1,6 @@
 ﻿using CarrotCommFramework.Drivers;
-using CarrotCommFramework.Factory;
 using CarrotCommFramework.Loggers;
+using CarrotCommFramework.Protocols;
 using CarrotCommFramework.Sessions;
 using CarrotCommFramework.Streams;
 using System;
@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CarrotCommFramework.Protocols
+namespace CarrotCommFramework.Factory
 {
     public class ProtocolFactory
     {

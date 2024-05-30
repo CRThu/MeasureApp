@@ -1,10 +1,7 @@
-﻿using CarrotCommFramework.Loggers;
-using CarrotCommFramework.Protocols;
-using CarrotCommFramework.Services;
-using CarrotCommFramework.Streams;
+﻿using CarrotCommFramework.Sessions;
 using System.Collections.Generic;
 
-namespace CarrotCommFramework.Sessions
+namespace CarrotCommFramework.Factory
 {
 
     public class SessionFactory

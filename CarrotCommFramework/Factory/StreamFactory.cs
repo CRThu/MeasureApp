@@ -1,15 +1,15 @@
 ﻿using CarrotCommFramework.Drivers;
-using CarrotCommFramework.Factory;
 using CarrotCommFramework.Protocols;
 using CarrotCommFramework.Services;
 using CarrotCommFramework.Sessions;
+using CarrotCommFramework.Streams;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CarrotCommFramework.Streams
+namespace CarrotCommFramework.Factory
 {
     public class StreamFactory
     {

@@ -1,5 +1,4 @@
-﻿using CarrotCommFramework.Drivers;
-using CarrotCommFramework.Sessions;
+﻿using CarrotCommFramework.Sessions;
 using System.Net.Sockets;
 using System.Net;
 using CarrotCommFramework.Factory;

@@ -14,6 +14,7 @@ using CarrotProtocolCommDemo.Logger;
 using System.IO;
 using CarrotCommFramework.Drivers;
 using CarrotCommFramework.Sessions;
+using CarrotCommFramework.Factory;
 
 namespace CarrotProtocolCommDemo
 {
