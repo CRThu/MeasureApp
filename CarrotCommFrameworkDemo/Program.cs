@@ -2,6 +2,12 @@
 using CarrotCommFramework.Sessions;
 using System.Net.Sockets;
 using System.Net;
+using CarrotCommFramework.Factory;
+using CarrotCommFramework.Services;
+using CarrotCommFramework.Loggers;
+using DryIoc;
+using CarrotCommFramework.Protocols;
+using CarrotCommFramework.Streams;
 
 namespace CarrotCommFrameworkDemo
 {
@@ -9,6 +15,10 @@ namespace CarrotCommFrameworkDemo
     {
         static void Main(string[] args)
         {
+            // logger注册以及ioc模块日志创建object记录
+            ProductProvider.Current.Container.RegisterInitializer<object>(
+                (anyObj, resolver) => Console.WriteLine($"Object {{{anyObj}}} Resolved."));
+
             // 查找现有设备
             var deviceInfos = DriverFactory.Current.FindDevices();
             foreach (var deviceInfo in deviceInfos)

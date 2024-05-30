@@ -1,4 +1,5 @@
 ﻿using CarrotCommFramework.Drivers;
+using CarrotCommFramework.Factory;
 using CarrotCommFramework.Loggers;
 using CarrotCommFramework.Sessions;
 using CarrotCommFramework.Streams;
@@ -20,16 +21,41 @@ namespace CarrotCommFramework.Protocols
         /// </summary>
         public Dictionary<string, IProtocol> Protocols { get; private set; } = new();
 
-        public IProtocol Create(string serviceKey, string instanceKey)
+        public ProtocolFactory()
         {
-            serviceKey = serviceKey.ToUpper();
-            if (serviceKey == "RAPV1")
-                return new RawAsciiProtocol(instanceKey);
-            else if (serviceKey == "CDPV1")
-                return new CarrotDataProtocol(instanceKey);
-            else
-                throw new NotImplementedException($"No Protocol {serviceKey}.");
+            Register();
         }
+
+        private static void Register()
+        {
+            ProductProvider.Current.Register<IProtocol, RawAsciiProtocol>("RAPV1");
+            ProductProvider.Current.Register<IProtocol, CarrotDataProtocol>("CDPV1");
+        }
+
+        public static IProtocol Create(string serviceKey, string instanceKey)
+        {
+            try
+            {
+                var x = ProductProvider.Current.Resolve<IProtocol>(serviceKey);
+                x.Name = instanceKey;
+                return x;
+            }
+            catch (Exception _)
+            {
+                throw new NotImplementedException($"No Protocol {serviceKey} :: {instanceKey}.");
+            }
+        }
+
+        //public IProtocol Create(string serviceKey, string instanceKey)
+        //{
+        //    serviceKey = serviceKey.ToUpper();
+        //    if (serviceKey == "RAPV1")
+        //        return new RawAsciiProtocol() { Name = instanceKey };
+        //    else if (serviceKey == "CDPV1")
+        //        return new CarrotDataProtocol() { Name = instanceKey };
+        //    else
+        //        throw new NotImplementedException($"No Protocol {serviceKey}.");
+        //}
 
         public IProtocol Get(string serviceKey, string instanceKey, string[] @params = default!)
         {

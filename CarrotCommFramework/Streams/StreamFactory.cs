@@ -1,5 +1,7 @@
 ﻿using CarrotCommFramework.Drivers;
+using CarrotCommFramework.Factory;
 using CarrotCommFramework.Protocols;
+using CarrotCommFramework.Services;
 using CarrotCommFramework.Sessions;
 using System;
 using System.Collections.Generic;
@@ -16,16 +18,39 @@ namespace CarrotCommFramework.Streams
 
         public Dictionary<string, IAsyncStream> Streams { get; private set; } = new();
 
+        public StreamFactory()
+        {
+            Register();
+        }
+
+        private static void Register()
+        {
+            ProductProvider.Current.Register<IAsyncStream, SerialStream>("COM");
+        }
+
         public static IAsyncStream Create(string serviceKey, string instanceKey)
         {
-            serviceKey = serviceKey.ToUpper();
-            if (serviceKey == "COM")
-                return new SerialStream(instanceKey);
-            //else if (serviceKey == "GPIB")
-            //    return new VisaGpibStream(instanceKey);
-            else
-                throw new NotImplementedException($"No Stream {serviceKey}.");
+            try
+            {
+                var x = ProductProvider.Current.Resolve<IAsyncStream>(serviceKey);
+                x.Name = instanceKey;
+                return x;
+            }
+            catch (Exception _)
+            {
+                throw new NotImplementedException($"No Stream {serviceKey} :: {instanceKey}.");
+            }
         }
+        //public static IAsyncStream Create(string serviceKey, string instanceKey)
+        //{
+        //    serviceKey = serviceKey.ToUpper();
+        //    if (serviceKey == "COM")
+        //        return new SerialStream() { };
+        //    //else if (serviceKey == "GPIB")
+        //    //    return new VisaGpibStream(instanceKey);
+        //    else
+        //        throw new NotImplementedException($"No Stream {serviceKey}.");
+        //}
 
         public IAsyncStream Get(string serviceKey, string instanceKey, string[] @params = default!)
         {

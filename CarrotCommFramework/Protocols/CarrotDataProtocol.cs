@@ -11,11 +11,8 @@ namespace CarrotCommFramework.Protocols
     {
         public static new string Version { get; } = "CDPV1";
 
-        public string Name { get; set; }
-
-        public CarrotDataProtocol(string name)
+        public CarrotDataProtocol()
         {
-            Name = name;
         }
 
         // TODO

@@ -9,11 +9,8 @@ namespace CarrotCommFramework.Drivers
 {
     public class GpibDriver : DriverBase
     {
-        public string Name { get; set; }
-
-        public GpibDriver(string name)
+        public GpibDriver()
         {
-            Name = name;
         }
 
         public override DeviceInfo[] FindDevices()

@@ -12,9 +12,8 @@ namespace CarrotCommFramework.Drivers
     {
         public string Name { get; set; }
 
-        public SerialDriver(string name)
+        public SerialDriver()
         {
-            Name = name;
         }
 
 

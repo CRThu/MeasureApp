@@ -13,9 +13,8 @@ namespace CarrotCommFramework.Streams
 {
     public class SerialStream : StreamBase
     {
-        public SerialStream(string name)
+        public SerialStream()
         {
-            Name = name;
         }
 
         /// <summary>

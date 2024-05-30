@@ -1,4 +1,5 @@
-﻿using CarrotCommFramework.Loggers;
+﻿using CarrotCommFramework.Factory;
+using CarrotCommFramework.Loggers;
 using CarrotCommFramework.Protocols;
 using CarrotCommFramework.Sessions;
 using CarrotCommFramework.Streams;
@@ -22,20 +23,39 @@ namespace CarrotCommFramework.Drivers
 
         public DriverFactory()
         {
-            Create("COM", "COM");
-            Create("GPIB", "GPIB");
+            Register();
         }
 
-        public IDriver Create(string serviceKey, string instanceKey)
+        private static void Register()
         {
-            serviceKey = serviceKey.ToUpper();
-            if (serviceKey == "COM")
-                return new SerialDriver(instanceKey);
-            else if (serviceKey == "GPIB")
-                return new GpibDriver(instanceKey);
-            else
-                throw new NotImplementedException($"No Driver {serviceKey}.");
+            ProductProvider.Current.Register<IDriver, SerialDriver>("COM");
+            ProductProvider.Current.Register<IDriver, GpibDriver>("GPIB");
         }
+
+        public static IDriver Create(string serviceKey, string instanceKey)
+        {
+            try
+            {
+                var x = ProductProvider.Current.Resolve<IDriver>(serviceKey);
+                x.Name = instanceKey;
+                return x;
+            }
+            catch (Exception _)
+            {
+                throw new NotImplementedException($"No Driver {serviceKey} :: {instanceKey}.");
+            }
+        }
+
+        //public IDriver Create(string serviceKey, string instanceKey)
+        //{
+        //    serviceKey = serviceKey.ToUpper();
+        //    if (serviceKey == "COM")
+        //        return new SerialDriver() { Name = instanceKey };
+        //    else if (serviceKey == "GPIB")
+        //        return new GpibDriver() { Name = instanceKey };
+        //    else
+        //        throw new NotImplementedException($"No Driver {serviceKey}.");
+        //}
 
         public IDriver Get(string serviceKey, string instanceKey)
         {

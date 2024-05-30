@@ -21,6 +21,7 @@ namespace CarrotCommFramework.Services
     /// </summary>
     public interface ISessionServiceBase : IServiceBase<object>
     {
+        public string Name { get; set; }
 
         /// <summary>
         /// 记录器事件
@@ -40,6 +41,8 @@ namespace CarrotCommFramework.Services
     /// </summary>
     public abstract class SessionServiceBase : ServiceBase<object>, ISessionServiceBase
     {
+        public string Name { get; set; }
+
         /// <summary>
         /// 数据流接口
         /// </summary>

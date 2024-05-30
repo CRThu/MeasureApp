@@ -16,6 +16,7 @@ namespace CarrotCommFramework.Streams
 
     public interface IStream
     {
+        public string Name { get; set; }
         public bool ReadAvailable { get; }
 
         public Pipe Pipe { get; }

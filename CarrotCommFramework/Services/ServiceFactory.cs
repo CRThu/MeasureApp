@@ -1,4 +1,6 @@
-﻿using CarrotCommFramework.Protocols;
+﻿using CarrotCommFramework.Factory;
+using CarrotCommFramework.Loggers;
+using CarrotCommFramework.Protocols;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,16 +19,41 @@ namespace CarrotCommFramework.Services
         /// </summary>
         public Dictionary<string, ISessionServiceBase> Services { get; private set; } = new();
 
-        public ISessionServiceBase Create(string serviceKey, string instanceKey)
+        public ServiceFactory()
         {
-            serviceKey = serviceKey.ToUpper();
-            if (serviceKey == "RECV")
-                return new DataRecvService(instanceKey);
-            else if (serviceKey == "PARSE")
-                return new ProtocolParseService(instanceKey);
-            else
-                throw new NotImplementedException($"No Service {serviceKey}.");
+            Register();
         }
+
+        private static void Register()
+        {
+            ProductProvider.Current.Register<ISessionServiceBase, DataRecvService>("RECV");
+            ProductProvider.Current.Register<ISessionServiceBase, ProtocolParseService>("PARSE");
+        }
+
+        public static ISessionServiceBase Create(string serviceKey, string instanceKey)
+        {
+            try
+            {
+                var x = ProductProvider.Current.Resolve<ISessionServiceBase>(serviceKey);
+                x.Name = instanceKey;
+                return x;
+            }
+            catch (Exception _)
+            {
+                throw new NotImplementedException($"No Service {serviceKey} :: {instanceKey}.");
+            }
+        }
+
+        //public ISessionServiceBase Create(string serviceKey, string instanceKey)
+        //{
+        //    serviceKey = serviceKey.ToUpper();
+        //    if (serviceKey == "RECV")
+        //        return new DataRecvService() { Name = instanceKey };
+        //    else if (serviceKey == "PARSE")
+        //        return new ProtocolParseService() { Name = instanceKey };
+        //    else
+        //        throw new NotImplementedException($"No Service {serviceKey}.");
+        //}
 
         public ISessionServiceBase Get(string serviceKey, string instanceKey, string[] @params = default!)
         {

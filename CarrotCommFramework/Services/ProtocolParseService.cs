@@ -17,9 +17,8 @@ namespace CarrotCommFramework.Services
 
         public string Name { get; set; }
 
-        public ProtocolParseService(string name)
+        public ProtocolParseService()
         {
-            Name = name;
         }
 
         // PipeReader Read From PipeWriter and Process data

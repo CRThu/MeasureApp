@@ -17,11 +17,8 @@ namespace CarrotCommFramework.Services
     {
         public Task Task { get; set; }
 
-        public string Name { get; set; }
-
-        public DataRecvService(string name)
+        public DataRecvService()
         {
-            Name = name;
         }
 
         // Read From IDriverCommStream and write to pipewriter

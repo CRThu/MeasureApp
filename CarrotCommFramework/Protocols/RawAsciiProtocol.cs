@@ -11,11 +11,8 @@ namespace CarrotCommFramework.Protocols
     {
         public new static string Version { get; } = "RAPV1";
 
-        public string Name { get; set; }
-
-        public RawAsciiProtocol(string name)
+        public RawAsciiProtocol()
         {
-            Name = name;
         }
 
         public override bool TryParse(ref ReadOnlySequence<byte> buffer, out IEnumerable<Packet>? packets)

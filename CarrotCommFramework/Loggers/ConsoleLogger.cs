@@ -12,8 +12,7 @@ namespace CarrotCommFramework.Loggers
         /// <summary>
         /// 构造函数
         /// </summary>
-        /// <param name="name">实例唯一名称</param>
-        public ConsoleLogger(string name) : base(name)
+        public ConsoleLogger() : base()
         {
 
         }
