@@ -16,6 +16,9 @@ namespace CarrotProtocolCommDemo.Logger
         [ObservableProperty]
         private ObservableCollection<Packet> ds;
 
+        [ObservableProperty]
+        private string s;
+
         public DataLogger() :
             base()
         {
@@ -31,6 +34,7 @@ namespace CarrotProtocolCommDemo.Logger
         {
             Logger.Log(sender, e);
             Ds.Add(e.Packet!);
+            S += (e.Packet.Message);
         }
 
         /// <summary>

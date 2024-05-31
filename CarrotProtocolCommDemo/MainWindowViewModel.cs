@@ -16,6 +16,7 @@ using CarrotCommFramework.Drivers;
 using CarrotCommFramework.Sessions;
 using CarrotCommFramework.Factory;
 using CarrotCommFramework.Loggers;
+using CarrotCommFramework.Util;
 
 namespace CarrotProtocolCommDemo
 {
@@ -28,15 +29,11 @@ namespace CarrotProtocolCommDemo
         private string scriptText = "SCRIPT";
 
         [ObservableProperty]
-        private string loggerText = "LOGGER\n";
-
-        public Session? SessionInstance { get; set; }
+        private Session? sessionInstance;
 
         [RelayCommand]
         public void Config()
         {
-            LoggerText += "CONFIG CLICKED\n";
-
             ProductProvider.Current.Register<ILogger, DataLogger>("DL");
 
             SessionConfig config = new(SessionConfig.Default)
@@ -46,14 +43,27 @@ namespace CarrotProtocolCommDemo
 
             SessionInstance = SessionFactory.Current.CreateSession(DeviceConfigText, config);
             SessionInstance.Open();
+
+            SessionInstance.Loggers[0].Log(null, new LogEventArgs()
+            {
+                Packet = new CarrotCommFramework.Protocols.Packet("CONFIG CLICKED\n".AsciiToBytes())
+            });
+
         }
         [RelayCommand]
         public void Send()
         {
-            LoggerText += "SEND CLICKED\n";
+            SessionInstance.Loggers[0].Log(null, new LogEventArgs()
+            {
+                Packet = new CarrotCommFramework.Protocols.Packet("SEND CLICKED\n".AsciiToBytes())
+            });
 
             SessionInstance!.Write(ScriptText);
-            LoggerText += $"SESSION WRITE:{ScriptText}\n";
+
+            SessionInstance.Loggers[0].Log(null, new LogEventArgs()
+            {
+                Packet = new CarrotCommFramework.Protocols.Packet($"SESSION WRITE:{ScriptText}\n".AsciiToBytes())
+            });
         }
     }
 }

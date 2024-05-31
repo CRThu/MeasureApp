@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CarrotProtocolCommDemo"
+        xmlns:f="clr-namespace:CarrotCommFramework.Sessions;assembly=CarrotCommFramework"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         d:DataContext="{d:DesignInstance Type=local:MainWindowViewModel}"
         x:Class="CarrotProtocolCommDemo.MainWindow"
@@ -14,10 +15,14 @@
     <Window.Resources>
     </Window.Resources>
     <Grid>
-        <TextBox Margin="10,10,0,0" TextWrapping="Wrap" Text="{Binding DeviceConfigText}" Height="78" VerticalAlignment="Top" HorizontalAlignment="Left" Width="205"/>
-        <TextBox Margin="10,0,0,10" TextWrapping="Wrap" Text="{Binding ScriptText}" HorizontalAlignment="Left" Width="205" Height="315" VerticalAlignment="Bottom"/>
-        <TextBox Margin="332,10,0,10" TextWrapping="Wrap" Text="{Binding LoggerText}" HorizontalAlignment="Left" Width="458"/>
-        <Button Content="Button" Command="{Binding ConfigCommand}" Margin="220,10,0,0" Height="78" VerticalAlignment="Top" HorizontalAlignment="Left" Width="107"/>
-        <Button Content="Button" Command="{Binding SendCommand}" Margin="220,0,0,10" HorizontalAlignment="Left" Width="107" Height="315" VerticalAlignment="Bottom"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="22*"/>
+            <RowDefinition Height="413*"/>
+        </Grid.RowDefinitions>
+        <TextBox Margin="10,10,0,0" TextWrapping="Wrap" Text="{Binding DeviceConfigText}" Height="78" VerticalAlignment="Top" HorizontalAlignment="Left" Width="205" Grid.RowSpan="2"/>
+        <TextBox Margin="10,0,0,10" TextWrapping="Wrap" Text="{Binding ScriptText}" HorizontalAlignment="Left" Width="205" Height="315" VerticalAlignment="Bottom" Grid.Row="1"/>
+        <TextBox Margin="332,10,0,10" TextWrapping="Wrap" Text="{Binding SessionInstance.Loggers[0].S,Mode=OneWay}" HorizontalAlignment="Left" Width="458" Grid.RowSpan="2"/>
+        <Button Content="Button" Command="{Binding ConfigCommand}" Margin="220,10,0,0" Height="78" VerticalAlignment="Top" HorizontalAlignment="Left" Width="107" Grid.RowSpan="2"/>
+        <Button Content="Button" Command="{Binding SendCommand}" Margin="220,0,0,10" HorizontalAlignment="Left" Width="107" Height="315" VerticalAlignment="Bottom" Grid.Row="1"/>
     </Grid>
 </Window>
