@@ -16,8 +16,4 @@
     <ProjectReference Include="..\CarrotCommFramework\CarrotCommFramework.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="ViewModel\" />
-  </ItemGroup>
-
 </Project>

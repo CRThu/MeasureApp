@@ -18,9 +18,9 @@ using CarrotCommFramework.Factory;
 using CarrotCommFramework.Loggers;
 using CarrotCommFramework.Util;
 
-namespace CarrotProtocolCommDemo
+namespace CarrotProtocolCommDemo.ViewModel
 {
-    public partial class MainWindowViewModel : ObservableObject
+    public partial class MainViewModel : ViewModelBase
     {
         [ObservableProperty]
         private string deviceConfigText = "SESSION1+COM://COM250";

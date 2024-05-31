@@ -23,7 +23,6 @@ namespace CarrotProtocolCommDemo
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = new MainWindowViewModel();
         }
     }
 }
