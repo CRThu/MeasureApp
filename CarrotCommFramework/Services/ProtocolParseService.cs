@@ -43,7 +43,13 @@ namespace CarrotCommFramework.Services
                     foreach (Packet packet in pkts)
                     {
                         //Console.WriteLine($"RECV PACKET: {packet.Message}");
-                        OnServiceLogging(this, new LogEventArgs() { Packet = packet });
+                        OnServiceLogging(this,
+                            new LogEventArgs()
+                            {
+                                Time = DateTime.Now,
+                                From = "RX",
+                                Packet = packet
+                            });
                     }
                 }
 

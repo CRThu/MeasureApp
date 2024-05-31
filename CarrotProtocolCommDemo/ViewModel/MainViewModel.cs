@@ -46,6 +46,8 @@ namespace CarrotProtocolCommDemo.ViewModel
 
             SessionInstance.Loggers[0].Log(null, new LogEventArgs()
             {
+                Time = DateTime.Now,
+                From = "WPF",
                 Packet = new CarrotCommFramework.Protocols.Packet("CONFIG CLICKED\n".AsciiToBytes())
             });
 
@@ -55,6 +57,8 @@ namespace CarrotProtocolCommDemo.ViewModel
         {
             SessionInstance.Loggers[0].Log(null, new LogEventArgs()
             {
+                Time = DateTime.Now,
+                From = "WPF",
                 Packet = new CarrotCommFramework.Protocols.Packet("SEND CLICKED\n".AsciiToBytes())
             });
 
@@ -62,6 +66,8 @@ namespace CarrotProtocolCommDemo.ViewModel
 
             SessionInstance.Loggers[0].Log(null, new LogEventArgs()
             {
+                Time = DateTime.Now,
+                From = "WPF",
                 Packet = new CarrotCommFramework.Protocols.Packet($"SESSION WRITE:{ScriptText}\n".AsciiToBytes())
             });
         }

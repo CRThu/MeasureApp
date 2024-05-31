@@ -48,6 +48,8 @@ namespace CarrotCommFramework.Loggers
 
     public class LogEventArgs : EventArgs
     {
+        public DateTime Time { get; set; }
+        public string From { get; set; }
         public Packet? Packet { get; set; }
     }
 

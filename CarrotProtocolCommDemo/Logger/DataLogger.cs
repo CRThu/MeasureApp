@@ -14,10 +14,7 @@ namespace CarrotProtocolCommDemo.Logger
     public partial class DataLogger : ObservableLoggerBase
     {
         [ObservableProperty]
-        private ObservableCollection<Packet> ds;
-
-        [ObservableProperty]
-        private string s;
+        private ObservableCollection<LogEventArgs> ds;
 
         public DataLogger() :
             base()
@@ -33,8 +30,7 @@ namespace CarrotProtocolCommDemo.Logger
         public override void Log(object sender, LogEventArgs e)
         {
             Logger.Log(sender, e);
-            Ds.Add(e.Packet!);
-            S += (e.Packet.Message);
+            Ds.Add(e);
         }
 
         /// <summary>
@@ -52,7 +48,7 @@ namespace CarrotProtocolCommDemo.Logger
             }
             else
             {
-                packet = Ds[idx];
+                packet = Ds[idx].Packet;
                 return packet is not null;
             }
         }

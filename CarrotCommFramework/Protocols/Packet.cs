@@ -15,11 +15,11 @@ namespace CarrotCommFramework.Protocols
         /// 字节数组
         /// </summary>
         public byte[] Bytes { get; set; }
-        
+
         /// <summary>
         /// 数据包可阅读信息
         /// </summary>
-        public string? Message => Encoding.ASCII.GetString(Bytes);
+        public string? Message => Encoding.ASCII.GetString(Bytes).TrimEnd("\r\n".ToCharArray());
 
         /// <summary>
         /// 构造函数
