@@ -34,7 +34,7 @@
         <TabControl Margin="332,0,0,0">
             <TabItem Header="TabItem">
                 <Grid Background="#FFE5E5E5">
-                    <v:SimpleLogger Margin="3,3,3,3"/>
+                    <v:SimpleLogger Margin="3,3,3,3" DataContext="{Binding SessionInstance.Loggers[0]}"/>
                 </Grid>
             </TabItem>
         </TabControl>
