@@ -7,8 +7,8 @@
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:vm="clr-namespace:CarrotProtocolCommDemo.ViewModel"
         xmlns:v="clr-namespace:CarrotProtocolCommDemo.View"
-        DataContext="{Binding Source={StaticResource Locator},Path=Main}"
-        d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
+        DataContext="{Binding Source={StaticResource Locator},Path=.}"
+        d:DataContext="{d:DesignInstance Type=vm:ViewModelLocator}"
         x:Class="CarrotProtocolCommDemo.MainWindow"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
@@ -18,23 +18,40 @@
     </Window.Resources>
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
-            <i:InvokeCommandAction Command="{Binding WindowLoadedCommand}"/>
+            <i:InvokeCommandAction Command="{Binding MainVM.WindowLoadedCommand}"/>
         </i:EventTrigger>
         <i:EventTrigger EventName="Closed">
-            <i:InvokeCommandAction Command="{Binding WindowClosedCommand}"/>
+            <i:InvokeCommandAction Command="{Binding MainVM.WindowClosedCommand}"/>
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <Grid>
-        <TextBox Margin="10,10,0,0" TextWrapping="Wrap" Text="{Binding DeviceConfigText}" HorizontalAlignment="Left" Width="205" Height="95" VerticalAlignment="Top"/>
-        <TextBox Margin="10,110,0,0" TextWrapping="Wrap" Text="{Binding ScriptText}" HorizontalAlignment="Left" Width="205" Height="315" VerticalAlignment="Top"/>
+        <TabControl Margin="10,10,468,223">
+            <TabItem Header="命令配置">
+                <Grid>
+                    <TextBox Margin="10,10,79,10" TextWrapping="Wrap" Text="{Binding SessionConfigVM.DeviceConfigText}"/>
+                    <Button Content="Open" Command="{Binding SessionConfigVM.ConfigCommand}" Margin="242,10,10,10"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="UI配置">
+                <Grid>
+                    <ComboBox HorizontalAlignment="Left" Margin="66,25,0,0" VerticalAlignment="Top" Width="120"/>
+                    <ComboBox HorizontalAlignment="Left" Margin="66,51,0,0" VerticalAlignment="Top" Width="120"/>
 
-
-        <Button Content="Button" Command="{Binding ConfigCommand}" Margin="220,10,0,0" HorizontalAlignment="Left" Width="107" Height="95" VerticalAlignment="Top"/>
-        <Button Content="Button" Command="{Binding SendCommand}" Margin="220,110,0,0" HorizontalAlignment="Left" Width="107" Height="315" VerticalAlignment="Top"/>
-        <TabControl Margin="332,0,0,0">
-            <TabItem Header="TabItem">
+                </Grid>
+            </TabItem>
+        </TabControl>
+        <TabControl Margin="10,217,468,10">
+            <TabItem Header="ASCII发送">
+                <Grid>
+                    <TextBox Margin="10,10,79,10" TextWrapping="Wrap" Text="{Binding ScriptVM.ScriptText}"/>
+                    <Button Content="Send" Command="{Binding ScriptVM.SendCommand}" Margin="242,10,10,10"/>
+                </Grid>
+            </TabItem>
+        </TabControl>
+        <TabControl Margin="332,10,0,0">
+            <TabItem Header="SimpleLogger">
                 <Grid Background="#FFE5E5E5">
-                    <v:SimpleLogger Margin="3,3,3,3" DataContext="{Binding SessionInstance.Loggers[0]}"/>
+                    <v:SimpleLogger Margin="3,3,3,3" DataContext="{Binding ScriptVM.SessionInstance.Loggers[0]}"/>
                 </Grid>
             </TabItem>
         </TabControl>

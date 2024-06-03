@@ -7,7 +7,12 @@ using System.Threading.Tasks;
 
 namespace CarrotProtocolCommDemo.ViewModel
 {
-    public class ViewModelBase : ObservableObject
+    public class ViewModelBase : ObservableRecipient
     {
+        public ViewModelBase()
+        {
+            // Enable Messenger Receive
+            IsActive = true;
+        }
     }
 }

@@ -23,60 +23,11 @@ namespace CarrotProtocolCommDemo.ViewModel
 {
     public partial class MainViewModel : ViewModelBase
     {
-        [ObservableProperty]
-        private string deviceConfigText = "SESSION1+COM://COM250";
-
-        [ObservableProperty]
-        private string scriptText = "SCRIPT";
-
-        [ObservableProperty]
-        private Session? sessionInstance;
-
-        [RelayCommand]
-        public void Config()
-        {
-            ProductProvider.Current.Register<ILogger, DataLogger>("DL");
-
-            SessionConfig config = new(SessionConfig.Default)
-            {
-                PresetLoggerCommands = ["DL://DL1"]
-            };
-
-            SessionInstance = SessionFactory.Current.CreateSession(DeviceConfigText, config);
-            SessionInstance.Open();
-
-            SessionInstance.Loggers[0].Log(null, new LogEventArgs()
-            {
-                Time = DateTime.Now,
-                From = "WPF",
-                Packet = new CarrotCommFramework.Protocols.Packet("CONFIG CLICKED\n".AsciiToBytes())
-            });
-
-        }
-        [RelayCommand]
-        public void Send()
-        {
-            SessionInstance.Loggers[0].Log(null, new LogEventArgs()
-            {
-                Time = DateTime.Now,
-                From = "WPF",
-                Packet = new CarrotCommFramework.Protocols.Packet("SEND CLICKED\n".AsciiToBytes())
-            });
-
-            SessionInstance!.Write(ScriptText);
-
-            SessionInstance.Loggers[0].Log(null, new LogEventArgs()
-            {
-                Time = DateTime.Now,
-                From = "WPF",
-                Packet = new CarrotCommFramework.Protocols.Packet($"SESSION WRITE:{ScriptText}\n".AsciiToBytes())
-            });
-        }
-
         [RelayCommand]
         private void WindowLoaded()
         {
             Trace.WriteLine($"WINDOW LOADED\n");
+            ProductProvider.Current.Register<ILogger, DataLogger>("DL");
         }
 
         [RelayCommand]
