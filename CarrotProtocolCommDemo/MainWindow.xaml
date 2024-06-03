@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:CarrotProtocolCommDemo"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:vm="clr-namespace:CarrotProtocolCommDemo.ViewModel"
+        xmlns:v="clr-namespace:CarrotProtocolCommDemo.View"
         DataContext="{Binding Source={StaticResource Locator},Path=Main}"
         d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
         x:Class="CarrotProtocolCommDemo.MainWindow"
@@ -15,20 +16,27 @@
         Height="450" Width="800">
     <Window.Resources>
     </Window.Resources>
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding WindowLoadedCommand}"/>
+        </i:EventTrigger>
+        <i:EventTrigger EventName="Closed">
+            <i:InvokeCommandAction Command="{Binding WindowClosedCommand}"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
     <Grid>
-        <TextBox Margin="10,10,0,0" TextWrapping="Wrap" Text="{Binding DeviceConfigText}" Height="78" VerticalAlignment="Top" HorizontalAlignment="Left" Width="205" Grid.RowSpan="2"/>
-        <TextBox Margin="10,0,0,10" TextWrapping="Wrap" Text="{Binding ScriptText}" HorizontalAlignment="Left" Width="205" Height="315" VerticalAlignment="Bottom" Grid.Row="1"/>
-        <ListView ItemsSource="{Binding SessionInstance.Loggers[0].Ds,Mode=OneWay}" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="332,10,10,10">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="TIME" Width="120" DisplayMemberBinding="{Binding Time}"/>
-                    <GridViewColumn Header="SRC" Width="60" DisplayMemberBinding="{Binding From}"/>
-                    <GridViewColumn Header="MSG" Width="240" DisplayMemberBinding="{Binding Packet.Message}"/>
-                </GridView>
-            </ListView.View>
-        </ListView>
+        <TextBox Margin="10,10,0,0" TextWrapping="Wrap" Text="{Binding DeviceConfigText}" HorizontalAlignment="Left" Width="205" Height="95" VerticalAlignment="Top"/>
+        <TextBox Margin="10,110,0,0" TextWrapping="Wrap" Text="{Binding ScriptText}" HorizontalAlignment="Left" Width="205" Height="315" VerticalAlignment="Top"/>
 
-        <Button Content="Button" Command="{Binding ConfigCommand}" Margin="220,10,0,0" Height="78" VerticalAlignment="Top" HorizontalAlignment="Left" Width="107" Grid.RowSpan="2"/>
-        <Button Content="Button" Command="{Binding SendCommand}" Margin="220,0,0,10" HorizontalAlignment="Left" Width="107" Height="315" VerticalAlignment="Bottom" Grid.Row="1"/>
+
+        <Button Content="Button" Command="{Binding ConfigCommand}" Margin="220,10,0,0" HorizontalAlignment="Left" Width="107" Height="95" VerticalAlignment="Top"/>
+        <Button Content="Button" Command="{Binding SendCommand}" Margin="220,110,0,0" HorizontalAlignment="Left" Width="107" Height="315" VerticalAlignment="Top"/>
+        <TabControl Margin="332,0,0,0">
+            <TabItem Header="TabItem">
+                <Grid Background="#FFE5E5E5">
+                    <v:SimpleLogger Margin="3,3,3,3"/>
+                </Grid>
+            </TabItem>
+        </TabControl>
     </Grid>
 </Window>

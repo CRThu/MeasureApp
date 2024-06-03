@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Xaml.Behaviors.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -70,6 +71,18 @@ namespace CarrotProtocolCommDemo.ViewModel
                 From = "WPF",
                 Packet = new CarrotCommFramework.Protocols.Packet($"SESSION WRITE:{ScriptText}\n".AsciiToBytes())
             });
+        }
+
+        [RelayCommand]
+        private void WindowLoaded()
+        {
+            Trace.WriteLine($"WINDOW LOADED\n");
+        }
+
+        [RelayCommand]
+        private void WindowClosed()
+        {
+            Trace.WriteLine($"WINDOW CLOSED\n");
         }
     }
 }
