@@ -1,6 +1,7 @@
 ﻿using CarrotCommFramework.Streams;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO.Pipelines;
 using System.Linq;
 using System.Text;
@@ -65,7 +66,7 @@ namespace CarrotCommFramework.Streams
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
+                Debug.WriteLine(ex);
             }
         }
 

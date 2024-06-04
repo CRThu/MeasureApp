@@ -42,7 +42,7 @@ namespace CarrotCommFramework.Services
                     // 处理数据流
                     foreach (Packet packet in pkts)
                     {
-                        //Console.WriteLine($"RECV PACKET: {packet.Message}");
+                        //Debug.WriteLine($"RECV PACKET: {packet.Message}");
                         OnServiceLogging(this,
                             new LogEventArgs()
                             {

@@ -150,7 +150,7 @@ namespace CarrotCommFramework.Services
         //{
         //    for (int i = 0; i < 5; i++)
         //    {
-        //        Console.WriteLine("Hello");
+        //        Debug.WriteLine("Hello");
         //        await Task.Delay(500, ct);
         //    }
         //    return await Task.FromResult(default(TReturn?));

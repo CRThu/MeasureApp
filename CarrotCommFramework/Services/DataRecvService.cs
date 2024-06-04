@@ -10,6 +10,7 @@ using System.IO.Pipelines;
 using CarrotCommFramework.Streams;
 using CarrotCommFramework.Protocols;
 using System.IO;
+using System.Diagnostics;
 
 namespace CarrotCommFramework.Services
 {
@@ -55,7 +56,7 @@ namespace CarrotCommFramework.Services
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.ToString());
+                    Debug.WriteLine(ex.ToString());
                     break;
                 }
 

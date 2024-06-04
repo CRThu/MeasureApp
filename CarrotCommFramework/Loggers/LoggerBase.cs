@@ -1,6 +1,7 @@
 ﻿using CarrotCommFramework.Protocols;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -87,7 +88,7 @@ namespace CarrotCommFramework.Loggers
         /// <param name="e">数据包</param>
         public virtual void Log(object sender, LogEventArgs e)
         {
-            Console.WriteLine($"{GetType().FullName}: " + e.Packet.Message);
+            Debug.WriteLine($"{GetType().FullName}: " + e.Packet.Message);
         }
 
         /// <summary>

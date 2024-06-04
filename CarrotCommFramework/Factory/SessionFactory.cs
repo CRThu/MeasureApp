@@ -1,5 +1,6 @@
 ﻿using CarrotCommFramework.Sessions;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace CarrotCommFramework.Factory
 {
@@ -39,26 +40,26 @@ namespace CarrotCommFramework.Factory
                 {
                     case ComponentType.SESSION:
                         s.Name = info.ServiceName;
-                        Console.WriteLine($"Create Session: {info.ServiceName}");
+                        Debug.WriteLine($"Create Session: {info.ServiceName}");
                         break;
                     case ComponentType.STREAM:
                         var stream = StreamFactory.Current.Get(info.ServiceName, info.InstanceName, info.Params);
-                        Console.WriteLine($"Create Stream: {info.ServiceName}:{info.InstanceName}");
+                        Debug.WriteLine($"Create Stream: {info.ServiceName}:{info.InstanceName}");
                         s.Streams.Add(stream);
                         break;
                     case ComponentType.LOGGER:
                         var logger = LoggerFactory.Current.Get(info.ServiceName, info.InstanceName, info.Params);
-                        Console.WriteLine($"Create Logger: {info.ServiceName}:{info.InstanceName}");
+                        Debug.WriteLine($"Create Logger: {info.ServiceName}:{info.InstanceName}");
                         s.Loggers.Add(logger);
                         break;
                     case ComponentType.PROTOCOL:
                         var protocol = ProtocolFactory.Current.Get(info.ServiceName, info.InstanceName, info.Params);
-                        Console.WriteLine($"Create Protocol: {info.ServiceName}:{info.InstanceName}");
+                        Debug.WriteLine($"Create Protocol: {info.ServiceName}:{info.InstanceName}");
                         s.Protocols.Add(protocol);
                         break;
                     case ComponentType.SERVICE:
                         var service = ServiceFactory.Current.Get(info.ServiceName, info.ServiceName, info.Params);
-                        Console.WriteLine($"Create Service: {info.ServiceName}:{info.ServiceName}");
+                        Debug.WriteLine($"Create Service: {info.ServiceName}:{info.ServiceName}");
                         s.Services.Add(service);
                         break;
                     default:

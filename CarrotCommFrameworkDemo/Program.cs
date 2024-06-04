@@ -7,6 +7,8 @@ using CarrotCommFramework.Loggers;
 using DryIoc;
 using CarrotCommFramework.Protocols;
 using CarrotCommFramework.Streams;
+using System.Diagnostics;
+using CarrotCommFramework.Util;
 
 namespace CarrotCommFrameworkDemo
 {
@@ -14,6 +16,15 @@ namespace CarrotCommFrameworkDemo
     {
         static void Main(string[] args)
         {
+            TraceHelper.Create();
+            Trace.AutoFlush = true;
+            Debug.AutoFlush = true;
+
+            Trace.WriteLine("TRACE WRITE STRING");
+            Debug.WriteLine("DEBUG WRITE STRING");
+
+            return;
+
             // logger注册以及ioc模块日志创建object记录
             ProductProvider.Current.Container.RegisterInitializer<object>(
                 (anyObj, resolver) => Console.WriteLine($"Object {{{anyObj}}} Resolved."));
@@ -40,7 +51,7 @@ namespace CarrotCommFrameworkDemo
             s.Open();
 
             Console.WriteLine("WRITE...");
-            s.Write("ABCDE");
+            s.Write(new("ABCDE".AsciiToBytes()));
             Console.WriteLine("RECV...");
             Console.WriteLine("PRESS ANY KEY TO EXIT");
             Console.ReadKey();

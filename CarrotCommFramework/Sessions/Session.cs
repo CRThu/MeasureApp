@@ -5,6 +5,7 @@ using CarrotCommFramework.Streams;
 using CarrotCommFramework.Util;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO.Pipelines;
 using System.Linq;
 using System.Text;
@@ -68,7 +69,7 @@ namespace CarrotCommFramework.Sessions
             {
                 while (service.Status != ServiceStatus.Running)
                     ;
-                Console.WriteLine(service.ToString() + " IS STOPPED.");
+                Debug.WriteLine(service.ToString() + " IS STOPPED.");
             }
         }
 
