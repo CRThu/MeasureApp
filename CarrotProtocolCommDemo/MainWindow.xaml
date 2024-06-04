@@ -34,7 +34,7 @@
             </TabItem>
             <TabItem Header="快速配置">
                 <Grid>
-                    <ComboBox ItemsSource="{Binding SessionConfigVM.ListedDevices}" SelectedValue="{Binding SessionConfigVM.FastConfigSelectedDevice}" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="227"/>
+                    <ComboBox ItemsSource="{Binding SessionConfigVM.ListedDevices}" SelectedItem="{Binding SessionConfigVM.FastConfigSelectedDevice}" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="227"/>
                     <TextBox Text="{Binding SessionConfigVM.FastConfigExtraCommandText}" Margin="10,36,79,10" TextWrapping="Wrap"/>
                     <Button Content="Search" Command="{Binding SessionConfigVM.SearchDeviceCommand}" Margin="242,10,10,88"/>
                     <Button Content="Open" Command="{Binding SessionConfigVM.FastConfigSessionCommand}" Margin="242,92,10,10"/>

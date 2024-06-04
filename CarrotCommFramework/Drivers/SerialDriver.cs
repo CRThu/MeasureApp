@@ -18,7 +18,7 @@ namespace CarrotCommFramework.Drivers
 
         public override DeviceInfo[] FindDevices()
         {
-            return SerialPort.GetPortNames().Select(d => new DeviceInfo("SERIAL", $"COM://{d[3..]}", "串口设备")).ToArray();
+            return SerialPort.GetPortNames().Select(d => new DeviceInfo("COM", d, "串口设备")).ToArray();
             //return
             //[
             //    new DeviceInfo("SERIAL","COM://200","SERIALPORT COM200 FOR TEST"),

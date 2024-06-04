@@ -7,6 +7,7 @@ using CarrotProtocolCommDemo.Logger;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using DryIoc;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -51,11 +52,11 @@ namespace CarrotProtocolCommDemo.ViewModel
             {
                 var SessionInstance = SessionFactory.Current.CreateSession(cmd, config);
                 SessionInstance.Open();
-                AppLogger!.Log("SESSION OPEN");
+                AppLogger!.Log("SessionInstance OPEN");
 
                 // 跨vm传输实例
                 WeakReferenceMessenger.Default.Send(SessionInstance);
-                AppLogger!.Log("MSG SEND");
+                AppLogger!.Log($"WeakReferenceMessenger SessionInstance SEND");
 
             }
             catch (Exception ex)
@@ -76,7 +77,7 @@ namespace CarrotProtocolCommDemo.ViewModel
         [RelayCommand]
         public void FastConfigSession()
         {
-            CreateSessionImpl(FastConfigSelectedDevice!.ToAddr());
+            CreateSessionImpl("~+" + FastConfigSelectedDevice!.ToAddr());
         }
 
 
@@ -90,6 +91,12 @@ namespace CarrotProtocolCommDemo.ViewModel
             {
                 AppLogger!.Log($"{deviceInfo}");
             }
+        }
+
+        partial void OnListedDevicesChanged(DeviceInfo[] value)
+        {
+            FastConfigSelectedDevice = ListedDevices.FirstOrDefault();
+            AppLogger!.Log($"FastConfigSelectedDevice Updated");
         }
     }
 }

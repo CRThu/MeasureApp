@@ -30,6 +30,11 @@ namespace CarrotCommFramework.Factory
             for (int i = 0; i < addrInfo.Count; i++)
             {
                 SessionComponentInfo info = addrInfo[i];
+
+                // if addr is ~ then don't config
+                if (info.ServiceName == "~")
+                    continue;
+
                 switch (info.Type)
                 {
                     case ComponentType.SESSION:
