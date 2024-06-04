@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CarrotCommFramework.Util;
+using System;
 using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,6 +38,11 @@ namespace CarrotCommFramework.Protocols
 
             packets = packetsList;
             return packetsList.Count != 0;
+        }
+
+        public override Packet Encode(byte[] payload)
+        {
+            return new Packet([.. payload, .. "\r\n".AsciiToBytes()]);
         }
     }
 }

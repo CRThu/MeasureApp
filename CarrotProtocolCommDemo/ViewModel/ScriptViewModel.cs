@@ -1,5 +1,6 @@
 ﻿using CarrotCommFramework.Factory;
 using CarrotCommFramework.Sessions;
+using CarrotCommFramework.Util;
 using CarrotProtocolCommDemo.Logger;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -36,7 +37,9 @@ namespace CarrotProtocolCommDemo.ViewModel
         {
             AppLogger.Log("SEND CLICKED");
 
-            SessionInstance?.Write(ScriptText);
+            var payload = ScriptText.AsciiToBytes();
+            var packet = SessionInstance.Protocols[0].Encode(payload);
+            SessionInstance?.Write(packet);
 
             AppLogger.Log($"SESSION WRITE:{ScriptText}");
         }

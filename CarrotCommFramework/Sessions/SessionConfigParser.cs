@@ -102,6 +102,8 @@ namespace CarrotCommFramework.Sessions
                 {
                     info.InstanceName = strs[0];
                     info.Params = [.. (string[])[info.InstanceName, .. strs[1].Split(',')]];
+
+                    info.Params = info.Params.Where(s => !string.IsNullOrEmpty(s)).ToArray();
                 }
 
             }

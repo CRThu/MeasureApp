@@ -77,7 +77,10 @@ namespace CarrotProtocolCommDemo.ViewModel
         [RelayCommand]
         public void FastConfigSession()
         {
-            CreateSessionImpl("~+" + FastConfigSelectedDevice!.ToAddr());
+            CreateSessionImpl("~+" 
+                + FastConfigSelectedDevice!.ToAddr()
+                + (string.IsNullOrEmpty(FastConfigExtraCommandText) ? "" : "@" )
+                + FastConfigExtraCommandText);
         }
 
 

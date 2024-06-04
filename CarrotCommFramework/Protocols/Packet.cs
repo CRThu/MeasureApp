@@ -11,6 +11,8 @@ namespace CarrotCommFramework.Protocols
     /// </summary>
     public class Packet
     {
+        public static Packet Empty => new([]);
+
         /// <summary>
         /// 字节数组
         /// </summary>

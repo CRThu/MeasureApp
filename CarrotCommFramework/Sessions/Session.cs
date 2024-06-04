@@ -72,11 +72,11 @@ namespace CarrotCommFramework.Sessions
             }
         }
 
-        public void Write(string s)
+        public void Write(Packet s)
         {
             foreach (var stream in Streams)
             {
-                var tx = s.AsciiToBytes();
+                var tx = s.Bytes;
                 stream.Write(tx, 0, tx.Length);
             }
         }
