@@ -15,10 +15,9 @@ namespace CarrotProtocolCommDemo.ViewModel
         public ViewModelLocator()
         {
             container = new Container();
-            container.Register<MainViewModel>(Reuse.Singleton);
             container.Register<SessionConfigViewModel>(Reuse.Singleton);
             container.Register<ScriptViewModel>(Reuse.Singleton);
-
+            container.Register<MainViewModel>(Reuse.Singleton);
         }
 
         public MainViewModel? MainVM => container.Resolve<MainViewModel>();

@@ -1,0 +1,21 @@
+﻿<UserControl x:Class="CarrotProtocolCommDemo.View.AppLogger"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:CarrotProtocolCommDemo.View"
+             xmlns:logger="clr-namespace:CarrotProtocolCommDemo.Logger"
+             d:DataContext="{d:DesignInstance Type=logger:AppLogger}"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <ListView ItemsSource="{Binding Ds,Mode=OneWay}" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="0,0,0,0">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="TIME" Width="120" DisplayMemberBinding="{Binding Time}"/>
+                    <GridViewColumn Header="MSG" Width="240" DisplayMemberBinding="{Binding Msg}"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+    </Grid>
+</UserControl>

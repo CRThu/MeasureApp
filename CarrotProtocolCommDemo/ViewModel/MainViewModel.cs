@@ -18,22 +18,33 @@ using CarrotCommFramework.Sessions;
 using CarrotCommFramework.Factory;
 using CarrotCommFramework.Loggers;
 using CarrotCommFramework.Util;
+using CommunityToolkit.Mvvm.Messaging;
 
 namespace CarrotProtocolCommDemo.ViewModel
 {
     public partial class MainViewModel : ViewModelBase
     {
+        [ObservableProperty]
+        private Logger.AppLogger appLogger = new();
+
+        protected override void OnActivated()
+        {
+            ProductProvider.Current.Register<ILogger, DataLogger>("DL");
+        }
+
         [RelayCommand]
         private void WindowLoaded()
         {
-            Trace.WriteLine($"WINDOW LOADED\n");
-            ProductProvider.Current.Register<ILogger, DataLogger>("DL");
+            // 跨vm传输实例
+            WeakReferenceMessenger.Default.Send(AppLogger);
+
+            AppLogger!.Log($"WINDOW LOADED");
         }
 
         [RelayCommand]
         private void WindowClosed()
         {
-            Trace.WriteLine($"WINDOW CLOSED\n");
+            AppLogger!.Log($"WINDOW CLOSED");
         }
     }
 }

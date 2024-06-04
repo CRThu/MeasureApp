@@ -11,6 +11,7 @@ namespace CarrotCommFramework.Drivers
     {
         public GpibDriver()
         {
+            Name = "GPIB";
         }
 
         public override DeviceInfo[] FindDevices()

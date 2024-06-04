@@ -24,9 +24,12 @@ namespace CarrotCommFramework.Factory
             Container.Register(typeof(TService), typeof(TImplementation), serviceKey: serviceKey);
         }
 
-        public TService Resolve<TService>(string serviceKey)
+        public TService Resolve<TService>(string? serviceKey)
         {
-            return Container.Resolve<TService>(serviceKey);
+            if (serviceKey == null)
+                return Container.Resolve<TService>();
+            else
+                return Container.Resolve<TService>(serviceKey);
         }
     }
 }

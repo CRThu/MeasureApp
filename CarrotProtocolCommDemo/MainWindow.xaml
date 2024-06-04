@@ -29,14 +29,15 @@
             <TabItem Header="命令配置">
                 <Grid>
                     <TextBox Margin="10,10,79,10" TextWrapping="Wrap" Text="{Binding SessionConfigVM.DeviceConfigText}"/>
-                    <Button Content="Open" Command="{Binding SessionConfigVM.ConfigCommand}" Margin="242,10,10,10"/>
+                    <Button Content="Open" Command="{Binding SessionConfigVM.ConfigSessionCommand}" Margin="242,10,10,10"/>
                 </Grid>
             </TabItem>
-            <TabItem Header="UI配置">
+            <TabItem Header="快速配置">
                 <Grid>
-                    <ComboBox HorizontalAlignment="Left" Margin="66,25,0,0" VerticalAlignment="Top" Width="120"/>
-                    <ComboBox HorizontalAlignment="Left" Margin="66,51,0,0" VerticalAlignment="Top" Width="120"/>
-
+                    <ComboBox ItemsSource="{Binding SessionConfigVM.ListedDevices}" SelectedValue="{Binding SessionConfigVM.FastConfigSelectedDevice}" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="227"/>
+                    <TextBox Text="{Binding SessionConfigVM.FastConfigExtraCommandText}" Margin="10,36,79,10" TextWrapping="Wrap"/>
+                    <Button Content="Search" Command="{Binding SessionConfigVM.SearchDeviceCommand}" Margin="242,10,10,88"/>
+                    <Button Content="Open" Command="{Binding SessionConfigVM.FastConfigSessionCommand}" Margin="242,92,10,10"/>
                 </Grid>
             </TabItem>
         </TabControl>
@@ -52,6 +53,11 @@
             <TabItem Header="SimpleLogger">
                 <Grid Background="#FFE5E5E5">
                     <v:SimpleLogger Margin="3,3,3,3" DataContext="{Binding ScriptVM.SessionInstance.Loggers[0]}"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="AppLogger">
+                <Grid Background="#FFE5E5E5">
+                    <v:AppLogger Margin="3,3,3,3" DataContext="{Binding MainVM.AppLogger}"/>
                 </Grid>
             </TabItem>
         </TabControl>

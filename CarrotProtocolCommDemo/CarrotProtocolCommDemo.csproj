@@ -16,4 +16,10 @@
     <ProjectReference Include="..\CarrotCommFramework\CarrotCommFramework.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="View\.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+
 </Project>

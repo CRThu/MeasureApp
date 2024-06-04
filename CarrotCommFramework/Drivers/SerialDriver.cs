@@ -10,10 +10,9 @@ namespace CarrotCommFramework.Drivers
 {
     public class SerialDriver : DriverBase
     {
-        public string Name { get; set; }
-
         public SerialDriver()
         {
+            Name = "COM";
         }
 
 

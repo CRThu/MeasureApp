@@ -19,14 +19,14 @@ namespace CarrotCommFramework.Factory
         private static readonly DriverFactory current = new();
         public static DriverFactory Current => current;
 
-        public Dictionary<string, IDriver> Drivers { get; private set; } = new();
+        public Dictionary<string, IDriver> Drivers { get; private set; }
 
         public DriverFactory()
         {
             Register();
         }
 
-        private static void Register()
+        private void Register()
         {
             ProductProvider.Current.Register<IDriver, SerialDriver>("COM");
             ProductProvider.Current.Register<IDriver, GpibDriver>("GPIB");
@@ -76,6 +76,10 @@ namespace CarrotCommFramework.Factory
         /// <returns></returns>
         public DeviceInfo[] FindDevices(string filter = null)
         {
+            Drivers = [];
+            foreach (var i in ProductProvider.Current.Resolve<IDriver[]>(null))
+                Drivers.Add(i.Name, i);
+
             List<DeviceInfo> devicesFound = [];
             var drivers = Drivers;
             foreach (var driver in drivers)

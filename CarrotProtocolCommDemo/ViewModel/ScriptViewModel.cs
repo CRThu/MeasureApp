@@ -1,5 +1,6 @@
 ﻿using CarrotCommFramework.Factory;
 using CarrotCommFramework.Sessions;
+using CarrotProtocolCommDemo.Logger;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
@@ -17,10 +18,13 @@ namespace CarrotProtocolCommDemo.ViewModel
         [ObservableProperty]
         private Session? sessionInstance;
 
+        [ObservableProperty]
+        private Logger.AppLogger appLogger;
+
         protected override void OnActivated()
         {
+            WeakReferenceMessenger.Default.Register<ScriptViewModel, AppLogger>(this, (r, m) => r.AppLogger = m);
             WeakReferenceMessenger.Default.Register<ScriptViewModel, Session>(this, (r, m) => r.SessionInstance = m);
-            Trace.WriteLine("MSG REGISTERED");
         }
 
 
@@ -30,11 +34,11 @@ namespace CarrotProtocolCommDemo.ViewModel
         [RelayCommand]
         public void Send()
         {
-            Trace.WriteLine("SEND CLICKED\n");
+            AppLogger.Log("SEND CLICKED");
 
             SessionInstance?.Write(ScriptText);
 
-            Trace.WriteLine($"SESSION WRITE:{ScriptText}\n");
+            AppLogger.Log($"SESSION WRITE:{ScriptText}");
         }
 
     }

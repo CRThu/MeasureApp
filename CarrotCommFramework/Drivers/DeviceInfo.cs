@@ -20,6 +20,11 @@ namespace CarrotCommFramework.Drivers
             return $"{Name} | {Description}";
         }
 
+        public string ToAddr()
+        {
+            return $"{Interface}://{Name}";
+        }
+
         public DeviceInfo(string @interface, string name, string description)
         {
             Interface = @interface;
