@@ -54,7 +54,7 @@ namespace CarrotCommFramework.Sessions
 
             List<SessionComponentInfo> infos = new();
 
-            string[] commandsSplitByType = command.ToUpper().Split('+');
+            string[] commandsSplitByType = command.Split('+');
 
             for (int i = 0; i < commandsSplitByType.Length; i++)
                 infos.AddRange(commandsSplitByType[i].Split(';').Select(addr => ParseOne((ComponentType)i, addr)));

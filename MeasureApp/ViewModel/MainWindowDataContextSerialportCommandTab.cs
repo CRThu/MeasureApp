@@ -25,6 +25,9 @@ using CodingSeb.ExpressionEvaluator;
 using MeasureApp.Model.DataStorage;
 using Newtonsoft.Json.Linq;
 using System.Timers;
+using CarrotCommFramework.Factory;
+using CarrotCommFramework.Sessions;
+using CarrotCommFramework.Util;
 
 namespace MeasureApp.ViewModel
 {
@@ -907,9 +910,48 @@ REGW;01;{i:D};
                             dac8830_volt = evaluator5.Evaluate(dac8830_volt.Replace('\'', '\"')).ToString();
                         }
 
-                        CarrotDataProtocolFrame cdp = new(0x32, dac8830_ch, dac8830_volt);
-                        string dac8830PortName = TagAttrs["port"];
-                        SerialPortsInstance.WriteBytes(dac8830PortName, cdp.ToBytes());
+                        //CarrotDataProtocolFrame cdp = new(0x32, dac8830_ch, dac8830_volt);
+                        //string dac8830PortName = TagAttrs["port"];
+                        //SerialPortsInstance.WriteBytes(dac8830PortName, cdp.ToBytes());
+                        throw new NotImplementedException("待实现");
+
+                        break;
+                    case "COMM":
+                        // <comm session="" oper="" cmd="..."/>
+                        // <comm session="com" oper="config" cmd="COM://COM250@115200,8,N,1"/>
+                        // <comm session="com" oper="open"/>
+                        // <comm session="com" oper="close"/>
+                        // <comm session="com" oper="write" cmd="HELLOWORLD;"/>
+
+                        /*
+                        <comm session="com" oper="config" cmd="COM://COM250@115200,8,N,1"/>
+                        <comm session="com" oper="open"/>
+                        <comm session="com" oper="write" cmd="HELLOWORLD;"/>
+                        <comm session="com" oper="close"/>
+                         */
+                        string sessionName = TagAttrs.TryGetValue("session", out string sessionStringTemp) ? sessionStringTemp : null;
+                        string operName = TagAttrs.TryGetValue("oper", out string operStringTemp) ? operStringTemp : null;
+                        string sessionCommand = TagAttrs.TryGetValue("cmd", out string cmdStringTemp) ? cmdStringTemp : null;
+
+                        switch (operName)
+                        {
+                            case "config":
+                                SessionFactory.Current.CreateSession(
+                                    $"{sessionName}+{sessionCommand}"
+                                    , SessionConfig.Default);
+                                break;
+                            case "open":
+                                SessionFactory.Current.Sessions[sessionName].Open();
+                                break;
+                            case "close":
+                                SessionFactory.Current.Sessions[sessionName].Close();
+                                break;
+                            case "write":
+                                SessionFactory.Current.Sessions[sessionName].Write(new(sessionCommand.AsciiToBytes()));
+                                break;
+                            default:
+                                break;
+                        }
                         break;
                     case "MUTEX":
                         // <mutex mode="add/del/sync"/>

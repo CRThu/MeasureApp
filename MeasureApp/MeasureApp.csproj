@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
-		<TargetFramework>net7.0-windows</TargetFramework>
+		<TargetFramework>net8.0-windows</TargetFramework>
 		<UseWPF>true</UseWPF>
 		<StartupObject>MeasureApp.App</StartupObject>
 		<Deterministic>false</Deterministic>
@@ -94,6 +94,10 @@
 
 	<ItemGroup>
 	  <Folder Include="View\Web\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\CarrotCommFramework\CarrotCommFramework.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
