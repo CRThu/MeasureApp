@@ -45,6 +45,8 @@ namespace CarrotProtocolCommDemo.ViewModel
         {
             SessionConfig config = new(SessionConfig.Default)
             {
+                //PresetProtocolCommands = ["RAPV1://RAPV1"],
+                PresetProtocolCommands = ["CDPV1://CDPV1"],
                 PresetLoggerCommands = ["DL://DL1"]
             };
 
