@@ -21,8 +21,8 @@ namespace CarrotCommFramework.Drivers
             return SerialPort.GetPortNames().Select(d => new DeviceInfo("COM", d, "串口设备")).ToArray();
             //return
             //[
-            //    new DeviceInfo("SERIAL","COM://200","SERIALPORT COM200 FOR TEST"),
-            //    new DeviceInfo("SERIAL","COM://201","SERIALPORT COM201 FOR TEST")
+            //    new DeviceInfo("COM","200","SERIALPORT COM200 FOR TEST"),
+            //    new DeviceInfo("COM","201","SERIALPORT COM201 FOR TEST")
             //];
         }
     }

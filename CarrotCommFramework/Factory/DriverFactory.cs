@@ -30,6 +30,7 @@ namespace CarrotCommFramework.Factory
         {
             ProductProvider.Current.Register<IDriver, SerialDriver>("COM");
             ProductProvider.Current.Register<IDriver, GpibDriver>("GPIB");
+            ProductProvider.Current.Register<IDriver, FtdiDriver>("FTDI");
         }
 
         public static IDriver Create(string serviceKey, string instanceKey)
