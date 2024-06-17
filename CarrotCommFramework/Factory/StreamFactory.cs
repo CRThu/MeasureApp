@@ -27,6 +27,7 @@ namespace CarrotCommFramework.Factory
         {
             ProductProvider.Current.Register<IAsyncStream, SerialStream>("COM");
             ProductProvider.Current.Register<IAsyncStream, FtdiStream>("FTDI");
+            ProductProvider.Current.Register<IAsyncStream, NiVisaStream>("VISA");
         }
 
         public static IAsyncStream Create(string serviceKey, string instanceKey)
