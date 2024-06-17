@@ -73,19 +73,24 @@ namespace CarrotCommFramework.Protocols
             int len = GetPacketLength((byte)protocolId);
             byte[] bytes = new byte[len];
 
-            byte[] payload = message.AsciiToBytes();
+            string? msg = message + "\r\n";
+            byte[] payload = msg.AsciiToBytes();
 
-            //bytes[0] = FrameStart;
+            bytes[0] = FrameStartByte;
             bytes[1] = (byte)protocolId;
             //bytes[2] = (byte)ControlFlags;
             //bytes[3] = (byte)(ControlFlags >> 8);
+            bytes[2] = 0x00;
+            bytes[3] = 0x00;
             bytes[4] = (byte)streamId;
-            //bytes[5] = (byte)PayloadLength;
-            //bytes[6] = (byte)(PayloadLength >> 8);
+            bytes[5] = (byte)payload.Length;
+            bytes[6] = (byte)(payload.Length >> 8);
             Array.Copy(payload, 0, bytes, 7, payload.Length);
             //bytes[^3] = (byte)Crc16;
             //bytes[^2] = (byte)(Crc16 >> 8);
-            //bytes[^1] = FrameEnd;
+            bytes[^3] = 0xFF;
+            bytes[^2] = 0xFF;
+            bytes[^1] = FrameEndByte;
 
             return bytes;
         }
@@ -97,7 +102,7 @@ namespace CarrotCommFramework.Protocols
         /// <summary>
         /// protocol layout index : [0:0]
         /// </summary>
-        public byte FrameStart => Bytes[0];
+        public byte? FrameStart => Bytes?[0];
         /// <summary>
         /// protocol layout index : [1:1]
         /// </summary>
@@ -105,7 +110,7 @@ namespace CarrotCommFramework.Protocols
         /// <summary>
         /// protocol layout index : [2:3]
         /// </summary>
-        public ushort ControlFlags => (ushort)(Bytes[3] << 8 | Bytes[2]);
+        public ushort? ControlFlags => Bytes == null ? null : (ushort)(Bytes[3] << 8 | Bytes[2]);
         /// <summary>
         /// protocol layout index : [4:4]
         /// </summary>
@@ -113,20 +118,20 @@ namespace CarrotCommFramework.Protocols
         /// <summary>
         /// protocol layout index : [5:6]
         /// </summary>
-        public ushort PayloadLength => (ushort)(Bytes[6] << 8 | Bytes[5]);
+        public int? PayloadLength => Bytes == null ? null : (ushort)(Bytes[6] << 8 | Bytes[5]);
         /// <summary>
         /// protocol layout index : [7:6+len]
         /// </summary>
-        public ReadOnlySpan<byte> Payload => Bytes.AsSpan(7, PayloadLength);
+        public ReadOnlySpan<byte> Payload => Bytes == null ? null : Bytes.AsSpan(7, PayloadLength.Value);
         /// <summary>
         /// CRC16/MODBUS
         /// protocol layout index : [7+len:8+len]
         /// </summary>
-        public ushort Crc16 => (ushort)(Bytes[^2] << 8 | Bytes[^3]);
+        public ushort? Crc16 => Bytes == null ? null : (ushort)(Bytes[^2] << 8 | Bytes[^3]);
         /// <summary>
         /// protocol layout index : [9+len:9+len]
         /// </summary>
-        public byte FrameEnd => Bytes[^1];
+        public byte? FrameEnd => Bytes?[^1];
 
 
     }
