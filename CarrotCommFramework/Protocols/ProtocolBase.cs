@@ -15,7 +15,7 @@ namespace CarrotCommFramework.Protocols
         public string Name { get; set; }
         public static string Version { get; }
         public bool TryParse(ref ReadOnlySequence<byte> buffer, out IEnumerable<Packet>? packets);
-        public Packet Encode(byte[] payload);
+        public Packet Encode(string? message, byte? protocolId, byte? streamId);
     }
 
     /// <summary>
@@ -32,7 +32,7 @@ namespace CarrotCommFramework.Protocols
             return false;
         }
 
-        public virtual Packet Encode(byte[] payload)
+        public virtual Packet Encode(string? message, byte? protocolId, byte? streamId)
         {
             return Packet.Empty;
         }

@@ -16,20 +16,31 @@ namespace CarrotCommFramework.Protocols
         /// <summary>
         /// 字节数组
         /// </summary>
-        public byte[] Bytes { get; set; }
+        public virtual byte[]? Bytes { get; set; }
 
         /// <summary>
         /// 数据包可阅读信息
         /// </summary>
-        public string? Message => Encoding.ASCII.GetString(Bytes).TrimEnd("\r\n".ToCharArray());
+        public virtual string? Message => null;
+        public virtual byte? ProtocolId => null;
+        public virtual byte? StreamId => null;
 
         /// <summary>
         /// 构造函数
         /// </summary>
-        /// <param name="bytes"></param>
         public Packet(byte[] bytes)
         {
             Bytes = bytes;
+        }
+
+        public Packet(string? message, byte? protocolId, byte? streamId)
+        {
+            Bytes = Pack(message, protocolId, streamId);
+        }
+
+        public virtual byte[] Pack(string? message, byte? protocolId, byte? streamId)
+        {
+            return [];
         }
     }
 }

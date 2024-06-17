@@ -31,7 +31,7 @@ namespace CarrotCommFramework.Protocols
                     break;
                 }
 
-                Packet pkt = new(buffer.Slice(buffer.Start, pos.Value).ToArray());
+                RawAsciiProtocolPacket pkt = new(buffer.Slice(buffer.Start, pos.Value).ToArray());
                 buffer = buffer.Slice(buffer.GetPosition(1, pos.Value));
                 packetsList.Add(pkt);
             }
@@ -40,9 +40,9 @@ namespace CarrotCommFramework.Protocols
             return packetsList.Count != 0;
         }
 
-        public override Packet Encode(byte[] payload)
+        public override Packet Encode(string? message, byte? protocolId, byte? streamId)
         {
-            return new Packet([.. payload, .. "\r\n".AsciiToBytes()]);
+            return new RawAsciiProtocolPacket(message, protocolId, streamId);
         }
     }
 }

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static CarrotCommFramework.Protocols.CarrotDataProtocolPacket;
 
 namespace CarrotCommFramework.Protocols
 {
@@ -14,40 +15,6 @@ namespace CarrotCommFramework.Protocols
 
         public CarrotDataProtocol()
         {
-        }
-
-        public const byte FrameStartByte = 0x3C;
-        public const byte FrameEndByte = 0x3E;
-
-        public const byte ProtocolIdAsciiTransfer64 = 0x31;
-        public const byte ProtocolIdAsciiTransfer256 = 0x32;
-        public const byte ProtocolIdAsciiTransfer2048 = 0x33;
-        public const byte ProtocolIdDataTransfer74 = 0x41;
-        public const byte ProtocolIdDataTransfer266 = 0x42;
-        public const byte ProtocolIdDataTransfer2058 = 0x43;
-        public const byte ProtocolIdRegisterOper = 0xA0;
-        public const byte ProtocolIdRegisterReply = 0xA8;
-
-        /// <summary>
-        /// 预设协议长度
-        /// </summary>
-        /// <param name="ProtocolId"></param>
-        /// <returns></returns>
-        public static int GetPacketLength(byte protocolId)
-        {
-            return protocolId switch
-            {
-
-                ProtocolIdAsciiTransfer64 => 64,
-                ProtocolIdAsciiTransfer256 => 256,
-                ProtocolIdAsciiTransfer2048 => 2048,
-                ProtocolIdDataTransfer74 => 64 + 10,
-                ProtocolIdDataTransfer266 => 256 + 10,
-                ProtocolIdDataTransfer2058 => 2048 + 10,
-                ProtocolIdRegisterOper => 256,
-                ProtocolIdRegisterReply => 256,
-                _ => -1,
-            };
         }
 
         public override bool TryParse(ref ReadOnlySequence<byte> buffer, out IEnumerable<Packet>? packets)
@@ -77,6 +44,7 @@ namespace CarrotCommFramework.Protocols
             {
                 // 不完整包结构则结束
                 //break;
+                return false;
             }
 
 
@@ -89,9 +57,9 @@ namespace CarrotCommFramework.Protocols
             return packetsList.Count != 0;
         }
 
-        public override Packet Encode(byte[] payload)
+        public override Packet Encode(string? message, byte? protocolId, byte? streamId)
         {
-            return new CarrotDataProtocolPacket(payload);
+            return new CarrotDataProtocolPacket(message, protocolId, streamId);
         }
 
     }

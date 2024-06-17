@@ -14,6 +14,7 @@
                 <GridView>
                     <GridViewColumn Header="TIME" Width="120" DisplayMemberBinding="{Binding Time}"/>
                     <GridViewColumn Header="SRC" Width="60" DisplayMemberBinding="{Binding From}"/>
+                    <GridViewColumn Header="Stream" Width="90" DisplayMemberBinding="{Binding Packet.StreamId}"/>
                     <GridViewColumn Header="MSG" Width="240" DisplayMemberBinding="{Binding Packet.Message}"/>
                 </GridView>
             </ListView.View>
