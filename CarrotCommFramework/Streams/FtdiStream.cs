@@ -14,6 +14,7 @@ using static FTD2XX_NET.FTDI;
 using System.Diagnostics;
 using DryIoc;
 using System.Net.NetworkInformation;
+using System.Threading;
 
 namespace CarrotCommFramework.Streams
 {
@@ -25,6 +26,8 @@ namespace CarrotCommFramework.Streams
         private FTDI Ftdi { get; set; }
 
         private string SerialNumber { get; set; }
+
+        private int Timeout { get; set; } = 100;
 
         public FtdiStream()
         {
@@ -57,6 +60,24 @@ namespace CarrotCommFramework.Streams
             //    Driver.Parity = SerialPortHelper.ParityString2Enum(@params[3]);
             //if (@params.Length > 4)
             //    Driver.StopBits = SerialPortHelper.StopBitsFloat2Enum(Convert.ToDouble(@params[4]));
+
+            // Set Timeout
+            Ftd2xxNetDecorator.Ftd2xxNetWrapper(() => Ftdi.SetTimeouts((uint)Timeout, (uint)Timeout));
+
+            // Set BitMode
+            // SYNC FIFO MODE NEED BOTH WRITE EEPROM AND SETBITMODE
+            byte mask, mode;
+            mask = 0xff;
+            //   BitMode:
+            //     For FT232H devices, valid values are FT_BIT_MODE_RESET, FT_BIT_MODE_ASYNC_BITBANG, FT_BIT_MODE_MPSSE, FT_BIT_MODE_SYNC_BITBANG, FT_BIT_MODE_CBUS_BITBANG, FT_BIT_MODE_MCU_HOST, FT_BIT_MODE_FAST_SERIAL, FT_BIT_MODE_SYNC_FIFO.
+            //     For FT2232H devices, valid values are FT_BIT_MODE_RESET, FT_BIT_MODE_ASYNC_BITBANG, FT_BIT_MODE_MPSSE, FT_BIT_MODE_SYNC_BITBANG, FT_BIT_MODE_MCU_HOST, FT_BIT_MODE_FAST_SERIAL, FT_BIT_MODE_SYNC_FIFO.
+            //     For FT4232H devices, valid values are FT_BIT_MODE_RESET, FT_BIT_MODE_ASYNC_BITBANG, FT_BIT_MODE_MPSSE, FT_BIT_MODE_SYNC_BITBANG.
+            //     For FT232R devices, valid values are FT_BIT_MODE_RESET, FT_BIT_MODE_ASYNC_BITBANG, FT_BIT_MODE_SYNC_BITBANG, FT_BIT_MODE_CBUS_BITBANG.
+            //     For FT245R devices, valid values are FT_BIT_MODE_RESET, FT_BIT_MODE_ASYNC_BITBANG, FT_BIT_MODE_SYNC_BITBANG.
+            //     For FT2232 devices, valid values are FT_BIT_MODE_RESET, FT_BIT_MODE_ASYNC_BITBANG, FT_BIT_MODE_MPSSE, FT_BIT_MODE_SYNC_BITBANG, FT_BIT_MODE_MCU_HOST, FT_BIT_MODE_FAST_SERIAL.
+            //     For FT232B and FT245B devices, valid values are FT_BIT_MODE_RESET, FT_BIT_MODE_ASYNC_BITBANG.
+            mode = FT_BIT_MODES.FT_BIT_MODE_SYNC_FIFO;
+            Ftd2xxNetDecorator.Ftd2xxNetWrapper(() => Ftdi.SetBitMode(mask, mode));
         }
 
         /// <summary>
