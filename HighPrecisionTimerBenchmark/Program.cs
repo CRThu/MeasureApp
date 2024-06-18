@@ -28,7 +28,7 @@ namespace HighPrecisionTimerBenchmark
 
         static async Task RunTimer()
         {
-            int count = 1000;
+            int count = 100000;
 
             // run
             long start = Stopwatch.GetTimestamp();

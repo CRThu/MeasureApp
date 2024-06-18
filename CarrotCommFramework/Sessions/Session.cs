@@ -79,6 +79,16 @@ namespace CarrotCommFramework.Sessions
             {
                 var tx = s.Bytes;
                 stream.Write(tx, 0, tx.Length);
+
+                foreach (var logger in Loggers)
+                {
+                    logger.Log(this, new LogEventArgs()
+                    {
+                        Time = DateTime.Now,
+                        From = "TX",
+                        Packet = s
+                    });
+                }
             }
         }
 

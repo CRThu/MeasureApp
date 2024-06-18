@@ -1,5 +1,6 @@
 ﻿using CarrotCommFramework.Loggers;
 using CarrotCommFramework.Protocols;
+using CarrotCommFramework.Util;
 using CommunityToolkit.Mvvm.ComponentModel;
 using System;
 using System.Collections.Generic;

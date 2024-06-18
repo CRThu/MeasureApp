@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Diagnostics;
+using System.Runtime.InteropServices;
 using Windows.Win32;
 using Windows.Win32.Media;
 
@@ -103,7 +104,9 @@ namespace HighPrecisionTimer
         {
             if (IsRunning)
             {
-                _ = PInvoke.timeKillEvent(uTimerID: uTimerID);
+                uint mmResult = PInvoke.timeKillEvent(uTimerID: uTimerID);
+                if (mmResult != PInvoke.MMSYSERR_NOERROR)
+                    throw new InvalidOperationException("Failed to stop Timer");
                 IsRunning = false;
             }
         }
@@ -125,9 +128,11 @@ namespace HighPrecisionTimer
             timer.Tick += (object? sender, TickEventArgs e) =>
             {
                 timer.Stop();
+                //Debug.WriteLine("TIMER STOP");
                 //taskCompletionSource.TrySetResult();
                 taskCompletionSource.SetResult();
             };
+            Debug.WriteLine("TIMER START");
             timer.Start();
             return taskCompletionSource.Task;
         }

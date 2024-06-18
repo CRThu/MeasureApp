@@ -25,51 +25,58 @@ namespace CarrotCommFramework.Services
         // PipeReader Read From PipeWriter and Process data
         public override async Task Impl()
         {
-            PipeReader reader = Stream!.Pipe.Reader;
-
-            while (true)
+            try
             {
-                if (Cts.Token.IsCancellationRequested)
-                {
-                    break;
-                }
+                PipeReader reader = Stream!.Pipe.Reader;
 
-                // 读取数据, 返回buffer和是否EOF
-                ReadResult result = await reader.ReadAsync(Cts.Token);
-                ReadOnlySequence<byte> buffer = result.Buffer;
-
-                while (Protocol!.TryParse(ref buffer, out IEnumerable<Packet> pkts))
+                while (true)
                 {
-                    // 处理数据流
-                    foreach (Packet packet in pkts)
+                    if (Cts.Token.IsCancellationRequested)
                     {
-                        //Debug.WriteLine($"RECV PACKET: {packet.Message}");
-                        OnServiceLogging(this,
-                            new LogEventArgs()
-                            {
-                                Time = DateTime.Now,
-                                From = "RX",
-                                Packet = packet
-                            });
+                        break;
+                    }
+
+                    // 读取数据, 返回buffer和是否EOF
+                    ReadResult result = await reader.ReadAsync(Cts.Token);
+                    ReadOnlySequence<byte> buffer = result.Buffer;
+
+                    while (Protocol!.TryParse(ref buffer, out IEnumerable<Packet> pkts))
+                    {
+                        // 处理数据流
+                        foreach (Packet packet in pkts)
+                        {
+                            //Debug.WriteLine($"RECV PACKET: {packet.Message}");
+                            OnServiceLogging(this,
+                                new LogEventArgs()
+                                {
+                                    Time = DateTime.Now,
+                                    From = "RX",
+                                    Packet = packet
+                                });
+                        }
+                    }
+
+                    // 通知PipeWriter已读取字节流长度
+                    reader.AdvanceTo(buffer.Start, buffer.End);
+
+
+                    // 来自PiprWriter EOF数据传输结束
+                    if (result.IsCompleted)
+                    {
+                        await reader.CompleteAsync();
+                        Debug.WriteLine($"{nameof(ProtocolParseService)} returning");
+                        break;
                     }
                 }
 
-                // 通知PipeWriter已读取字节流长度
-                reader.AdvanceTo(buffer.Start, buffer.End);
-
-
-                // 来自PiprWriter EOF数据传输结束
-                if (result.IsCompleted)
-                {
-                    await reader.CompleteAsync();
-                    Debug.WriteLine($"{nameof(ProtocolParseService)} returning");
-                    break;
-                }
+                // PipeReader EOF数据传输结束指示
+                await reader.CompleteAsync();
+                Debug.WriteLine($"{nameof(ProtocolParseService)} returning");
             }
-
-            // PipeReader EOF数据传输结束指示
-            await reader.CompleteAsync();
-            Debug.WriteLine($"{nameof(ProtocolParseService)} returning");
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.ToString());
+            }
         }
     }
 }

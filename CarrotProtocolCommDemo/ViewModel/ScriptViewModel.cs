@@ -6,6 +6,7 @@ using CarrotProtocolCommDemo.Logger;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -73,5 +74,20 @@ namespace CarrotProtocolCommDemo.ViewModel
             AppLogger.Log($"SESSION WRITE:{CdpText}, {ProtocolId}, {StreamId}");
         }
 
+        [RelayCommand]
+        public void ExportPackets()
+        {
+            SaveFileDialog sfd = new SaveFileDialog();
+            if (sfd.ShowDialog() == true)
+            {
+                SerializationHelper.SerializeToFile(SessionInstance.Loggers[0], sfd.FileName);
+            }
+        }
+
+        [RelayCommand]
+        public void ExportDataCommand()
+        {
+
+        }
     }
 }
