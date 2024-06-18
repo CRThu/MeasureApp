@@ -79,7 +79,7 @@ namespace CarrotCommFramework.Drivers
                     Debug.WriteLine("Description: " + ftdiDeviceList[i].Description.ToString());
                     Debug.WriteLine("");
                 }
-                return ftdiDeviceList.Select(dev => new DeviceInfo(dev.Type.ToString(), dev.SerialNumber, dev.Description))
+                return ftdiDeviceList.Select(dev => new DeviceInfo("FTDI", dev.SerialNumber, dev.Description))
                     .ToArray();
             }
             catch (Exception ex)

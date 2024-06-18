@@ -35,6 +35,13 @@ namespace CarrotProtocolCommDemo.ViewModel
         [ObservableProperty]
         private Logger.AppLogger? appLogger;
 
+        [ObservableProperty]
+        private List<string> fastConfigProtocols = ["RAPV1", "CDPV1"];
+
+        [ObservableProperty]
+        private string fastConfigSelectedProtocol = "CDPV1";
+
+
         protected override void OnActivated()
         {
             WeakReferenceMessenger.Default.Register<SessionConfigViewModel, AppLogger>(this, (r, m) => r.AppLogger = m);
@@ -46,7 +53,8 @@ namespace CarrotProtocolCommDemo.ViewModel
             SessionConfig config = new(SessionConfig.Default)
             {
                 //PresetProtocolCommands = ["RAPV1://RAPV1"],
-                PresetProtocolCommands = ["CDPV1://CDPV1"],
+                //PresetProtocolCommands = ["CDPV1://CDPV1"],
+                PresetProtocolCommands = [$"{FastConfigSelectedProtocol}://{FastConfigSelectedProtocol}"],
                 PresetLoggerCommands = ["DL://DL1"]
             };
 
@@ -79,9 +87,9 @@ namespace CarrotProtocolCommDemo.ViewModel
         [RelayCommand]
         public void FastConfigSession()
         {
-            CreateSessionImpl("~+" 
+            CreateSessionImpl("~+"
                 + FastConfigSelectedDevice!.ToAddr()
-                + (string.IsNullOrEmpty(FastConfigExtraCommandText) ? "" : "@" )
+                + (string.IsNullOrEmpty(FastConfigExtraCommandText) ? "" : "@")
                 + FastConfigExtraCommandText);
         }
 

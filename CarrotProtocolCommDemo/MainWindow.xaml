@@ -29,9 +29,12 @@
             <TabItem Header="快速配置">
                 <Grid>
                     <ComboBox ItemsSource="{Binding SessionConfigVM.ListedDevices}" SelectedItem="{Binding SessionConfigVM.FastConfigSelectedDevice}" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="227"/>
-                    <TextBox Text="{Binding SessionConfigVM.FastConfigExtraCommandText}" Margin="45,36,79,70" TextWrapping="Wrap"/>
-                    <Button Content="Search" Command="{Binding SessionConfigVM.SearchDeviceCommand}" Margin="242,10,10,144"/>
-                    <Button Content="Open" Command="{Binding SessionConfigVM.FastConfigSessionCommand}" Margin="242,92,10,10"/>
+                    <TextBlock HorizontalAlignment="Left" Margin="10,42,0,0" TextWrapping="Wrap" Text="参数" VerticalAlignment="Top"/>
+                    <TextBox Text="{Binding SessionConfigVM.FastConfigExtraCommandText}" Margin="51,36,0,0" TextWrapping="Wrap" Height="51" VerticalAlignment="Top" HorizontalAlignment="Left" Width="186"/>
+                    <Button Content="Search" Command="{Binding SessionConfigVM.SearchDeviceCommand}" Margin="242,10,0,0" HorizontalAlignment="Left" Width="55" Height="21" VerticalAlignment="Top"/>
+                    <Button Content="Open" Command="{Binding SessionConfigVM.FastConfigSessionCommand}" Margin="242,36,0,0" HorizontalAlignment="Left" Width="55" Height="118" VerticalAlignment="Top"/>
+                    <TextBlock HorizontalAlignment="Left" Margin="10,95,0,0" TextWrapping="Wrap" Text="协议" VerticalAlignment="Top"/>
+                    <ComboBox ItemsSource="{Binding SessionConfigVM.FastConfigProtocols}" SelectedItem="{Binding SessionConfigVM.FastConfigSelectedProtocol}" HorizontalAlignment="Left" Margin="51,92,0,0" VerticalAlignment="Top" Width="186"/>
                 </Grid>
             </TabItem>
             <TabItem Header="命令配置">
