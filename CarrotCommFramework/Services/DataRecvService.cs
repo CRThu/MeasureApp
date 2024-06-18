@@ -67,12 +67,14 @@ namespace CarrotCommFramework.Services
                 if (result.IsCompleted)
                 {
                     await writer.CompleteAsync();
+                    Debug.WriteLine($"{nameof(DataRecvService)} returning");
                     break;
                 }
             }
 
             // PipeWriter EOF数据传输结束指示
             await writer.CompleteAsync();
+            Debug.WriteLine($"{nameof(DataRecvService)} returning");
         }
     }
 }

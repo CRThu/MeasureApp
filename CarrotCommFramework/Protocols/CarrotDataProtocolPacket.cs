@@ -8,10 +8,19 @@ using static CarrotCommFramework.Util.BytesEx;
 
 namespace CarrotCommFramework.Protocols
 {
+    public enum CDP_TYPE
+    {
+        UNKNOWN = 0x00,
+        ASCII = 0x30,
+        DATA = 0x40,
+        REG = 0xA0
+    };
+
+
     public class CarrotDataProtocolPacket : Packet
     {
-        public const byte FrameStartByte = 0x3C;
-        public const byte FrameEndByte = 0x3E;
+        public const byte CDP_PACKET_START_BYTE = 0x3C;
+        public const byte CDP_PACKET_END_BYTE = 0x3E;
 
         public const byte ProtocolIdAsciiTransfer64 = 0x31;
         public const byte ProtocolIdAsciiTransfer256 = 0x32;
@@ -44,6 +53,18 @@ namespace CarrotCommFramework.Protocols
             };
         }
 
+        public static CDP_TYPE GetCdpType(byte protocolId)
+        {
+            if (protocolId >= 0x30 && protocolId <= 0x3F)
+                return CDP_TYPE.ASCII;
+            else if (protocolId >= 0x40 && protocolId <= 0x4F)
+                return CDP_TYPE.DATA;
+            else if (protocolId >= 0xA0 && protocolId <= 0xAF)
+                return CDP_TYPE.REG;
+            else
+                return CDP_TYPE.UNKNOWN;
+        }
+
         /// <summary>
         /// 字节数组
         /// </summary>
@@ -52,7 +73,7 @@ namespace CarrotCommFramework.Protocols
         /// <summary>
         /// 数据包可阅读信息
         /// </summary>
-        public override string? Message => Payload.ToArray().BytesToHexString();
+        public override string? Message => GetDisplayMessage();
         public override byte? ProtocolId => Bytes?[1];
         public override byte? StreamId => Bytes?[4];
 
@@ -68,6 +89,25 @@ namespace CarrotCommFramework.Protocols
         {
         }
 
+
+        public string GetDisplayMessage()
+        {
+            if (ProtocolId is null)
+                return "<NULL>";
+            var type = GetCdpType(ProtocolId.Value);
+            switch (type)
+            {
+                case CDP_TYPE.ASCII:
+                    return $"{Payload.ToArray().BytesToAscii().ReplaceLineEndings("")}";
+                case CDP_TYPE.DATA:
+                    return $"<{PayloadLength} Bytes Data>";
+                case CDP_TYPE.REG:
+                    return $"{Payload.ToArray().BytesToHexString()}";
+                default:
+                    return $"<UNKNOWN>";
+            }
+        }
+
         public override byte[] Pack(string? message, byte? protocolId, byte? streamId)
         {
             int len = GetPacketLength((byte)protocolId);
@@ -76,7 +116,7 @@ namespace CarrotCommFramework.Protocols
             string? msg = message + "\r\n";
             byte[] payload = msg.AsciiToBytes();
 
-            bytes[0] = FrameStartByte;
+            bytes[0] = CDP_PACKET_START_BYTE;
             bytes[1] = (byte)protocolId;
             //bytes[2] = (byte)ControlFlags;
             //bytes[3] = (byte)(ControlFlags >> 8);
@@ -90,7 +130,7 @@ namespace CarrotCommFramework.Protocols
             //bytes[^2] = (byte)(Crc16 >> 8);
             bytes[^3] = 0xFF;
             bytes[^2] = 0xFF;
-            bytes[^1] = FrameEndByte;
+            bytes[^1] = CDP_PACKET_END_BYTE;
 
             return bytes;
         }

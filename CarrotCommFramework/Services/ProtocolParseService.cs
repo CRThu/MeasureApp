@@ -4,6 +4,7 @@ using CarrotCommFramework.Streams;
 using System;
 using System.Buffers;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO.Pipelines;
 using System.Linq;
 using System.Text;
@@ -61,12 +62,14 @@ namespace CarrotCommFramework.Services
                 if (result.IsCompleted)
                 {
                     await reader.CompleteAsync();
+                    Debug.WriteLine($"{nameof(ProtocolParseService)} returning");
                     break;
                 }
             }
 
             // PipeReader EOF数据传输结束指示
             await reader.CompleteAsync();
+            Debug.WriteLine($"{nameof(ProtocolParseService)} returning");
         }
     }
 }
