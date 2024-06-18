@@ -31,17 +31,46 @@ namespace CarrotProtocolCommDemo.ViewModel
 
 
         [ObservableProperty]
-        private string scriptText = "SCRIPT";
+        private string rapText = "Hello";
+
+        [ObservableProperty]
+        private string cdpText = "Hello";
+
+        [ObservableProperty]
+        private List<byte> protocolIdList = [
+            CarrotDataProtocolPacket.ProtocolIdAsciiTransfer256,
+            CarrotDataProtocolPacket.ProtocolIdDataTransfer266,
+            CarrotDataProtocolPacket.ProtocolIdRegisterOper];
+
+        [ObservableProperty]
+        private byte protocolId = CarrotDataProtocolPacket.ProtocolIdAsciiTransfer256;
+
+        [ObservableProperty]
+        private List<byte> streamIdList = [0, 1, 2, 3];
+
+        [ObservableProperty]
+        private byte streamId = 0;
 
         [RelayCommand]
-        public void Send()
+        public void SendRap()
         {
-            AppLogger.Log("SEND CLICKED");
+            AppLogger.Log("RAP SEND CLICKED");
 
-            var packet = SessionInstance.Protocols[0].Encode(ScriptText, CarrotDataProtocolPacket.ProtocolIdAsciiTransfer256, 0);
+            var packet = SessionInstance.Protocols[0].Encode(RapText, 0, 0);
             SessionInstance?.Write(packet);
 
-            AppLogger.Log($"SESSION WRITE:{ScriptText}");
+            AppLogger.Log($"SESSION WRITE:{RapText}");
+        }
+
+        [RelayCommand]
+        public void SendCdp()
+        {
+            AppLogger.Log("CDP SEND CLICKED");
+
+            var packet = SessionInstance.Protocols[0].Encode(CdpText, ProtocolId, StreamId);
+            SessionInstance?.Write(packet);
+
+            AppLogger.Log($"SESSION WRITE:{CdpText}, {ProtocolId}, {StreamId}");
         }
 
     }

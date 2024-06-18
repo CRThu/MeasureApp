@@ -29,8 +29,8 @@
             <TabItem Header="快速配置">
                 <Grid>
                     <ComboBox ItemsSource="{Binding SessionConfigVM.ListedDevices}" SelectedItem="{Binding SessionConfigVM.FastConfigSelectedDevice}" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="227"/>
-                    <TextBox Text="{Binding SessionConfigVM.FastConfigExtraCommandText}" Margin="10,36,79,10" TextWrapping="Wrap"/>
-                    <Button Content="Search" Command="{Binding SessionConfigVM.SearchDeviceCommand}" Margin="242,10,10,88"/>
+                    <TextBox Text="{Binding SessionConfigVM.FastConfigExtraCommandText}" Margin="45,36,79,70" TextWrapping="Wrap"/>
+                    <Button Content="Search" Command="{Binding SessionConfigVM.SearchDeviceCommand}" Margin="242,10,10,144"/>
                     <Button Content="Open" Command="{Binding SessionConfigVM.FastConfigSessionCommand}" Margin="242,92,10,10"/>
                 </Grid>
             </TabItem>
@@ -42,10 +42,20 @@
             </TabItem>
         </TabControl>
         <TabControl Margin="10,217,468,10">
-            <TabItem Header="ASCII发送">
+            <TabItem Header="RAP协议">
                 <Grid>
-                    <TextBox Margin="10,10,79,10" TextWrapping="Wrap" Text="{Binding ScriptVM.ScriptText}"/>
-                    <Button Content="Send" Command="{Binding ScriptVM.SendCommand}" Margin="242,10,10,10"/>
+                    <TextBox Margin="10,10,79,10" TextWrapping="Wrap" Text="{Binding ScriptVM.RapText}"/>
+                    <Button Content="Send" Command="{Binding ScriptVM.SendRapCommand}" Margin="242,10,10,10"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="CDP协议">
+                <Grid>
+                    <ComboBox ItemsSource="{Binding ScriptVM.ProtocolIdList}" SelectedItem="{Binding ScriptVM.ProtocolId}" HorizontalAlignment="Left" Margin="64,10,0,0" VerticalAlignment="Top" Width="173"/>
+                    <ComboBox ItemsSource="{Binding ScriptVM.StreamIdList}" SelectedItem="{Binding ScriptVM.StreamId}" HorizontalAlignment="Left" Margin="64,36,0,0" VerticalAlignment="Top" Width="173"/>
+                    <TextBox Margin="10,62,79,10" TextWrapping="Wrap" Text="{Binding ScriptVM.CdpText}"/>
+                    <Button Content="Send" Command="{Binding ScriptVM.SendCdpCommand}" Margin="242,10,10,10"/>
+                    <TextBlock HorizontalAlignment="Left" Margin="10,13,0,0" TextWrapping="Wrap" Text="协议ID" VerticalAlignment="Top"/>
+                    <TextBlock HorizontalAlignment="Left" Margin="10,39,0,0" TextWrapping="Wrap" Text="流ID" VerticalAlignment="Top"/>
                 </Grid>
             </TabItem>
         </TabControl>
