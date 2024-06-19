@@ -10,6 +10,7 @@ using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -80,14 +81,50 @@ namespace CarrotProtocolCommDemo.ViewModel
             SaveFileDialog sfd = new SaveFileDialog();
             if (sfd.ShowDialog() == true)
             {
-                SerializationHelper.SerializeToFile(SessionInstance.Loggers[0], sfd.FileName);
+                SerializationHelper.SerializeToFile((DataLogger)SessionInstance.Loggers[0], sfd.FileName);
             }
         }
 
         [RelayCommand]
-        public void ExportDataCommand()
+        public void ExportData()
         {
+            SaveFileDialog sfd = new SaveFileDialog();
+            if (sfd.ShowDialog() == true)
+            {
+                List<FileStream> fss = new List<FileStream>();
+                List<StreamWriter> sws = new List<StreamWriter>();
 
+                for (int ch = 0; ch < 4; ch++)
+                {
+                    string[] names = sfd.FileName.Split('.', 2);
+                    string newfilename = $"{names[0]}.s{ch}.{names[1]}";
+                    FileStream fs = new FileStream(newfilename, FileMode.Create);
+                    StreamWriter sw = new StreamWriter(fs);
+                    fss.Add(fs);
+                    sws.Add(sw);
+                }
+
+                DataLogger dataLogger = (DataLogger)SessionInstance.Loggers[0];
+                for (int i = 0; i < dataLogger.Ds.Count; i++)
+                {
+                    var streamIdByte = ((CarrotDataProtocolPacket)dataLogger.Ds[i].Packet).StreamId;
+                    var protocolId = ((CarrotDataProtocolPacket)dataLogger.Ds[i].Packet).ProtocolId;
+                    var bytes = ((CarrotDataProtocolPacket)dataLogger.Ds[i].Packet).Payload;
+                    int streamId = (int)streamIdByte;
+
+                    if (protocolId >= 0x40 && protocolId <= 0x4F && streamId >= 0 && streamId <= 3)
+                    {
+                        string s = bytes.ToArray().BytesToHexString();
+                        sws[streamId].Write(s);
+                        sws[streamId].Write(" ");
+                    }
+                }
+                for (int ch = 0; ch < 4; ch++)
+                {
+                    sws[ch].Close();
+                    fss[ch].Close();
+                }
+            }
         }
     }
 }

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Text.Json.Serialization;
 using System.Text.Json;
+using System.Text.Encodings.Web;
 
 namespace CarrotCommFramework.Util
 {
@@ -19,8 +20,9 @@ namespace CarrotCommFramework.Util
         /// </summary>
         private static readonly JsonSerializerOptions _globalOptions = new JsonSerializerOptions
         {
-            Converters = { new JsonStringEnumConverter() },
-            WriteIndented = true
+            Converters = { new JsonStringEnumConverter(), new BytesToHexStringConverter() },
+            WriteIndented = true,
+            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
         };
 
         /// <summary>
@@ -67,6 +69,19 @@ namespace CarrotCommFramework.Util
         {
             string json = File.ReadAllText(filePath);
             return DeserializeFromString<T>(json);
+        }
+    }
+
+    public class BytesToHexStringConverter : JsonConverter<byte[]>
+    {
+        public override byte[]? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void Write(Utf8JsonWriter writer, byte[] value, JsonSerializerOptions options)
+        {
+            writer.WriteStringValue(value.BytesToHexString());
         }
     }
 }

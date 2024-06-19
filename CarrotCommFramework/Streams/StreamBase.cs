@@ -99,8 +99,8 @@ namespace CarrotCommFramework.Streams
         /// <returns></returns>
         public virtual Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
         {
-            return ReadAsync(buffer, offset, count, HighPrecisionTimer.HighPrecisionTimer.Delay, 5, cancellationToken);
-            //return ReadAsync(buffer, offset, count, Task.Delay, 5, cancellationToken);
+            //return ReadAsync(buffer, offset, count, HighPrecisionTimer.HighPrecisionTimer.Delay, 5, cancellationToken);
+            return ReadAsync(buffer, offset, count, Task.Delay, 5, cancellationToken);
             //return ReadAsync(buffer, offset, count, (int delay) => { return Task.Run(() => { Thread.Sleep(delay); }); }, 5, cancellationToken);
         }
 
