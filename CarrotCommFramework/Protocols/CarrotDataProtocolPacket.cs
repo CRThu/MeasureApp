@@ -84,8 +84,8 @@ namespace CarrotCommFramework.Protocols
         {
         }
 
-        public CarrotDataProtocolPacket(string? message, byte? protocolId, byte? streamId)
-            : base(message, protocolId, streamId)
+        public CarrotDataProtocolPacket(byte[] payload, byte? protocolId, byte? streamId)
+            : base(payload, protocolId, streamId)
         {
         }
 
@@ -108,13 +108,10 @@ namespace CarrotCommFramework.Protocols
             }
         }
 
-        public override byte[] Pack(string? message, byte? protocolId, byte? streamId)
+        public override byte[] Pack(byte[] payload, byte? protocolId, byte? streamId)
         {
             int len = GetPacketLength((byte)protocolId);
             byte[] bytes = new byte[len];
-
-            string? msg = message + "\r\n";
-            byte[] payload = msg.AsciiToBytes();
 
             bytes[0] = CDP_PACKET_START_BYTE;
             bytes[1] = (byte)protocolId;

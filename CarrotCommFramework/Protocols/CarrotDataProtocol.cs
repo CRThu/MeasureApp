@@ -57,9 +57,9 @@ namespace CarrotCommFramework.Protocols
             return packetsList.Count != 0;
         }
 
-        public override Packet Encode(string? message, byte? protocolId, byte? streamId)
+        public override Packet Encode(byte[] payload, byte? protocolId, byte? streamId)
         {
-            return new CarrotDataProtocolPacket(message, protocolId, streamId);
+            return new CarrotDataProtocolPacket(payload, protocolId, streamId);
         }
 
     }

@@ -29,6 +29,9 @@ namespace CarrotCommFramework.Streams
 
         private int Timeout { get; set; } = 1000;
 
+        private byte FtdiMask { get; set; }
+        private byte FtdiMode { get; set; }
+
         public FtdiStream()
         {
         }
@@ -61,6 +64,24 @@ namespace CarrotCommFramework.Streams
             //if (@params.Length > 4)
             //    Driver.StopBits = SerialPortHelper.StopBitsFloat2Enum(Convert.ToDouble(@params[4]));
 
+            // TODO TIMEOUT/MASK/MODE
+        }
+
+        /// <summary>
+        /// 关闭流
+        /// </summary>
+        public override void Close()
+        {
+            Ftd2xxNetDecorator.Ftd2xxNetWrapper(() => Ftdi.Close());
+        }
+
+        /// <summary>
+        /// 打开流
+        /// </summary>
+        public override void Open()
+        {
+            Ftd2xxNetDecorator.Ftd2xxNetWrapper(() => Ftdi.OpenBySerialNumber(SerialNumber));
+
             // Set Timeout
             Ftd2xxNetDecorator.Ftd2xxNetWrapper(() => Ftdi.SetTimeouts((uint)Timeout, (uint)Timeout));
 
@@ -78,22 +99,6 @@ namespace CarrotCommFramework.Streams
             //     For FT232B and FT245B devices, valid values are FT_BIT_MODE_RESET, FT_BIT_MODE_ASYNC_BITBANG.
             mode = FT_BIT_MODES.FT_BIT_MODE_SYNC_FIFO;
             Ftd2xxNetDecorator.Ftd2xxNetWrapper(() => Ftdi.SetBitMode(mask, mode));
-        }
-
-        /// <summary>
-        /// 关闭流
-        /// </summary>
-        public override void Close()
-        {
-            Ftd2xxNetDecorator.Ftd2xxNetWrapper(() => Ftdi.Close());
-        }
-
-        /// <summary>
-        /// 打开流
-        /// </summary>
-        public override void Open()
-        {
-            Ftd2xxNetDecorator.Ftd2xxNetWrapper(() => Ftdi.OpenBySerialNumber(SerialNumber));
         }
 
         /// <summary>
@@ -145,15 +150,14 @@ namespace CarrotCommFramework.Streams
             int totalBytesRead = 0;
             byte[] rx = new byte[Math.Min(bytesExpected, 1048576)];
 
-            // TODO 同步流读取存在阻塞，待优化
+            int BytesToRead = GetBytesToRead();
+            bytesExpected = BytesToRead > bytesExpected ? bytesExpected : BytesToRead;
+
             while (bytesExpected > 0)
             {
                 // 一次读取不超过读取缓冲区的长度字节流
                 currentBytesExpected = (uint)bytesExpected;
-                if (currentBytesExpected > rx.Length)
-                {
-                    currentBytesExpected = (uint)rx.Length;
-                }
+                currentBytesExpected = rx.Length > currentBytesExpected ? currentBytesExpected : (uint)rx.Length;
 
                 // Read
                 Ftd2xxNetDecorator.Ftd2xxNetWrapper(() => Ftdi.Read(rx, currentBytesExpected, ref currentBytesRead));

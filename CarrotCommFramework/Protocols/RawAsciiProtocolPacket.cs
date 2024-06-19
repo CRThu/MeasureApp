@@ -27,14 +27,14 @@ namespace CarrotCommFramework.Protocols
         {
         }
 
-        public RawAsciiProtocolPacket(string? message, byte? protocolId, byte? streamId)
-            : base(message, protocolId, streamId)
+        public RawAsciiProtocolPacket(byte[] payload, byte? protocolId, byte? streamId)
+            : base(payload, protocolId, streamId)
         {
         }
 
-        public override byte[] Pack(string? message, byte? protocolId, byte? streamId)
+        public override byte[] Pack(byte[] payload, byte? protocolId, byte? streamId)
         {
-            byte[] packets = [.. message.AsciiToBytes(), .. "\r\n".AsciiToBytes()];
+            byte[] packets = [.. payload, .. "\r\n".AsciiToBytes()];
 
             return packets;
         }

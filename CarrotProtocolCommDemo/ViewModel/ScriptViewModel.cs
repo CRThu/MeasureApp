@@ -12,8 +12,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Documents;
 
 namespace CarrotProtocolCommDemo.ViewModel
 {
@@ -39,6 +41,15 @@ namespace CarrotProtocolCommDemo.ViewModel
         private string cdpText = "Hello";
 
         [ObservableProperty]
+        private int cdpRegRwnText = 0;
+
+        [ObservableProperty]
+        private int cdpRegRegText = 0;
+
+        [ObservableProperty]
+        private int cdpRegDatText = 0;
+
+        [ObservableProperty]
         private List<byte> protocolIdList = [
             CarrotDataProtocolPacket.ProtocolIdAsciiTransfer256,
             CarrotDataProtocolPacket.ProtocolIdDataTransfer266,
@@ -58,7 +69,7 @@ namespace CarrotProtocolCommDemo.ViewModel
         {
             AppLogger.Log("RAP SEND CLICKED");
 
-            var packet = SessionInstance.Protocols[0].Encode(RapText, 0, 0);
+            var packet = SessionInstance.Protocols[0].Encode(RapText.AsciiToBytes(), 0, 0);
             SessionInstance?.Write(packet);
 
             AppLogger.Log($"SESSION WRITE:{RapText}");
@@ -69,11 +80,33 @@ namespace CarrotProtocolCommDemo.ViewModel
         {
             AppLogger.Log("CDP SEND CLICKED");
 
-            var packet = SessionInstance.Protocols[0].Encode(CdpText, ProtocolId, StreamId);
+            var packet = SessionInstance.Protocols[0].Encode(CdpText.AsciiToBytes(), ProtocolId, StreamId);
             SessionInstance?.Write(packet);
 
             AppLogger.Log($"SESSION WRITE:{CdpText}, {ProtocolId}, {StreamId}");
         }
+
+        [RelayCommand]
+        public void SendCdpReg()
+        {
+            AppLogger.Log("CDP SEND CLICKED");
+
+            byte[] payload = new byte[16];
+            byte[] RwnBytes = CdpRegRwnText.IntToBytes();
+            byte[] RegfileBytes = 0.IntToBytes();
+            byte[] AddressBytes = CdpRegRegText.IntToBytes();
+            byte[] ValueBytes = CdpRegDatText.IntToBytes();
+            Array.Copy(RwnBytes, 0, payload, 0, 4);
+            Array.Copy(RegfileBytes, 0, payload, 4, 4);
+            Array.Copy(AddressBytes, 0, payload, 8, 4);
+            Array.Copy(ValueBytes, 0, payload, 12, 4);
+
+            var packet = SessionInstance.Protocols[0].Encode(payload, 0xA0, 0x00);
+            SessionInstance?.Write(packet);
+
+            AppLogger.Log($"SESSION WRITE:{payload.BytesToHexString()}, {0xA0}, {0x00}");
+        }
+
 
         [RelayCommand]
         public void ExportPackets()

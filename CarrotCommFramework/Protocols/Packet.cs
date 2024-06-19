@@ -33,12 +33,12 @@ namespace CarrotCommFramework.Protocols
             Bytes = bytes;
         }
 
-        public Packet(string? message, byte? protocolId, byte? streamId)
+        public Packet(byte[] payload, byte? protocolId, byte? streamId)
         {
-            Bytes = Pack(message, protocolId, streamId);
+            Bytes = Pack(payload, protocolId, streamId);
         }
 
-        public virtual byte[] Pack(string? message, byte? protocolId, byte? streamId)
+        public virtual byte[] Pack(byte[] payload, byte? protocolId, byte? streamId)
         {
             return [];
         }
