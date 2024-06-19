@@ -22,7 +22,7 @@ namespace CarrotCommFramework.Drivers
 
     public static class Ftd2xxNetDecorator
     {
-        public static void Ftd2xxNetWrapper(Func<FT_STATUS> func, int timeout = 100)
+        public static void Ftd2xxNetWrapper(Func<FT_STATUS> func, int timeout = 1000)
         {
             try
             {
@@ -34,7 +34,7 @@ namespace CarrotCommFramework.Drivers
             }
             catch (Exception ex)
             {
-                throw new Ftd2xxException("TimeoutException", ex);
+                throw new Ftd2xxException("Ftd2xxNetWrapper", ex);
             }
         }
 
@@ -42,7 +42,7 @@ namespace CarrotCommFramework.Drivers
 
     public class FtdiDriver : DriverBase
     {
-        public static int Timeout { get; set; } = 100;
+        public static int Timeout { get; set; } = 1000;
 
         public FtdiDriver()
         {

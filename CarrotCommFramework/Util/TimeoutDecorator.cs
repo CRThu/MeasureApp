@@ -22,7 +22,7 @@ namespace CarrotCommFramework.Util
             }
         }
 
-        public static TResult TimeoutWrapper<TResult>(Func<TResult> func, int timeout = 100)
+        public static TResult TimeoutWrapper<TResult>(Func<TResult> func, int timeout = 1000)
         {
             var task = Task.Run(func);
             if (!task.Wait(timeout))

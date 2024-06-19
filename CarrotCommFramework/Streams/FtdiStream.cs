@@ -27,7 +27,7 @@ namespace CarrotCommFramework.Streams
 
         private string SerialNumber { get; set; }
 
-        private int Timeout { get; set; } = 100;
+        private int Timeout { get; set; } = 1000;
 
         public FtdiStream()
         {
