@@ -19,6 +19,7 @@ using CarrotCommFramework.Factory;
 using CarrotCommFramework.Loggers;
 using CarrotCommFramework.Util;
 using CommunityToolkit.Mvvm.Messaging;
+using System.Runtime;
 
 namespace CarrotProtocolCommDemo.ViewModel
 {
@@ -39,6 +40,13 @@ namespace CarrotProtocolCommDemo.ViewModel
             WeakReferenceMessenger.Default.Send(AppLogger);
 
             AppLogger!.Log($"WINDOW LOADED");
+
+            var gcStat = GCSettings.IsServerGC ? "Server" : "Workstation";
+            AppLogger!.Log($"Current GC Mode: {gcStat}.");
+            //GCSettings.LatencyMode = GCLatencyMode.LowLatency;
+            GCSettings.LatencyMode = GCLatencyMode.SustainedLowLatency;
+            var gcLatency = GCSettings.LatencyMode;
+            AppLogger!.Log($"Current GC LatencyMode: {gcLatency}.");
         }
 
         [RelayCommand]

@@ -88,7 +88,7 @@ namespace CarrotCommFramework.Loggers
         /// <param name="e">数据包</param>
         public virtual void Log(object sender, LogEventArgs e)
         {
-            Debug.WriteLine($"{GetType().FullName}: " + e.Packet.Message);
+            //Debug.WriteLine($"{GetType().FullName}: " + e.Packet.Message);
         }
 
         /// <summary>
