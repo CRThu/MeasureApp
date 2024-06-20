@@ -7,15 +7,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MeasureApp", "MeasureApp\Me
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarrotProtocolCommDemo", "CarrotProtocolCommDemo\CarrotProtocolCommDemo.csproj", "{61FBCF7C-CEBB-4B41-AA69-9DDADCEE12C2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarrotProtocolCommDemoTests", "CarrotProtocolCommDemoTests\CarrotProtocolCommDemoTests.csproj", "{9AD725DA-CF84-40DD-875D-8CB2A215F3DA}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarrotCommFramework", "CarrotCommFramework\CarrotCommFramework.csproj", "{3C0A1459-2F1A-488C-8777-9105D0102370}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HighPrecisionTimer", "HighPrecisionTimer\HighPrecisionTimer.csproj", "{D3897B36-E173-44C8-8BD3-D276F8E9C54F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HighPrecisionTimerBenchmark", "HighPrecisionTimerBenchmark\HighPrecisionTimerBenchmark.csproj", "{5B2F4E6D-23B3-4CBF-83FC-42BE15EFAC47}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarrotCommFrameworkDemo", "CarrotCommFrameworkDemo\CarrotCommFrameworkDemo.csproj", "{87558C46-9D3A-4E0A-8A0B-3743E56310C3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarrotCommFrameworkDemo", "CarrotCommFrameworkDemo\CarrotCommFrameworkDemo.csproj", "{87558C46-9D3A-4E0A-8A0B-3743E56310C3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,18 +49,6 @@ Global
 		{61FBCF7C-CEBB-4B41-AA69-9DDADCEE12C2}.Release|x64.Build.0 = Release|Any CPU
 		{61FBCF7C-CEBB-4B41-AA69-9DDADCEE12C2}.Release|x86.ActiveCfg = Release|Any CPU
 		{61FBCF7C-CEBB-4B41-AA69-9DDADCEE12C2}.Release|x86.Build.0 = Release|Any CPU
-		{9AD725DA-CF84-40DD-875D-8CB2A215F3DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9AD725DA-CF84-40DD-875D-8CB2A215F3DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9AD725DA-CF84-40DD-875D-8CB2A215F3DA}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{9AD725DA-CF84-40DD-875D-8CB2A215F3DA}.Debug|x64.Build.0 = Debug|Any CPU
-		{9AD725DA-CF84-40DD-875D-8CB2A215F3DA}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{9AD725DA-CF84-40DD-875D-8CB2A215F3DA}.Debug|x86.Build.0 = Debug|Any CPU
-		{9AD725DA-CF84-40DD-875D-8CB2A215F3DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9AD725DA-CF84-40DD-875D-8CB2A215F3DA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9AD725DA-CF84-40DD-875D-8CB2A215F3DA}.Release|x64.ActiveCfg = Release|Any CPU
-		{9AD725DA-CF84-40DD-875D-8CB2A215F3DA}.Release|x64.Build.0 = Release|Any CPU
-		{9AD725DA-CF84-40DD-875D-8CB2A215F3DA}.Release|x86.ActiveCfg = Release|Any CPU
-		{9AD725DA-CF84-40DD-875D-8CB2A215F3DA}.Release|x86.Build.0 = Release|Any CPU
 		{3C0A1459-2F1A-488C-8777-9105D0102370}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3C0A1459-2F1A-488C-8777-9105D0102370}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3C0A1459-2F1A-488C-8777-9105D0102370}.Debug|x64.ActiveCfg = Debug|Any CPU

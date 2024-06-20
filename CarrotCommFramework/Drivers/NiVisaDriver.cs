@@ -1,6 +1,7 @@
-﻿using CarrotCommFramework.Streams;
+﻿using NationalInstruments.VisaNS;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,11 +17,18 @@ namespace CarrotCommFramework.Drivers
 
         public override DeviceInfo[] FindDevices()
         {
-            return
-            [
-                new DeviceInfo("VISA","701","NI VISA GPIB 701 FOR TEST"),
-                new DeviceInfo("VISA","702","NI VISA GPIB 702 FOR TEST"),
-            ];
+            try
+            {
+                string expression = "?*";
+                //string expression = "GPIB?*INSTR";
+                string[] res = ResourceManager.GetLocalManager().FindResources(expression);
+                return res.Select(d => new DeviceInfo("VISA", d, "NI-VISA DEVICE")).ToArray();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.ToString());
+                return Array.Empty<DeviceInfo>();
+            }
         }
     }
 }
