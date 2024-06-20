@@ -5,18 +5,21 @@ using Windows.Win32.Media;
 
 namespace HighPrecisionTimer
 {
-    public class HighPrecisionTimer
+    public class HighPrecisionTimer : IDisposable
     {
         private static TIMECAPS ptc;
         private uint uDelay;
         private uint uResolution;
-        private LPTIMECALLBACK fptc;
+        private readonly LPTIMECALLBACK fptc;
         private uint uTimerID;
 
         public bool IsRunning { get; private set; }
 
         public delegate void TickEventHandler(object? sender, TickEventArgs e);
         public event TickEventHandler? Tick;
+
+        private object lockObj = new();
+        private bool disposedValue;
 
         public uint Interval
         {
@@ -71,15 +74,12 @@ namespace HighPrecisionTimer
             Interval = interval;
         }
 
-        ~HighPrecisionTimer()
-        {
-            _ = PInvoke.timeKillEvent(uTimerID: uTimerID);
-        }
-
         public void Start()
         {
             if (!IsRunning)
             {
+                lock (lockObj)
+                {
                 // TIME_ONESHOT
                 // TIME_PERIODIC
 
@@ -87,7 +87,6 @@ namespace HighPrecisionTimer
                 // TIME_CALLBACK_EVENT_SET
                 // TIME_CALLBACK_EVENT_PULSE
                 // TIME_KILL_SYNCHRONOUS
-
                 uTimerID = PInvoke.timeSetEvent(
                             uDelay: uDelay,
                             uResolution: uResolution,
@@ -97,6 +96,11 @@ namespace HighPrecisionTimer
                 if (uTimerID == 0)
                     throw new InvalidOperationException("Failed to initial Timer");
                 IsRunning = true;
+                }
+            }
+            else
+            {
+                throw new InvalidOperationException("Timer is running.");
             }
         }
 
@@ -104,10 +108,17 @@ namespace HighPrecisionTimer
         {
             if (IsRunning)
             {
+                lock (lockObj)
+                {
                 uint mmResult = PInvoke.timeKillEvent(uTimerID: uTimerID);
                 if (mmResult != PInvoke.MMSYSERR_NOERROR)
                     throw new InvalidOperationException("Failed to stop Timer");
                 IsRunning = false;
+                }
+            }
+            else
+            {
+                throw new InvalidOperationException("Timer is not running.");
             }
         }
 
@@ -116,6 +127,7 @@ namespace HighPrecisionTimer
             Tick?.Invoke(this, new TickEventArgs());
         }
 
+        // TODO 内存管理可能存在问题
         public static Task Delay(int milliSeconds = 1)
         {
             if (milliSeconds < 0)
@@ -127,14 +139,48 @@ namespace HighPrecisionTimer
             TaskCompletionSource taskCompletionSource = new();
             timer.Tick += (object? sender, TickEventArgs e) =>
             {
+                //logger.Info($"TIMER CALLBACK");
                 timer.Stop();
-                //Debug.WriteLine("TIMER STOP");
+                //logger.Info($"TIMER STOP");
                 //taskCompletionSource.TrySetResult();
                 taskCompletionSource.SetResult();
             };
-            Debug.WriteLine("TIMER START");
+            //logger.Info($"TIMER CTOR");
             timer.Start();
+            //logger.Info($"TIMER START id={timer.uTimerID}");
             return taskCompletionSource.Task;
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // TODO: 释放托管状态(托管对象)
+                    //Tick = null;
+                }
+
+                // TODO: 释放未托管的资源(未托管的对象)并重写终结器
+                //_ = PInvoke.timeKillEvent(uTimerID: uTimerID);
+                // TODO: 将大型字段设置为 null
+                disposedValue = true;
+            }
+        }
+
+        // TODO: 仅当“Dispose(bool disposing)”拥有用于释放未托管资源的代码时才替代终结器
+        ~HighPrecisionTimer()
+        {
+            // 不要更改此代码。请将清理代码放入“Dispose(bool disposing)”方法中
+            Dispose(disposing: false);
+        }
+
+
+        public void Dispose()
+        {
+            // 不要更改此代码。请将清理代码放入“Dispose(bool disposing)”方法中
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 

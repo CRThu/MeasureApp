@@ -1,11 +1,15 @@
 ﻿using HdrHistogram;
 using HighPrecisionTimer;
 using System.Diagnostics;
+using System.Linq;
 
 namespace HighPrecisionTimerBenchmark
 {
     internal class Program
     {
+        static int i = 0;
+        static int count = 100000;
+
         static void Main(string[] args)
         {
             Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.High;
@@ -19,7 +23,8 @@ namespace HighPrecisionTimerBenchmark
                     break;
                 else
                 {
-                    Thread.Sleep(250);
+                    Thread.Sleep(100);
+                    Console.WriteLine($"{i}/{count}, pos.");
                 }
             }
 
@@ -28,13 +33,20 @@ namespace HighPrecisionTimerBenchmark
 
         static async Task RunTimer()
         {
-            int count = 100000;
-
             // run
             long start = Stopwatch.GetTimestamp();
-            for (int i = 0; i < count; i++)
+            for (i = 0; i < count; i++)
             {
-                await HighPrecisionTimer.HighPrecisionTimer.Delay();
+
+                HighPrecisionTimer.HighPrecisionTimer timer = new((uint)1);
+                TaskCompletionSource taskCompletionSource = new();
+                timer.Tick += (object? sender, TickEventArgs e) =>
+                {
+                    timer.Stop();
+                    taskCompletionSource.SetResult();
+                };
+                timer.Start();
+                await taskCompletionSource.Task;
             }
             long end = Stopwatch.GetTimestamp();
 
