@@ -34,6 +34,7 @@ namespace CarrotCommFramework.Util
         public static string SerializeToString<T>(T obj)
         {
             return JsonSerializer.Serialize(obj, _globalOptions);
+            //return "";
         }
 
         /// <summary>

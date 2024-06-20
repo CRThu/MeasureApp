@@ -72,10 +72,13 @@ namespace CarrotCommFramework.Services
                 // PipeReader EOF数据传输结束指示
                 await reader.CompleteAsync();
                 Debug.WriteLine($"{nameof(ProtocolParseService)} returning");
+
+                Status = ServiceStatus.ExitSuccess;
             }
             catch (Exception e)
             {
                 Debug.WriteLine(e.ToString());
+                throw;
             }
         }
     }

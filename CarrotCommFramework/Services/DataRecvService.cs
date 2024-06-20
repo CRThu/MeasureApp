@@ -57,7 +57,7 @@ namespace CarrotCommFramework.Services
                 catch (Exception ex)
                 {
                     Debug.WriteLine(ex.ToString());
-                    break;
+                    throw;
                 }
 
                 // Flush数据到PipeReader
@@ -75,6 +75,8 @@ namespace CarrotCommFramework.Services
             // PipeWriter EOF数据传输结束指示
             await writer.CompleteAsync();
             Debug.WriteLine($"{nameof(DataRecvService)} returning");
+
+            Status = ServiceStatus.ExitSuccess;
         }
     }
 }

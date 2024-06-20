@@ -41,6 +41,7 @@ namespace CarrotProtocolCommDemo.ViewModel
 
             AppLogger!.Log($"WINDOW LOADED");
 
+            // GC SETTINGS
             var gcStat = GCSettings.IsServerGC ? "Server" : "Workstation";
             AppLogger!.Log($"Current GC Mode: {gcStat}.");
             //GCSettings.LatencyMode = GCLatencyMode.LowLatency;

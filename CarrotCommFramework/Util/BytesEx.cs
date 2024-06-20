@@ -59,6 +59,10 @@ namespace CarrotCommFramework.Util
             return BitConverter.ToString(data).Replace("-", " ");
         }
 
+        public static string BytesToHexString(this ReadOnlySpan<byte> data)
+        {
+            return BitConverter.ToString(data.ToArray()).Replace("-", " ");
+        }
         /// <summary>
         /// 将转换为ASCII字符串
         /// <code>

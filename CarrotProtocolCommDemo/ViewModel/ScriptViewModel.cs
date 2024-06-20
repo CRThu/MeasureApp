@@ -147,9 +147,11 @@ namespace CarrotProtocolCommDemo.ViewModel
 
                     if (protocolId >= 0x40 && protocolId <= 0x4F && streamId >= 0 && streamId <= 3)
                     {
-                        string s = bytes.ToArray().BytesToHexString();
-                        sws[streamId].Write(s);
-                        sws[streamId].Write(" ");
+                        for (int c = 0; c < bytes.Length; c += 4)
+                        {
+                            string s = bytes.Slice(c, 4).BytesToHexString();
+                            sws[streamId].WriteLine(s);
+                        }
                     }
                 }
                 for (int ch = 0; ch < 4; ch++)

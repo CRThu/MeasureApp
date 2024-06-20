@@ -74,8 +74,8 @@
             <TabItem Header="SimpleLogger">
                 <Grid Background="#FFE5E5E5">
                     <v:SimpleLogger Margin="3,3,3,60" DataContext="{Binding ScriptVM.SessionInstance.Loggers[0]}"/>
-                    <Button Content="Export Packets" Command="{Binding ScriptVM.ExportPacketsCommand}" Margin="3,343,0,16" HorizontalAlignment="Left" Width="90"/>
-                    <Button Content="Export Data" Command="{Binding ScriptVM.ExportDataCommand}" Margin="98,344,0,17" HorizontalAlignment="Left" Width="90"/>
+                    <Button Content="Export Packets" Command="{Binding ScriptVM.ExportPacketsCommand}" Margin="3,343,0,0" HorizontalAlignment="Left" Width="90" Height="39" VerticalAlignment="Top"/>
+                    <Button Content="Export Data" Command="{Binding ScriptVM.ExportDataCommand}" Margin="98,344,0,0" HorizontalAlignment="Left" Width="90" Height="37" VerticalAlignment="Top"/>
                 </Grid>
             </TabItem>
             <TabItem Header="AppLogger">
