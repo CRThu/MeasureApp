@@ -23,11 +23,13 @@
     </Reference>
     <Reference Include="NationalInstruments.Common">
       <HintPath>..\DLL\NationalInstruments\NationalInstruments.Common.dll</HintPath>
-      <Private>True</Private>
+      <Private></Private>
+      <EmbedInteropTypes></EmbedInteropTypes>
     </Reference>
     <Reference Include="NationalInstruments.VisaNS">
       <HintPath>..\DLL\NationalInstruments\NationalInstruments.VisaNS.dll</HintPath>
-      <Private>True</Private>
+      <Private></Private>
+      <EmbedInteropTypes></EmbedInteropTypes>
     </Reference>
   </ItemGroup>
 

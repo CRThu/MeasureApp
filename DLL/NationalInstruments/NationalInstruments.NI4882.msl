@@ -5,10 +5,10 @@
     <string>CppCLI2012</string>
     <string>WindowsFormsApplication2012</string>
   </SupportedProjectTypes>
-  <SelectedByDefault>false</SelectedByDefault>
-  <Title>Measurement Studio Hardware Class Libraries/VisaNS Library</Title>
-  <Description>Contains objects to access the functionality available in NI-VISA for communicating with message-based and register-based instruments using protocols supported by NI-VISA.</Description>
-  <Name2012>NationalInstruments.VisaNS</Name2012>
+  <SelectedByDefault>true</SelectedByDefault>
+  <Title>Measurement Studio Hardware Class Libraries/NI-488.2 Library</Title>
+  <Description>Contains objects that communicate with GPIB instruments, control GPIB boards, and acquire GPIB status information.</Description>
+  <Name2012>NationalInstruments.NI4882</Name2012>
   <Licensed>false</Licensed>
   <Dependencies>
     <DotNETAssembly>
@@ -16,6 +16,6 @@
     </DotNETAssembly>
   </Dependencies>
   <Namespaces>
-    <string>NationalInstruments.VisaNS</string>
+    <string>NationalInstruments.NI4882</string>
   </Namespaces>
 </DotNETComponent>
