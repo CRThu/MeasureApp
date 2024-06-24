@@ -69,6 +69,11 @@
                     <Button Content="Send" Command="{Binding ScriptVM.SendCdpRegCommand}" Margin="242,10,10,10"/>
                 </Grid>
             </TabItem>
+            <TabItem Header="RECV">
+                <Grid>
+                    <Button Content="Send" Command="{Binding ScriptVM.ManualReadCommand}" Margin="242,10,10,10"/>
+                </Grid>
+            </TabItem>
         </TabControl>
         <TabControl Margin="332,10,0,0">
             <TabItem Header="SimpleLogger">

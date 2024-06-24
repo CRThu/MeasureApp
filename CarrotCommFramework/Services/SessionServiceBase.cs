@@ -77,8 +77,16 @@ namespace CarrotCommFramework.Services
         /// <returns>返回值</returns>
         public override async Task<object?> Impl(CancellationToken ct)
         {
-            await Impl();
-            return await Task.FromResult<object?>(null);
+            try
+            {
+                await Impl();
+                return await Task.FromResult<object?>(null);
+            }
+            catch (Exception ex)
+            {
+                InternalException = ex;
+                throw;
+            }
         }
 
 

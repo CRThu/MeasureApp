@@ -8,6 +8,9 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using NationalInstruments.VisaNS;
+using CarrotCommFramework.Sessions;
+using System.Diagnostics;
 
 namespace CarrotCommFramework.Streams
 {
@@ -21,12 +24,20 @@ namespace CarrotCommFramework.Streams
         /// <summary>
         /// 流指示有数据
         /// </summary>
-        public override bool ReadAvailable => Driver.BytesToRead > 0;
+        public override bool ReadAvailable
+        {
+            get
+            {
+                return true;
+            }
+        }
 
         /// <summary>
         /// 驱动层实现
         /// </summary>
-        private SerialPort Driver { get; set; } = new();
+        protected MessageBasedSession Session { get; set; }
+
+        protected string Addr { get; set; }
 
         /// <summary>
         /// 配置解析和初始化
@@ -37,20 +48,8 @@ namespace CarrotCommFramework.Streams
             if (@params.Length == 0)
                 return;
 
-            Driver = new SerialPort();
-            //Driver.ReadTimeout = 10;
-            //Driver.WriteTimeout = 10;
-
             if (@params.Length > 0)
-                Driver.PortName = @params[0];
-            if (@params.Length > 1)
-                Driver.BaudRate = Convert.ToInt32(@params[1]);
-            if (@params.Length > 2)
-                Driver.DataBits = Convert.ToInt32(@params[2]);
-            if (@params.Length > 3)
-                Driver.Parity = SerialPortHelper.ParityString2Enum(@params[3]);
-            if (@params.Length > 4)
-                Driver.StopBits = SerialPortHelper.StopBitsFloat2Enum(Convert.ToDouble(@params[4]));
+                Addr = @params[0];
         }
 
         /// <summary>
@@ -58,7 +57,7 @@ namespace CarrotCommFramework.Streams
         /// </summary>
         public override void Close()
         {
-            Driver.Close();
+            Session.Dispose();
         }
 
         /// <summary>
@@ -66,7 +65,11 @@ namespace CarrotCommFramework.Streams
         /// </summary>
         public override void Open()
         {
-            Driver.Open();
+            var res = (MessageBasedSession)ResourceManager.GetLocalManager().Open(Addr);
+            if (res is MessageBasedSession)
+                Session = res;
+            else
+                throw new Exception();
         }
 
         /// <summary>
@@ -77,7 +80,9 @@ namespace CarrotCommFramework.Streams
         /// <param name="count"></param>
         public override void Write(byte[] buffer, int offset, int count)
         {
-            Driver.BaseStream.Write(buffer, offset, count);
+            byte[] bytes = new byte[count];
+            Array.Copy(buffer, offset, bytes, 0, count);
+            Session.Write(buffer);
         }
 
         /// <summary>
@@ -89,8 +94,16 @@ namespace CarrotCommFramework.Streams
         /// <returns></returns>
         public override int Read(byte[] buffer, int offset, int count)
         {
-            // TODO 同步流读取存在阻塞，待优化
-            return Driver.BaseStream.Read(buffer, offset, count);
+            try
+            {
+                byte[] x = Session.ReadByteArray(count);
+                Array.Copy(x, 0, buffer, offset, x.Length);
+                return x.Length;
+            }
+            catch
+            {
+                return 0;
+            }
         }
     }
 }

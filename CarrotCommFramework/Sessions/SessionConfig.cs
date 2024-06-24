@@ -31,7 +31,7 @@ namespace CarrotCommFramework.Sessions
             PresetSessionCommands = ["DEFAULT_SESSION"],
             PresetProtocolCommands = ["RAPV1://RAPV1"],
             PresetLoggerCommands = ["CONSOLE://CON1", "NLOG://NLOG1"],
-            PresetServiceCommands = ["RECV", "PARSE"]
+            //PresetServiceCommands = ["RECV", "PARSE"]
         };
 
         public static SessionConfig Empty { get; set; } = new();

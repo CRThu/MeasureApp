@@ -28,10 +28,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <AdditionalDesignTimeBuildInput Remove="FakesAssemblies\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Reference Include="NationalInstruments.Common">
       <HintPath>..\DLL\NationalInstruments\NationalInstruments.Common.dll</HintPath>
     </Reference>

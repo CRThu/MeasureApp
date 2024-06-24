@@ -120,7 +120,13 @@ namespace CarrotCommFramework.Streams
                 while (!cancellationToken.IsCancellationRequested)
                 {
                     if (ReadAvailable)
-                        return Read(buffer, offset, count);
+                    {
+                        int retCount = Read(buffer, offset, count);
+                        if (retCount == 0)
+                            continue;
+                        else
+                            return retCount;
+                    }
                     else
                         await delayTask(delayTime);
                     //await HighPrecisionTimer.HighPrecisionTimer.Delay();
