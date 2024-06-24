@@ -1,4 +1,5 @@
 ﻿using CarrotCommFramework.Services;
+using CarrotCommFramework.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,19 +39,20 @@ namespace CarrotCommFramework.Sessions
         /// <returns></returns>
         public static List<SessionComponentInfo> Parse(string command)
         {
-            // SESSIONID
-            // +SERVICE1://INSTANCE1[@PARAM1[,PARAM2]...][;SERVICE2://INSTANCE2[@PARAM1[,PARAM2]...]]
-            // +SERVICE3://INSTANCE3[@PARAM1[,PARAM2]...][;SERVICE4://INSTANCE4[@PARAM1[,PARAM2]...]]
-            // +SERVICE5://INSTANCE5[@PARAM1[,PARAM2]...][;SERVICE6://INSTANCE6[@PARAM1[,PARAM2]...]]
-
             // 范例
+            /*
+            {
+                "session": { "service": "session", "instance" : "session1" },
+                "stream": { "service": "com", "instance" : "com250", "baudrate" : "115200", "databits": "8", "parity": "n", "stopbits": "1" },
+                "protocol": { "service": "cdpv1" },
+                "logger": [ { "service": "consolelogger" }, { "service": "datalogger", "instance": "dl1" } ],
+                "service": [ { "service": "recv" }, { "service": "parse" } ]
+            }
 
-            // COM://7@COM7,9600,8,N,1
-            // TCP://127.0.0.1:8888
+             */
 
-            // LOGGER
-            // CONSOLE://1
-            // CONSOLE://1@CH1;CONSOLE://2@CH2
+            var doc = JsonParser.Parse(command, true);
+
 
             List<SessionComponentInfo> infos = new();
 

@@ -9,6 +9,7 @@ using CarrotCommFramework.Protocols;
 using CarrotCommFramework.Streams;
 using System.Diagnostics;
 using CarrotCommFramework.Util;
+using System.Text.Json.Serialization;
 
 namespace CarrotCommFrameworkDemo
 {
@@ -16,6 +17,17 @@ namespace CarrotCommFrameworkDemo
     {
         static void Main(string[] args)
         {
+            var ele = JsonParser.Parse(
+                "{" +
+                "\"session\": [ { \"service\": \"session\", \"instance\": \"session1\" } ]," +
+                "\"stream\": [ { \"service\": \"com\", \"instance\": \"com250\", \"baudrate\": \"115200\", \"databits\": \"8\", \"parity\": \"n\", \"stopbits\": \"1\" } ]," +
+                "\"protocol\": [ { \"service\": \"cdpv1\" } ]," +
+                "\"logger\": [ { \"service\": \"consolelogger\"}, { \"service\": \"datalogger\", \"instance\": \"dl1\" } ]," +
+                "\"service\": [ { \"service\": \"recv\" }, { \"service\": \"parse\" } ]" +
+                "}");
+            Console.WriteLine(ele["service"][1]["service"].GetValue<string>());
+            return;
+
             // logger注册以及ioc模块日志创建object记录
             ProductProvider.Current.Container.RegisterInitializer<object>(
                 (anyObj, resolver) => Console.WriteLine($"Object {{{anyObj}}} Resolved."));
@@ -27,13 +39,6 @@ namespace CarrotCommFrameworkDemo
                 Console.WriteLine($"{deviceInfo}");
             }
 
-            //var s = SessionFactory.Current.CreateSession(
-            //    "S"
-            //    + "+COM://COM250"
-            //    + "+RAPV1://RAPV1"
-            //    + "+CONSOLE://CONSOLE.1;NLOG://NLOG.1"
-            //    + "+RECV;PARSE"
-            //    , SessionConfig.Empty);
 
             var s = SessionFactory.Current.CreateSession(
                 "SESSION1+COM://COM250"
