@@ -51,15 +51,66 @@ namespace CarrotCommFramework.Sessions
 
              */
 
-            var doc = JsonParser.Parse(command, true);
-
+            var ele = JsonParser.Parse(command, true)!;
 
             List<SessionComponentInfo> infos = new();
+            for (int i = 0; i < ele["session"]!.AsArray().Count; i++)
+            {
+                SessionComponentInfo session = new()
+                {
+                    InstanceName = ele["session"]![i]!["instance"]!.GetValue<string>(),
+                    ServiceName = ele["session"]![i]!["service"]!.GetValue<string>(),
+                    Type = ComponentType.SESSION,
+                    Params = []
+                };
+                infos.Add(session);
+            }
+            for (int i = 0; i < ele["stream"]!.AsArray().Count; i++)
+            {
+                SessionComponentInfo stream = new()
+                {
+                    InstanceName = ele["stream"]![i]!["instance"]!.GetValue<string>(),
+                    ServiceName = ele["stream"]![i]!["service"]!.GetValue<string>(),
+                    Type = ComponentType.STREAM,
+                    Params = [
+                        ele["stream"]![i]!["instance"]!.GetValue<string>(),]
+                };
+                infos.Add(stream);
+            }
+            for (int i = 0; i < ele["protocol"]!.AsArray().Count; i++)
+            {
+                SessionComponentInfo protocol = new()
+                {
+                    InstanceName = ele["protocol"]![i]!["instance"]!.GetValue<string>(),
+                    ServiceName = ele["protocol"]![i]!["service"]!.GetValue<string>(),
+                    Type = ComponentType.PROTOCOL,
+                    Params = []
+                };
+                infos.Add(protocol);
+            }
+            for (int i = 0; i < ele["logger"]!.AsArray().Count; i++)
+            {
+                SessionComponentInfo logger = new()
+                {
+                    InstanceName = ele["logger"]![i]!["instance"]!.GetValue<string>(),
+                    ServiceName = ele["logger"]![i]!["service"]!.GetValue<string>(),
+                    Type = ComponentType.LOGGER,
+                    Params = []
+                };
+                infos.Add(logger);
+            }
+            for (int i = 0; i < ele["service"]!.AsArray().Count; i++)
+            {
+                SessionComponentInfo service = new()
+                {
+                    InstanceName = ele["service"]![i]!["instance"]!.GetValue<string>(),
+                    ServiceName = ele["service"]![i]!["service"]!.GetValue<string>(),
+                    Type = ComponentType.SERVICE,
+                    Params = []
+                };
+                infos.Add(service);
+            }
 
-            string[] commandsSplitByType = command.Split('+');
-
-            for (int i = 0; i < commandsSplitByType.Length; i++)
-                infos.AddRange(commandsSplitByType[i].Split(';').Select(addr => ParseOne((ComponentType)i, addr)));
 
             return infos;
         }

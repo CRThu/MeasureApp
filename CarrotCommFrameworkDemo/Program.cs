@@ -17,16 +17,13 @@ namespace CarrotCommFrameworkDemo
     {
         static void Main(string[] args)
         {
-            var ele = JsonParser.Parse(
-                "{" +
+            string testSession = "{" +
                 "\"session\": [ { \"service\": \"session\", \"instance\": \"session1\" } ]," +
-                "\"stream\": [ { \"service\": \"com\", \"instance\": \"com250\", \"baudrate\": \"115200\", \"databits\": \"8\", \"parity\": \"n\", \"stopbits\": \"1\" } ]," +
-                "\"protocol\": [ { \"service\": \"cdpv1\" } ]," +
-                "\"logger\": [ { \"service\": \"consolelogger\"}, { \"service\": \"datalogger\", \"instance\": \"dl1\" } ]," +
-                "\"service\": [ { \"service\": \"recv\" }, { \"service\": \"parse\" } ]" +
-                "}");
-            Console.WriteLine(ele["service"][1]["service"].GetValue<string>());
-            return;
+                "\"stream\": [ { \"service\": \"COM\", \"instance\": \"COM250\", \"baudrate\": \"115200\", \"databits\": \"8\", \"parity\": \"n\", \"stopbits\": \"1\" } ]," +
+                "\"protocol\": [ { \"service\": \"RAPV1\", \"instance\": \"rapv1_inst1\" } ]," +
+                "\"logger\": [ { \"service\": \"CONSOLE\", \"instance\": \"consolelogger_inst1\"} ]," +
+                "\"service\": [ { \"service\": \"RECV\", \"instance\": \"recv_inst1\" }, { \"service\": \"PARSE\", \"instance\": \"parse_inst1\" } ]" +
+                "}";
 
             // logger注册以及ioc模块日志创建object记录
             ProductProvider.Current.Container.RegisterInitializer<object>(
@@ -41,8 +38,8 @@ namespace CarrotCommFrameworkDemo
 
 
             var s = SessionFactory.Current.CreateSession(
-                "SESSION1+COM://COM250"
-                , SessionConfig.Default);
+                testSession
+                , SessionConfig.Empty);
 
             s.Open();
 
