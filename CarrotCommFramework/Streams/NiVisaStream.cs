@@ -70,6 +70,8 @@ namespace CarrotCommFramework.Streams
                 Session = res;
             else
                 throw new Exception();
+
+            Session.Timeout = 30000;
         }
 
         /// <summary>
