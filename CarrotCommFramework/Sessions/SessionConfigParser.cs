@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 
 namespace CarrotCommFramework.Sessions
@@ -21,14 +23,7 @@ namespace CarrotCommFramework.Sessions
         /// <returns></returns>
         public static List<SessionComponentInfo> Parse(SessionConfig config)
         {
-            List<SessionComponentInfo> infos =
-            [
-                .. config.PresetSessionCommands.Select(c => ParseOne(ComponentType.SESSION, c)),
-                .. config.PresetStreamCommands.Select(c => ParseOne(ComponentType.STREAM, c)),
-                .. config.PresetProtocolCommands.Select(c => ParseOne(ComponentType.PROTOCOL, c)),
-                .. config.PresetLoggerCommands.Select(c => ParseOne(ComponentType.LOGGER, c)),
-                .. config.PresetServiceCommands.Select(c => ParseOne(ComponentType.SERVICE, c)),
-            ];
+            List<SessionComponentInfo> infos = [];
             return infos;
         }
 
@@ -51,117 +46,76 @@ namespace CarrotCommFramework.Sessions
 
              */
 
-            var ele = JsonParser.Parse(command, true)!;
+            var jsonDocument = JsonParser.ParseToJsonDocument(command, true)!;
+            var root = jsonDocument.RootElement;
 
             List<SessionComponentInfo> infos = new();
-            for (int i = 0; i < ele["session"]!.AsArray().Count; i++)
+            if (root.ValueKind == JsonValueKind.Object)
             {
-                SessionComponentInfo session = new()
+                // Get Property Name: session stream protocol logger service
+                foreach (JsonProperty property in root.EnumerateObject())
                 {
-                    InstanceName = ele["session"]![i]!["instance"]!.GetValue<string>(),
-                    ServiceName = ele["session"]![i]!["service"]!.GetValue<string>(),
-                    Type = ComponentType.SESSION,
-                    Params = []
-                };
-                infos.Add(session);
+                    //Console.WriteLine($"{property.Name}: {property.Value}");
+                    if (property.Value.ValueKind == JsonValueKind.Object)
+                    {
+                        var info = ParseInstance(property, property.Value);
+                        infos.Add(info);
+                    }
+                    else if (property.Value.ValueKind == JsonValueKind.Array)
+                    {
+                        foreach (JsonElement inst in property.Value.EnumerateArray())
+                        {
+                            var info = ParseInstance(property, inst);
+                            infos.Add(info);
+                        }
+                    }
+                    else
+                    {
+                        throw new NotImplementedException();
+                    }
+                }
             }
-            for (int i = 0; i < ele["stream"]!.AsArray().Count; i++)
+            else
             {
-                SessionComponentInfo stream = new()
-                {
-                    InstanceName = ele["stream"]![i]!["instance"]!.GetValue<string>(),
-                    ServiceName = ele["stream"]![i]!["service"]!.GetValue<string>(),
-                    Type = ComponentType.STREAM,
-                    Params = [
-                        ele["stream"]![i]!["instance"]!.GetValue<string>(),]
-                };
-                infos.Add(stream);
+                throw new NotImplementedException();
             }
-            for (int i = 0; i < ele["protocol"]!.AsArray().Count; i++)
-            {
-                SessionComponentInfo protocol = new()
-                {
-                    InstanceName = ele["protocol"]![i]!["instance"]!.GetValue<string>(),
-                    ServiceName = ele["protocol"]![i]!["service"]!.GetValue<string>(),
-                    Type = ComponentType.PROTOCOL,
-                    Params = []
-                };
-                infos.Add(protocol);
-            }
-            for (int i = 0; i < ele["logger"]!.AsArray().Count; i++)
-            {
-                SessionComponentInfo logger = new()
-                {
-                    InstanceName = ele["logger"]![i]!["instance"]!.GetValue<string>(),
-                    ServiceName = ele["logger"]![i]!["service"]!.GetValue<string>(),
-                    Type = ComponentType.LOGGER,
-                    Params = []
-                };
-                infos.Add(logger);
-            }
-            for (int i = 0; i < ele["service"]!.AsArray().Count; i++)
-            {
-                SessionComponentInfo service = new()
-                {
-                    InstanceName = ele["service"]![i]!["instance"]!.GetValue<string>(),
-                    ServiceName = ele["service"]![i]!["service"]!.GetValue<string>(),
-                    Type = ComponentType.SERVICE,
-                    Params = []
-                };
-                infos.Add(service);
-            }
-
 
             return infos;
         }
 
-        /// <summary>
-        /// 从字符串命令解析单个命令
-        /// </summary>
-        /// <param name="type"></param>
-        /// <param name="command"></param>
-        /// <returns></returns>
-        public static SessionComponentInfo ParseOne(ComponentType type, string command)
+        public static SessionComponentInfo ParseInstance(JsonProperty component, JsonElement inst)
         {
-            // SERVICE1://INSTANCE1[@PARAM1[,PARAM2]...]
-
-            // ServiceName:     SERVICE1
-            // InstanceName:    INSTANCE1
-            // Params:          INSTANCE1 [,PARAM1] [,PARAM2] [...]
-
             SessionComponentInfo info = new()
             {
-                Type = type
+                Type = SessionComponentInfo.ComponentDict[component.Name]
             };
 
-            int idx = command.IndexOf("://");
-            if (idx == -1)
+            if (inst.ValueKind == JsonValueKind.Object)
             {
-                info.ServiceName = command;
+                // Get Property Name: service instance etc..
+                foreach (JsonProperty p in inst.EnumerateObject())
+                {
+                    if (p.Value.ValueKind != JsonValueKind.String)
+                        throw new NotImplementedException();
+                    switch (p.Name)
+                    {
+                        case SessionComponentInfo.ComponentServicePropertyName:
+                            info.ServiceName = p.Value.GetString()!;
+                            break;
+                        case SessionComponentInfo.ComponentInstancePropertyName:
+                            info.InstanceName = p.Value.GetString()!;
+                            break;
+                        default:
+                            info.Params.Add(p.Name, p.Value.GetString()!);
+                            break;
+                    }
+                }
+                return info;
             }
             else
             {
-                info.ServiceName = command[..idx];
-
-                string temp = command[(idx + 3)..];
-                string[] strs = temp.Split('@', 2);
-
-                if (strs.Length == 1)
-                {
-                    info.InstanceName = temp;
-                    info.Params = [info.InstanceName];
-                }
-                else
-                {
-                    info.InstanceName = strs[0];
-                    info.Params = [.. (string[])[info.InstanceName, .. strs[1].Split(',')]];
-
-                    info.Params = info.Params.Where(s => !string.IsNullOrEmpty(s)).ToArray();
-                }
-
+                throw new NotImplementedException();
             }
-
-            return info;
         }
     }
 }

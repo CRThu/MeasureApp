@@ -1,6 +1,4 @@
 ﻿using CarrotCommFramework.Sessions;
-using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace CarrotCommFramework.Factory
 {
@@ -26,7 +24,7 @@ namespace CarrotCommFramework.Factory
             List<SessionComponentInfo> addrInfo = SessionConfigParser.Parse(config);
             addrInfo.AddRange(SessionConfigParser.Parse(addrs));
 
-
+            /*
             Session s = new();
             for (int i = 0; i < addrInfo.Count; i++)
             {
@@ -70,6 +68,8 @@ namespace CarrotCommFramework.Factory
             s.Bind();
             Sessions.Add(s.Name, s);
             return s;
+            */
+            return null;
         }
 
         public bool TryGet(string id, out Session? session)

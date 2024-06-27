@@ -6,21 +6,34 @@ using System.Threading.Tasks;
 
 namespace CarrotCommFramework.Sessions
 {
-    public enum ComponentType
-    {
-        SESSION,
-        STREAM,
-        PROTOCOL,
-        LOGGER,
-        SERVICE
-    }
 
     public class SessionComponentInfo
     {
+        public enum ComponentType
+        {
+            SESSION,
+            STREAM,
+            PROTOCOL,
+            LOGGER,
+            SERVICE
+        }
+
+        public static Dictionary<string, ComponentType> ComponentDict = new()
+        {
+            { "session", ComponentType.SESSION },
+            { "stream", ComponentType.STREAM },
+            { "protocol", ComponentType.PROTOCOL },
+            { "logger", ComponentType.LOGGER },
+            { "service", ComponentType.SERVICE }
+        };
+
+        public const string ComponentServicePropertyName = "service";
+        public const string ComponentInstancePropertyName = "instance";
+
         public ComponentType Type { get; set; }
         public string ServiceName { get; set; }
         public string InstanceName { get; set; }
-        public string[] Params { get; set; } = [];
+        public Dictionary<string, string> Params { get; set; } = [];
     }
 
     // TODO

@@ -17,7 +17,7 @@ namespace CarrotCommFramework.Drivers
 
         public override string ToString()
         {
-            return $"{Name} | {Description}";
+            return $"{Interface} | {Name} | {Description}";
         }
 
         public string ToAddr()

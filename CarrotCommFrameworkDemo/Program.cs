@@ -33,6 +33,13 @@ namespace CarrotCommFrameworkDemo
                 "\"service\": [ ]" +
                 "}";
 
+            var l = SessionConfigParser.Parse(testSession);
+            foreach (var ll in l)
+            {
+                Console.WriteLine($"{ll.Type}::{ll.ServiceName}::{ll.InstanceName}::{SerializationHelper.SerializeToString(ll.Params)}");
+            }
+            return;
+
             // logger注册以及ioc模块日志创建object记录
             ProductProvider.Current.Container.RegisterInitializer<object>(
                 (anyObj, resolver) => Console.WriteLine($"Object {{{anyObj}}} Resolved."));

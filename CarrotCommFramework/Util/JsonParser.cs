@@ -10,9 +10,14 @@ namespace CarrotCommFramework.Util
 {
     public class JsonParser
     {
-        public static JsonNode? Parse(string json, bool ignoreDoubleQuotes = false)
+        public static JsonNode? ParseToJsonNode(string json, bool ignoreDoubleQuotes = false)
         {
             return JsonNode.Parse(json);
+        }
+
+        public static JsonDocument? ParseToJsonDocument(string json, bool ignoreDoubleQuotes = false)
+        {
+            return JsonDocument.Parse(json);
         }
     }
 }
