@@ -17,12 +17,20 @@ namespace CarrotCommFrameworkDemo
     {
         static void Main(string[] args)
         {
+            //string testSession = "{" +
+            //    "\"session\": [ { \"service\": \"session\", \"instance\": \"session1\" } ]," +
+            //    "\"stream\": [ { \"service\": \"COM\", \"instance\": \"COM250\", \"baudrate\": \"115200\", \"databits\": \"8\", \"parity\": \"n\", \"stopbits\": \"1\" } ]," +
+            //    "\"protocol\": [ { \"service\": \"RAPV1\", \"instance\": \"rapv1_inst1\" } ]," +
+            //    "\"logger\": [ { \"service\": \"CONSOLE\", \"instance\": \"consolelogger_inst1\"} ]," +
+            //    "\"service\": [ { \"service\": \"RECV\", \"instance\": \"recv_inst1\" }, { \"service\": \"PARSE\", \"instance\": \"parse_inst1\" } ]" +
+            //    "}";
+
             string testSession = "{" +
                 "\"session\": [ { \"service\": \"session\", \"instance\": \"session1\" } ]," +
-                "\"stream\": [ { \"service\": \"COM\", \"instance\": \"COM250\", \"baudrate\": \"115200\", \"databits\": \"8\", \"parity\": \"n\", \"stopbits\": \"1\" } ]," +
+                "\"stream\": [ { \"service\": \"VISA\", \"instance\": \"TCPIP0::192.168.1.2::inst0::INSTR\", \"baudrate\": \"115200\", \"databits\": \"8\", \"parity\": \"n\", \"stopbits\": \"1\" } ]," +
                 "\"protocol\": [ { \"service\": \"RAPV1\", \"instance\": \"rapv1_inst1\" } ]," +
                 "\"logger\": [ { \"service\": \"CONSOLE\", \"instance\": \"consolelogger_inst1\"} ]," +
-                "\"service\": [ { \"service\": \"RECV\", \"instance\": \"recv_inst1\" }, { \"service\": \"PARSE\", \"instance\": \"parse_inst1\" } ]" +
+                "\"service\": [ ]" +
                 "}";
 
             // logger注册以及ioc模块日志创建object记录
@@ -44,10 +52,26 @@ namespace CarrotCommFrameworkDemo
             s.Open();
 
             Console.WriteLine("WRITE...");
-            s.Write(new("ABCDE".AsciiToBytes()));
-            Console.WriteLine("RECV...");
-            Console.WriteLine("PRESS ANY KEY TO EXIT");
-            Console.ReadKey();
+            //s.Write(new("ABCDE".AsciiToBytes()));
+            BatchWriter.RunFromFile(s, "D:\\Projects\\NB2408\\testcmd.txt", 100);
+            byte[] rx = new byte[1024];
+            for (int i = 0; i < 16; i++)
+            {
+                ///// INT
+                //s.Write(new("*CLS\r\n".AsciiToBytes()));
+                //Thread.Sleep(100);
+                //s.Write(new("*TRG\r\n".AsciiToBytes()));
+                //Thread.Sleep(100);
+                //while (true)
+                //{
+                //    s.Write(new("*STB?\r\n".AsciiToBytes()));
+                //    int len = s.Read(rx, 0, 1024);
+                //    Console.WriteLine($"{rx.Take(len).ToArray().BytesToAscii().Replace("\n", "")}");
+                //    if (len > 3)
+                //        break;
+                //    Thread.Sleep(100);
+                //}
+            }
             Console.WriteLine("COMPLETE REQUEST...");
             s.Close();
 
