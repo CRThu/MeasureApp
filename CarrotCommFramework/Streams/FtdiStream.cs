@@ -52,17 +52,7 @@ namespace CarrotCommFramework.Streams
 
             Ftdi = new FTDI();
 
-            if (@params.Count > 0)
-                SerialNumber = @params["id"];
-
-            //if (@params.Length > 1)
-            //    Driver.BaudRate = Convert.ToInt32(@params[1]);
-            //if (@params.Length > 2)
-            //    Driver.DataBits = Convert.ToInt32(@params[2]);
-            //if (@params.Length > 3)
-            //    Driver.Parity = SerialPortHelper.ParityString2Enum(@params[3]);
-            //if (@params.Length > 4)
-            //    Driver.StopBits = SerialPortHelper.StopBitsFloat2Enum(Convert.ToDouble(@params[4]));
+            SerialNumber = @params.TryGetValue("id", out string? value) ? value : string.Empty;
 
             // TODO TIMEOUT/MASK/MODE
         }

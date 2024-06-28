@@ -40,16 +40,11 @@ namespace CarrotCommFramework.Streams
             //Driver.ReadTimeout = 10;
             //Driver.WriteTimeout = 10;
 
-            if (@params.Count > 0)
-                Driver.PortName = @params["port"];
-            if (@params.Count > 1)
-                Driver.BaudRate = Convert.ToInt32(@params["baudrate"]);
-            if (@params.Count > 2)
-                Driver.DataBits = Convert.ToInt32(@params["databits"]);
-            if (@params.Count > 3)
-                Driver.Parity = SerialPortHelper.ParityString2Enum(@params["parity"]);
-            if (@params.Count > 4)
-                Driver.StopBits = SerialPortHelper.StopBitsFloat2Enum(Convert.ToDouble(@params["stopbits"]));
+            Driver.PortName = @params.TryGetValue("port", out string? value1) ? value1 : string.Empty;
+            Driver.BaudRate = @params.TryGetValue("baudrate", out string? value2) ? Convert.ToInt32(value2) : 115200;
+            Driver.DataBits = @params.TryGetValue("databits", out string? value3) ? Convert.ToInt32(value3) : 8;
+            Driver.Parity = @params.TryGetValue("parity", out string? value4) ? SerialPortHelper.ParityString2Enum(value4) : Parity.None;
+            Driver.StopBits = @params.TryGetValue("stopbits", out string? value5) ? SerialPortHelper.StopBitsFloat2Enum(Convert.ToDouble(value5)) : StopBits.One;
         }
 
         /// <summary>

@@ -16,10 +16,6 @@ namespace CarrotCommFramework.Streams
 {
     public class NiVisaStream : StreamBase
     {
-        public NiVisaStream()
-        {
-            // TODO
-        }
 
         /// <summary>
         /// 流指示有数据
@@ -28,7 +24,7 @@ namespace CarrotCommFramework.Streams
         {
             get
             {
-                return true;
+                throw new NotImplementedException();
             }
         }
 
@@ -39,17 +35,17 @@ namespace CarrotCommFramework.Streams
 
         protected string Addr { get; set; }
 
+        public NiVisaStream()
+        {
+        }
+
         /// <summary>
         /// 配置解析和初始化
         /// </summary>
         /// <param name="params"></param>
         public override void Config(IDictionary<string, string> @params = default!)
         {
-            if (@params.Count == 0)
-                return;
-
-            if (@params.Count > 0)
-                Addr = @params["address"];
+            Addr = @params.TryGetValue("address", out string? value) ? value : string.Empty;
         }
 
         /// <summary>

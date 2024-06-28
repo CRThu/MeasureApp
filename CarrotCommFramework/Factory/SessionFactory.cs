@@ -12,14 +12,6 @@ namespace CarrotCommFramework.Factory
 
         public Dictionary<string, Session> Sessions { get; private set; } = new();
 
-        private static Dictionary<ComponentType, Action<string, string, IDictionary<string, string>>> ComponentCreatorDict = new()
-        {
-            { ComponentType.STREAM, (a, b, c) => StreamFactory.Current.Get(a, b, c) },
-            { ComponentType.LOGGER, (a, b, c) => LoggerFactory.Current.Get(a, b, c) },
-            { ComponentType.PROTOCOL, (a, b, c) => ProtocolFactory.Current.Get(a, b, c) },
-            { ComponentType.SERVICE, (a, b, c) => ServiceFactory.Current.Get(a, b, c) },
-        };
-
         public SessionFactory()
         {
         }
@@ -31,16 +23,15 @@ namespace CarrotCommFramework.Factory
                 config = SessionConfig.Empty;
             }
 
-            config = SessionConfigParser.Parse(addrs);
+            var parseConfig = SessionConfigParser.Parse(addrs);
+
+            for (int i = 0; i < parseConfig.Components.Count; i++)
+                config.Add(parseConfig.Components[i]);
 
             Session s = new();
             for (int i = 0; i < config.Components.Count; i++)
             {
                 SessionComponentInfo info = config.Components[i];
-
-                // if addr is ~ then don't config
-                if (info.ServiceName == "~")
-                    continue;
 
                 switch (info.Type)
                 {
