@@ -45,15 +45,15 @@ namespace CarrotCommFramework.Streams
         /// 配置解析和初始化
         /// </summary>
         /// <param name="params"></param>
-        public override void Config(string[] @params = default!)
+        public override void Config(IDictionary<string, string> @params = default!)
         {
-            if (@params.Length == 0)
+            if (@params.Count == 0)
                 return;
 
             Ftdi = new FTDI();
 
-            if (@params.Length > 0)
-                SerialNumber = @params[0];
+            if (@params.Count > 0)
+                SerialNumber = @params["id"];
 
             //if (@params.Length > 1)
             //    Driver.BaudRate = Convert.ToInt32(@params[1]);

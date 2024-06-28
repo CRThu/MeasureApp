@@ -55,7 +55,7 @@ namespace CarrotCommFramework.Factory
         //        throw new NotImplementedException($"No Service {serviceKey}.");
         //}
 
-        public ISessionServiceBase Get(string serviceKey, string instanceKey, string[] @params = default!)
+        public ISessionServiceBase Get(string serviceKey, string instanceKey, IDictionary<string, string> @params = default!)
         {
             if (Services.TryGetValue(instanceKey, out var instance))
                 return instance;

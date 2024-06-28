@@ -54,7 +54,7 @@ namespace CarrotCommFramework.Factory
         //        throw new NotImplementedException($"No Stream {serviceKey}.");
         //}
 
-        public IAsyncStream Get(string serviceKey, string instanceKey, string[] @params = default!)
+        public IAsyncStream Get(string serviceKey, string instanceKey, IDictionary<string, string> @params = default!)
         {
             if (Streams.TryGetValue(instanceKey, out var instance))
                 return instance;

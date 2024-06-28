@@ -81,7 +81,7 @@ namespace CarrotCommFramework.Streams
             BaseStream.Write(buffer, offset, count);
         }
 
-        public override void Config(string[] @params = null)
+        public override void Config(IDictionary<string, string> @params = null)
         {
 
         }

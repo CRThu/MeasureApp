@@ -22,7 +22,7 @@ namespace CarrotCommFramework.Loggers
         /// 配置解析和初始化
         /// </summary>
         /// <param name="params"></param>
-        public void Config(string[] @params = default!);
+        public void Config(IDictionary<string, string> @params = default!);
 
         /// <summary>
         /// 记录事件回调委托
@@ -76,7 +76,7 @@ namespace CarrotCommFramework.Loggers
         /// 记录器配置方法
         /// </summary>
         /// <param name="params">配置参数</param>
-        public virtual void Config(string[] @params = null)
+        public virtual void Config(IDictionary<string, string> @params = null)
         {
 
         }

@@ -43,13 +43,13 @@ namespace CarrotCommFramework.Streams
         /// 配置解析和初始化
         /// </summary>
         /// <param name="params"></param>
-        public override void Config(string[] @params = default!)
+        public override void Config(IDictionary<string, string> @params = default!)
         {
-            if (@params.Length == 0)
+            if (@params.Count == 0)
                 return;
 
-            if (@params.Length > 0)
-                Addr = @params[0];
+            if (@params.Count > 0)
+                Addr = @params["address"];
         }
 
         /// <summary>

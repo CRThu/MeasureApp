@@ -31,25 +31,25 @@ namespace CarrotCommFramework.Streams
         /// 配置解析和初始化
         /// </summary>
         /// <param name="params"></param>
-        public override void Config(string[] @params = default!)
+        public override void Config(IDictionary<string, string> @params = default!)
         {
-            if (@params.Length == 0)
+            if (@params.Count == 0)
                 return;
 
             Driver = new SerialPort();
             //Driver.ReadTimeout = 10;
             //Driver.WriteTimeout = 10;
 
-            if (@params.Length > 0)
-                Driver.PortName = @params[0];
-            if (@params.Length > 1)
-                Driver.BaudRate = Convert.ToInt32(@params[1]);
-            if (@params.Length > 2)
-                Driver.DataBits = Convert.ToInt32(@params[2]);
-            if (@params.Length > 3)
-                Driver.Parity = SerialPortHelper.ParityString2Enum(@params[3]);
-            if (@params.Length > 4)
-                Driver.StopBits = SerialPortHelper.StopBitsFloat2Enum(Convert.ToDouble(@params[4]));
+            if (@params.Count > 0)
+                Driver.PortName = @params["port"];
+            if (@params.Count > 1)
+                Driver.BaudRate = Convert.ToInt32(@params["baudrate"]);
+            if (@params.Count > 2)
+                Driver.DataBits = Convert.ToInt32(@params["databits"]);
+            if (@params.Count > 3)
+                Driver.Parity = SerialPortHelper.ParityString2Enum(@params["parity"]);
+            if (@params.Count > 4)
+                Driver.StopBits = SerialPortHelper.StopBitsFloat2Enum(Convert.ToDouble(@params["stopbits"]));
         }
 
         /// <summary>

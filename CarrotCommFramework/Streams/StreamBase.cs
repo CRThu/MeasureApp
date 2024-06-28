@@ -25,7 +25,7 @@ namespace CarrotCommFramework.Streams
         /// 配置解析和初始化
         /// </summary>
         /// <param name="params"></param>
-        public void Config(string[] @params = default!);
+        public void Config(IDictionary<string, string> @params = default!);
 
         /// <summary>
         /// 打开流
@@ -79,7 +79,7 @@ namespace CarrotCommFramework.Streams
         public Pipe Pipe { get; set; } = new();
 
 
-        public abstract void Config(string[] @params = null);
+        public abstract void Config(IDictionary<string, string> @params = null);
 
         public abstract void Open();
 

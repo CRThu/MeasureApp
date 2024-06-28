@@ -17,22 +17,11 @@ namespace CarrotCommFramework.Sessions
     public class SessionConfigParser
     {
         /// <summary>
-        /// 从配置类解析
-        /// </summary>
-        /// <param name="config"></param>
-        /// <returns></returns>
-        public static List<SessionComponentInfo> Parse(SessionConfig config)
-        {
-            List<SessionComponentInfo> infos = [];
-            return infos;
-        }
-
-        /// <summary>
         /// 从字符串命令解析
         /// </summary>
         /// <param name="command"></param>
         /// <returns></returns>
-        public static List<SessionComponentInfo> Parse(string command)
+        public static SessionConfig Parse(string command)
         {
             // 范例
             /*
@@ -49,7 +38,7 @@ namespace CarrotCommFramework.Sessions
             var jsonDocument = JsonParser.ParseToJsonDocument(command, true)!;
             var root = jsonDocument.RootElement;
 
-            List<SessionComponentInfo> infos = new();
+            SessionConfig cfg = new();
             if (root.ValueKind == JsonValueKind.Object)
             {
                 // Get Property Name: session stream protocol logger service
@@ -59,14 +48,14 @@ namespace CarrotCommFramework.Sessions
                     if (property.Value.ValueKind == JsonValueKind.Object)
                     {
                         var info = ParseInstance(property, property.Value);
-                        infos.Add(info);
+                        cfg.Add(info);
                     }
                     else if (property.Value.ValueKind == JsonValueKind.Array)
                     {
                         foreach (JsonElement inst in property.Value.EnumerateArray())
                         {
                             var info = ParseInstance(property, inst);
-                            infos.Add(info);
+                            cfg.Add(info);
                         }
                     }
                     else
@@ -80,7 +69,7 @@ namespace CarrotCommFramework.Sessions
                 throw new NotImplementedException();
             }
 
-            return infos;
+            return cfg;
         }
 
         public static SessionComponentInfo ParseInstance(JsonProperty component, JsonElement inst)

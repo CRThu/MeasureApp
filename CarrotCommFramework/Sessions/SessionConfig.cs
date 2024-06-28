@@ -1,8 +1,12 @@
-﻿using System;
+﻿using DryIoc.ImTools;
+using NationalInstruments.Restricted;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static CarrotCommFramework.Sessions.SessionComponentInfo;
 
 namespace CarrotCommFramework.Sessions
 {
@@ -39,32 +43,47 @@ namespace CarrotCommFramework.Sessions
     // TODO
     public class SessionConfig
     {
-        public static SessionConfig Default { get; set; } = new()
-        {
-            PresetSessionCommands = ["DEFAULT_SESSION"],
-            PresetProtocolCommands = ["RAPV1://RAPV1"],
-            PresetLoggerCommands = ["CONSOLE://CON1", "NLOG://NLOG1"],
-            //PresetServiceCommands = ["RECV", "PARSE"]
-        };
+        private static readonly Dictionary<(ComponentType, string), int> AutoGenerateInstanceCount = new();
+
+        public static SessionConfig Default { get; set; } = new();
+
+
+        //PresetSessionCommands = ["DEFAULT_SESSION"],
+        //PresetProtocolCommands = ["RAPV1://RAPV1"],
+        //PresetLoggerCommands = ["CONSOLE://CON1", "NLOG://NLOG1"],
+        //PresetServiceCommands = ["RECV", "PARSE"]
 
         public static SessionConfig Empty { get; set; } = new();
 
-        public List<string> PresetSessionCommands { get; set; } = [];
-        public List<string> PresetStreamCommands { get; set; } = [];
-        public List<string> PresetProtocolCommands { get; set; } = [];
-        public List<string> PresetLoggerCommands { get; set; } = [];
-        public List<string> PresetServiceCommands { get; set; } = [];
+        public List<SessionComponentInfo> Components { get; private set; } = [];
 
         public SessionConfig()
         {
+
         }
-        public SessionConfig(SessionConfig config)
+
+        public static SessionConfig Create(string componentsConfig)
         {
-            PresetSessionCommands = new List<string>(config.PresetSessionCommands);
-            PresetStreamCommands = new List<string>(config.PresetStreamCommands);
-            PresetProtocolCommands = new List<string>(config.PresetProtocolCommands);
-            PresetLoggerCommands = new List<string>(config.PresetLoggerCommands);
-            PresetServiceCommands = new List<string>(config.PresetServiceCommands);
+            SessionConfig sc = SessionConfigParser.Parse(componentsConfig);
+            return sc;
+        }
+
+        public void GenerateInstanceName(SessionComponentInfo info)
+        {
+            if (string.IsNullOrEmpty(info.InstanceName))
+            {
+                if (!AutoGenerateInstanceCount.TryGetValue((info.Type, info.ServiceName), out int val))
+                    AutoGenerateInstanceCount.Add((info.Type, info.ServiceName), 0);
+                else
+                    val++;
+                info.InstanceName = $"{info.ServiceName}_inst{val}";
+            }
+        }
+
+        public void Add(SessionComponentInfo info)
+        {
+            GenerateInstanceName(info);
+            Components.Add(info);
         }
     }
 }

@@ -57,7 +57,7 @@ namespace CarrotCommFramework.Factory
         //        throw new NotImplementedException($"No Protocol {serviceKey}.");
         //}
 
-        public IProtocol Get(string serviceKey, string instanceKey, string[] @params = default!)
+        public IProtocol Get(string serviceKey, string instanceKey, IDictionary<string, string> @params = default!)
         {
             if (Protocols.TryGetValue(instanceKey, out var instance))
                 return instance;

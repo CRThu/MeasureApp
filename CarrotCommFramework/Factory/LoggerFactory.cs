@@ -56,7 +56,7 @@ namespace CarrotCommFramework.Factory
         //        throw new NotImplementedException($"No Logger {serviceKey}.");
         //}
 
-        public ILogger Get(string serviceKey, string instanceKey, string[] @params = default!)
+        public ILogger Get(string serviceKey, string instanceKey, IDictionary<string, string> @params = default!)
         {
             if (Loggers.TryGetValue(instanceKey, out var instance))
                 return instance;

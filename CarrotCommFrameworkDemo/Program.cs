@@ -26,15 +26,15 @@ namespace CarrotCommFrameworkDemo
             //    "}";
 
             string testSession = "{" +
-                "\"session\": [ { \"service\": \"session\", \"instance\": \"session1\" } ]," +
-                "\"stream\": [ { \"service\": \"VISA\", \"instance\": \"TCPIP0::192.168.1.2::inst0::INSTR\", \"baudrate\": \"115200\", \"databits\": \"8\", \"parity\": \"n\", \"stopbits\": \"1\" } ]," +
-                "\"protocol\": [ { \"service\": \"RAPV1\", \"instance\": \"rapv1_inst1\" } ]," +
-                "\"logger\": [ { \"service\": \"CONSOLE\", \"instance\": \"consolelogger_inst1\"} ]," +
+                "\"session\": [ { \"service\": \"session\" } ]," +
+                "\"stream\": [ { \"service\": \"VISA\", \"address\": \"TCPIP0::192.168.1.2::inst0::INSTR\", \"baudrate\": \"115200\", \"databits\": \"8\", \"parity\": \"n\", \"stopbits\": \"1\" } ]," +
+                "\"protocol\": [ { \"service\": \"RAPV1\" } ]," +
+                "\"logger\": [ { \"service\": \"CONSOLE\" } ]," +
                 "\"service\": [ ]" +
                 "}";
 
-            var l = SessionConfigParser.Parse(testSession);
-            foreach (var ll in l)
+            var sc = SessionConfig.Create(testSession);
+            foreach (var ll in sc.Components)
             {
                 Console.WriteLine($"{ll.Type}::{ll.ServiceName}::{ll.InstanceName}::{SerializationHelper.SerializeToString(ll.Params)}");
             }
