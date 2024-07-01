@@ -17,6 +17,69 @@ namespace CarrotCommFrameworkDemo
     {
         static void Main(string[] args)
         {
+
+            // logger注册以及ioc模块日志创建object记录
+            ProductProvider.Current.Container.RegisterInitializer<object>(
+                (anyObj, resolver) => Console.WriteLine($"Object {{{anyObj}}} Resolved."));
+
+            // 查找现有设备
+            var deviceInfos = DriverFactory.Current.FindDevices();
+            foreach (var deviceInfo in deviceInfos)
+            {
+                Console.WriteLine($"{deviceInfo}");
+            }
+
+            string ad4630BoardSessionStr = "{" +
+                "\"session\": [ { \"service\": \"ad4630\" } ]," +
+                "\"stream\": [ { \"service\": \"FTDI\", \"SerialNumber\": \"AAAAAAAA\" } ]," +
+                "\"protocol\": [ { \"service\": \"CDPV1\" } ]," +
+                "\"logger\": [ { \"service\": \"CONSOLE\" } ]," +
+                "\"service\": [ { \"service\": \"RECV\" }, { \"service\": \"PARSE\" } ]" +
+                "}";
+            string dac11001BoardSessionStr = "{" +
+                "\"session\": [ { \"service\": \"dac11001\" } ]," +
+                "\"stream\": [ { \"service\": \"COM\", \"Address\": \"COM250\" } ]," +
+                "\"protocol\": [ { \"service\": \"CDPV1\" } ]," +
+                "\"logger\": [ { \"service\": \"CONSOLE\" } ]," +
+                "\"service\": [ { \"service\": \"RECV\" }, { \"service\": \"PARSE\" } ]" +
+                "}";
+            string keysight3458ABoardSessionStr = "{" +
+                "\"session\": [ { \"service\": \"3458a\" } ]," +
+                "\"stream\": [ { \"service\": \"VISA\", \"Address\": \"GPIB::22::INSTR\" } ]," +
+                "\"protocol\": [ { \"service\": \"RAPV1\" } ]," +
+                "\"logger\": [ { \"service\": \"CONSOLE\" } ]," +
+                "\"service\": [  ]" +
+                "}";
+
+            var ad4630Session = SessionFactory.Current.CreateSession(ad4630BoardSessionStr, SessionConfig.Empty);
+            var dac11001Session = SessionFactory.Current.CreateSession(dac11001BoardSessionStr, SessionConfig.Empty);
+            var keysight3458ASession = SessionFactory.Current.CreateSession(keysight3458ABoardSessionStr, SessionConfig.Empty);
+
+            ad4630Session.Open();
+            dac11001Session.Open();
+            keysight3458ASession.Open();
+            byte[] bytes = new byte[1024];
+
+            for (int i = 0; i < 16; i++)
+            {
+                dac11001Session.Write(new RawAsciiProtocolPacket("DAC11001.SET.VOLT;1.000000;".AsciiToBytes()));
+                _ = keysight3458ASession.Read(bytes, 0, bytes.Length);
+                int cnt = keysight3458ASession.Read(bytes, 0, bytes.Length);
+                // TODO
+                ad4630Session.Write(new CarrotDataProtocolPacket([0x06, 0x01], 0xA0, 0));
+
+                while(true)
+                {
+                    ;
+                }
+            }
+
+            ad4630Session.Close();
+            dac11001Session.Close();
+            keysight3458ASession.Close();
+
+            return;
+            /*
             //string testSession = "{" +
             //    "\"session\": [ { \"service\": \"session\", \"instance\": \"session1\" } ]," +
             //    "\"stream\": [ { \"service\": \"COM\", \"instance\": \"COM250\", \"baudrate\": \"115200\", \"databits\": \"8\", \"parity\": \"n\", \"stopbits\": \"1\" } ]," +
@@ -94,6 +157,7 @@ namespace CarrotCommFrameworkDemo
             //var readLen = s.Stream.Read(rdBuf, 0, rdBuf.Length);
             //Console.WriteLine($"{readLen}");
             //s.Stream.Close();
+            */
         }
     }
 

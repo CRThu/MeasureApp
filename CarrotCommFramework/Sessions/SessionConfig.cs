@@ -40,11 +40,14 @@ namespace CarrotCommFramework.Sessions
         public Dictionary<string, string> Params { get; set; } = [];
     }
 
+    public static class SessionConfigInstanceCounter
+    {
+        public static readonly Dictionary<(ComponentType, string), int> AutoGenerateInstanceCount = new();
+    }
+
     // TODO
     public class SessionConfig
     {
-        private static readonly Dictionary<(ComponentType, string), int> AutoGenerateInstanceCount = new();
-
         public static SessionConfig Default { get; set; } = new();
 
 
@@ -72,11 +75,12 @@ namespace CarrotCommFramework.Sessions
         {
             if (string.IsNullOrEmpty(info.InstanceName))
             {
-                if (!AutoGenerateInstanceCount.TryGetValue((info.Type, info.ServiceName), out int val))
-                    AutoGenerateInstanceCount.Add((info.Type, info.ServiceName), 0);
+                if (!SessionConfigInstanceCounter.AutoGenerateInstanceCount.TryGetValue((info.Type, info.ServiceName), out int val))
+                    SessionConfigInstanceCounter.AutoGenerateInstanceCount.Add((info.Type, info.ServiceName), 0);
                 else
-                    val++;
+                    SessionConfigInstanceCounter.AutoGenerateInstanceCount[(info.Type, info.ServiceName)] = (val + 1);
                 info.InstanceName = $"{info.ServiceName}_inst{val}";
+                //Console.WriteLine($"({info.Type}, {info.ServiceName}):{val}");
             }
         }
 
