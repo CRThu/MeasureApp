@@ -62,15 +62,15 @@ namespace CarrotCommFrameworkDemo
 
             for (int i = 0; i < 16; i++)
             {
-                dac11001Session.Write(new RawAsciiProtocolPacket("DAC11001.SET.VOLT;1.000000;".AsciiToBytes()));
+                dac11001Session.Write(new RawAsciiProtocolPacket("DAC11001.SET.VOLT;1.000000;"));
                 _ = keysight3458ASession.Read(bytes, 0, bytes.Length);
                 int cnt = keysight3458ASession.Read(bytes, 0, bytes.Length);
                 // TODO
-                ad4630Session.Write(new CarrotDataProtocolPacket([0x06, 0x01], 0xA0, 0));
+                ad4630Session.Write(new CdpRegisterPacket(0, 0, 0x06, 0x01));
 
-                while(true)
+                while (true)
                 {
-                    ;
+                    break;
                 }
             }
 

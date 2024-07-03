@@ -75,23 +75,24 @@ namespace CarrotCommFramework.Sessions
 
         public void Write(Packet s)
         {
-            foreach (var stream in Streams)
-            {
-                var tx = s.Bytes;
-                stream.Write(tx, 0, tx.Length);
+            var tx = s.Bytes;
+            Streams[0].Write(tx, 0, tx.Length);
 
-                foreach (var logger in Loggers)
+            foreach (var logger in Loggers)
+            {
+                logger.Log(this, new LogEventArgs()
                 {
-                    logger.Log(this, new LogEventArgs()
-                    {
-                        Time = DateTime.Now,
-                        From = "TX",
-                        Packet = s
-                    });
-                }
+                    Time = DateTime.Now,
+                    From = "TX",
+                    Packet = s
+                });
             }
         }
 
+        public void Write(byte[] buffer, int offset, int count)
+        {
+            Streams[0].Write(buffer, offset, count);
+        }
 
         public int Read(byte[] buffer, int offset, int count)
         {

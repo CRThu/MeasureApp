@@ -1,6 +1,8 @@
-﻿using System;
+﻿using CarrotCommFramework.Util;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -25,6 +27,10 @@ namespace CarrotCommFramework.Protocols
         public virtual byte? ProtocolId => null;
         public virtual byte? StreamId => null;
 
+        public Packet()
+        {
+        }
+
         /// <summary>
         /// 构造函数
         /// </summary>
@@ -33,14 +39,19 @@ namespace CarrotCommFramework.Protocols
             Bytes = bytes;
         }
 
-        public Packet(byte[] payload, byte? protocolId, byte? streamId)
-        {
-            Bytes = Pack(payload, protocolId, streamId);
-        }
-
-        public virtual byte[] Pack(byte[] payload, byte? protocolId, byte? streamId)
-        {
-            return [];
-        }
     }
+
+    public interface IMessagePacket
+    {
+        public byte[] Encode(string msg);
+
+        public string Decode(byte[] bytes);
+    }
+
+    public interface IRegisterPacket
+    {
+        public byte[] Encode(int oper, int regfile, int addr, int data);
+
+        public (int control, int regfile, int addr, int data) Decode(byte[] bytes);
+}
 }

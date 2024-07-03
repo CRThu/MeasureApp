@@ -73,7 +73,7 @@ namespace CarrotProtocolCommDemo.ViewModel
         {
             AppLogger.Log("RAP SEND CLICKED");
 
-            var packet = SessionInstance.Protocols[0].Encode(RapText.AsciiToBytes(), 0, 0);
+            var packet = new RawAsciiProtocolPacket(RapText);
             SessionInstance?.Write(packet);
 
             AppLogger.Log($"SESSION WRITE:{RapText}");
@@ -84,10 +84,10 @@ namespace CarrotProtocolCommDemo.ViewModel
         {
             AppLogger.Log("CDP SEND CLICKED");
 
-            var packet = SessionInstance.Protocols[0].Encode(CdpText.AsciiToBytes(), ProtocolId, StreamId);
+            var packet = new CdpMessagePacket(CdpText);
             SessionInstance?.Write(packet);
 
-            AppLogger.Log($"SESSION WRITE:{CdpText}, {ProtocolId}, {StreamId}");
+            AppLogger.Log($"SESSION WRITE:{CdpText}");
         }
 
         [RelayCommand]
@@ -95,20 +95,10 @@ namespace CarrotProtocolCommDemo.ViewModel
         {
             AppLogger.Log("CDP SEND CLICKED");
 
-            byte[] payload = new byte[16];
-            byte[] RwnBytes = CdpRegRwnText.IntToBytes();
-            byte[] RegfileBytes = 0.IntToBytes();
-            byte[] AddressBytes = CdpRegRegText.IntToBytes();
-            byte[] ValueBytes = CdpRegDatText.IntToBytes();
-            Array.Copy(RwnBytes, 0, payload, 0, 4);
-            Array.Copy(RegfileBytes, 0, payload, 4, 4);
-            Array.Copy(AddressBytes, 0, payload, 8, 4);
-            Array.Copy(ValueBytes, 0, payload, 12, 4);
-
-            var packet = SessionInstance.Protocols[0].Encode(payload, 0xA0, 0x00);
+            var packet = new CdpRegisterPacket(CdpRegRwnText, 0, CdpRegRegText, CdpRegDatText);
             SessionInstance?.Write(packet);
 
-            AppLogger.Log($"SESSION WRITE:{payload.BytesToHexString()}, {0xA0}, {0x00}");
+            AppLogger.Log($"SESSION WRITE:{packet.Bytes.BytesToHexString()}, {0xA0}, {0x00}");
         }
 
 

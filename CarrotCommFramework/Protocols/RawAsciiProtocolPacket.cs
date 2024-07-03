@@ -10,7 +10,7 @@ namespace CarrotCommFramework.Protocols
     /// <summary>
     /// 数据包
     /// </summary>
-    public class RawAsciiProtocolPacket : Packet
+    public class RawAsciiProtocolPacket : Packet, IMessagePacket
     {
         /// <summary>
         /// 数据包可阅读信息
@@ -27,16 +27,21 @@ namespace CarrotCommFramework.Protocols
         {
         }
 
-        public RawAsciiProtocolPacket(byte[] payload, byte? protocolId, byte? streamId)
-            : base(payload, protocolId, streamId)
+        public RawAsciiProtocolPacket(string msg)
         {
+            Encode(msg);
         }
 
-        public override byte[] Pack(byte[] payload, byte? protocolId, byte? streamId)
+        public byte[] Encode(string msg)
         {
-            byte[] packets = [.. payload, .. "\r\n".AsciiToBytes()];
+            byte[] packets = (msg + "\r\n").AsciiToBytes();
 
             return packets;
+        }
+
+        public string Decode(byte[] bytes)
+        {
+            throw new NotImplementedException();
         }
     }
 }

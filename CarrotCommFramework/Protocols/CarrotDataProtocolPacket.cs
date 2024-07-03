@@ -31,6 +31,14 @@ namespace CarrotCommFramework.Protocols
         public const byte ProtocolIdRegisterOper = 0xA0;
         public const byte ProtocolIdRegisterReply = 0xA8;
 
+        public CarrotDataProtocolPacket() : base()
+        {
+        }
+
+        public CarrotDataProtocolPacket(byte[] bytes) : base(bytes)
+        {
+        }
+
         /// <summary>
         /// 预设协议长度
         /// </summary>
@@ -77,18 +85,6 @@ namespace CarrotCommFramework.Protocols
         public override byte? ProtocolId => Bytes?[1];
         public override byte? StreamId => Bytes?[4];
 
-        /// <summary>
-        /// 构造函数
-        /// </summary>
-        public CarrotDataProtocolPacket(byte[] bytes) : base(bytes)
-        {
-        }
-
-        public CarrotDataProtocolPacket(byte[] payload, byte? protocolId, byte? streamId)
-            : base(payload, protocolId, streamId)
-        {
-        }
-
 
         public string GetDisplayMessage()
         {
@@ -108,7 +104,7 @@ namespace CarrotCommFramework.Protocols
             }
         }
 
-        public override byte[] Pack(byte[] payload, byte? protocolId, byte? streamId)
+        public byte[] Pack(byte[] payload, byte? protocolId, byte? streamId)
         {
             int len = GetPacketLength((byte)protocolId);
             byte[] bytes = new byte[len];
@@ -173,4 +169,51 @@ namespace CarrotCommFramework.Protocols
 
     }
 
+
+    public class CdpRegisterPacket : CarrotDataProtocolPacket, IRegisterPacket
+    {
+        public CdpRegisterPacket(int oper, int regfile, int addr, int data)
+        {
+            Encode(oper, regfile, addr, data);
+        }
+
+        public byte[] Encode(int oper, int regfile, int addr, int data)
+        {
+            byte[] payload = new byte[16];
+            byte[] RwnBytes = oper.IntToBytes();
+            byte[] RegfileBytes = regfile.IntToBytes();
+            byte[] AddressBytes = addr.IntToBytes();
+            byte[] ValueBytes = data.IntToBytes();
+            Array.Copy(RwnBytes, 0, payload, 0, 4);
+            Array.Copy(RegfileBytes, 0, payload, 4, 4);
+            Array.Copy(AddressBytes, 0, payload, 8, 4);
+            Array.Copy(ValueBytes, 0, payload, 12, 4);
+            return payload;
+        }
+
+        public (int control, int regfile, int addr, int data) Decode(byte[] bytes)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+
+    public class CdpMessagePacket : CarrotDataProtocolPacket, IMessagePacket
+    {
+        public CdpMessagePacket(string msg)
+        {
+            Encode(msg);
+        }
+
+        public byte[] Encode(string msg)
+        {
+            return Pack(msg.AsciiToBytes(), ProtocolIdAsciiTransfer256, 0);
+        }
+
+        public string Decode(byte[] bytes)
+        {
+            throw new NotImplementedException();
+        }
+
+    }
 }
