@@ -29,7 +29,7 @@ namespace CarrotCommFramework.Protocols
 
         public RawAsciiProtocolPacket(string msg)
         {
-            Encode(msg);
+            Bytes = Encode(msg);
         }
 
         public byte[] Encode(string msg)

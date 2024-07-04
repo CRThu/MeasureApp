@@ -31,21 +31,21 @@ namespace CarrotCommFrameworkDemo
 
             string ad4630BoardSessionStr = "{" +
                 "\"session\": [ { \"service\": \"ad4630\" } ]," +
-                "\"stream\": [ { \"service\": \"FTDI\", \"SerialNumber\": \"AAAAAAAA\" } ]," +
+                "\"stream\": [ { \"service\": \"FTDI\", \"serialnumber\": \"FT8Y1ZJAA\" } ]," +
                 "\"protocol\": [ { \"service\": \"CDPV1\" } ]," +
                 "\"logger\": [ { \"service\": \"CONSOLE\" } ]," +
                 "\"service\": [ { \"service\": \"RECV\" }, { \"service\": \"PARSE\" } ]" +
                 "}";
             string dac11001BoardSessionStr = "{" +
                 "\"session\": [ { \"service\": \"dac11001\" } ]," +
-                "\"stream\": [ { \"service\": \"COM\", \"Address\": \"COM250\" } ]," +
+                "\"stream\": [ { \"service\": \"COM\", \"port\": \"COM250\" } ]," +
                 "\"protocol\": [ { \"service\": \"CDPV1\" } ]," +
                 "\"logger\": [ { \"service\": \"CONSOLE\" } ]," +
                 "\"service\": [ { \"service\": \"RECV\" }, { \"service\": \"PARSE\" } ]" +
                 "}";
             string keysight3458ABoardSessionStr = "{" +
                 "\"session\": [ { \"service\": \"3458a\" } ]," +
-                "\"stream\": [ { \"service\": \"VISA\", \"Address\": \"GPIB::22::INSTR\" } ]," +
+                "\"stream\": [ { \"service\": \"VISA\", \"address\": \"GPIB::22::INSTR\" } ]," +
                 "\"protocol\": [ { \"service\": \"RAPV1\" } ]," +
                 "\"logger\": [ { \"service\": \"CONSOLE\" } ]," +
                 "\"service\": [  ]" +
@@ -53,18 +53,18 @@ namespace CarrotCommFrameworkDemo
 
             var ad4630Session = SessionFactory.Current.CreateSession(ad4630BoardSessionStr, SessionConfig.Empty);
             var dac11001Session = SessionFactory.Current.CreateSession(dac11001BoardSessionStr, SessionConfig.Empty);
-            var keysight3458ASession = SessionFactory.Current.CreateSession(keysight3458ABoardSessionStr, SessionConfig.Empty);
+            //var keysight3458ASession = SessionFactory.Current.CreateSession(keysight3458ABoardSessionStr, SessionConfig.Empty);
 
-            ad4630Session.Open();
-            dac11001Session.Open();
-            keysight3458ASession.Open();
+            //ad4630Session.Open();
+            //dac11001Session.Open();
+            //keysight3458ASession.Open();
             byte[] bytes = new byte[1024];
 
             for (int i = 0; i < 16; i++)
             {
-                dac11001Session.Write(new RawAsciiProtocolPacket("DAC11001.SET.VOLT;1.000000;"));
-                _ = keysight3458ASession.Read(bytes, 0, bytes.Length);
-                int cnt = keysight3458ASession.Read(bytes, 0, bytes.Length);
+                //dac11001Session.Write(new RawAsciiProtocolPacket("DAC11001.SET.VOLT;1.000000;"));
+                //_ = keysight3458ASession.Read(bytes, 0, bytes.Length);
+                //int cnt = keysight3458ASession.Read(bytes, 0, bytes.Length);
                 // TODO
                 ad4630Session.Write(new CdpRegisterPacket(0, 0, 0x06, 0x01));
 
@@ -75,8 +75,8 @@ namespace CarrotCommFrameworkDemo
             }
 
             ad4630Session.Close();
-            dac11001Session.Close();
-            keysight3458ASession.Close();
+            //dac11001Session.Close();
+            //keysight3458ASession.Close();
 
             return;
             /*

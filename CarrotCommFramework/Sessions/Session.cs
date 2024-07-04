@@ -99,6 +99,12 @@ namespace CarrotCommFramework.Sessions
             return Streams[0].Read(buffer, offset, count);
         }
 
+        //public void Read(out Packet s)
+        //{
+        //    Protocols[0].TryParse()
+        //    s = null;
+        //}
+
         public bool TryReadLast(string filter, out Packet? packet)
         {
             int loggerNo = Convert.ToInt16(filter);

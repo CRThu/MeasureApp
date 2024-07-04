@@ -48,7 +48,7 @@ namespace CarrotCommFramework.Sessions
     // TODO
     public class SessionConfig
     {
-        public static SessionConfig Default { get; set; } = new();
+        public static SessionConfig Default { get; } = new();
 
 
         //PresetSessionCommands = ["DEFAULT_SESSION"],
@@ -56,13 +56,18 @@ namespace CarrotCommFramework.Sessions
         //PresetLoggerCommands = ["CONSOLE://CON1", "NLOG://NLOG1"],
         //PresetServiceCommands = ["RECV", "PARSE"]
 
-        public static SessionConfig Empty { get; set; } = new();
+        public static SessionConfig Empty { get; } = new();
 
         public List<SessionComponentInfo> Components { get; private set; } = [];
 
         public SessionConfig()
         {
 
+        }
+
+        public SessionConfig(SessionConfig config)
+        {
+            Components = new List<SessionComponentInfo>(config.Components);
         }
 
         public static SessionConfig Create(string componentsConfig)

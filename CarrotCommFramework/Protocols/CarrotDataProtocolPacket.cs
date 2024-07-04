@@ -174,7 +174,7 @@ namespace CarrotCommFramework.Protocols
     {
         public CdpRegisterPacket(int oper, int regfile, int addr, int data)
         {
-            Encode(oper, regfile, addr, data);
+            Bytes = Pack(Encode(oper, regfile, addr, data), ProtocolIdRegisterOper, 0);
         }
 
         public byte[] Encode(int oper, int regfile, int addr, int data)
@@ -202,12 +202,12 @@ namespace CarrotCommFramework.Protocols
     {
         public CdpMessagePacket(string msg)
         {
-            Encode(msg);
+            Bytes = Pack(Encode(msg), ProtocolIdAsciiTransfer256, 0);
         }
 
         public byte[] Encode(string msg)
         {
-            return Pack(msg.AsciiToBytes(), ProtocolIdAsciiTransfer256, 0);
+            return msg.AsciiToBytes();
         }
 
         public string Decode(byte[] bytes)

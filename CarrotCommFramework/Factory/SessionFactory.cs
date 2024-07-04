@@ -23,15 +23,17 @@ namespace CarrotCommFramework.Factory
                 config = SessionConfig.Empty;
             }
 
+            SessionConfig cfg = new SessionConfig(config);
+
             var parseConfig = SessionConfigParser.Parse(addrs);
 
             for (int i = 0; i < parseConfig.Components.Count; i++)
-                config.Add(parseConfig.Components[i]);
+                cfg.Add(parseConfig.Components[i]);
 
             Session s = new();
-            for (int i = 0; i < config.Components.Count; i++)
+            for (int i = 0; i < cfg.Components.Count; i++)
             {
-                SessionComponentInfo info = config.Components[i];
+                SessionComponentInfo info = cfg.Components[i];
 
                 switch (info.Type)
                 {
@@ -55,8 +57,8 @@ namespace CarrotCommFramework.Factory
                         s.Protocols.Add(protocol);
                         break;
                     case ComponentType.SERVICE:
-                        var service = ServiceFactory.Current.Get(info.ServiceName, info.ServiceName, info.Params);
-                        Debug.WriteLine($"Create Service: {info.ServiceName}:{info.ServiceName}");
+                        var service = ServiceFactory.Current.Get(info.ServiceName, info.InstanceName, info.Params);
+                        Debug.WriteLine($"Create Service: {info.ServiceName}:{info.InstanceName}");
                         s.Services.Add(service);
                         break;
                     default:

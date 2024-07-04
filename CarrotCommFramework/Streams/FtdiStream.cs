@@ -52,7 +52,7 @@ namespace CarrotCommFramework.Streams
 
             Ftdi = new FTDI();
 
-            SerialNumber = @params.TryGetValue("id", out string? value) ? value : string.Empty;
+            SerialNumber = @params.TryGetValue("serialnumber", out string? value) ? value : string.Empty;
 
             // TODO TIMEOUT/MASK/MODE
         }

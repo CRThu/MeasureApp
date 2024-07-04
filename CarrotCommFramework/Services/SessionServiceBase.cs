@@ -68,6 +68,7 @@ namespace CarrotCommFramework.Services
         {
             Stream = stream;
             Protocol = protocol;
+            Console.WriteLine($"Service {Name} binding {stream.Name}, {protocol.Name}");
         }
 
         /// <summary>

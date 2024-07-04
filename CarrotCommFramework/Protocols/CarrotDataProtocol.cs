@@ -17,6 +17,8 @@ namespace CarrotCommFramework.Protocols
         {
         }
 
+
+
         public override bool TryParse(ref ReadOnlySequence<byte> buffer, out IEnumerable<Packet>? packets)
         {
             packets = null;
@@ -24,34 +26,34 @@ namespace CarrotCommFramework.Protocols
             SequenceReader<byte> reader = new SequenceReader<byte>(buffer);
 
             // 处理数据流直到不完整包或结束
-            //while (true)
-            //{
-            // 读取帧头
-            if (!reader.TryPeek(0, out byte frameStart))
+            while (true)
             {
-                // 不完整包结构则结束
-                //break;
-                return false;
-            }
-            if (!reader.TryPeek(1, out byte protocolId))
-            {
-                // 不完整包结构则结束
-                //break;
-                return false;
-            }
-            int packetLen = GetPacketLength(protocolId);
-            if (!reader.TryPeek(packetLen - 1, out byte frameEnd))
-            {
-                // 不完整包结构则结束
-                //break;
-                return false;
-            }
+                // 读取帧头
+                if (!reader.TryPeek(0, out byte frameStart))
+                {
+                    // 不完整包结构则结束
+                    break;
+                    //return false;
+                }
+                if (!reader.TryPeek(1, out byte protocolId))
+                {
+                    // 不完整包结构则结束
+                    break;
+                    //return false;
+                }
+                int packetLen = GetPacketLength(protocolId);
+                if (!reader.TryPeek(packetLen - 1, out byte frameEnd))
+                {
+                    // 不完整包结构则结束
+                    break;
+                    //return false;
+                }
 
 
-            CarrotDataProtocolPacket pkt = new(buffer.Slice(buffer.Start, packetLen).ToArray());
-            buffer = buffer.Slice(buffer.GetPosition(packetLen));
-            packetsList.Add(pkt);
-            //}
+                CarrotDataProtocolPacket pkt = new(buffer.Slice(buffer.Start, packetLen).ToArray());
+                buffer = buffer.Slice(buffer.GetPosition(packetLen));
+                packetsList.Add(pkt);
+            }
 
             packets = packetsList;
             return packetsList.Count != 0;
