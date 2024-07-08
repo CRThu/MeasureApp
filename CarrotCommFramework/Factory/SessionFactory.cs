@@ -39,26 +39,26 @@ namespace CarrotCommFramework.Factory
                 {
                     case ComponentType.SESSION:
                         s.Name = info.ServiceName;
-                        Debug.WriteLine($"Create Session: {info.ServiceName}");
+                        Console.WriteLine($"Create Session: {info.ServiceName}");
                         break;
                     case ComponentType.STREAM:
                         var stream = StreamFactory.Current.Get(info.ServiceName, info.InstanceName, info.Params);
-                        Debug.WriteLine($"Create Stream: {info.ServiceName}:{info.InstanceName}");
+                        Console.WriteLine($"Create Stream: {info.ServiceName}:{info.InstanceName}");
                         s.Streams.Add(stream);
                         break;
                     case ComponentType.LOGGER:
                         var logger = LoggerFactory.Current.Get(info.ServiceName, info.InstanceName, info.Params);
-                        Debug.WriteLine($"Create Logger: {info.ServiceName}:{info.InstanceName}");
+                        Console.WriteLine($"Create Logger: {info.ServiceName}:{info.InstanceName}");
                         s.Loggers.Add(logger);
                         break;
                     case ComponentType.PROTOCOL:
                         var protocol = ProtocolFactory.Current.Get(info.ServiceName, info.InstanceName, info.Params);
-                        Debug.WriteLine($"Create Protocol: {info.ServiceName}:{info.InstanceName}");
+                        Console.WriteLine($"Create Protocol: {info.ServiceName}:{info.InstanceName}");
                         s.Protocols.Add(protocol);
                         break;
                     case ComponentType.SERVICE:
                         var service = ServiceFactory.Current.Get(info.ServiceName, info.InstanceName, info.Params);
-                        Debug.WriteLine($"Create Service: {info.ServiceName}:{info.InstanceName}");
+                        Console.WriteLine($"Create Service: {info.ServiceName}:{info.InstanceName}");
                         s.Services.Add(service);
                         break;
                     default:

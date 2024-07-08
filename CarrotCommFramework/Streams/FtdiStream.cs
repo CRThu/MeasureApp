@@ -89,6 +89,9 @@ namespace CarrotCommFramework.Streams
             //     For FT232B and FT245B devices, valid values are FT_BIT_MODE_RESET, FT_BIT_MODE_ASYNC_BITBANG.
             mode = FT_BIT_MODES.FT_BIT_MODE_SYNC_FIFO;
             Ftd2xxNetDecorator.Ftd2xxNetWrapper(() => Ftdi.SetBitMode(mask, mode));
+
+
+            Ftd2xxNetDecorator.Ftd2xxNetWrapper(() => Ftdi.Purge(FT_PURGE.FT_PURGE_RX & FT_PURGE.FT_PURGE_TX));
         }
 
         /// <summary>

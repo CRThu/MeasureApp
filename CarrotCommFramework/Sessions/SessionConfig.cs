@@ -80,12 +80,18 @@ namespace CarrotCommFramework.Sessions
         {
             if (string.IsNullOrEmpty(info.InstanceName))
             {
-                if (!SessionConfigInstanceCounter.AutoGenerateInstanceCount.TryGetValue((info.Type, info.ServiceName), out int val))
-                    SessionConfigInstanceCounter.AutoGenerateInstanceCount.Add((info.Type, info.ServiceName), 0);
-                else
+                int newVal = 0;
+                if (SessionConfigInstanceCounter.AutoGenerateInstanceCount.TryGetValue((info.Type, info.ServiceName), out int val))
+                {
                     SessionConfigInstanceCounter.AutoGenerateInstanceCount[(info.Type, info.ServiceName)] = (val + 1);
-                info.InstanceName = $"{info.ServiceName}_inst{val}";
-                //Console.WriteLine($"({info.Type}, {info.ServiceName}):{val}");
+                    newVal = (val + 1);
+                }
+                else
+                {
+                    SessionConfigInstanceCounter.AutoGenerateInstanceCount.Add((info.Type, info.ServiceName), 0);
+                }
+                info.InstanceName = $"{info.ServiceName}_inst{newVal}";
+                Console.WriteLine($"({info.Type}, {info.ServiceName}):{newVal}");
             }
         }
 

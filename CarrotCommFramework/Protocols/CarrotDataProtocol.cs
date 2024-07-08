@@ -29,30 +29,34 @@ namespace CarrotCommFramework.Protocols
             while (true)
             {
                 // 读取帧头
-                if (!reader.TryPeek(0, out byte frameStart))
+                if ((reader.Remaining < 1) || (!reader.TryPeek(0, out byte frameStart)))
                 {
                     // 不完整包结构则结束
                     break;
                     //return false;
                 }
-                if (!reader.TryPeek(1, out byte protocolId))
+                if ((reader.Remaining < 2) || (!reader.TryPeek(1, out byte protocolId)))
                 {
                     // 不完整包结构则结束
                     break;
                     //return false;
                 }
                 int packetLen = GetPacketLength(protocolId);
-                if (!reader.TryPeek(packetLen - 1, out byte frameEnd))
+                if ((reader.Remaining < packetLen) || (!reader.TryPeek(packetLen - 1, out byte frameEnd)))
                 {
                     // 不完整包结构则结束
                     break;
                     //return false;
                 }
 
+                var x = reader.TryReadExact(packetLen, out var pktSeq);
+                if (x)
+                {
+                    CarrotDataProtocolPacket pkt = new(pktSeq.ToArray());
+                    buffer = buffer.Slice(buffer.GetPosition(packetLen));
+                    packetsList.Add(pkt);
 
-                CarrotDataProtocolPacket pkt = new(buffer.Slice(buffer.Start, packetLen).ToArray());
-                buffer = buffer.Slice(buffer.GetPosition(packetLen));
-                packetsList.Add(pkt);
+                }
             }
 
             packets = packetsList;
