@@ -39,6 +39,11 @@ namespace CarrotCommFramework.Protocols
         {
         }
 
+        public CarrotDataProtocolPacket(CarrotDataProtocolPacket packet) : base(packet.Bytes!)
+        {
+
+        }
+
         /// <summary>
         /// 预设协议长度
         /// </summary>
@@ -177,6 +182,11 @@ namespace CarrotCommFramework.Protocols
             Bytes = Pack(Encode(oper, regfile, addr, data), ProtocolIdRegisterOper, 0);
         }
 
+        public CdpRegisterPacket(CarrotDataProtocolPacket packet) : base(packet)
+        {
+
+        }
+
         public byte[] Encode(int oper, int regfile, int addr, int data)
         {
             byte[] payload = new byte[16];
@@ -205,6 +215,11 @@ namespace CarrotCommFramework.Protocols
             Bytes = Pack(Encode(msg), ProtocolIdAsciiTransfer256, 0);
         }
 
+        public CdpMessagePacket(CarrotDataProtocolPacket packet) : base(packet)
+        {
+
+        }
+
         public byte[] Encode(string msg)
         {
             return msg.AsciiToBytes();
@@ -213,6 +228,31 @@ namespace CarrotCommFramework.Protocols
         public string Decode(byte[] bytes)
         {
             throw new NotImplementedException();
+        }
+
+    }
+
+    public class CdpDataPacket : CarrotDataProtocolPacket, IDataPacket
+    {
+
+        public CdpDataPacket(byte[] data)
+        {
+            Bytes = Pack(Encode(data), ProtocolIdAsciiTransfer256, 0);
+        }
+
+        public CdpDataPacket(CarrotDataProtocolPacket packet) : base(packet)
+        {
+
+        }
+
+        public byte[] Encode(byte[] data)
+        {
+            return data;
+        }
+
+        public byte[] Decode(byte[] data)
+        {
+            return data;
         }
 
     }

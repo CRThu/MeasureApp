@@ -38,7 +38,6 @@ namespace CarrotCommFramework.Protocols
         {
             Bytes = bytes;
         }
-
     }
 
     public interface IMessagePacket
@@ -53,5 +52,12 @@ namespace CarrotCommFramework.Protocols
         public byte[] Encode(int oper, int regfile, int addr, int data);
 
         public (int control, int regfile, int addr, int data) Decode(byte[] bytes);
-}
+    }
+
+    public interface IDataPacket
+    {
+        public byte[] Encode(byte[] data);
+
+        public byte[] Decode(byte[] data);
+    }
 }

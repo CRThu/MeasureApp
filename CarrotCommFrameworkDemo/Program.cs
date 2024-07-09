@@ -56,10 +56,25 @@ namespace CarrotCommFrameworkDemo
             //var keysight3458ASession = SessionFactory.Current.CreateSession(keysight3458ABoardSessionStr, SessionConfig.Empty);
 
 
+            int payloadLen = 0;
+
             ad4630Session.Services[1].Logging += (sender, args) =>
             {
-                Console.WriteLine("RECV MSGS");
+                CdpDataPacket? packet = (args.Packet) as CdpDataPacket;
+                if (packet is not null)
+                {
+                    Console.WriteLine($"RECV CdpDataPacket: {packet}");
+                    Console.WriteLine(packet.Payload.BytesToHexString());
+                    using FileStream fs = new("D:/data.bin", FileMode.Append);
+                    fs.Write(packet.Payload);
+                    payloadLen += packet.Payload.Length;
+                }
+                else
+                {
+                    Console.WriteLine("RECV MSGS");
+                }
             };
+
             ad4630Session.Open();
             //dac11001Session.Open();
             //keysight3458ASession.Open();
@@ -76,11 +91,12 @@ namespace CarrotCommFrameworkDemo
             ad4630Session.Write(new CdpRegisterPacket(0, 0, 0x04, 0x100));
             ad4630Session.Write(new CdpRegisterPacket(0, 0, 0x06, 0x01));
 
-            while (true)
+            while (payloadLen < 1024)
             {
             }
             //}
 
+            Console.WriteLine("DATA RECV COMPLETED");
             ad4630Session.Close();
             //dac11001Session.Close();
             //keysight3458ASession.Close();

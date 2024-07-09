@@ -53,6 +53,20 @@ namespace CarrotCommFramework.Protocols
                 if (x)
                 {
                     CarrotDataProtocolPacket pkt = new(pktSeq.ToArray());
+                    switch (GetCdpType(pkt.ProtocolId!.Value))
+                    {
+                        case CDP_TYPE.DATA:
+                            pkt = new CdpDataPacket(pkt);
+                            break;
+                        case CDP_TYPE.ASCII:
+                            pkt = new CdpMessagePacket(pkt);
+                            break;
+                        case CDP_TYPE.REG:
+                            pkt = new CdpRegisterPacket(pkt);
+                            break;
+                        default:
+                            break;
+                    }
                     buffer = buffer.Slice(buffer.GetPosition(packetLen));
                     packetsList.Add(pkt);
 
