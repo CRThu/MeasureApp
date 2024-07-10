@@ -53,7 +53,6 @@ namespace CarrotCommFramework.Streams
         /// </summary>
         public override void Close()
         {
-            Session.Dispose();
         }
 
         /// <summary>

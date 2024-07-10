@@ -52,10 +52,14 @@ namespace CarrotCommFrameworkDemo
                 "}";
 
             var ad4630Session = SessionFactory.Current.CreateSession(ad4630BoardSessionStr, SessionConfig.Empty);
-            var dac11001Session = SessionFactory.Current.CreateSession(dac11001BoardSessionStr, SessionConfig.Empty);
-            //var keysight3458ASession = SessionFactory.Current.CreateSession(keysight3458ABoardSessionStr, SessionConfig.Empty);
+            //var dac11001Session = SessionFactory.Current.CreateSession(dac11001BoardSessionStr, SessionConfig.Empty);
+            var keysight3458ASession = SessionFactory.Current.CreateSession(keysight3458ABoardSessionStr, SessionConfig.Empty);
 
 
+            int capturePoints = 1048576;
+            int captureBytes = capturePoints * 4;
+
+            byte[] data = new byte[captureBytes];
             int payloadLen = 0;
 
             ad4630Session.Services[1].Logging += (sender, args) =>
@@ -63,10 +67,15 @@ namespace CarrotCommFrameworkDemo
                 CdpDataPacket? packet = (args.Packet) as CdpDataPacket;
                 if (packet is not null)
                 {
-                    Console.WriteLine($"RECV CdpDataPacket: {packet}");
-                    Console.WriteLine(packet.Payload.BytesToHexString());
-                    using FileStream fs = new("D:/data.bin", FileMode.Append);
-                    fs.Write(packet.Payload);
+                    //Console.WriteLine($"RECV CdpDataPacket: {packet}");
+                    //Console.WriteLine(packet.Payload.BytesToHexString());
+                    //using FileStream fs = new("D:/data.bin", FileMode.Append);
+                    //fs.Write(packet.Payload);
+
+                    //Buffer.BlockCopy(packet.Payload.ToArray(), 0, data, payloadLen, packet.Payload.Length);
+                    var target = new Span<byte>(data, payloadLen, packet.Payload.Length);
+                    packet.Payload.CopyTo(target);
+
                     payloadLen += packet.Payload.Length;
                 }
                 else
@@ -77,8 +86,21 @@ namespace CarrotCommFrameworkDemo
 
             ad4630Session.Open();
             //dac11001Session.Open();
-            //keysight3458ASession.Open();
+            keysight3458ASession.Open();
+            keysight3458ASession.Write(new RawAsciiProtocolPacket("END"));
+            keysight3458ASession.Write(new RawAsciiProtocolPacket("ID?"));
             byte[] bytes = new byte[1024];
+            keysight3458ASession.Read(bytes, 0, bytes.Length);
+            Console.WriteLine($"3458A: {bytes.BytesToAscii()}");
+            keysight3458ASession.Read(bytes, 0, bytes.Length);
+            Console.WriteLine($"3458A: {bytes.BytesToAscii()}");
+            keysight3458ASession.Read(bytes, 0, bytes.Length);
+            Console.WriteLine($"3458A: {bytes.BytesToAscii()}");
+
+
+            int lenH = capturePoints / 0x10000;
+            int lenL = capturePoints % 0x10000;
+            Console.WriteLine($"CAPTURE {capturePoints}, REGH=0x{lenH:X4}, REGL=0x{lenL:X4}.");
 
             //for (int i = 0; i < 16; i++)
             //{
@@ -87,19 +109,22 @@ namespace CarrotCommFrameworkDemo
             //int cnt = keysight3458ASession.Read(bytes, 0, bytes.Length);
             // TODO
             ad4630Session.Write(new CdpRegisterPacket(0, 0, 0x06, 0x00));
-            ad4630Session.Write(new CdpRegisterPacket(0, 0, 0x03, 0x00));
-            ad4630Session.Write(new CdpRegisterPacket(0, 0, 0x04, 0x100));
+            ad4630Session.Write(new CdpRegisterPacket(0, 0, 0x03, lenH));
+            ad4630Session.Write(new CdpRegisterPacket(0, 0, 0x04, lenL));
             ad4630Session.Write(new CdpRegisterPacket(0, 0, 0x06, 0x01));
 
-            while (payloadLen < 1024)
+            while (payloadLen < captureBytes)
             {
+                Console.WriteLine($"RECVING, Progress = {payloadLen}/{captureBytes}.");
+                Thread.Sleep(250);
             }
+            Console.WriteLine($"RECVING, Progress = {payloadLen}/{captureBytes}.");
             //}
 
             Console.WriteLine("DATA RECV COMPLETED");
             ad4630Session.Close();
             //dac11001Session.Close();
-            //keysight3458ASession.Close();
+            keysight3458ASession.Close();
 
             return;
             /*
