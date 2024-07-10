@@ -67,9 +67,29 @@ namespace CarrotCommFramework.Sessions
             // Wait
             foreach (var service in Services)
             {
-                while (service.Status != ServiceStatus.Running)
-                    ;
-                Debug.WriteLine(service.ToString() + " IS STOPPED.");
+                while (true)
+                {
+                    if (service.Status == ServiceStatus.ExitSuccess)
+                    {
+                        Console.WriteLine($"{service} IS STOPPED, Status = {service.Status}.");
+                        break;
+                    }
+                    else if (service.Status == ServiceStatus.Cancelled)
+                    {
+                        Console.WriteLine($"{service} IS STOPPED, Status = {service.Status}.");
+                        break;
+                    }
+                    else if (service.Status == ServiceStatus.ThrowException)
+                    {
+                        Console.WriteLine($"{service} IS STOPPED, Status = {service.Status}.");
+                        break;
+                    }
+                    else
+                    {
+                        Console.WriteLine($"{service} IS STOPPING, Status = {service.Status}.");
+                        Thread.Sleep(250);
+                    }
+                }
             }
         }
 
