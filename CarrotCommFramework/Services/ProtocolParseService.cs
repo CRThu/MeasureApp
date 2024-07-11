@@ -60,7 +60,7 @@ namespace CarrotCommFramework.Services
                     reader.AdvanceTo(buffer.Start, buffer.End);
 
 
-                    // 来自PiprWriter EOF数据传输结束
+                    // 来自PipeWriter EOF数据传输结束
                     if (result.IsCompleted)
                     {
                         await reader.CompleteAsync();

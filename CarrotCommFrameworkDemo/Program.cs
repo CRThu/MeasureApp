@@ -38,7 +38,7 @@ namespace CarrotCommFrameworkDemo
                 "}";
             string dac11001BoardSessionStr = "{" +
                 "\"session\": [ { \"service\": \"dac11001\" } ]," +
-                "\"stream\": [ { \"service\": \"COM\", \"port\": \"COM250\" } ]," +
+                "\"stream\": [ { \"service\": \"COM\", \"port\": \"COM5\",  \"baudrate\": \"115200\"} ]," +
                 "\"protocol\": [ { \"service\": \"CDPV1\" } ]," +
                 "\"logger\": [ { \"service\": \"CONSOLE\" } ]," +
                 "\"service\": [ { \"service\": \"RECV\" }, { \"service\": \"PARSE\" } ]" +
@@ -52,7 +52,7 @@ namespace CarrotCommFrameworkDemo
                 "}";
 
             var ad4630Session = SessionFactory.Current.CreateSession(ad4630BoardSessionStr, SessionConfig.Empty);
-            //var dac11001Session = SessionFactory.Current.CreateSession(dac11001BoardSessionStr, SessionConfig.Empty);
+            var dac11001Session = SessionFactory.Current.CreateSession(dac11001BoardSessionStr, SessionConfig.Empty);
             var keysight3458ASession = SessionFactory.Current.CreateSession(keysight3458ABoardSessionStr, SessionConfig.Empty);
 
 
@@ -84,19 +84,18 @@ namespace CarrotCommFrameworkDemo
                 }
             };
 
-            ad4630Session.Open();
-            //dac11001Session.Open();
-            keysight3458ASession.Open();
-            keysight3458ASession.Write(new RawAsciiProtocolPacket("END"));
-            keysight3458ASession.Write(new RawAsciiProtocolPacket("ID?"));
-            byte[] bytes = new byte[1024];
-            keysight3458ASession.Read(bytes, 0, bytes.Length);
-            Console.WriteLine($"3458A: {bytes.BytesToAscii()}");
-            keysight3458ASession.Read(bytes, 0, bytes.Length);
-            Console.WriteLine($"3458A: {bytes.BytesToAscii()}");
-            keysight3458ASession.Read(bytes, 0, bytes.Length);
-            Console.WriteLine($"3458A: {bytes.BytesToAscii()}");
-
+            //ad4630Session.Open();
+            dac11001Session.Open();
+            //keysight3458ASession.Open();
+            //keysight3458ASession.Write(new RawAsciiProtocolPacket("END"));
+            //keysight3458ASession.Write(new RawAsciiProtocolPacket("ID?"));
+            //keysight3458ASession.Read(out var pkts);
+            //Console.WriteLine($"3458A: {pkts.First().Message}");
+            //keysight3458ASession.Read(out pkts);
+            //Console.WriteLine($"3458A: {pkts.First().Message}");
+            //keysight3458ASession.Read(out pkts);
+            //Console.WriteLine($"3458A: {pkts.First().Message}");
+            dac11001Session.Write(new CdpMessagePacket("DAC11001.SET.VOLT;1.000000;"));
 
             int lenH = capturePoints / 0x10000;
             int lenL = capturePoints % 0x10000;
@@ -104,7 +103,7 @@ namespace CarrotCommFrameworkDemo
 
             //for (int i = 0; i < 16; i++)
             //{
-            //dac11001Session.Write(new RawAsciiProtocolPacket("DAC11001.SET.VOLT;1.000000;"));
+
             //_ = keysight3458ASession.Read(bytes, 0, bytes.Length);
             //int cnt = keysight3458ASession.Read(bytes, 0, bytes.Length);
             // TODO

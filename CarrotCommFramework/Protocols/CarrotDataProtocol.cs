@@ -42,6 +42,10 @@ namespace CarrotCommFramework.Protocols
                     //return false;
                 }
                 int packetLen = GetPacketLength(protocolId);
+                if (packetLen == -1)
+                {
+                    break;
+                }
                 if ((reader.Remaining < packetLen) || (!reader.TryPeek(packetLen - 1, out byte frameEnd)))
                 {
                     // 不完整包结构则结束

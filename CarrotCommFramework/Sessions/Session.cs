@@ -4,6 +4,7 @@ using CarrotCommFramework.Services;
 using CarrotCommFramework.Streams;
 using CarrotCommFramework.Util;
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO.Pipelines;
@@ -119,11 +120,13 @@ namespace CarrotCommFramework.Sessions
             return Streams[0].Read(buffer, offset, count);
         }
 
-        //public void Read(out Packet s)
-        //{
-        //    Protocols[0].TryParse()
-        //    s = null;
-        //}
+        public void Read(out IEnumerable<Packet>? packets)
+        {
+            byte[] bytes = new byte[1048576];
+            int len = Streams[0].Read(bytes, 0, bytes.Length);
+            ReadOnlySequence<byte> mem = new ReadOnlySequence<byte>(bytes);
+            Protocols[0].TryParse(ref mem, out packets);
+        }
 
         public bool TryReadLast(string filter, out Packet? packet)
         {
