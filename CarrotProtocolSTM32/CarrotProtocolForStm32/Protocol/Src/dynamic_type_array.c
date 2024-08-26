@@ -7,10 +7,10 @@
 /// <param name="dyn">空动态类型数组结构体</param>
 void dynamic_type_array_init(dynamic_type_array_t* dyn)
 {
-	memset(dyn->data, 0u, DYNAMIC_TYPE_ARRAY_STORAGE_MAX_BYTES);
-	memset(dyn->idx, 0u, DYNAMIC_TYPE_ARRAY_ELEMENTS_MAX_CNT);
-	memset(dyn->len, 0u, DYNAMIC_TYPE_ARRAY_ELEMENTS_MAX_CNT);
-	memset(dyn->type, 0u, DYNAMIC_TYPE_ARRAY_ELEMENTS_MAX_CNT);
+	memset(dyn->data, 0u, DYNAMIC_POOL_MAX_BYTES);
+	memset(dyn->idx, 0u, DYNAMIC_POOL_MAX_PARAMS);
+	memset(dyn->len, 0u, DYNAMIC_POOL_MAX_PARAMS);
+	memset(dyn->type, 0u, DYNAMIC_POOL_MAX_PARAMS);
 	dyn->count = 0;
 }
 
