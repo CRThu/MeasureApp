@@ -1,6 +1,7 @@
 #pragma once
 #include <inttypes.h>
 #include <stdio.h>
+#include "../Inc/bytes.h"
 #include "../Inc/cmd_parse.h"
 #include "../Inc/dynamic_pool.h"
 
@@ -33,7 +34,8 @@ extern "C"
 	typedef struct {
 		const char* name;
 		callback func;
-		const char* args;
+		const uint8_t* args;
+		uint8_t args_count;
 	}callback_t;
 
 	extern callback_t callbacks[];
@@ -41,7 +43,8 @@ extern "C"
 
 
 	void dynamic_register(callback fn, char* name, char* args);
-	void dynamic_call(payload_parse_t* args);
+	void invoke_method(dynamic_pool_t* obj, callback_t* method);
+	static callback_t* find_method_by_name(callback_t** methods, uint16_t methods_count, char* fn_name, uint16_t fn_name_len);
 
 
 #ifdef __cplusplus

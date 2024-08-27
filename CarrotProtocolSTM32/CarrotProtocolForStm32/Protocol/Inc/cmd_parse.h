@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include "dynamic_pool.h"
+#include "../Inc/bytes.h"
 
 #ifndef CMD_PARSE_H
 #define CMD_PARSE_H
@@ -12,26 +14,17 @@ extern "C"
 {
 #endif
 
-#define PAYLOAD_CHECK_SPACE(c) (c == ' ' || c == '\r' || c == '\n')
+#define CMD_PARSE_ELEMENT_DELIMITER(c)		(c == '(' || c == ',' || c == ')' || c == ';' )
+#define CMD_PARSE_CHAR_IGNORE(c)			(c == ' ' || c == '\t' || c == '\r')
+#define CMD_PARSE_END(c)					(c == '\n')
 
-	typedef struct {
-		/// <summary>
-		/// 长度应小于32767
-		/// </summary>
-		uint8_t* buffer;
-		uint16_t length;
-		uint16_t cursor;
-	}payload_parse_t;
+	typedef int8_t cmd_parse_status_t;
+	/*
+		funa(para,parb,parc,pard);
+		reta=funb();
+	*/
 
-	void payload_parse_init(payload_parse_t* buffer, uint8_t* payload, uint16_t len);
-
-	uint16_t payload_parse_string(payload_parse_t* buffer, char* buf, uint16_t len);
-	uint32_t payload_parse_uint32(payload_parse_t* buffer);
-	uint32_t payload_parse_uint32_dec(payload_parse_t* buffer);
-	uint32_t payload_parse_uint32_hex(payload_parse_t* buffer);
-	int32_t payload_parse_int32(payload_parse_t* buffer);
-	int32_t payload_parse_int32_dec(payload_parse_t* buffer);
-	double payload_parse_double(payload_parse_t* buffer);
+	cmd_parse_status_t cmd_parse_one(dynamic_pool_t* obj, callback_t** methods, uint16_t methods_count, char* cmd, uint16_t len);
 
 
 #ifdef __cplusplus

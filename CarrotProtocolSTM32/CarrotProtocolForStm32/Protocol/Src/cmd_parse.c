@@ -1,114 +1,78 @@
 #include "../Inc/cmd_parse.h"
+#include "../Inc/dynamic_call.h"
+
 
 /// <summary>
 /// 指令解析初始化
 /// </summary>
-/// <param name="buffer">payload_parse_t结构体</param>
-/// <param name="payload">待解析的指令字符串</param>
+/// <param name="obj">dynamic_pool_t结构体</param>
+/// <param name="cmd">待解析的指令字符串</param>
 /// <param name="len">指令字符串长度</param>
-void payload_parse_init(payload_parse_t* buffer, uint8_t* payload, uint16_t len)
+cmd_parse_status_t cmd_parse_one(dynamic_pool_t* obj, callback_t** methods, uint16_t methods_count, char* cmd, uint16_t len)
 {
-	buffer->buffer = payload;
-	buffer->length = len;
-	buffer->cursor = 0;
+	uint16_t curr_pos = 0;
+	uint16_t statement_end_pos = 0;
+	callback_t* method_info = NULL;
+
+	while (curr_pos < len)
+	{
+		if (CMD_PARSE_END(cmd[curr_pos]))
+		{
+			statement_end_pos = curr_pos;
+			parse_params(obj, method_info, cmd, len);
+			invoke_method(obj, method_info);
+		}
+		else if (CMD_PARSE_ELEMENT_DELIMITER(cmd[curr_pos]))
+		{
+			method_info = find_method_by_name(methods, methods_count, cmd, curr_pos + 1);
+		}
+		curr_pos++;
+	}
 }
 
 /// <summary>
 /// 指令解析, 参数类型为字符串
 /// </summary>
-/// <param name="buffer">payload_parse_t结构体</param>
+/// <param name="buffer">cmd_parse_t结构体</param>
 /// <param name="buf">字符串数组指针</param>
 /// <param name="len">字符串数组长度</param>
 /// <returns>字符串实际长度</returns>
-uint16_t payload_parse_string(payload_parse_t* buffer, char* buf, uint16_t len)
+cmd_parse_status_t parse_params(dynamic_pool_t* obj, callback_t* method_info, char* cmd, uint16_t len)
 {
-	uint16_t start_index = buffer->cursor;
-	uint16_t end_index = buffer->cursor;
-	uint8_t fsm = 0;
-
-	// 保证数组指针在字符串数组长度内
-	while (buffer->cursor < buffer->length && fsm != 2)
+	uint8_t args_index = 0;
+	uint16_t cursor = 0;
+	uint16_t start_pos = 0;
+	dynamic_pool_init(obj);
+	while (cursor < len)
 	{
-		uint8_t c = buffer->buffer[buffer->cursor];
-		switch (fsm)
+		if (CMD_PARSE_ELEMENT_DELIMITER(cmd[cursor]))
 		{
-		case 0:
-			// 删除指令参数间空格
-			if (PAYLOAD_CHECK_SPACE(c))
+			if (args_index >= method_info->args_count)
 			{
-				buffer->cursor++;
+				return -1;
 			}
-			else
+
+			uint8_t* fromele = &cmd[start_pos];
+			uint16_t fromlen = cursor - start_pos;
+			uint8_t totype = method_info->args[args_index];
+			void* data = NULL;
+			uint16_t len = 0;
+
+			switch (totype)
 			{
-				start_index = buffer->cursor;
-				fsm++;
-			}
-			break;
-		case 1:
-			// 记录参数位置
-			if (PAYLOAD_CHECK_SPACE(c))
+			case 'i':
 			{
-				end_index = buffer->cursor;
-				fsm++;
+				int32_t num = bytes_to_long(fromele, fromlen, 0, NULL);
+				dynamic_pool_add(obj, T_DEC64, &num, 0);
+				break;
 			}
-			else
-			{
-				buffer->cursor++;
+			default:
+				break;
 			}
-			break;
+
+			args_index++;
+			start_pos = cursor;
 		}
+		cursor++;
 	}
-
-	// 没有结束符就检测到字符串尾则end游标指向最后
-	if (fsm == 1)
-	{
-		end_index = buffer->cursor;
-	}
-
-	uint16_t actual_len = (end_index - start_index) > len ? len : (end_index - start_index);
-	memcpy(buf, &buffer->buffer[start_index], actual_len);
-	return actual_len;
-}
-
-uint32_t payload_parse_uint32(payload_parse_t* buffer)
-{
-	char temp[256] = { 0 };
-	uint16_t len = payload_parse_string(buffer, temp, 255);
-	return strtoul(temp, NULL, 0);
-}
-
-
-uint32_t payload_parse_uint32_dec(payload_parse_t* buffer)
-{
-	char temp[256] = { 0 };
-	uint16_t len = payload_parse_string(buffer, temp, 255);
-	return strtoul(temp, NULL, 10);
-}
-
-uint32_t payload_parse_uint32_hex(payload_parse_t* buffer)
-{
-	char temp[256] = { 0 };
-	uint16_t len = payload_parse_string(buffer, temp, 255);
-	return strtoul(temp, NULL, 16);
-}
-
-int32_t payload_parse_int32(payload_parse_t* buffer)
-{
-	char temp[256] = { 0 };
-	uint16_t len = payload_parse_string(buffer, temp, 255);
-	return strtol(temp, NULL, 0);
-}
-
-int32_t payload_parse_int32_dec(payload_parse_t* buffer)
-{
-	char temp[256] = { 0 };
-	uint16_t len = payload_parse_string(buffer, temp, 255);
-	return strtol(temp, NULL, 10);
-}
-
-double payload_parse_double(payload_parse_t* buffer)
-{
-	char temp[256] = { 0 };
-	uint16_t len = payload_parse_string(buffer, temp, 255);
-	return strtod(temp, NULL);
 }

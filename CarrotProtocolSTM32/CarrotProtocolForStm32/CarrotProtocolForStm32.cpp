@@ -28,7 +28,7 @@ int main()
 	printf("TEST DYNAMIC CALL\n");
 	dyn_reg_test();
 
-	payload_parse_t buf;
+	cmd_parse_t buf;
 	const char* cmd0 = "print";
 	payload_parse_init(&buf, (uint8_t*)cmd0, strlen(cmd0));
 	dynamic_call(&buf);

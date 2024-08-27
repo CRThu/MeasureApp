@@ -4,7 +4,7 @@
 
 void test(const char* str, const char* paramtypes)
 {
-	payload_parse_t buf;
+	cmd_parse_t buf;
 	payload_parse_init(&buf, (uint8_t*)str, strlen(str));
 
 	printf("CMD: %s\n", str);

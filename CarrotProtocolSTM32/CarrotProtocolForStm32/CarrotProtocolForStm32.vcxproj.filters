@@ -42,6 +42,9 @@
     <ClCompile Include="DynamicCallTest.c">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Protocol\Src\bytes.c">
+      <Filter>源文件\Protocol</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Protocol\Inc\carrot_protocol.h">
@@ -64,6 +67,9 @@
     </ClInclude>
     <ClInclude Include="DynamicCallTest.h">
       <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Protocol\Inc\bytes.h">
+      <Filter>头文件\Protocol</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
