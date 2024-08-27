@@ -1,8 +1,8 @@
 #pragma once
 #include <inttypes.h>
 #include <stdio.h>
-#include "../Inc/payload_parse.h"
-#include "../Inc/dynamic_type_array.h"
+#include "../Inc/cmd_parse.h"
+#include "../Inc/dynamic_pool.h"
 
 #define DYNAMIC_CALL_FUNC_MAX_CNT 256
 #define DYNAMIC_CALL_ARGS_MAX_CNT 9

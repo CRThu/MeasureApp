@@ -4,8 +4,8 @@
 #include <stdio.h>
 #include <string.h>
 
-#ifndef PAYLOAD_PARSE_H
-#define PAYLOAD_PARSE_H
+#ifndef CMD_PARSE_H
+#define CMD_PARSE_H
 
 #ifdef __cplusplus
 extern "C"
@@ -14,16 +14,14 @@ extern "C"
 
 #define PAYLOAD_CHECK_SPACE(c) (c == ' ' || c == '\r' || c == '\n')
 
-	typedef struct payload_parse_t payload_parse_t;
-
-	struct payload_parse_t {
+	typedef struct {
 		/// <summary>
 		/// 长度应小于32767
 		/// </summary>
 		uint8_t* buffer;
 		uint16_t length;
 		uint16_t cursor;
-	};
+	}payload_parse_t;
 
 	void payload_parse_init(payload_parse_t* buffer, uint8_t* payload, uint16_t len);
 
@@ -40,4 +38,4 @@ extern "C"
 }
 #endif
 
-#endif /* PAYLOAD_PARSE_H */
+#endif /* CMD_PARSE_H */

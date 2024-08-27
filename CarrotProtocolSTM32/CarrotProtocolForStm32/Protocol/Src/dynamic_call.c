@@ -23,8 +23,8 @@ void dynamic_call(payload_parse_t* args)
 		// 寻找匹配方法名称
 		if (FN_NAME_ISEQUAL(callbacks[i].name, fn_name))
 		{
-			dynamic_type_array_t dyn;
-			dynamic_type_array_init(&dyn);
+			dynamic_pool_t dyn;
+			dynamic_pool_init(&dyn);
 
 			// 参数解析
 			uint16_t fn_arg_cnt = FN_ARGS_CNT(callbacks[i].args);
@@ -36,13 +36,13 @@ void dynamic_call(payload_parse_t* args)
 				case 'i':
 				{
 					int32_t num = payload_parse_int32(args);
-					dynamic_type_array_add(&dyn, &num, sizeof(num), INT32TYPE);
+					dynamic_pool_add_value(&dyn, &num, sizeof(num), INT32TYPE);
 					break;
 				}
 				case 'f':
 				{
 					double num = payload_parse_double(args);
-					dynamic_type_array_add(&dyn, &num, sizeof(num), FLOAT64TYPE);
+					dynamic_pool_add_value(&dyn, &num, sizeof(num), FLOAT64TYPE);
 					break;
 				}
 				case 's':
@@ -50,7 +50,7 @@ void dynamic_call(payload_parse_t* args)
 				{
 					char str[256] = { 0 };
 					uint16_t len = payload_parse_string(args, str, 255);
-					dynamic_type_array_add(&dyn, str, len, STRINGTYPE);
+					dynamic_pool_add_value(&dyn, str, len, STRINGTYPE);
 					break;
 				}
 				}
@@ -58,15 +58,15 @@ void dynamic_call(payload_parse_t* args)
 
 			// method invoke
 			void* args[10];
-			dynamic_type_array_get(&dyn, 0, (void**)&args[0]);
-			dynamic_type_array_get(&dyn, 1, (void**)&args[1]);
-			dynamic_type_array_get(&dyn, 2, (void**)&args[2]);
-			dynamic_type_array_get(&dyn, 3, (void**)&args[3]);
-			dynamic_type_array_get(&dyn, 4, (void**)&args[4]);
-			dynamic_type_array_get(&dyn, 5, (void**)&args[5]);
-			dynamic_type_array_get(&dyn, 6, (void**)&args[6]);
-			dynamic_type_array_get(&dyn, 7, (void**)&args[7]);
-			dynamic_type_array_get(&dyn, 8, (void**)&args[8]);
+			dynamic_pool_get(&dyn, 0, (void**)&args[0]);
+			dynamic_pool_get(&dyn, 1, (void**)&args[1]);
+			dynamic_pool_get(&dyn, 2, (void**)&args[2]);
+			dynamic_pool_get(&dyn, 3, (void**)&args[3]);
+			dynamic_pool_get(&dyn, 4, (void**)&args[4]);
+			dynamic_pool_get(&dyn, 5, (void**)&args[5]);
+			dynamic_pool_get(&dyn, 6, (void**)&args[6]);
+			dynamic_pool_get(&dyn, 7, (void**)&args[7]);
+			dynamic_pool_get(&dyn, 8, (void**)&args[8]);
 			switch (fn_arg_cnt)
 			{
 			case 0:

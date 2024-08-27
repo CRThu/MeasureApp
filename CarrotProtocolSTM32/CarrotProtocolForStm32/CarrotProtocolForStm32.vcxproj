@@ -147,16 +147,16 @@
     <ClCompile Include="ParseTest.c" />
     <ClCompile Include="CarrotProtocolForStm32.cpp" />
     <ClCompile Include="Protocol\Src\carrot_protocol.c" />
-    <ClCompile Include="Protocol\Src\dynamic_type_array.c" />
-    <ClCompile Include="Protocol\Src\payload_parse.c" />
+    <ClCompile Include="Protocol\Src\dynamic_pool.c" />
+    <ClCompile Include="Protocol\Src\cmd_parse.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DynamicCallTest.h" />
     <ClInclude Include="Protocol\Inc\dynamic_call.h" />
     <ClInclude Include="ParseTest.h" />
     <ClInclude Include="Protocol\Inc\carrot_protocol.h" />
-    <ClInclude Include="Protocol\Inc\dynamic_type_array.h" />
-    <ClInclude Include="Protocol\Inc\payload_parse.h" />
+    <ClInclude Include="Protocol\Inc\dynamic_pool.h" />
+    <ClInclude Include="Protocol\Inc\cmd_parse.h" />
     <ClInclude Include="Protocol\Inc\ringbuffer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
