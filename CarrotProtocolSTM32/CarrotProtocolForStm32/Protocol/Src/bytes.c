@@ -1,6 +1,6 @@
 #include "../Inc/bytes.h"
 
-static uint8_t mem_equal(const void* mem1, const void* mem2, size_t len)
+uint8_t mem_equal(const void* mem1, const void* mem2, size_t len)
 {
 	const uint8_t* pmem1 = (const uint8_t*)mem1;
 	const uint8_t* pmem2 = (const uint8_t*)mem2;

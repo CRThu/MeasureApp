@@ -3,8 +3,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "dynamic_pool.h"
 #include "../Inc/bytes.h"
+#include "../Inc/dynamic_pool.h"
 
 #ifndef CMD_PARSE_H
 #define CMD_PARSE_H
@@ -24,7 +24,8 @@ extern "C"
 		reta=funb();
 	*/
 
-	cmd_parse_status_t cmd_parse_one(dynamic_pool_t* obj, callback_t** methods, uint16_t methods_count, char* cmd, uint16_t len);
+	cmd_parse_status_t cmd_parse_one(dynamic_pool_t* obj, uint8_t* types, uint8_t types_len, char* cmd, uint16_t len);
+	cmd_parse_status_t parse_params(dynamic_pool_t* obj, uint8_t* types, uint8_t types_len, char* cmd, uint16_t len);
 
 
 #ifdef __cplusplus

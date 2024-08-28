@@ -13,7 +13,7 @@ namespace CarrotProtocolForStm32Tests
 
 		TEST_METHOD(TEST_NUM)
 		{
-			dyn_reg_test();
+			dynamic_call_register();
 			Assert::IsTrue(callbacks_count == 6);
 
 			cmd_parse_t buf;

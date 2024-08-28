@@ -17,7 +17,7 @@ extern "C"
 	void addi(int32_t* a, int32_t* b);
 	void addf(double* a, double* b);
 
-	void dyn_reg_test();
+	void dynamic_call_register();
 
 
 

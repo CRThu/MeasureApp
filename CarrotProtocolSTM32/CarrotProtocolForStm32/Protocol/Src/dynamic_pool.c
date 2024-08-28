@@ -30,7 +30,7 @@ dynamic_pool_status_t dynamic_pool_add(dynamic_pool_t* dyn, dtypes_t type, void*
 	if (dyn->count != 0)
 		index = dyn->idx[dyn->count - 1] + dyn->len[dyn->count - 1];
 
-	if (DTYPES_IS_PTR(type))
+	if (!DTYPES_IS_REF(type))
 	{
 		len = DTYPES_GET_LEN(type);
 		if (len == 0)
@@ -40,7 +40,7 @@ dynamic_pool_status_t dynamic_pool_add(dynamic_pool_t* dyn, dtypes_t type, void*
 	if (index + len > DYNAMIC_POOL_MAX_BYTES - 1)
 		return -3;
 
-	if (DTYPES_IS_PTR(type))
+	if (DTYPES_IS_REF(type))
 	{
 		memcpy(&dyn->data[index], (char*)data, len);
 	}
@@ -74,5 +74,19 @@ void dynamic_pool_get(dynamic_pool_t* dyn, uint16_t index, dtypes_t* type, void*
 		*type = T_NULL;
 		*data = NULL;
 		*len = 0;
+	}
+
+}
+
+
+void dynamic_pool_print(dynamic_pool_t* dyn)
+{
+	for (uint16_t i = 0; i < dyn->count; i++)
+	{
+		dtypes_t dt;
+		uint8_t* pd;
+		uint16_t len;
+
+		dynamic_pool_get(dyn, i, &dt, &pd, &len);
 	}
 }

@@ -14,7 +14,7 @@ extern "C"
 {
 #endif
 
-	static uint8_t mem_equal(const void* mem1, const void* mem2, size_t len);
+	uint8_t mem_equal(const void* mem1, const void* mem2, size_t len);
 	long bytes_to_long(const uint8_t* bytes, size_t len, int base, size_t* bytes_processed);
 	double bytes_to_double(const uint8_t* bytes, size_t len, size_t* bytes_processed);
 

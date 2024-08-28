@@ -2,7 +2,6 @@
 #include <inttypes.h>
 #include <stdio.h>
 #include "../Inc/bytes.h"
-#include "../Inc/cmd_parse.h"
 #include "../Inc/dynamic_pool.h"
 
 #define DYNAMIC_CALL_FUNC_MAX_CNT 256
@@ -32,9 +31,9 @@ extern "C"
 	typedef void (*callback_a9r0)(void* arg1, void* arg2, void* arg3, void* arg4, void* arg5, void* arg6, void* arg7, void* arg8, void* arg9);
 
 	typedef struct {
-		const char* name;
+		char* name;
 		callback func;
-		const uint8_t* args;
+		uint8_t* args;
 		uint8_t args_count;
 	}callback_t;
 
@@ -43,8 +42,8 @@ extern "C"
 
 
 	void dynamic_register(callback fn, char* name, char* args);
-	void invoke_method(dynamic_pool_t* obj, callback_t* method);
-	static callback_t* find_method_by_name(callback_t** methods, uint16_t methods_count, char* fn_name, uint16_t fn_name_len);
+	//void invoke_method(dynamic_pool_t* obj, callback_t* method);
+	callback_t* find_method_by_name(callback_t** methods, uint16_t methods_count, char* fn_name, uint16_t fn_name_len);
 
 
 #ifdef __cplusplus

@@ -13,22 +13,23 @@ void dynamic_register(callback fn, char* name, char* args)
 	callbacks_count++;
 }
 
-static callback_t* find_method_by_name(callback_t** methods, uint16_t methods_count, char* fn_name, uint16_t fn_name_len)
+callback_t* find_method_by_name(callback_t** methods, uint16_t methods_count, char* fn_name, uint16_t fn_name_len)
 {
 	// 遍历注册方法
 	for (uint16_t i = 0; i < methods_count; i++)
 	{
 		// 寻找匹配方法名称
-		if (mem_equal(methods[i]->name, fn_name, fn_name_len))
+		if (mem_equal(callbacks[i].name, fn_name, fn_name_len))
 		{
 			return methods[i];
 		}
 	}
 }
 
-/*
+
 void invoke_method(dynamic_pool_t* obj, callback_t* method)
 {
+	/*
 	char fn_name[256] = { 0 };
 	uint16_t len = payload_parse_string(args, fn_name, 255);
 
@@ -122,5 +123,5 @@ void invoke_method(dynamic_pool_t* obj, callback_t* method)
 			break;
 		}
 	}
+	*/
 }
-*/
