@@ -2,24 +2,24 @@
 
 #include "DynamicCallTest.h"
 
-char dynamic_call_test_buf[256];
+char dynamic_call_buf[256];
 
-void print_0_0()
+void func_noargs_noreturn()
 {
-	sprintf(dynamic_call_test_buf, "print() Called.");
-	puts(dynamic_call_test_buf);
+	sprintf(dynamic_call_buf, "print() Called.");
+	puts(dynamic_call_buf);
 }
 
-void print_d_0(int32_t* a)
+void func_1args_dec32_noreturn(int32_t* a)
 {
-	sprintf(dynamic_call_test_buf, "printi(%d) Called.", *a);
-	puts(dynamic_call_test_buf);
+	sprintf(dynamic_call_buf, "printi(%d) Called.", *a);
+	puts(dynamic_call_buf);
 }
 
-void print_s_0(char* a)
+void print_1args_string_noreturn(char* a)
 {
-	sprintf(dynamic_call_test_buf, "prints(%s) Called.", a);
-	puts(dynamic_call_test_buf);
+	sprintf(dynamic_call_buf, "prints(%s) Called.", a);
+	puts(dynamic_call_buf);
 }
 
 /*
@@ -38,9 +38,9 @@ void addf(double* a, double* b)
 
 void dynamic_call_register()
 {
-	dynamic_register(print_0_0, "print_0_0", "");
-	dynamic_register(print_d_0, "print_d_0", "d");
-	dynamic_register(print_s_0, "print_s_0", "f");
+	dynamic_register(func_noargs_noreturn, "func_noargs_noreturn", "");
+	dynamic_register(func_1args_dec32_noreturn, "func_1args_dec32_noreturn", "d");
+	dynamic_register(print_1args_string_noreturn, "print_1args_string_noreturn", "f");
 	/*
 	dynamic_register(prints, "prints", "s");
 	dynamic_register(addi, "addi", "ii");

@@ -8,7 +8,7 @@ extern "C"
 {
 #endif
 
-	extern char dynamic_call_test_buf[];
+	extern char dynamic_call_buf[];
 
 	void print();
 	void printi(int32_t* a);
