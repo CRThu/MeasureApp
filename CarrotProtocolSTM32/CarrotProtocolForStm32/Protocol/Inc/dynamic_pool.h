@@ -1,5 +1,6 @@
 #pragma once
 #include <inttypes.h>
+#include <stdio.h>
 #include <string.h>
 
 #ifndef DYNAMIC_POOL_H
@@ -16,12 +17,12 @@
 
 // DYNAMIC TYPES LENGTH
 #define DTYPES_STORE_LEN_1B         (0x00 << 5)
-#define DTYPES_STORE_LEN_4B         (0x01 << 5)
+#define DTYPES_STORE_LEN_8B         (0x01 << 5)
 #define DTYPES_STORE_LEN_RESERVED   (0x02 << 5)
 #define DTYPES_STORE_LEN_PTR        (0x03 << 5)
 #define DTYPES_STORE_LEN_MASK       (0x03 << 5)
 #define DTYPES_GET_LEN(x)           ((((x) & DTYPES_STORE_LEN_MASK) == DTYPES_STORE_LEN_1B) ? 1 \
-                                        : ((((x) & DTYPES_STORE_LEN_MASK) == DTYPES_STORE_LEN_4B) ? 4 \
+                                        : ((((x) & DTYPES_STORE_LEN_MASK) == DTYPES_STORE_LEN_8B) ? 8 \
                                             : 0))
 // DYNAMIC CALLS PARAMS DATATYPES
 #define DTYPES_STORE_NULL           (0x00 << 0)
@@ -34,10 +35,10 @@
 #define DTYPES_STORE_DTYPE_MASK     (0x1F << 0)
 
 #define T_NULL                      (DTYPES_STORE_VAL | DTYPES_STORE_LEN_1B | DTYPES_STORE_NULL)
-#define T_DEC64                     (DTYPES_STORE_VAL | DTYPES_STORE_LEN_4B | DTYPES_STORE_DEC64)
-#define T_HEX64                     (DTYPES_STORE_VAL | DTYPES_STORE_LEN_4B | DTYPES_STORE_HEX64)
+#define T_DEC64                     (DTYPES_STORE_VAL | DTYPES_STORE_LEN_8B | DTYPES_STORE_DEC64)
+#define T_HEX64                     (DTYPES_STORE_VAL | DTYPES_STORE_LEN_8B | DTYPES_STORE_HEX64)
 #define T_STRING                    (DTYPES_STORE_REF | DTYPES_STORE_LEN_PTR | DTYPES_STORE_STRING)
-#define T_ENUM                      (DTYPES_STORE_VAL | DTYPES_STORE_LEN_4B | DTYPES_STORE_ENUM)
+#define T_ENUM                      (DTYPES_STORE_VAL | DTYPES_STORE_LEN_8B | DTYPES_STORE_ENUM)
 #define T_BYTES                     (DTYPES_STORE_REF | DTYPES_STORE_LEN_PTR | DTYPES_STORE_BYTES)
 #define T_JSON                      (DTYPES_STORE_REF | DTYPES_STORE_LEN_PTR | DTYPES_STORE_JSON)
 

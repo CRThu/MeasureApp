@@ -1,7 +1,7 @@
 #include "CppUnitTest.h"
 #include <Protocol/Inc/dynamic_call.h>
 #include <DynamicCallTest.h>
-#include <Protocol/Inc/payload_parse.h>
+#include <Protocol/Inc/cmd_parse.h>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 

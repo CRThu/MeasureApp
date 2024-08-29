@@ -1,4 +1,5 @@
 #pragma once
+#define _CRT_SECURE_NO_WARNINGS
 #include "../Inc/dynamic_pool.h"
 
 /// <summary>
@@ -24,11 +25,15 @@ void dynamic_pool_init(dynamic_pool_t* dyn)
 dynamic_pool_status_t dynamic_pool_add(dynamic_pool_t* dyn, dtypes_t type, void* data, uint16_t len)
 {
 	if (dyn->count >= DYNAMIC_POOL_MAX_PARAMS)
+	{
 		return -1;
+	}
 
 	uint16_t index = 0;
 	if (dyn->count != 0)
+	{
 		index = dyn->idx[dyn->count - 1] + dyn->len[dyn->count - 1];
+	}
 
 	if (!DTYPES_IS_REF(type))
 	{
@@ -38,7 +43,9 @@ dynamic_pool_status_t dynamic_pool_add(dynamic_pool_t* dyn, dtypes_t type, void*
 	}
 
 	if (index + len > DYNAMIC_POOL_MAX_BYTES - 1)
+	{
 		return -3;
+	}
 
 	if (DTYPES_IS_REF(type))
 	{
@@ -53,6 +60,8 @@ dynamic_pool_status_t dynamic_pool_add(dynamic_pool_t* dyn, dtypes_t type, void*
 	dyn->len[dyn->count] = len;
 	dyn->type[dyn->count] = type;
 	dyn->count++;
+
+	return 0;
 }
 
 /// <summary>
@@ -84,9 +93,25 @@ void dynamic_pool_print(dynamic_pool_t* dyn)
 	for (uint16_t i = 0; i < dyn->count; i++)
 	{
 		dtypes_t dt;
-		uint8_t* pd;
+		void* pd;
 		uint16_t len;
 
 		dynamic_pool_get(dyn, i, &dt, &pd, &len);
+
+		char format[256] = "";
+		switch (dt)
+		{
+		case T_STRING:
+			strcpy(format, pd);
+			break;
+		case T_DEC64:
+			sprintf(format, "%d", *((int32_t*)pd));
+			break;
+		case T_HEX64:
+			sprintf(format, "0x%X", (int)*((uint64_t*)pd));
+			break;
+		}
+
+		printf("INDEX:%d, TYPE:%02X, ADDR:%08X, LEN:%02X, DATA:%s\r\n", i, dt, (uint32_t)pd, len, format);
 	}
 }

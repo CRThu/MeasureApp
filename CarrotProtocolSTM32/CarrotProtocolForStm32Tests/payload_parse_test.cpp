@@ -1,6 +1,5 @@
 #include "CppUnitTest.h"
-#include <ParseTest.h>
-#include <Protocol/Inc/payload_parse.h>
+#include <Protocol/Inc/cmd_parse.h>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 

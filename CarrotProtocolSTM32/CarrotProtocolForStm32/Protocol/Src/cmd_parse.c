@@ -21,6 +21,8 @@ cmd_parse_status_t cmd_parse_one(dynamic_pool_t* obj, uint8_t* types, uint8_t ty
 		}
 		curr_pos++;
 	}
+
+	return 0;
 }
 
 /// <summary>
@@ -80,4 +82,6 @@ cmd_parse_status_t parse_params(dynamic_pool_t* obj, uint8_t* types, uint8_t typ
 		}
 		cursor++;
 	}
+
+	return 0;
 }

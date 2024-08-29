@@ -24,6 +24,8 @@ callback_t* find_method_by_name(callback_t** methods, uint16_t methods_count, ch
 			return methods[i];
 		}
 	}
+
+	return NULL;
 }
 
 

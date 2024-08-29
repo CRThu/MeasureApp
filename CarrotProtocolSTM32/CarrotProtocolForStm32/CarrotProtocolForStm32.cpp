@@ -8,9 +8,9 @@ void parse_test()
 	uint8_t types[] = { T_STRING, T_DEC64, T_HEX64 };
 	uint8_t types_len = sizeof(types);
 
-	printf("%02X,%02X,%02X\n", types[0], types[1], types[2]);
+	printf("TYPE: %02X,%02X,%02X\n", types[0], types[1], types[2]);
 
-	char c[256];
+	char c[256] = "";
 	char* p = c;
 	strcpy(p, "fun_abc(32,10)\n");
 

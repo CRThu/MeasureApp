@@ -5,6 +5,7 @@
 #include <stddef.h>
 #include <limits.h>
 #include <errno.h>
+#include <math.h>
 
 #ifndef BYTES_H
 #define BYTES_H
