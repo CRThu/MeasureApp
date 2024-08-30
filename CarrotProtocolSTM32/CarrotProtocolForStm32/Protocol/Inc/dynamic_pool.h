@@ -54,22 +54,19 @@ extern "C"
     /// </summary>
     typedef struct {
         /// <summary>
-        /// 数据存储
+        /// 字符串原格式数据存储
         /// </summary>
-        uint8_t data[DYNAMIC_POOL_MAX_BYTES];
+        char buf[DYNAMIC_POOL_MAX_BYTES];
 
         /// <summary>
         /// 每个元素开始地址
         /// </summary>
-        uint16_t idx[DYNAMIC_POOL_MAX_PARAMS];
+        uint16_t offset[DYNAMIC_POOL_MAX_PARAMS];
+
         /// <summary>
         /// 每个元素字节长度
         /// </summary>
         uint16_t len[DYNAMIC_POOL_MAX_PARAMS];
-        /// <summary>
-        /// 每个元素类型
-        /// </summary>
-        dtypes_t type[DYNAMIC_POOL_MAX_PARAMS];
 
         /// <summary>
         /// 目前存储元素数量

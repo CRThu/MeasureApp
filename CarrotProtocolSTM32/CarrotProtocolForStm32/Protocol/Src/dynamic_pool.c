@@ -6,60 +6,54 @@
 /// 初始化动态类型数组
 /// </summary>
 /// <param name="dyn">空动态类型数组结构体</param>
-void dynamic_pool_init(dynamic_pool_t* dyn)
+void dynamic_pool_init(dynamic_pool_t* pool)
 {
-	memset(dyn->data, 0u, DYNAMIC_POOL_MAX_BYTES);
-	memset(dyn->idx, 0u, DYNAMIC_POOL_MAX_PARAMS);
-	memset(dyn->len, 0u, DYNAMIC_POOL_MAX_PARAMS);
-	memset(dyn->type, 0u, DYNAMIC_POOL_MAX_PARAMS);
-	dyn->count = 0;
+	memset(pool->buf, 0u, DYNAMIC_POOL_MAX_BYTES);
+	memset(pool->offset, 0u, DYNAMIC_POOL_MAX_PARAMS);
+	memset(pool->len, 0u, DYNAMIC_POOL_MAX_PARAMS);
+	pool->count = 0;
 }
 
 /// <summary>
 /// 添加元素通用函数
 /// </summary>
-/// <param name="dyn">动态类型数组结构体</param>
+/// <param name="pool">动态类型数组结构体</param>
 /// <param name="type">变量类型</param>
-/// <param name="data">变量地址</param>
+/// <param name="data">变量首地址指针</param>
 /// <param name="len">变量长度</param>
-dynamic_pool_status_t dynamic_pool_add(dynamic_pool_t* dyn, dtypes_t type, void* data, uint16_t len)
+dynamic_pool_status_t dynamic_pool_add(dynamic_pool_t* pool, dtypes_t intype, void* data, uint16_t len)
 {
-	if (dyn->count >= DYNAMIC_POOL_MAX_PARAMS)
+	if (pool->count >= DYNAMIC_POOL_MAX_PARAMS)
 	{
 		return -1;
 	}
 
-	uint16_t index = 0;
-	if (dyn->count != 0)
-	{
-		index = dyn->idx[dyn->count - 1] + dyn->len[dyn->count - 1];
-	}
+	uint16_t start_offset = strlen(pool->buf);
 
-	if (!DTYPES_IS_REF(type))
+	if (!DTYPES_IS_REF(intype))
 	{
-		len = DTYPES_GET_LEN(type);
+		len = DTYPES_GET_LEN(intype);
 		if (len == 0)
 			return -2;
 	}
 
-	if (index + len > DYNAMIC_POOL_MAX_BYTES - 1)
+	if (start_offset + len > DYNAMIC_POOL_MAX_BYTES - 1)
 	{
 		return -3;
 	}
 
-	if (DTYPES_IS_REF(type))
+	if (DTYPES_IS_REF(intype))
 	{
-		memcpy(&dyn->data[index], (char*)data, len);
+		memcpy(&pool->buf[start_offset], (char*)data, len);
 	}
 	else
 	{
-		memcpy(&dyn->data[index], data, len);
+		memcpy(&pool->buf[start_offset], data, len);
 	}
 
-	dyn->idx[dyn->count] = index;
-	dyn->len[dyn->count] = len;
-	dyn->type[dyn->count] = type;
-	dyn->count++;
+	pool->offset[pool->count] = start_offset;
+	pool->len[pool->count] = len;
+	pool->count++;
 
 	return 0;
 }
