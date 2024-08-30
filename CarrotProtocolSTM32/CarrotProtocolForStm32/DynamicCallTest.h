@@ -1,7 +1,7 @@
 #pragma once
 #include <inttypes.h>
 #include <stdio.h>
-#include "Protocol/Inc/dynamic_call.h"
+#include "dynamic_call.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -10,12 +10,12 @@ extern "C"
 
 	extern char dynamic_call_buf[];
 
-	void print();
-	void printi(int32_t* a);
-	void printff(double* a);
-	void prints(char* a);
-	void addi(int32_t* a, int32_t* b);
-	void addf(double* a, double* b);
+	void func_noargs_noreturn();
+	void func_1args_dec32_noreturn(int32_t* a);
+	void func_1args_string_noreturn(char* a);
+	//void func_1args_string_noreturn(double* a);
+	//void addi(int32_t* a, int32_t* b);
+	//void addf(double* a, double* b);
 
 	void dynamic_call_register();
 

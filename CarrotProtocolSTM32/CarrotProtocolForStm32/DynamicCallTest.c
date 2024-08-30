@@ -6,19 +6,19 @@ char dynamic_call_buf[256];
 
 void func_noargs_noreturn()
 {
-	sprintf(dynamic_call_buf, "print() Called.");
+	sprintf(dynamic_call_buf, "func_noargs_noreturn() Called.");
 	puts(dynamic_call_buf);
 }
 
 void func_1args_dec32_noreturn(int32_t* a)
 {
-	sprintf(dynamic_call_buf, "printi(%d) Called.", *a);
+	sprintf(dynamic_call_buf, "func_1args_dec32_noreturn(%d) Called.", *a);
 	puts(dynamic_call_buf);
 }
 
-void print_1args_string_noreturn(char* a)
+void func_1args_string_noreturn(char* a)
 {
-	sprintf(dynamic_call_buf, "prints(%s) Called.", a);
+	sprintf(dynamic_call_buf, "func_1args_string_noreturn(%s) Called.", a);
 	puts(dynamic_call_buf);
 }
 
@@ -38,12 +38,12 @@ void addf(double* a, double* b)
 
 void dynamic_call_register()
 {
-	dynamic_register(func_noargs_noreturn, "func_noargs_noreturn", "");
-	dynamic_register(func_1args_dec32_noreturn, "func_1args_dec32_noreturn", "d");
-	dynamic_register(print_1args_string_noreturn, "print_1args_string_noreturn", "f");
+	delegate_register(func_noargs_noreturn, "func_noargs_noreturn", NULL, 0);
+	delegate_register(func_1args_dec32_noreturn, "func_1args_dec32_noreturn", NULL, 0);
+	delegate_register(func_1args_string_noreturn, "func_1args_string_noreturn", NULL, 0);
 	/*
-	dynamic_register(prints, "prints", "s");
-	dynamic_register(addi, "addi", "ii");
-	dynamic_register(addf, "addf", "ff");
+	delegate_register(prints, "prints", "s");
+	delegate_register(addi, "addi", "ii");
+	delegate_register(addf, "addf", "ff");
 	*/
 }
