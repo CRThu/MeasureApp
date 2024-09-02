@@ -10,19 +10,19 @@ void func_noargs_noreturn()
 	puts(dynamic_call_buf);
 }
 
-void func_1args_dec64_noreturn(int64_t* a)
+void func_1args_dec64_noreturn(dyn_dec64_t a)
 {
-	sprintf(dynamic_call_buf, "func_1args_dec64_noreturn(%"PRId64") Called.", *a);
+	sprintf(dynamic_call_buf, "func_1args_dec64_noreturn(%"PRId64") Called.", a);
 	puts(dynamic_call_buf);
 }
 
-void func_1args_hex64_noreturn(uint64_t* a)
+void func_1args_hex64_noreturn(dyn_hex64_t a)
 {
-	sprintf(dynamic_call_buf, "func_1args_hex64_noreturn(0x%"PRIX64") Called.", *a);
+	sprintf(dynamic_call_buf, "func_1args_hex64_noreturn(0x%"PRIX64") Called.", a);
 	puts(dynamic_call_buf);
 }
 
-void func_1args_string_noreturn(char* a)
+void func_1args_string_noreturn(dyn_string_t a)
 {
 	sprintf(dynamic_call_buf, "func_1args_string_noreturn(%s) Called.", a);
 	puts(dynamic_call_buf);

@@ -42,7 +42,7 @@ void invoke(dynamic_pool_t* pool, delegate_t* f)
 		((delegate_a0r0)f->handler)();
 		break;
 	case 1:
-		((delegate_a1r0)f->handler)(args[0]);
+		((delegate_a1r0)f->handler)(*args[0]);
 		break;
 	case 2:
 		((delegate_a2r0)f->handler)(args[0], args[1]);
