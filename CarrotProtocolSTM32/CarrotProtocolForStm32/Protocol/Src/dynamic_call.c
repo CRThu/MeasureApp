@@ -31,12 +31,10 @@ delegate_t* find_delegate_by_name(delegate_t** delegates, uint16_t delegates_cou
 void invoke(dynamic_pool_t* pool, delegate_t* f)
 {
 	// method invoke
-	dtypes_t* args_type[10];
-	void* args[10];
-	uint16_t* len[10];
+	uint8_t args[10][100];
 
-	for (int i = 0; i < 9; i++)
-		dynamic_pool_get(&pool, i, &args_type[i], &args[i], &len[i]);
+	for (uint16_t i = 1; i <= f->args_count; i++)
+		dynamic_pool_get(pool, i, f->args_type[i-1], &args[i-1], 100);
 
 	switch (f->args_count)
 	{

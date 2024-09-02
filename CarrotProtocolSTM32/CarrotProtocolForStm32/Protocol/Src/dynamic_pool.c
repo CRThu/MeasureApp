@@ -68,17 +68,19 @@ dynamic_pool_status_t dynamic_pool_add(dynamic_pool_t* pool, dtypes_t intype, vo
 /// <param name="dyn"></param>
 /// <param name="index">ÔªËØÏÂ±ê</param>
 /// <param name="data"></param>
-void dynamic_pool_get(dynamic_pool_t* dyn, uint16_t index, dtypes_t type, void** data, uint16_t* len)
+void dynamic_pool_get(dynamic_pool_t* dyn, uint16_t index, dtypes_t type, void** data, uint16_t len)
 {
 	if (index < dyn->count)
 	{
-		*data = &dyn->buf[dyn->offset[index]];
-		*len = dyn->len[index];
+		// TODO
+		void* internal_data = &dyn->buf[dyn->offset[index]];
+		uint8_t internal_len = dyn->len[index];
+		type_conversion(internal_data, data, T_BYTES, type, internal_len, len);
 	}
 	else
 	{
+		// NO DATA AT INDEX
 		*data = NULL;
-		*len = 0;
 	}
 
 }
@@ -108,5 +110,115 @@ void dynamic_pool_print(dynamic_pool_t* dyn)
 		}
 
 		printf("INDEX:%d, TYPE:%02X, ADDR:%08X, LEN:%02X, DATA:%s\r\n", i, dt, (uint32_t)pd, len, format);
+	}
+}
+
+
+
+const char* enum_to_string(dtypes_t type)
+{
+	switch (type)
+	{
+	case T_NULL: return "T_NULL";
+	case T_DEC64: return "T_DEC64";
+	case T_HEX64: return "T_HEX64";
+	case T_STRING: return "T_STRING";
+	case T_ENUM: return "T_ENUM";
+	case T_BYTES: return "T_BYTES";
+	default: return "UNKNOWN";
+	}
+}
+
+dtypes_t string_to_enum(const char* str)
+{
+	if (strcmp(str, "T_NULL") == 0) return T_NULL;
+	if (strcmp(str, "T_DEC64") == 0) return T_DEC64;
+	if (strcmp(str, "T_HEX64") == 0) return T_HEX64;
+	if (strcmp(str, "T_STRING") == 0) return T_STRING;
+	if (strcmp(str, "T_ENUM") == 0) return T_ENUM;
+	if (strcmp(str, "T_BYTES") == 0) return T_BYTES;
+	return -1; // Invalid enum string
+}
+
+
+
+void type_conversion(const void* input, void* output, dtypes_t intype, dtypes_t outtype, size_t input_size, size_t output_size)
+{
+	char buffer[100];
+
+	// Convert input to string using sprintf
+	switch (intype)
+	{
+	case T_NULL:
+		buffer[0] = '\0';
+		break;
+	case T_DEC64:
+		sprintf(buffer, "%"PRId64"", *(int64_t*)input);
+		break;
+	case T_HEX64:
+		sprintf(buffer, "%"PRIX64"", *(int64_t*)input);
+		break;
+	case T_STRING:
+		strncpy(buffer, (char*)input, sizeof(buffer) - 1);
+		buffer[sizeof(buffer) - 1] = '\0';
+		break;
+	case T_ENUM:
+		if (sscanf((char*)input, "%d", (int*)output) == 1)
+		{
+			// Input is a number, convert to enum string
+			strncpy(buffer, enum_to_string(*(int*)output), sizeof(buffer) - 1);
+		}
+		else
+		{
+			// Input is a string, convert to enum number
+			*(int*)output = string_to_enum((char*)input);
+			strncpy(buffer, (char*)input, sizeof(buffer) - 1);
+		}
+		buffer[sizeof(buffer) - 1] = '\0';
+		break;
+	case T_BYTES:
+		memcpy(buffer, input, input_size);
+		buffer[input_size] = '\0'; // Ensure null-terminated string for further processing
+		break;
+	default:
+		printf("Unsupported input type\n");
+		return;
+	}
+
+	// Convert string to output type using sscanf
+	switch (outtype)
+	{
+	case T_NULL:
+		// No conversion needed for T_NULL
+		break;
+	case T_DEC64:
+		sscanf(buffer, "%"PRId64"", (int64_t*)output);
+		break;
+	case T_HEX64:
+		sscanf(buffer, "%"PRIX64"", (uint64_t*)output);
+		break;
+	case T_STRING:
+		strncpy((char*)output, buffer, output_size - 1);
+		((char*)output)[output_size - 1] = '\0';
+		break;
+	case T_ENUM:
+		if (sscanf(buffer, "%d", (int*)output) == 1)
+		{
+			// Output is a number, convert to enum string
+			strncpy((char*)output, enum_to_string(*(int*)output), output_size - 1);
+		}
+		else
+		{
+			// Output is a string, convert to enum number
+			*(int*)output = string_to_enum(buffer);
+			strncpy((char*)output, buffer, output_size - 1);
+		}
+		((char*)output)[output_size - 1] = '\0';
+		break;
+	case T_BYTES:
+		memcpy(output, buffer, output_size);
+		break;
+	default:
+		printf("Unsupported output type\n");
 	}
 }

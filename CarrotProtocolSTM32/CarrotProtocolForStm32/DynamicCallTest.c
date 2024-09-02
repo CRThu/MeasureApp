@@ -10,9 +10,15 @@ void func_noargs_noreturn()
 	puts(dynamic_call_buf);
 }
 
-void func_1args_dec32_noreturn(int32_t* a)
+void func_1args_dec64_noreturn(int64_t* a)
 {
-	sprintf(dynamic_call_buf, "func_1args_dec32_noreturn(%d) Called.", *a);
+	sprintf(dynamic_call_buf, "func_1args_dec64_noreturn(%"PRId64") Called.", *a);
+	puts(dynamic_call_buf);
+}
+
+void func_1args_hex64_noreturn(uint64_t* a)
+{
+	sprintf(dynamic_call_buf, "func_1args_hex64_noreturn(0x%"PRIX64") Called.", *a);
 	puts(dynamic_call_buf);
 }
 
@@ -39,8 +45,12 @@ void addf(double* a, double* b)
 void dynamic_call_register()
 {
 	delegate_register(func_noargs_noreturn, "func_noargs_noreturn", NULL, 0);
-	delegate_register(func_1args_dec32_noreturn, "func_1args_dec32_noreturn", NULL, 0);
-	delegate_register(func_1args_string_noreturn, "func_1args_string_noreturn", NULL, 0);
+	dtypes_t func_1args_dec64_noreturn_argtype[1] = { T_DEC64 };
+	delegate_register(func_1args_dec64_noreturn, "func_1args_dec64_noreturn", func_1args_dec64_noreturn_argtype, 1);
+	dtypes_t func_1args_hex64_noreturn_argtype[1] = { T_DEC64 };
+	delegate_register(func_1args_hex64_noreturn, "func_1args_hex64_noreturn", func_1args_hex64_noreturn_argtype, 1);
+	dtypes_t func_1args_string_noreturn_argtype[1] = { T_STRING };
+	delegate_register(func_1args_string_noreturn, "func_1args_string_noreturn", func_1args_string_noreturn_argtype, 1);
 	/*
 	delegate_register(prints, "prints", "s");
 	delegate_register(addi, "addi", "ii");

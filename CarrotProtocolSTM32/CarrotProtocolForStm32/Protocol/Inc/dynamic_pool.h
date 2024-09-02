@@ -76,9 +76,13 @@ extern "C"
 
     void dynamic_pool_init(dynamic_pool_t* dyn);
     dynamic_pool_status_t dynamic_pool_add(dynamic_pool_t* dyn, dtypes_t type, void* data, uint16_t len);
-    void dynamic_pool_get(dynamic_pool_t* dyn, uint16_t index, dtypes_t type, void** data, uint16_t* len);
+    void dynamic_pool_get(dynamic_pool_t* dyn, uint16_t index, dtypes_t type, void** data, uint16_t len);
 
     void dynamic_pool_print(dynamic_pool_t* dyn);
+
+    const char* enum_to_string(dtypes_t type);
+    dtypes_t string_to_enum(const char* str);
+    void type_conversion(const void* input, void* output, dtypes_t intype, dtypes_t outtype, size_t input_size, size_t output_size);
 
 #ifdef __cplusplus
 }

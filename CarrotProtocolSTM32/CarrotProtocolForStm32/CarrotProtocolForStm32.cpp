@@ -13,7 +13,7 @@ void parse_test(dynamic_pool_t* pool)
 
 	char c[256] = "";
 	char* p = c;
-	strcpy(p, "fun_abc(32,10)\n");
+	strcpy(p, "func(32,10)\n");
 
 	cmd_parse_one(pool, types, types_len, p, strlen(p));
 
@@ -29,9 +29,12 @@ void invoke_test(dynamic_pool_t* pool)
 	dynamic_call_register();
 
 	char s[256];
-	strcpy(s, "func_noargs_noreturn");
+	strcpy(s, "func");
 
 	invoke(pool, &(delegates[0]));
+	invoke(pool, &(delegates[1]));
+	invoke(pool, &(delegates[2]));
+	invoke(pool, &(delegates[3]));
 }
 
 int main()
