@@ -9,7 +9,7 @@ void parse_test(dynamic_pool_t* pool)
 	uint8_t types[] = { T_STRING, T_DEC64, T_HEX64 };
 	uint8_t types_len = sizeof(types);
 
-	printf("TYPE: %02X,%02X,%02X\n", types[0], types[1], types[2]);
+	printf("TYPE:\nT_STRING=%02X\nT_DEC64=%02X\nT_HEX64=%02X\n", types[0], types[1], types[2]);
 
 	char c[256] = "";
 	char* p = c;

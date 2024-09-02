@@ -34,6 +34,8 @@ cmd_parse_status_t cmd_parse_one(dynamic_pool_t* obj, uint8_t* types, uint8_t ty
 /// <returns>字符串实际长度</returns>
 cmd_parse_status_t parse_params(dynamic_pool_t* obj, uint8_t* types, uint8_t types_len, char* cmd, uint16_t len)
 {
+	// types types_len not used
+
 	uint8_t args_index = 0;
 	uint16_t cursor = 0;
 	uint16_t start_pos = 0;
@@ -42,17 +44,22 @@ cmd_parse_status_t parse_params(dynamic_pool_t* obj, uint8_t* types, uint8_t typ
 	{
 		if (CMD_PARSE_ELEMENT_DELIMITER(cmd[cursor]))
 		{
+			/*
 			if (args_index >= types_len)
 			{
 				return -1;
 			}
-
+			*/
 			uint8_t* fromele = &cmd[start_pos];
 			uint16_t fromlen = cursor - start_pos;
 			uint8_t totype = types[args_index];
 			size_t proc;
 			uint16_t len = 0;
 
+
+			dynamic_pool_add(obj, T_STRING, fromele, fromlen);
+
+			/*
 			switch (totype)
 			{
 			case T_STRING:
@@ -63,19 +70,20 @@ cmd_parse_status_t parse_params(dynamic_pool_t* obj, uint8_t* types, uint8_t typ
 			case T_DEC64:
 			{
 				int64_t num = bytes_to_long(fromele, fromlen, 0, &proc);
-				dynamic_pool_add(obj, T_DEC64, &num, 0);
+				dynamic_pool_add(obj, T_STRING, &num, 0);
 				break;
 			}
 			case T_HEX64:
 			{
 				uint64_t num = bytes_to_long(fromele, fromlen, 16, &proc);
-				dynamic_pool_add(obj, T_HEX64, &num, 0);
+				dynamic_pool_add(obj, T_STRING, &num, 0);
 				break;
 			}
 			default:
 				printf("ERROR CONVERTING VALUE/REF: TYPE=%u\n", totype);
 				break;
 			}
+			*/
 
 			args_index++;
 			start_pos = cursor + 1;

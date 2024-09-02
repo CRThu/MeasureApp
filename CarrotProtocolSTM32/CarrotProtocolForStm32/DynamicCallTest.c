@@ -47,3 +47,10 @@ void dynamic_call_register()
 	delegate_register(addf, "addf", "ff");
 	*/
 }
+
+void dynamic_call_print()
+{
+
+	printf("%s\n%s\n%s\n", __FUNCTION__, __FUNCDNAME__, __FUNCSIG__);
+
+}

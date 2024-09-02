@@ -18,6 +18,7 @@ extern "C"
 	//void addf(double* a, double* b);
 
 	void dynamic_call_register();
+	void dynamic_call_print();
 
 
 

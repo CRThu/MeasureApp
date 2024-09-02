@@ -18,17 +18,21 @@ void dynamic_pool_init(dynamic_pool_t* pool)
 /// 添加元素通用函数
 /// </summary>
 /// <param name="pool">动态类型数组结构体</param>
-/// <param name="type">变量类型</param>
+/// <param name="intype">变量类型（未使用）</param>
 /// <param name="data">变量首地址指针</param>
 /// <param name="len">变量长度</param>
 dynamic_pool_status_t dynamic_pool_add(dynamic_pool_t* pool, dtypes_t intype, void* data, uint16_t len)
 {
+	// intype = string now
+	intype = T_STRING;
+
 	if (pool->count >= DYNAMIC_POOL_MAX_PARAMS)
 	{
 		return -1;
 	}
 
 	uint16_t start_offset = strlen(pool->buf);
+
 
 	if (!DTYPES_IS_REF(intype))
 	{
@@ -64,17 +68,15 @@ dynamic_pool_status_t dynamic_pool_add(dynamic_pool_t* pool, dtypes_t intype, vo
 /// <param name="dyn"></param>
 /// <param name="index">元素下标</param>
 /// <param name="data"></param>
-void dynamic_pool_get(dynamic_pool_t* dyn, uint16_t index, dtypes_t* type, void** data, uint16_t* len)
+void dynamic_pool_get(dynamic_pool_t* dyn, uint16_t index, dtypes_t type, void** data, uint16_t* len)
 {
 	if (index < dyn->count)
 	{
-		*type = dyn->type[index];
-		*data = &dyn->data[dyn->idx[index]];
+		*data = &dyn->buf[dyn->offset[index]];
 		*len = dyn->len[index];
 	}
 	else
 	{
-		*type = T_NULL;
 		*data = NULL;
 		*len = 0;
 	}
@@ -86,17 +88,16 @@ void dynamic_pool_print(dynamic_pool_t* dyn)
 {
 	for (uint16_t i = 0; i < dyn->count; i++)
 	{
-		dtypes_t dt;
-		void* pd;
-		uint16_t len;
-
-		dynamic_pool_get(dyn, i, &dt, &pd, &len);
+		void* pd = &(dyn->buf[dyn->offset[i]]);
+		dtypes_t dt = T_STRING;
+		uint16_t len = dyn->len[i];
 
 		char format[256] = "";
+		memcpy(format, pd, len);
+
 		switch (dt)
 		{
 		case T_STRING:
-			strcpy(format, pd);
 			break;
 		case T_DEC64:
 			sprintf(format, "%d", *((int32_t*)pd));

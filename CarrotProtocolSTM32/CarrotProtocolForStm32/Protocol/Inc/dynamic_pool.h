@@ -76,7 +76,7 @@ extern "C"
 
     void dynamic_pool_init(dynamic_pool_t* dyn);
     dynamic_pool_status_t dynamic_pool_add(dynamic_pool_t* dyn, dtypes_t type, void* data, uint16_t len);
-    void dynamic_pool_get(dynamic_pool_t* dyn, uint16_t index, dtypes_t* type, void** data, uint16_t* len);
+    void dynamic_pool_get(dynamic_pool_t* dyn, uint16_t index, dtypes_t type, void** data, uint16_t* len);
 
     void dynamic_pool_print(dynamic_pool_t* dyn);
 
