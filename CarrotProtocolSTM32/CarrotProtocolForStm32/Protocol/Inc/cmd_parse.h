@@ -16,7 +16,7 @@ extern "C"
 
 #define CMD_PARSE_ELEMENT_DELIMITER(c)		(c == '(' || c == ',' || c == ')' || c == ';' )
 #define CMD_PARSE_CHAR_IGNORE(c)			(c == ' ' || c == '\t' || c == '\r')
-#define CMD_PARSE_END(c)					(c == '\n')
+#define CMD_PARSE_END(c)					(c == '\n' || c == '\0')
 
 	typedef int8_t cmd_parse_status_t;
 	/*
@@ -24,8 +24,8 @@ extern "C"
 		reta=funb();
 	*/
 
-	cmd_parse_status_t cmd_parse_one(dynamic_pool_t* obj, uint8_t* types, uint8_t types_len, char* cmd, uint16_t len);
-	cmd_parse_status_t parse_params(dynamic_pool_t* obj, uint8_t* types, uint8_t types_len, char* cmd, uint16_t len);
+	cmd_parse_status_t cmd_parse_one(dynamic_pool_t* obj, char* cmd, uint16_t len);
+	cmd_parse_status_t parse_params(dynamic_pool_t* obj, char* cmd, uint16_t len);
 
 
 #ifdef __cplusplus

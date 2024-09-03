@@ -74,13 +74,12 @@ void dynamic_pool_get(dynamic_pool_t* dyn, uint16_t index, dtypes_t type, void* 
 	{
 		// TODO
 		void* internal_data = &dyn->buf[dyn->offset[index]];
-		uint8_t internal_len = dyn->len[index];
+		uint16_t internal_len = dyn->len[index];
 		type_conversion(internal_data, (size_t*)data, T_BYTES, type, internal_len, len);
 	}
 	else
 	{
 		// NO DATA AT INDEX
-		data = NULL;
 	}
 
 }

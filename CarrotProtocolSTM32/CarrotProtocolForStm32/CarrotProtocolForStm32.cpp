@@ -15,7 +15,7 @@ void parse_test(dynamic_pool_t* pool)
 	char* p = c;
 	strcpy(p, "func(32,10)\n");
 
-	cmd_parse_one(pool, types, types_len, p, strlen(p));
+	cmd_parse_one(pool, p, strlen(p));
 
 	printf("CMD: %s\n", p);
 
@@ -26,20 +26,37 @@ void parse_test(dynamic_pool_t* pool)
 
 void invoke_test(dynamic_pool_t* pool)
 {
-	dynamic_call_register();
+	invoke(pool, &(delegates[0]));
+	invoke(pool, &(delegates[1]));
+	invoke(pool, &(delegates[2]));
+	invoke(pool, &(delegates[3]));
+}
 
+void dyncall_test(dynamic_pool_t* pool)
+{
 	char s[256];
 	strcpy(s, "func");
 
-	//invoke(pool, &(delegates[0]));
-	invoke(pool, &(delegates[1]));
-	//invoke(pool, &(delegates[2]));
-	invoke(pool, &(delegates[3]));
+	dynamic_pool_init(pool);
+	printf("\nWrite a command to execute:");
+	scanf("%s", &s);
+	cmd_parse_one(pool, s, 256);
+
+	char funcname[256];
+	dynamic_pool_get(pool, 0, T_STRING, funcname, 256);
+	delegate_t* sel = find_delegate_by_name(delegates, delegates_count, funcname);
+
+	printf("found function: %s\n", sel->name);
+
+	invoke(pool, sel);
 }
 
 int main()
 {
+	dynamic_call_register();
+
 	dynamic_pool_t pool;
-	parse_test(&pool);
-	invoke_test(&pool);
+	//parse_test(&pool);
+	//invoke_test(&pool);
+	dyncall_test(&pool);
 }

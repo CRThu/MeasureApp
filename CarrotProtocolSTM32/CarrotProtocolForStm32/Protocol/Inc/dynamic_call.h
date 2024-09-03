@@ -51,7 +51,7 @@ extern "C"
 
 
     void delegate_register(delegate delegate, char* name, dtypes_t* args_type, uint8_t args_count);
-    delegate_t* find_delegate_by_name(delegate_t** delegates, uint16_t delegates_count, char* name);
+    delegate_t* find_delegate_by_name(delegate_t* delegates, uint16_t delegates_count, char* name);
     void invoke(dynamic_pool_t* pool, delegate_t* f);
 
 

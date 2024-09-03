@@ -12,15 +12,15 @@ void delegate_register(delegate delegate, char* name, dtypes_t* args_type, uint8
 	delegates_count++;
 }
 
-delegate_t* find_delegate_by_name(delegate_t** delegates, uint16_t delegates_count, char* name)
+delegate_t* find_delegate_by_name(delegate_t* delegates, uint16_t delegates_count, char* name)
 {
 	// 遍历注册方法
 	for (uint16_t i = 0; i < delegates_count; i++)
 	{
 		// 寻找匹配方法名称
-		if (NAME_ISEQUAL(delegates[i]->name, name))
+		if (NAME_ISEQUAL(delegates[i].name, name))
 		{
-			return delegates[i];
+			return &delegates[i];
 		}
 	}
 
