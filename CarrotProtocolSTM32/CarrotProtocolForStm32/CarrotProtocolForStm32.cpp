@@ -35,7 +35,6 @@ void invoke_test(dynamic_pool_t* pool)
 void dyncall_test(dynamic_pool_t* pool)
 {
 	char s[256];
-	strcpy(s, "func");
 
 	dynamic_pool_init(pool);
 	printf("\nWrite a command to execute:");

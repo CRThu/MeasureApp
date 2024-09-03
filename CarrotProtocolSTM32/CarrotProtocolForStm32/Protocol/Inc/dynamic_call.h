@@ -4,11 +4,13 @@
 #include "../Inc/bytes.h"
 #include "../Inc/dynamic_pool.h"
 
-#define DYNAMIC_CALL_FUNC_MAX_CNT 256
-#define DYNAMIC_CALL_ARGS_MAX_CNT 9
-
 #ifndef DYNAMIC_CALL_H
 #define DYNAMIC_CALL_H
+
+#define DYNAMIC_CALL_VERSION    "1.0.0"
+
+#define DYNAMIC_CALL_FUNC_MAX_CNT 256
+#define DYNAMIC_CALL_ARGS_MAX_CNT 9
 
 #define NAME_ISEQUAL(a,b)		(strcmp(a, b) == 0)
 #define FN_ARGS_CNT(args)		(strlen(args))
@@ -17,6 +19,7 @@
 extern "C"
 {
 #endif
+
 
     typedef int64_t*     dyn_dec64p_t;
     typedef uint64_t*    dyn_hex64p_t;

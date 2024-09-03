@@ -9,6 +9,8 @@
 #ifndef CMD_PARSE_H
 #define CMD_PARSE_H
 
+#define CMD_PARSE_VERSION    "1.0.0"
+
 #ifdef __cplusplus
 extern "C"
 {
