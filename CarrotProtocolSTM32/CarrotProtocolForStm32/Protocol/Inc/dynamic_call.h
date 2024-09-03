@@ -18,11 +18,13 @@ extern "C"
 {
 #endif
 
-    typedef int64_t     dyn_dec64_t;
-    typedef uint64_t    dyn_hex64_t;
-    typedef uint64_t    dyn_enum_t;
+    typedef int64_t*     dyn_dec64p_t;
+    typedef uint64_t*    dyn_hex64p_t;
+    typedef uint64_t*    dyn_enump_t;
     typedef char*       dyn_string_t;
     typedef uint8_t*    dyn_bytes_t;
+
+    #define PVAL(p)      (*(p))
 
 
     typedef void* delegate;

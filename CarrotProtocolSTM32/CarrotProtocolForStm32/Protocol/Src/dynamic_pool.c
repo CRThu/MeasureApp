@@ -68,19 +68,19 @@ dynamic_pool_status_t dynamic_pool_add(dynamic_pool_t* pool, dtypes_t intype, vo
 /// <param name="dyn"></param>
 /// <param name="index">ÔªËØÏÂ±ê</param>
 /// <param name="data"></param>
-void dynamic_pool_get(dynamic_pool_t* dyn, uint16_t index, dtypes_t type, void** data, uint16_t len)
+void dynamic_pool_get(dynamic_pool_t* dyn, uint16_t index, dtypes_t type, void* data, uint16_t len)
 {
 	if (index < dyn->count)
 	{
 		// TODO
 		void* internal_data = &dyn->buf[dyn->offset[index]];
 		uint8_t internal_len = dyn->len[index];
-		type_conversion(internal_data, data, T_BYTES, type, internal_len, len);
+		type_conversion(internal_data, (size_t*)data, T_BYTES, type, internal_len, len);
 	}
 	else
 	{
 		// NO DATA AT INDEX
-		*data = NULL;
+		data = NULL;
 	}
 
 }

@@ -34,7 +34,9 @@ void invoke(dynamic_pool_t* pool, delegate_t* f)
 	uint8_t args[10][100];
 
 	for (uint16_t i = 1; i <= f->args_count; i++)
-		dynamic_pool_get(pool, i, f->args_type[i-1], &args[i-1], 100);
+	{
+		dynamic_pool_get(pool, i, f->args_type[i - 1], args[i - 1], 100);
+	}
 
 	switch (f->args_count)
 	{
@@ -42,7 +44,7 @@ void invoke(dynamic_pool_t* pool, delegate_t* f)
 		((delegate_a0r0)f->handler)();
 		break;
 	case 1:
-		((delegate_a1r0)f->handler)(*args[0]);
+		((delegate_a1r0)f->handler)(args[0]);
 		break;
 	case 2:
 		((delegate_a2r0)f->handler)(args[0], args[1]);

@@ -11,8 +11,9 @@ extern "C"
 	extern char dynamic_call_buf[];
 
 	void func_noargs_noreturn();
-	void func_1args_dec64_noreturn(int64_t a);
-	void func_1args_string_noreturn(char* a);
+	void func_1args_dec64_noreturn(dyn_dec64p_t a);
+	void func_1args_hex64_noreturn(dyn_hex64p_t a);
+	void func_1args_string_noreturn(dyn_string_t a);
 	//void func_1args_string_noreturn(double* a);
 //void addi(int32_t* a, int32_t* b);
 //void addf(double* a, double* b);
