@@ -45,6 +45,9 @@
     <ClCompile Include="Protocol\Src\delay.c">
       <Filter>源文件\Protocol</Filter>
     </ClCompile>
+    <ClCompile Include="Protocol\Src\io_retarget.c">
+      <Filter>源文件\Protocol</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Protocol\Inc\cmd_parse.h">
