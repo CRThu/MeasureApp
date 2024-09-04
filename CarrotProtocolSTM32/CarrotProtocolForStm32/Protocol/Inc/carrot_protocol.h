@@ -62,32 +62,32 @@ extern "C"
 #endif
 
 #define CARROT_DATA_PROTOCOL_GEN(len)                                                                                                                 \
-	typedef struct __PROTOCOL_PACKED__                                                                                                                \
-	{                                                                                                                                                 \
-		uint8_t frame_start;                                                                                                                          \
-		uint8_t protocol_id;                                                                                                                          \
-		uint16_t control_flags;                                                                                                                       \
-		uint8_t stream_id;                                                                                                                            \
-		uint16_t payload_len;                                                                                                                         \
-		uint8_t payload[len - CARROT_PROTOCOL_DATA_PKG_BYTES];                                                                                        \
-		uint16_t crc;                                                                                                                                 \
-		uint8_t frame_end;                                                                                                                            \
-	} carrot_data_protocol_##len;                                                                                                                     \
+    typedef struct __PROTOCOL_PACKED__                                                                                                                \
+    {                                                                                                                                                 \
+        uint8_t frame_start;                                                                                                                          \
+        uint8_t protocol_id;                                                                                                                          \
+        uint16_t control_flags;                                                                                                                       \
+        uint8_t stream_id;                                                                                                                            \
+        uint16_t payload_len;                                                                                                                         \
+        uint8_t payload[len - CARROT_PROTOCOL_DATA_PKG_BYTES];                                                                                        \
+        uint16_t crc;                                                                                                                                 \
+        uint8_t frame_end;                                                                                                                            \
+    } carrot_data_protocol_##len;                                                                                                                     \
                                                                                                                                                       \
-	void gen_data_protocol_##len(carrot_data_protocol_##len *dat, uint16_t flag, uint8_t stream_id);                                                  \
-	void set_data_protocol_##len(carrot_data_protocol_##len *dat, uint16_t flag, uint8_t stream_id, uint8_t verify, uint8_t *payload, uint16_t size); \
-	void protocol_##len##_print(carrot_data_protocol_##len *dat, uint16_t flag, uint8_t verify, const char *format, ...)
+    void gen_data_protocol_##len(carrot_data_protocol_##len *dat, uint16_t flag, uint8_t stream_id);                                                  \
+    void set_data_protocol_##len(carrot_data_protocol_##len *dat, uint16_t flag, uint8_t stream_id, uint8_t verify, uint8_t *payload, uint16_t size); \
+    void protocol_##len##_print(carrot_data_protocol_##len *dat, uint16_t flag, uint8_t verify, const char *format, ...)
 
-	CARROT_DATA_PROTOCOL_GEN(256);
-	CARROT_DATA_PROTOCOL_GEN(2048);
+    CARROT_DATA_PROTOCOL_GEN(256);
+    CARROT_DATA_PROTOCOL_GEN(2048);
 
-	typedef struct __PROTOCOL_PACKED__
-	{
-		uint8_t frame_start;
-		uint8_t protocol_id;
-		uint8_t reserved[CARROT_PROTOCOL_ACK_RESERVED_LEN];
-		uint8_t frame_end;
-	} carrot_ack_protocol;
+    typedef struct __PROTOCOL_PACKED__
+    {
+        uint8_t frame_start;
+        uint8_t protocol_id;
+        uint8_t reserved[CARROT_PROTOCOL_ACK_RESERVED_LEN];
+        uint8_t frame_end;
+    } carrot_ack_protocol;
 
 // ALIGN END
 #if defined(_MSC_VER)

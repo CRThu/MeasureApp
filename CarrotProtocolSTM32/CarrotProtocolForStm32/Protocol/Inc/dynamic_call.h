@@ -1,3 +1,8 @@
+/****************************
+* DYNAMIC CALL
+* CARROT HU
+* 2024.09.04
+*****************************/
 #pragma once
 #include <inttypes.h>
 #include <stdio.h>
@@ -6,27 +11,31 @@
 #ifndef DYNAMIC_CALL_H
 #define DYNAMIC_CALL_H
 
-#define DYNAMIC_CALL_VERSION    "1.0.0"
-
-#define DYNAMIC_CALL_FUNC_MAX_CNT 256
-#define DYNAMIC_CALL_ARGS_MAX_CNT 9
-
-#define NAME_ISEQUAL(a,b)		(strcmp(a, b) == 0)
-#define FN_ARGS_CNT(args)		(strlen(args))
+#ifndef _CRT_SECURE_NO_WARNINGS
+#define _CRT_SECURE_NO_WARNINGS
+#endif // !_CRT_SECURE_NO_WARNINGS
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
+#define DYNAMIC_CALL_VERSION		"1.0.2"
 
-    typedef int64_t*     dyn_dec64p_t;
-    typedef uint64_t*    dyn_hex64p_t;
-    typedef uint64_t*    dyn_enump_t;
-    typedef char*       dyn_string_t;
-    typedef uint8_t*    dyn_bytes_t;
+#define DYNAMIC_CALL_FUNC_MAX_CNT	256
+#define DYNAMIC_CALL_ARGS_MAX_CNT	9
 
-    #define PVAL(p)      (*(p))
+#define NAME_ISEQUAL(a,b)			(strcmp(a, b) == 0)
+#define FN_ARGS_CNT(args)			(strlen(args))
+
+
+#define PVAL(p)						(*(p))
+
+    typedef int64_t* dyn_dec64p_t;
+    typedef uint64_t* dyn_hex64p_t;
+    typedef uint64_t* dyn_enump_t;
+    typedef char* dyn_string_t;
+    typedef uint8_t* dyn_bytes_t;
 
 
     typedef void* delegate;
