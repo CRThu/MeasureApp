@@ -1,12 +1,12 @@
 #include "../Inc/cmd_parse.h"
 
 /// <summary>
-/// ½âÎöÖ¸Áî
+/// è§£ææŒ‡ä»¤
 /// </summary>
-/// <param name="pool">dynamic_pool_t½á¹¹Ìå</param>
-/// <param name="cmd">´ı½âÎöµÄÖ¸Áî×Ö·û´®</param>
-/// <param name="len">Ö¸Áî×Ö·û´®³¤¶È</param>
-/// <returns>½âÎö×´Ì¬</returns>
+/// <param name="pool">dynamic_pool_tç»“æ„ä½“</param>
+/// <param name="cmd">å¾…è§£æçš„æŒ‡ä»¤å­—ç¬¦ä¸²</param>
+/// <param name="len">æŒ‡ä»¤å­—ç¬¦ä¸²é•¿åº¦</param>
+/// <returns>è§£æçŠ¶æ€</returns>
 cmd_parse_status_t cmd_parse_one(dynamic_pool_t* pool, char* cmd, uint16_t len)
 {
     uint16_t curr_pos = 0;
@@ -26,12 +26,12 @@ cmd_parse_status_t cmd_parse_one(dynamic_pool_t* pool, char* cmd, uint16_t len)
 }
 
 /// <summary>
-/// Ö¸Áî²ÎÊı½âÎö
+/// æŒ‡ä»¤å‚æ•°è§£æ
 /// </summary>
-/// <param name="pool">dynamic_pool_t½á¹¹Ìå</param>
-/// <param name="cmd">´ı½âÎöµÄ²ÎÊı×Ö·û´®</param>
-/// <param name="len">²ÎÊı×Ö·û´®³¤¶È</param>
-/// <returns>½âÎö×´Ì¬</returns>
+/// <param name="pool">dynamic_pool_tç»“æ„ä½“</param>
+/// <param name="cmd">å¾…è§£æçš„å‚æ•°å­—ç¬¦ä¸²</param>
+/// <param name="len">å‚æ•°å­—ç¬¦ä¸²é•¿åº¦</param>
+/// <returns>è§£æçŠ¶æ€</returns>
 cmd_parse_status_t parse_params(dynamic_pool_t* pool, char* cmd, uint16_t len)
 {
     uint8_t args_index = 0;

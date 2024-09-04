@@ -4,12 +4,12 @@ delegate_t delegates[DYNAMIC_CALL_FUNC_MAX_CNT];
 uint16_t delegates_count = 0;
 
 /// <summary>
-/// ×¢²áº¯Êı
+/// æ³¨å†Œå‡½æ•°
 /// </summary>
-/// <param name="delegate">º¯Êı</param>
-/// <param name="name">º¯ÊıÃû³Æ</param>
-/// <param name="args_type">º¯Êı²ÎÊıÀàĞÍ</param>
-/// <param name="args_count">º¯Êı²ÎÊı¸öÊı</param>
+/// <param name="delegate">å‡½æ•°</param>
+/// <param name="name">å‡½æ•°åç§°</param>
+/// <param name="args_type">å‡½æ•°å‚æ•°ç±»å‹</param>
+/// <param name="args_count">å‡½æ•°å‚æ•°ä¸ªæ•°</param>
 void delegate_register(delegate delegate, char* name, dtypes_t* args_type, uint8_t args_count)
 {
     delegates[delegates_count].name = name;
@@ -20,18 +20,18 @@ void delegate_register(delegate delegate, char* name, dtypes_t* args_type, uint8
 }
 
 /// <summary>
-/// ²éÕÒº¯Êı
+/// æŸ¥æ‰¾å‡½æ•°
 /// </summary>
-/// <param name="delegates">Î¯ÍĞÁĞ±í</param>
-/// <param name="delegates_count">Î¯ÍĞÁĞ±í¸öÊı</param>
-/// <param name="name">º¯ÊıÃû³Æ</param>
-/// <returns>ÕÒµ½µÄº¯Êı,Ã»ÓĞ·µ»ØNULL</returns>
+/// <param name="delegates">å§”æ‰˜åˆ—è¡¨</param>
+/// <param name="delegates_count">å§”æ‰˜åˆ—è¡¨ä¸ªæ•°</param>
+/// <param name="name">å‡½æ•°åç§°</param>
+/// <returns>æ‰¾åˆ°çš„å‡½æ•°,æ²¡æœ‰è¿”å›NULL</returns>
 delegate_t* find_delegate_by_name(delegate_t* delegates, uint16_t delegates_count, char* name)
 {
-    // ±éÀú×¢²á·½·¨
+    // éå†æ³¨å†Œæ–¹æ³•
     for (uint16_t i = 0; i < delegates_count; i++)
     {
-        // Ñ°ÕÒÆ¥Åä·½·¨Ãû³Æ
+        // å¯»æ‰¾åŒ¹é…æ–¹æ³•åç§°
         if (NAME_ISEQUAL(delegates[i].name, name))
         {
             return &delegates[i];
@@ -42,10 +42,10 @@ delegate_t* find_delegate_by_name(delegate_t* delegates, uint16_t delegates_coun
 }
 
 /// <summary>
-/// µ÷ÓÃº¯Êı
+/// è°ƒç”¨å‡½æ•°
 /// </summary>
-/// <param name="pool">Êı¾İ´æ´¢½á¹¹</param>
-/// <param name="f">º¯Êı</param>
+/// <param name="pool">æ•°æ®å­˜å‚¨ç»“æ„</param>
+/// <param name="f">å‡½æ•°</param>
 void invoke(dynamic_pool_t* pool, delegate_t* f)
 {
     // method invoke

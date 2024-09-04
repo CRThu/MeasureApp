@@ -1,9 +1,9 @@
 #include "../Inc/dynamic_pool.h"
 
 /// <summary>
-/// ³õÊ¼»¯¶¯Ì¬ÀàĞÍÊı×é
+/// åˆå§‹åŒ–åŠ¨æ€ç±»å‹æ•°ç»„
 /// </summary>
-/// <param name="pool">¿Õ¶¯Ì¬ÀàĞÍÊı×é½á¹¹Ìå</param>
+/// <param name="pool">ç©ºåŠ¨æ€ç±»å‹æ•°ç»„ç»“æ„ä½“</param>
 void dynamic_pool_init(dynamic_pool_t* pool)
 {
     memset(pool->buf, 0u, DYNAMIC_POOL_MAX_BYTES);
@@ -13,12 +13,12 @@ void dynamic_pool_init(dynamic_pool_t* pool)
 }
 
 /// <summary>
-/// Ìí¼ÓÔªËØÍ¨ÓÃº¯Êı
+/// æ·»åŠ å…ƒç´ é€šç”¨å‡½æ•°
 /// </summary>
-/// <param name="pool">¶¯Ì¬ÀàĞÍÊı×é½á¹¹Ìå</param>
-/// <param name="intype">±äÁ¿ÀàĞÍ£¨Î´Ê¹ÓÃ£©</param>
-/// <param name="data">±äÁ¿Ê×µØÖ·Ö¸Õë</param>
-/// <param name="len">±äÁ¿³¤¶È</param>
+/// <param name="pool">åŠ¨æ€ç±»å‹æ•°ç»„ç»“æ„ä½“</param>
+/// <param name="intype">å˜é‡ç±»å‹ï¼ˆæœªä½¿ç”¨ï¼‰</param>
+/// <param name="data">å˜é‡é¦–åœ°å€æŒ‡é’ˆ</param>
+/// <param name="len">å˜é‡é•¿åº¦</param>
 dynamic_pool_status_t dynamic_pool_add(dynamic_pool_t* pool, dtypes_t intype, void* data, uint16_t len)
 {
     // intype = string now
@@ -61,13 +61,13 @@ dynamic_pool_status_t dynamic_pool_add(dynamic_pool_t* pool, dtypes_t intype, vo
 }
 
 /// <summary>
-/// »ñÈ¡ÔªËØ
+/// è·å–å…ƒç´ 
 /// </summary>
-/// <param name="pool">´æ´¢½á¹¹</param>
-/// <param name="index">ÔªËØË÷Òı</param>
-/// <param name="type">ÀàĞÍ</param>
-/// <param name="data">Êı¾İÖ¸Õë</param>
-/// <param name="len">Êı¾İ³¤¶È</param>
+/// <param name="pool">å­˜å‚¨ç»“æ„</param>
+/// <param name="index">å…ƒç´ ç´¢å¼•</param>
+/// <param name="type">ç±»å‹</param>
+/// <param name="data">æ•°æ®æŒ‡é’ˆ</param>
+/// <param name="len">æ•°æ®é•¿åº¦</param>
 void dynamic_pool_get(dynamic_pool_t* pool, uint16_t index, dtypes_t type, void* data, uint16_t len)
 {
     if (index < pool->count)
@@ -85,9 +85,9 @@ void dynamic_pool_get(dynamic_pool_t* pool, uint16_t index, dtypes_t type, void*
 }
 
 /// <summary>
-/// ´òÓ¡Êı¾İ´æ´¢³Ø
+/// æ‰“å°æ•°æ®å­˜å‚¨æ± 
 /// </summary>
-/// <param name="pool">´æ´¢½á¹¹</param>
+/// <param name="pool">å­˜å‚¨ç»“æ„</param>
 void dynamic_pool_print(dynamic_pool_t* pool)
 {
     for (uint16_t i = 0; i < pool->count; i++)
@@ -144,14 +144,14 @@ dtypes_t string_to_enum(const char* str)
 
 
 /// <summary>
-/// ÀàĞÍ×ª»»
+/// ç±»å‹è½¬æ¢
 /// </summary>
-/// <param name="input">ÊäÈëÊı¾İÖ¸Õë</param>
-/// <param name="output">Êä³öÊı¾İÖ¸Õë</param>
-/// <param name="intype">ÊäÈëÊı¾İÀàĞÍ</param>
-/// <param name="outtype">Êä³öÊı¾İÀàĞÍ</param>
-/// <param name="input_size">ÊäÈëÊı¾İ³¤¶È</param>
-/// <param name="output_size">Êä³öÊı¾İ³¤¶È</param>
+/// <param name="input">è¾“å…¥æ•°æ®æŒ‡é’ˆ</param>
+/// <param name="output">è¾“å‡ºæ•°æ®æŒ‡é’ˆ</param>
+/// <param name="intype">è¾“å…¥æ•°æ®ç±»å‹</param>
+/// <param name="outtype">è¾“å‡ºæ•°æ®ç±»å‹</param>
+/// <param name="input_size">è¾“å…¥æ•°æ®é•¿åº¦</param>
+/// <param name="output_size">è¾“å‡ºæ•°æ®é•¿åº¦</param>
 void type_conversion(const void* input, void* output, dtypes_t intype, dtypes_t outtype, size_t input_size, size_t output_size)
 {
     char buffer[100];
