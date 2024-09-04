@@ -63,26 +63,26 @@ extern "C"
     typedef int8_t dynamic_pool_status_t;
 
     /// <summary>
-    /// ��̬��������ṹ��
+    /// 动态类型数组结构体
     /// </summary>
     typedef struct {
         /// <summary>
-        /// �ַ���ԭ��ʽ���ݴ洢
+        /// 字符串原格式数据存储
         /// </summary>
         char buf[DYNAMIC_POOL_MAX_BYTES];
 
         /// <summary>
-        /// ÿ��Ԫ�ؿ�ʼ��ַ
+        /// 每个元素开始地址
         /// </summary>
         uint16_t offset[DYNAMIC_POOL_MAX_PARAMS];
 
         /// <summary>
-        /// ÿ��Ԫ���ֽڳ���
+        /// 每个元素字节长度
         /// </summary>
         uint16_t len[DYNAMIC_POOL_MAX_PARAMS];
 
         /// <summary>
-        /// Ŀǰ�洢Ԫ������
+        /// 目前存储元素数量
         /// </summary>
         uint16_t count;
     }dynamic_pool_t;

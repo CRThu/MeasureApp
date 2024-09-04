@@ -24,9 +24,6 @@
     <ClCompile Include="CarrotProtocolForStm32.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Protocol\Src\carrot_protocol.c">
-      <Filter>源文件\Protocol</Filter>
-    </ClCompile>
     <ClCompile Include="Protocol\Src\cmd_parse.c">
       <Filter>源文件\Protocol</Filter>
     </ClCompile>
@@ -39,14 +36,17 @@
     <ClCompile Include="DynamicCallTest.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Protocol\Src\bytes.c">
+    <ClCompile Include="Protocol\Src\ascii_protocol.c">
+      <Filter>源文件\Protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="Protocol\Src\uart_comm.c">
+      <Filter>源文件\Protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="Protocol\Src\delay.c">
       <Filter>源文件\Protocol</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Protocol\Inc\carrot_protocol.h">
-      <Filter>头文件\Protocol</Filter>
-    </ClInclude>
     <ClInclude Include="Protocol\Inc\cmd_parse.h">
       <Filter>头文件\Protocol</Filter>
     </ClInclude>
@@ -59,7 +59,13 @@
     <ClInclude Include="DynamicCallTest.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Protocol\Inc\bytes.h">
+    <ClInclude Include="Protocol\Inc\ascii_protocol.h">
+      <Filter>头文件\Protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="Protocol\Inc\uart_comm.h">
+      <Filter>头文件\Protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="Protocol\Inc\delay.h">
       <Filter>头文件\Protocol</Filter>
     </ClInclude>
   </ItemGroup>

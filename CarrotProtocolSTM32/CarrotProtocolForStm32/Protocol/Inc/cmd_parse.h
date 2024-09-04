@@ -4,13 +4,6 @@
 * 2024.09.04
 *****************************/
 #pragma once
-#include <inttypes.h>
-#include <string.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include "../Inc/dynamic_pool.h"
-
 #ifndef CMD_PARSE_H
 #define CMD_PARSE_H
 
@@ -22,6 +15,13 @@
 extern "C"
 {
 #endif
+
+#include <inttypes.h>
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include "../Inc/dynamic_pool.h"
 
 #define CMD_PARSE_VERSION    "1.0.2"
 

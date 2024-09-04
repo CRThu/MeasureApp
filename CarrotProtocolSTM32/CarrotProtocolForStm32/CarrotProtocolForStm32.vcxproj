@@ -143,20 +143,42 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="DynamicCallTest.c" />
-    <ClCompile Include="Protocol\Src\bytes.c" />
+    <ClCompile Include="Protocol\Src\ascii_protocol.c" />
+    <ClCompile Include="Protocol\Src\delay.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Protocol\Src\dynamic_call.c" />
     <ClCompile Include="CarrotProtocolForStm32.cpp" />
-    <ClCompile Include="Protocol\Src\carrot_protocol.c" />
     <ClCompile Include="Protocol\Src\dynamic_pool.c" />
     <ClCompile Include="Protocol\Src\cmd_parse.c" />
+    <ClCompile Include="Protocol\Src\uart_comm.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DynamicCallTest.h" />
-    <ClInclude Include="Protocol\Inc\bytes.h" />
+    <ClInclude Include="Protocol\Inc\ascii_protocol.h" />
+    <ClInclude Include="Protocol\Inc\delay.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Protocol\Inc\dynamic_call.h" />
-    <ClInclude Include="Protocol\Inc\carrot_protocol.h" />
     <ClInclude Include="Protocol\Inc\dynamic_pool.h" />
     <ClInclude Include="Protocol\Inc\cmd_parse.h" />
+    <ClInclude Include="Protocol\Inc\uart_comm.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
