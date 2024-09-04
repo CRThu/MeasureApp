@@ -1,5 +1,3 @@
-#define _CRT_SECURE_NO_WARNINGS
-
 #include "DynamicCallTest.h"
 
 char dynamic_call_buf[256];

@@ -8,6 +8,10 @@ extern "C"
 {
 #endif
 
+#ifndef _CRT_SECURE_NO_WARNINGS
+#define _CRT_SECURE_NO_WARNINGS
+#endif // !_CRT_SECURE_NO_WARNINGS
+
 	extern char dynamic_call_buf[];
 
 	void func_noargs_noreturn();
@@ -25,4 +29,4 @@ extern "C"
 
 #ifdef __cplusplus
 }
-#endif#pragma once
+#endif

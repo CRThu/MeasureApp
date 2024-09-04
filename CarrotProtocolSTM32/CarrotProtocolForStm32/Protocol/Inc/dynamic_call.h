@@ -1,7 +1,6 @@
 #pragma once
 #include <inttypes.h>
 #include <stdio.h>
-#include "../Inc/bytes.h"
 #include "../Inc/dynamic_pool.h"
 
 #ifndef DYNAMIC_CALL_H

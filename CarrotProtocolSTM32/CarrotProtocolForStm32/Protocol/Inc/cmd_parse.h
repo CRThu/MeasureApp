@@ -3,13 +3,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "../Inc/bytes.h"
 #include "../Inc/dynamic_pool.h"
 
 #ifndef CMD_PARSE_H
 #define CMD_PARSE_H
 
-#define CMD_PARSE_VERSION    "1.0.0"
+#define CMD_PARSE_VERSION    "1.0.1"
 
 #ifdef __cplusplus
 extern "C"
@@ -21,10 +20,6 @@ extern "C"
 #define CMD_PARSE_END(c)					(c == '\n' || c == '\0')
 
 	typedef int8_t cmd_parse_status_t;
-	/*
-		funa(para,parb,parc,pard);
-		reta=funb();
-	*/
 
 	cmd_parse_status_t cmd_parse_one(dynamic_pool_t* obj, char* cmd, uint16_t len);
 	cmd_parse_status_t parse_params(dynamic_pool_t* obj, char* cmd, uint16_t len);

@@ -1,6 +1,5 @@
 #include "../Inc/cmd_parse.h"
 
-
 /// <summary>
 /// 指令解析初始化
 /// </summary>
@@ -44,7 +43,7 @@ cmd_parse_status_t parse_params(dynamic_pool_t* obj, char* cmd, uint16_t len)
 	{
 		if (CMD_PARSE_ELEMENT_DELIMITER(cmd[cursor]))
 		{
-			uint8_t* fromele = &cmd[start_pos];
+			char* fromele = &cmd[start_pos];
 			uint16_t fromlen = cursor - start_pos;
 			uint16_t len = 0;
 

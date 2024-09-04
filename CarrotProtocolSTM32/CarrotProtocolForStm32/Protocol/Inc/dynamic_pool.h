@@ -6,7 +6,12 @@
 #ifndef DYNAMIC_POOL_H
 #define DYNAMIC_POOL_H
 
-#define DYNAMIC_POOL_VERSION    "1.0.0"
+#define DYNAMIC_POOL_VERSION    "1.0.1"
+
+#ifndef _CRT_SECURE_NO_WARNINGS
+#define _CRT_SECURE_NO_WARNINGS
+#endif // !_CRT_SECURE_NO_WARNINGS
+
 
 #define DYNAMIC_POOL_MAX_BYTES 1024
 #define DYNAMIC_POOL_MAX_PARAMS 256
@@ -48,43 +53,43 @@
 extern "C"
 {
 #endif
-    typedef uint8_t dtypes_t;
-    typedef int8_t dynamic_pool_status_t;
+	typedef uint8_t dtypes_t;
+	typedef int8_t dynamic_pool_status_t;
 
-    /// <summary>
-    /// 动态类型数组结构体
-    /// </summary>
-    typedef struct {
-        /// <summary>
-        /// 字符串原格式数据存储
-        /// </summary>
-        char buf[DYNAMIC_POOL_MAX_BYTES];
+	/// <summary>
+	/// 动态类型数组结构体
+	/// </summary>
+	typedef struct {
+		/// <summary>
+		/// 字符串原格式数据存储
+		/// </summary>
+		char buf[DYNAMIC_POOL_MAX_BYTES];
 
-        /// <summary>
-        /// 每个元素开始地址
-        /// </summary>
-        uint16_t offset[DYNAMIC_POOL_MAX_PARAMS];
+		/// <summary>
+		/// 每个元素开始地址
+		/// </summary>
+		uint16_t offset[DYNAMIC_POOL_MAX_PARAMS];
 
-        /// <summary>
-        /// 每个元素字节长度
-        /// </summary>
-        uint16_t len[DYNAMIC_POOL_MAX_PARAMS];
+		/// <summary>
+		/// 每个元素字节长度
+		/// </summary>
+		uint16_t len[DYNAMIC_POOL_MAX_PARAMS];
 
-        /// <summary>
-        /// 目前存储元素数量
-        /// </summary>
-        uint16_t count;
-    }dynamic_pool_t;
+		/// <summary>
+		/// 目前存储元素数量
+		/// </summary>
+		uint16_t count;
+	}dynamic_pool_t;
 
-    void dynamic_pool_init(dynamic_pool_t* dyn);
-    dynamic_pool_status_t dynamic_pool_add(dynamic_pool_t* dyn, dtypes_t type, void* data, uint16_t len);
-    void dynamic_pool_get(dynamic_pool_t* dyn, uint16_t index, dtypes_t type, void* data, uint16_t len);
+	void dynamic_pool_init(dynamic_pool_t* dyn);
+	dynamic_pool_status_t dynamic_pool_add(dynamic_pool_t* dyn, dtypes_t type, void* data, uint16_t len);
+	void dynamic_pool_get(dynamic_pool_t* dyn, uint16_t index, dtypes_t type, void* data, uint16_t len);
 
-    void dynamic_pool_print(dynamic_pool_t* dyn);
+	void dynamic_pool_print(dynamic_pool_t* dyn);
 
-    const char* enum_to_string(dtypes_t type);
-    dtypes_t string_to_enum(const char* str);
-    void type_conversion(const void* input, void* output, dtypes_t intype, dtypes_t outtype, size_t input_size, size_t output_size);
+	const char* enum_to_string(dtypes_t type);
+	dtypes_t string_to_enum(const char* str);
+	void type_conversion(const void* input, void* output, dtypes_t intype, dtypes_t outtype, size_t input_size, size_t output_size);
 
 #ifdef __cplusplus
 }

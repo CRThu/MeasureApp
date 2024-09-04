@@ -1,5 +1,3 @@
-#pragma once
-#define _CRT_SECURE_NO_WARNINGS
 #include "../Inc/dynamic_pool.h"
 
 /// <summary>
