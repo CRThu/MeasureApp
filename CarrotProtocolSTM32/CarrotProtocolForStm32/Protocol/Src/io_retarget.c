@@ -1,7 +1,7 @@
 /****************************
  * IO RETARGET
  * CARROT HU
- * 2024.09.04
+ * 2024.09.05
  *****************************/
 #include <stdio.h>
 #include "main.h"
@@ -9,16 +9,34 @@
 
 #define IO_RETARGET_UART_INSTANCE huart1
 
+
+/*
+ * Arm Compiler 4/5 or Arm Compiler (armclang)
+ */
+#if   defined ( __CC_ARM ) || defined (__ARMCC_VERSION)
+
+#define PUTCHAR_PROTOTYPE   int fputc(int ch, FILE *f)
+#define GETCHAR_PROTOTYPE   int fgetc(FILE *f)
+
+/*
+ * GNU Compiler
+ */
+#elif defined ( __GNUC__ )
+
+#define PUTCHAR_PROTOTYPE   int __io_putchar(int ch)
+#define GETCHAR_PROTOTYPE   int __io_getchar(void)
+
+#else
+  #error Unknown compiler.
+#endif
+
+
 /**
  * @brief  Retargets the C library __io_putchar function to the USART.
  * @param  None
  * @retval None
  */
-#ifdef __GNUC__
-int __io_putchar(int ch)
-#else
-int fputc(int ch, FILE *f)
-#endif
+PUTCHAR_PROTOTYPE
 {
     /* Implementation of __io_putchar */
     /* e.g. write a character to the UART1 and Loop until the end of transmission */
@@ -32,11 +50,7 @@ int fputc(int ch, FILE *f)
  * @param  None
  * @retval character read uart
  */
-#ifdef __GNUC__
-int __io_getchar(void)
-#else
-int fgetc(FILE *f)
-#endif
+GETCHAR_PROTOTYPE
 {
     /* Implementation of __io_getchar */
     char rxChar;
