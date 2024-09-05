@@ -1,7 +1,7 @@
 /****************************
  * ASCII PROTOCOL
  * CARROT HU
- * 2024.09.04
+ * 2024.09.05
  *****************************/
 #pragma once
 
@@ -10,6 +10,7 @@
 
 #include <stdint.h>
 #include <string.h>
+#include "uart_comm.h"
 
 #ifndef _CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
@@ -21,6 +22,9 @@ extern "C"
 #endif
 #define ASCII_PROTOCOL_VERSION "1.0.0"
 
+    void protocol_parse(uint8_t* buf, uint16_t len, uint16_t* endpos);
+    void protocol_write_msg(char* msg);
+    void protocol_write_data(uint8_t* data, uint16_t len);
 
 
 #ifdef __cplusplus
