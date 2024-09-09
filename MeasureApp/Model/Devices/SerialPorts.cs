@@ -91,7 +91,8 @@ namespace MeasureApp.Model.Devices
         {
             if (PreWriteString is not null)
                 PreWriteString(serialPort, strData);
-            SerialPortsDict[serialPort].Write(strData);
+            //SerialPortsDict[serialPort].Write(strData);
+            SerialPortsDict[serialPort].WriteLine(strData);
         }
 
         public void WriteBytes(string serialPort, byte[] buffer)

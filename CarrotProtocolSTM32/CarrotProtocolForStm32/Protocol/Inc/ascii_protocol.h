@@ -22,7 +22,7 @@
 extern "C"
 {
 #endif
-#define ASCII_PROTOCOL_VERSION "1.0.1"
+#define ASCII_PROTOCOL_VERSION "1.0.2"
 
 #define DEBUG_MSG()         protocol_write_msg();
 

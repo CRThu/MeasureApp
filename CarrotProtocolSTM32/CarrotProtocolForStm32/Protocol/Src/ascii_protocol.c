@@ -29,4 +29,5 @@ void protocol_write_data(uint8_t* data, uint16_t len)
     uart_txdma_write(data, len);
     protocol_write_msg("</bin>");
     protocol_write_msg("</data>");
+    protocol_write_msg("\r\n");
 }
