@@ -351,7 +351,7 @@ namespace MeasureApp.ViewModel
                                 {
                                     try
                                     {
-                                        M3458AManualMeasureText = Measure3458AInstance.MeasureDCV(setRangeDecimal, setResolutionDecimal).ToString();
+                                        M3458AManualMeasureText = Measure3458AInstance.ReadDecimal().ToString();
                                         // 数据自动存储
                                         if (isStorage)
                                         {

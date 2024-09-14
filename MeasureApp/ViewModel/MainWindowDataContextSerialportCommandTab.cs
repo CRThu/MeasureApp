@@ -605,12 +605,12 @@ PA5.FREQ;
                                 decimal measureData = measureCmd0 == string.Empty ? measureDevice.ReadDecimal() : measureDevice.QueryDecimal(measureCmd0);
                                 M3458AManualMeasureText = measureData.ToString();
                                 DataStorageInstance.AddValue(measureKeyName0, measureData);
-                                measureDevice.Dispose();
+                                //measureDevice.Dispose();
                             }
                             catch (Exception ex)
                             {
                                 _ = MessageBox.Show(ex.ToString());
-                                measureDevice.Dispose();
+                                //measureDevice.Dispose();
                             }
                         }
                         else
