@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace CarrotCommFramework.Protocols
 {
@@ -19,33 +20,71 @@ namespace CarrotCommFramework.Protocols
         public override bool TryParse(ref ReadOnlySequence<byte> buffer, out IEnumerable<Packet>? packets)
         {
             List<Packet> packetsList = new();
-            var startTag = "<data>".AsciiToBytes().AsSpan();
-            var endTag = "</data>".AsciiToBytes().AsSpan();
+            var dataStartTag = "<data>".AsciiToBytes().AsSpan();
+            var headStartTag = "<head>".AsciiToBytes().AsSpan();
+            var headEndTag = "</head>".AsciiToBytes().AsSpan();
+            var binaryStartTag = "<binary><![BDATA[".AsciiToBytes().AsSpan();
+            var binaryEndTag = "]]></binary>".AsciiToBytes().AsSpan();
+            var dataEndTag = "</data>".AsciiToBytes().AsSpan();
             var crlfTag = "\r\n".AsciiToBytes().AsSpan();
             var reader = new SequenceReader<byte>(buffer);
             ReadOnlySequence<byte> seq;
-            ReadOnlySequence<byte> seq2;
+            int dataLen = 0;
 
             // 处理数据流直到不完整包或结束
             while (true)
             {
-                if (reader.TryReadTo(out seq, crlfTag, true))
+                // detect tag symbol '<data>'
+                if (reader.IsNext(dataStartTag))
                 {
-                    var seqRder = new SequenceReader<byte>(seq);
-                    if (seqRder.TryReadTo(out seq2, startTag, true))
+                    reader.Advance(dataStartTag.Length);
+                    // detect tag symbol '<head>'
+                    if (reader.IsNext(headStartTag))
                     {
-                        if (!seq2.IsEmpty)
+                        reader.Advance(headStartTag.Length);
+
+                        // read to tag symbol '</head>'
+                        if (reader.TryReadTo(out seq, headEndTag, true))
                         {
-                            Console.WriteLine($"Read ERROR:{BytesEx.BytesToAscii(seq2.ToArray())}");
+                            Console.WriteLine($"Read data head: {BytesEx.BytesToAscii(seq.ToArray()).ReplaceLineEndings("\\r\\n")}");
+                            string xmlString = "<head>" + BytesEx.BytesToAscii(seq.ToArray()) + "</head>";
+                            XmlDocument doc = new XmlDocument();
+                            doc.LoadXml(xmlString);
+                            XmlElement root = doc.DocumentElement;
+                            XmlNode node = root.SelectSingleNode("/head/len");
+
+                            dataLen = Convert.ToInt32(node.InnerText);
                         }
-                        if (seqRder.TryReadTo(out seq2, endTag, true))
+
+                        // detect tag symbol '<binary><![BDATA['
+                        if (reader.IsNext(binaryStartTag))
                         {
-                            Console.WriteLine($"Read To:{BytesEx.BytesToAscii(seq2.ToArray())}");
+                            reader.Advance(binaryStartTag.Length);
+
+                            // read binary bytes
+                            if (reader.TryReadExact(dataLen, out seq))
+                            {
+                                Console.WriteLine($"Read data binary: {BytesEx.BytesToAscii(seq.ToArray()).ReplaceLineEndings("\\r\\n")}");
+                            }
+
+                            // detect tag symbol ']]></binary>'
+                            if (reader.IsNext(binaryEndTag))
+                            {
+                                reader.Advance(binaryEndTag.Length);
+                            }
                         }
                     }
-                    else
+                    // detect tag symbol '</data>'
+                    if (reader.IsNext(dataEndTag))
                     {
-                        Console.WriteLine($"Read To:{BytesEx.BytesToAscii(seq.ToArray())}");
+                        reader.Advance(dataEndTag.Length);
+                    }
+                }
+                else if (reader.TryReadTo(out seq, crlfTag, true))
+                {
+                    if (!seq.IsEmpty)
+                    {
+                        Console.WriteLine($"Read command to CRLF: {BytesEx.BytesToAscii(seq.ToArray()).ReplaceLineEndings("\\r\\n")}");
                     }
                 }
                 else

@@ -9,11 +9,22 @@ namespace AsciiProtocolDevDemo
     {
         static void Main(string[] args)
         {
-            var crlf = "\r\n".AsSpan();
-            var dataTagStart = "<data>".AsSpan();
-            var dataTagEnd = "</data>".AsSpan();
-
-            string rdStr = "COMMAND1_PLACEHOLDER\r\n<data>DATA_PLACEHOLDER</data>\r\nCOMMAND2_PLACEHOLDER\r\n";
+            string binData = "{{DATA.BIN.PLACEHOLDER.1}}" +
+                "{{\r\n</bin>\r\n</data>\r\n}}" +
+                "{{DATA.BIN.PLACEHOLDER.2}}";
+            string rdStr = "COMMAND.PLACEHOLDER.1\r\n" +
+                "<data>" +
+                "<head>" +
+                    "<desc>DATA.HEAD.PLACEHOLDER</desc>" +
+                    $"<len>{binData.Length}</len>" +
+                "</head>" +
+                "<binary>" +
+                    "<![BDATA[" +
+                        binData +
+                    "]]>" +
+                "</binary>" +
+                "</data>\r\n" +
+                "COMMAND.PLACEHOLDER.2\r\n";
             Console.WriteLine($"BUF:{rdStr.ReplaceLineEndings("\\r\\n")}");
             var rdSeq = new ReadOnlySequence<byte>(Encoding.ASCII.GetBytes(rdStr.ToCharArray()));
             RawAsciiProtocol asciiProtocol = new();
