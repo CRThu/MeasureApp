@@ -28,7 +28,9 @@ namespace CarrotCommFramework.Protocols
             var dataEndTag = "</data>".AsciiToBytes().AsSpan();
             var crlfTag = "\r\n".AsciiToBytes().AsSpan();
             var reader = new SequenceReader<byte>(buffer);
-            ReadOnlySequence<byte> seq;
+            ReadOnlySequence<byte> seqCmd;
+            ReadOnlySequence<byte> seqHead;
+            ReadOnlySequence<byte> seqBin;
             int dataLen = 0;
 
             // 处理数据流直到不完整包或结束
@@ -44,10 +46,10 @@ namespace CarrotCommFramework.Protocols
                         reader.Advance(headStartTag.Length);
 
                         // read to tag symbol '</head>'
-                        if (reader.TryReadTo(out seq, headEndTag, true))
+                        if (reader.TryReadTo(out seqHead, headEndTag, true))
                         {
-                            Console.WriteLine($"Read data head: {BytesEx.BytesToAscii(seq.ToArray()).ReplaceLineEndings("\\r\\n")}");
-                            string xmlString = "<head>" + BytesEx.BytesToAscii(seq.ToArray()) + "</head>";
+                            Console.WriteLine($"Read data head: {BytesEx.BytesToAscii(seqHead.ToArray()).ReplaceLineEndings("\\r\\n")}");
+                            string xmlString = "<head>" + BytesEx.BytesToAscii(seqHead.ToArray()) + "</head>";
                             XmlDocument doc = new XmlDocument();
                             doc.LoadXml(xmlString);
                             XmlElement root = doc.DocumentElement;
@@ -62,9 +64,9 @@ namespace CarrotCommFramework.Protocols
                             reader.Advance(binaryStartTag.Length);
 
                             // read binary bytes
-                            if (reader.TryReadExact(dataLen, out seq))
+                            if (reader.TryReadExact(dataLen, out seqBin))
                             {
-                                Console.WriteLine($"Read data binary: {BytesEx.BytesToAscii(seq.ToArray()).ReplaceLineEndings("\\r\\n")}");
+                                Console.WriteLine($"Read data binary: {BytesEx.BytesToAscii(seqBin.ToArray()).ReplaceLineEndings("\\r\\n")}");
                             }
 
                             // detect tag symbol ']]></binary>'
@@ -72,6 +74,9 @@ namespace CarrotCommFramework.Protocols
                             {
                                 reader.Advance(binaryEndTag.Length);
                             }
+
+                            BinaryPacket pkt = new(seqBin.ToArray());
+                            packetsList.Add(pkt);
                         }
                     }
                     // detect tag symbol '</data>'
@@ -80,23 +85,21 @@ namespace CarrotCommFramework.Protocols
                         reader.Advance(dataEndTag.Length);
                     }
                 }
-                else if (reader.TryReadTo(out seq, crlfTag, true))
+                else if (reader.TryReadTo(out seqCmd, crlfTag, true))
                 {
-                    if (!seq.IsEmpty)
+                    if (!seqCmd.IsEmpty)
                     {
-                        Console.WriteLine($"Read command to CRLF: {BytesEx.BytesToAscii(seq.ToArray()).ReplaceLineEndings("\\r\\n")}");
+                        Console.WriteLine($"Read command to CRLF: {BytesEx.BytesToAscii(seqCmd.ToArray()).ReplaceLineEndings("\\r\\n")}");
+                        
+                        RawAsciiProtocolPacket pkt = new(seqCmd.ToArray());
+                        packetsList.Add(pkt);
                     }
                 }
                 else
                 {
-                    Console.WriteLine($"Cannot find eof element");
+                    //Console.WriteLine($"Cannot find eof element");
                     break;
                 }
-
-
-                //RawAsciiProtocolPacket pkt = new(buffer.Slice(buffer.Start, pos.Value).ToArray());
-                //buffer = buffer.Slice(buffer.GetPosition(1, pos.Value));
-                //packetsList.Add(pkt);
             }
 
             packets = packetsList;
