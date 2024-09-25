@@ -33,7 +33,7 @@ namespace AsciiProtocolDevDemo
             {
                 foreach (var pkt in pkts)
                 {
-                    Console.WriteLine($"PKTMSG:{pkt.Message}");
+                    Console.WriteLine($"PKTMSG: {pkt.Message}");
                 }
             }
             else
