@@ -19,11 +19,12 @@ namespace CarrotCommFramework.Protocols
 
 
 
-        public override bool TryParse(ref ReadOnlySequence<byte> buffer, out IEnumerable<Packet>? packets)
+        public override bool TryParse(ref ReadOnlySequence<byte> buffer, out IEnumerable<Packet>? packets, out long comsumedLength)
         {
             packets = null;
             List<Packet> packetsList = new();
             SequenceReader<byte> reader = new SequenceReader<byte>(buffer);
+            int packetLen = 0;
 
             // 处理数据流直到不完整包或结束
             while (true)
@@ -41,7 +42,7 @@ namespace CarrotCommFramework.Protocols
                     break;
                     //return false;
                 }
-                int packetLen = GetPacketLength(protocolId);
+                packetLen = GetPacketLength(protocolId);
                 if (packetLen == -1)
                 {
                     break;
@@ -78,6 +79,7 @@ namespace CarrotCommFramework.Protocols
             }
 
             packets = packetsList;
+            comsumedLength = packetLen;
             return packetsList.Count != 0;
         }
 

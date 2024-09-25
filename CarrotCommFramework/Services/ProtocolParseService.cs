@@ -38,12 +38,14 @@ namespace CarrotCommFramework.Services
 
                     // 读取数据, 返回buffer和是否EOF
                     ReadResult result = await reader.ReadAsync(Cts.Token);
+
                     ReadOnlySequence<byte> buffer = result.Buffer;
 
-                    while (Protocol!.TryParse(ref buffer, out IEnumerable<Packet> pkts))
+                    bool isPacketsResolved = Protocol!.TryParse(ref buffer, out IEnumerable<Packet>? ResolvedPackets, out long comsumedLength);
+                    if (isPacketsResolved)
                     {
                         // 处理数据流
-                        foreach (Packet packet in pkts)
+                        foreach (Packet packet in ResolvedPackets)
                         {
                             //Debug.WriteLine($"RECV PACKET: {packet.Message}");
                             OnServiceLogging(this,
@@ -57,7 +59,7 @@ namespace CarrotCommFramework.Services
                     }
 
                     // 通知PipeWriter已读取字节流长度
-                    reader.AdvanceTo(buffer.Start, buffer.End);
+                    reader.AdvanceTo(buffer.GetPosition(comsumedLength));
 
 
                     // 来自PipeWriter EOF数据传输结束

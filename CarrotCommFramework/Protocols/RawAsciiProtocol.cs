@@ -28,14 +28,14 @@ namespace CarrotCommFramework.Protocols
         // fsm
         private RawAsciiProtocolParseStatus Status { get; set; } = 0;
 
+        private int dataLen { get; set; } = 0;
+
         public RawAsciiProtocol()
         {
         }
 
-        public override bool TryParse(ref ReadOnlySequence<byte> buffer, out IEnumerable<Packet>? packets)
+        public bool TryParse(ref ReadOnlySequence<byte> buffer, out long comsumedLength)
         {
-            List<Packet> packetsList = new();
-
             var dataOpenTag = "<data>";
             var headOpenTag = "<head>";
             var headCloseTag = "</head>";
@@ -56,7 +56,6 @@ namespace CarrotCommFramework.Protocols
             ReadOnlySequence<byte> seqCmd;
             ReadOnlySequence<byte> seqHead;
             ReadOnlySequence<byte> seqBin;
-            int dataLen = 0;
 
             bool isParseEnd = false;
 
@@ -127,7 +126,6 @@ namespace CarrotCommFramework.Protocols
                             Console.WriteLine($"Read data binary: {BytesEx.BytesToAscii(seqBin.ToArray()).ReplaceLineEndings("\\r\\n")}");
 
                             BinaryPacket pkt = new(seqBin.ToArray());
-                            packetsList.Add(pkt);
                         }
                         else
                         {
@@ -157,7 +155,6 @@ namespace CarrotCommFramework.Protocols
                             Console.WriteLine($"Read command to CRLF: {BytesEx.BytesToAscii(seqCmd.ToArray()).ReplaceLineEndings("\\r\\n")}");
 
                             RawAsciiProtocolPacket pkt = new(seqCmd.ToArray());
-                            packetsList.Add(pkt);
                         }
                         else
                         {
@@ -170,8 +167,9 @@ namespace CarrotCommFramework.Protocols
                 if (isParseEnd)
                     break;
             }
-            packets = packetsList;
-            return packetsList.Count != 0;
+            comsumedLength = reader.Consumed;
+            buffer = reader.UnreadSequence;
+            return comsumedLength != 0;
         }
     }
 }

@@ -125,7 +125,8 @@ namespace CarrotCommFramework.Sessions
             byte[] bytes = new byte[1048576];
             int len = Streams[0].Read(bytes, 0, bytes.Length);
             ReadOnlySequence<byte> mem = new ReadOnlySequence<byte>(bytes);
-            Protocols[0].TryParse(ref mem, out packets);
+            // TODO
+            Protocols[0].TryParse(ref mem, out packets,out _);
         }
 
         public bool TryReadLast(string filter, out Packet? packet)

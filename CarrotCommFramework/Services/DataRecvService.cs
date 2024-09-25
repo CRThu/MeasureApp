@@ -28,7 +28,7 @@ namespace CarrotCommFramework.Services
             PipeWriter writer = Stream!.Pipe.Writer;
 
             const int BUFSIZE = 1048576;
-            // TODO:临时缓冲区 后续重构
+            // TODO:临时缓冲区
             byte[] rxTemp = new byte[BUFSIZE];
 
             while (true)
@@ -43,7 +43,11 @@ namespace CarrotCommFramework.Services
                 try
                 {
                     // 读取数据
-                    int bytesRead = await Stream!.ReadAsync(rxTemp, 0, BUFSIZE, Cts.Token);
+                    // TODO 重构ReadAsync
+                    //int bytesRead = await Stream!.ReadAsync(buffer, 0, BUFSIZE, Cts.Token);
+                    // TODO 性能优化测试
+                    int bytesRead = await Stream!.ReadAsync(rxTemp, 0, BUFSIZE, Cts.Token).ConfigureAwait(false);
+                    //int bytesRead = await Stream!.ReadAsync(rxTemp, 0, BUFSIZE, Cts.Token);
                     if (bytesRead == 0)
                     {
                         break;
@@ -61,7 +65,9 @@ namespace CarrotCommFramework.Services
                 }
 
                 // Flush数据到PipeReader
-                FlushResult result = await writer.FlushAsync(Cts.Token);
+                // TODO 性能优化测试
+                FlushResult result = await writer.FlushAsync(Cts.Token).ConfigureAwait(false);
+                //FlushResult result = await writer.FlushAsync(Cts.Token);
 
                 // 来自PipeReader的EOF处理
                 if (result.IsCompleted)

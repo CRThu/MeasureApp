@@ -1,5 +1,9 @@
 ﻿using CarrotCommFramework.Protocols;
+using CarrotCommFramework.Sessions;
 using System.Buffers;
+using System.Diagnostics;
+using System.IO.Pipelines;
+using System.Net.Sockets;
 using System.Reflection.Metadata;
 using System.Text;
 
@@ -7,66 +11,69 @@ namespace AsciiProtocolDevDemo
 {
     internal class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
-            string binData = "{{DATA.BIN.PLACEHOLDER.1}}" +
-                "{{\r\n</bin>\r\n</data>\r\n}}" +
-                "{{DATA.BIN.PLACEHOLDER.2}}";
-            string rdStr = "COMMAND.PLACEHOLDER.1\r\n" +
-                "<data>" +
-                "<head>" +
-                    "<desc>DATA.HEAD.PLACEHOLDER</desc>" +
-                    $"<len>{binData.Length}</len>" +
-                "</head>" +
-                "<binary>" +
-                    "<![BDATA[" +
-                        binData +
-                    "]]>" +
-                "</binary>" +
-                "</data>\r\n" +
-                "COMMAND.PLACEHOLDER.2\r\n";
-            Console.WriteLine($"BUF:{rdStr.ReplaceLineEndings("\\r\\n")}");
-            var rdSeq = new ReadOnlySequence<byte>(Encoding.ASCII.GetBytes(rdStr.ToCharArray()));
-            RawAsciiProtocol asciiProtocol = new();
-            bool ret = asciiProtocol.TryParse(ref rdSeq, out var pkts);
-            if (ret)
-            {
-                foreach (var pkt in pkts)
-                {
-                    Console.WriteLine($"PKTMSG: {pkt.Message}");
-                }
-            }
-            else
-            {
-                Console.WriteLine("NO PACKETS CAN BE PARSED");
-            }
-            return;
 
-            /*
+            var pipeReader = PipeReader.Create(
+                Console.OpenStandardInput(),
+                new StreamPipeReaderOptions(leaveOpen: true)
+                );
+            var pipeWriter = PipeWriter.Create(
+                Console.OpenStandardOutput(),
+                new StreamPipeWriterOptions(leaveOpen: true)
+                );
+            await ProcessMsgAsync(pipeReader, pipeWriter);
+        }
+
+        private static async Task ProcessMsgAsync(PipeReader reader, PipeWriter writer)
+        {
             while (true)
             {
-                string rd = Console.ReadLine();
-                var rdSeq = new ReadOnlySequence<char>(rd.ToCharArray());
-                var rdSeqR = new SequenceReader<char>(rdSeq);
-                if (rdSeqR.TryReadTo(out ReadOnlySequence<char> seq, dataTagStart, true))
+                ReadResult result = await reader.ReadAsync();
+                ReadOnlySequence<byte> buffer = result.Buffer;
+                Debug.WriteLine($"buffer.len={buffer.Length}");
+                if (TryReadLine(ref buffer, out ReadOnlySequence<byte> line))
                 {
-                    Console.WriteLine($"Read To:{new string(seq.ToArray())}");
-                    if (rdSeqR.TryReadTo(out seq, dataTagEnd, true))
-                    {
-                        Console.WriteLine($"Read To:{new string(seq.ToArray())}");
-                    }
-                }
-                else if (rdSeqR.TryReadTo(out seq, crlf, true))
-                {
-                    Console.WriteLine($"Read To:{new string(seq.ToArray())}");
-                    Console.WriteLine($"Unread:{new string(rdSeqR.UnreadSequence.ToArray())}");
+                    // Process the line.
+                    string msg = $"Recv: {Encoding.ASCII.GetString(line)}\r\n";
+
+                    await writer.WriteAsync(Encoding.ASCII.GetBytes(msg));
+                    reader.AdvanceTo(buffer.Start);
                 }
                 else
-                    Console.WriteLine($"Cannot find eof element");
+                {
+                    // Tell the PipeReader how much of the buffer has been consumed.
+
+                    reader.AdvanceTo(buffer.Start, buffer.End);
+                }
+
+
+                // Stop reading if there's no more data coming.
+                if (result.IsCompleted)
+                {
+                    break;
+                }
             }
 
-            */
-            Console.WriteLine("Hello, World!");
+            // Mark the PipeReader as complete.
+            await reader.CompleteAsync();
+        }
+
+        private static bool TryReadLine(ref ReadOnlySequence<byte> buffer, out ReadOnlySequence<byte> line)
+        {
+            // Look for a EOL in the buffer.
+            SequencePosition? position = buffer.PositionOf((byte)'>');
+
+            if (position == null)
+            {
+                line = default;
+                return false;
+            }
+
+            // Skip the line + the \n.
+            line = buffer.Slice(0, buffer.GetPosition(1, position.Value));
+            buffer = buffer.Slice(buffer.GetPosition(1, position.Value));
+            return true;
         }
     }
 }
