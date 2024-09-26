@@ -32,10 +32,10 @@ namespace AsciiProtocolDevDemo
                 ReadResult result = await reader.ReadAsync();
                 ReadOnlySequence<byte> buffer = result.Buffer;
                 Debug.WriteLine($"buffer.len={buffer.Length}");
-                if (TryReadLine(ref buffer, out ReadOnlySequence<byte> line))
+                if (RawAsciiProtocol.TryParse(ref buffer, out var line))
                 {
                     // Process the line.
-                    string msg = $"Recv: {Encoding.ASCII.GetString(line)}\r\n";
+                    string msg = $"Recv packet: {line.Message}\r\n";
 
                     await writer.WriteAsync(Encoding.ASCII.GetBytes(msg));
                     reader.AdvanceTo(buffer.Start);
@@ -43,7 +43,6 @@ namespace AsciiProtocolDevDemo
                 else
                 {
                     // Tell the PipeReader how much of the buffer has been consumed.
-
                     reader.AdvanceTo(buffer.Start, buffer.End);
                 }
 
@@ -59,21 +58,21 @@ namespace AsciiProtocolDevDemo
             await reader.CompleteAsync();
         }
 
-        private static bool TryReadLine(ref ReadOnlySequence<byte> buffer, out ReadOnlySequence<byte> line)
+        /*
+        private static bool TryParse(ref ReadOnlySequence<byte> buffer, out ReadOnlySequence<byte> packet)
         {
-            // Look for a EOL in the buffer.
-            SequencePosition? position = buffer.PositionOf((byte)'>');
+            var reader = new SequenceReader<byte>(buffer);
+            bool isExist = reader.TryReadTo(out ReadOnlySequence<byte> seq, (byte)'>', true);
 
-            if (position == null)
+            if (!isExist)
             {
-                line = default;
+                packet = default;
                 return false;
             }
-
-            // Skip the line + the \n.
-            line = buffer.Slice(0, buffer.GetPosition(1, position.Value));
-            buffer = buffer.Slice(buffer.GetPosition(1, position.Value));
+            packet = buffer.Slice(0, buffer.GetPosition(1, seq.End));
+            buffer = buffer.Slice(buffer.GetPosition(1, seq.End));
             return true;
         }
+        */
     }
 }

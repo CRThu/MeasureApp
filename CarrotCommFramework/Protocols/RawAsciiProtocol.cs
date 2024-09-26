@@ -2,6 +2,7 @@
 using System;
 using System.Buffers;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,17 +26,14 @@ namespace CarrotCommFramework.Protocols
 
         public new static string Version { get; } = "RAPV1";
 
-        // fsm
-        private RawAsciiProtocolParseStatus Status { get; set; } = 0;
-
-        private int dataLen { get; set; } = 0;
-
         public RawAsciiProtocol()
         {
         }
 
-        public bool TryParse(ref ReadOnlySequence<byte> buffer, out long comsumedLength)
+        public static bool TryParse(ref ReadOnlySequence<byte> buffer, out Packet? packet)
         {
+            packet = default;
+
             var dataOpenTag = "<data>";
             var headOpenTag = "<head>";
             var headCloseTag = "</head>";
@@ -53,123 +51,68 @@ namespace CarrotCommFramework.Protocols
 
 
             var reader = new SequenceReader<byte>(buffer);
-            ReadOnlySequence<byte> seqCmd;
-            ReadOnlySequence<byte> seqHead;
-            ReadOnlySequence<byte> seqBin;
-
-            bool isParseEnd = false;
 
 
             // 处理数据流直到不完整包或结束
-            while (!isParseEnd)
+            if (!reader.TryPeek(out byte b))
+                return false;
+            if (b == '<')
             {
+                // XML TAG COMMAND
+                if (reader.Remaining < xmlCmdTagHeadOpenCompare.Length)
+                    return false;
+                if (!reader.IsNext(xmlCmdTagHeadOpenCompare, true))
+                    return false;
+                if (reader.Remaining < xmlCmdTagBinOpenCompare.Length)
+                    return false;
+                if (!reader.TryReadTo(out ReadOnlySequence<byte> seqHead, xmlCmdTagBinOpenCompare, true))
+                    return false;
 
-                switch (Status)
-                {
-                    case RawAsciiProtocolParseStatus.IDLE:
-                        if (reader.TryPeek(out byte b))
-                        {
-                            Status = (b == '<') ?
-                                RawAsciiProtocolParseStatus.XML_CMD_WAIT_TAG_HEAD_OPEN
-                                : RawAsciiProtocolParseStatus.ASCII_CMD_WAIT_CRLF;
-                        }
-                        else
-                        {
-                            isParseEnd = true;
-                            break;
-                        }
-                        break;
-                    case RawAsciiProtocolParseStatus.XML_CMD_WAIT_TAG_HEAD_OPEN:
-                        if (reader.Remaining >= xmlCmdTagHeadOpenCompare.Length
-                            && reader.IsNext(xmlCmdTagHeadOpenCompare, true))
-                        {
-                            Status = RawAsciiProtocolParseStatus.XML_CMD_WAIT_TAG_BIN_OPEN;
-                        }
-                        else
-                        {
-                            isParseEnd = true;
-                            break;
-                        }
-                        break;
-                    case RawAsciiProtocolParseStatus.XML_CMD_WAIT_TAG_BIN_OPEN:
-                        if (reader.Remaining >= xmlCmdTagBinOpenCompare.Length
-                            && reader.TryReadTo(out seqHead, xmlCmdTagBinOpenCompare, true))
-                        {
-                            Status = RawAsciiProtocolParseStatus.XML_CMD_WAIT_TAG_BIN_CONTENT;
+                // head generate
+                //Console.WriteLine($"Read data head: {BytesEx.BytesToAscii(seqHead.ToArray()).ReplaceLineEndings("\\r\\n")}");
+                string xmlString = "<head>" + BytesEx.BytesToAscii(seqHead.ToArray()) + "</head>";
+                XmlDocument doc = new XmlDocument();
+                doc.LoadXml(xmlString);
+                XmlElement root = doc.DocumentElement;
+                XmlNode node = root.SelectSingleNode("/head/len");
 
+                int dataLen = Convert.ToInt32(node.InnerText);
 
-                            // head generate
-                            Console.WriteLine($"Read data head: {BytesEx.BytesToAscii(seqHead.ToArray()).ReplaceLineEndings("\\r\\n")}");
-                            string xmlString = "<head>" + BytesEx.BytesToAscii(seqHead.ToArray()) + "</head>";
-                            XmlDocument doc = new XmlDocument();
-                            doc.LoadXml(xmlString);
-                            XmlElement root = doc.DocumentElement;
-                            XmlNode node = root.SelectSingleNode("/head/len");
+                if (dataLen < 0)
+                    return false;
+                if (reader.Remaining < dataLen)
+                    return false;
+                if (!reader.TryReadExact(dataLen, out ReadOnlySequence<byte> seqBin))
+                    return false;
 
-                            dataLen = Convert.ToInt32(node.InnerText);
+                // packet generate
+                //Console.WriteLine($"Read data binary: {BytesEx.BytesToAscii(seqBin.ToArray()).ReplaceLineEndings("\\r\\n")}");
 
-                        }
-                        else
-                        {
-                            isParseEnd = true;
-                            break;
-                        }
-                        break;
-                    case RawAsciiProtocolParseStatus.XML_CMD_WAIT_TAG_BIN_CONTENT:
-                        if (reader.Remaining >= dataLen
-                            && reader.TryReadExact(dataLen, out seqBin))
-                        {
-                            Status = RawAsciiProtocolParseStatus.XML_CMD_WAIT_TAG_CLOSE;
+                packet = new BinaryPacket(seqBin.ToArray());
 
+                if (reader.Remaining < xmlCmdTagCloseCompare.Length)
+                    return false;
+                if (!reader.IsNext(xmlCmdTagCloseCompare, true))
+                    return false;
 
-                            // packet generate
-                            Console.WriteLine($"Read data binary: {BytesEx.BytesToAscii(seqBin.ToArray()).ReplaceLineEndings("\\r\\n")}");
-
-                            BinaryPacket pkt = new(seqBin.ToArray());
-                        }
-                        else
-                        {
-                            isParseEnd = true;
-                            break;
-                        }
-                        break;
-                    case RawAsciiProtocolParseStatus.XML_CMD_WAIT_TAG_CLOSE:
-                        if (reader.Remaining >= xmlCmdTagCloseCompare.Length
-                            && reader.IsNext(xmlCmdTagCloseCompare, true))
-                        {
-                            Status = RawAsciiProtocolParseStatus.IDLE;
-                        }
-                        else
-                        {
-                            isParseEnd = true;
-                            break;
-                        }
-                        break;
-                    case RawAsciiProtocolParseStatus.ASCII_CMD_WAIT_CRLF:
-                        if (reader.Remaining >= asciiCmdCrlfCompare.Length
-                            && reader.TryReadTo(out seqCmd, asciiCmdCrlfCompare, true))
-                        {
-                            Status = RawAsciiProtocolParseStatus.IDLE;
-
-                            // packet generate
-                            Console.WriteLine($"Read command to CRLF: {BytesEx.BytesToAscii(seqCmd.ToArray()).ReplaceLineEndings("\\r\\n")}");
-
-                            RawAsciiProtocolPacket pkt = new(seqCmd.ToArray());
-                        }
-                        else
-                        {
-                            isParseEnd = true;
-                            break;
-                        }
-                        break;
-                }
-
-                if (isParseEnd)
-                    break;
+                Console.WriteLine($"Read data head: {BytesEx.BytesToAscii(seqHead.ToArray()).ReplaceLineEndings("\\r\\n")}");
+                Console.WriteLine($"Read data binary: {BytesEx.BytesToAscii(seqBin.ToArray()).ReplaceLineEndings("\\r\\n")}");
             }
-            comsumedLength = reader.Consumed;
+            else
+            {
+                // COMMAND END WITH CRLF
+                if (reader.Remaining < asciiCmdCrlfCompare.Length)
+                    return false;
+                if (!reader.TryReadTo(out ReadOnlySequence<byte> seqCmd, asciiCmdCrlfCompare, true))
+                    return false;
+
+                // packet generate
+                Console.WriteLine($"Read command to CRLF: {BytesEx.BytesToAscii(seqCmd.ToArray()).ReplaceLineEndings("\\r\\n")}");
+
+                packet = new RawAsciiProtocolPacket(seqCmd.ToArray());
+            }
             buffer = reader.UnreadSequence;
-            return comsumedLength != 0;
+            return true;
         }
     }
 }
