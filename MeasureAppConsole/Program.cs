@@ -1,54 +1,125 @@
-﻿
-using Microsoft.Extensions.Options;
-using Microsoft.Extensions.DependencyInjection;
-using System.Text.Json;
+﻿using System.Text.Json;
 
 namespace MeasureAppConsole
 {
-    public class MyOption
+    public interface IOptions
     {
-        public string NAME { get; set; }
-        public string DESC { get; set; }
-        public string CFG1 { get; set; }
-        public string CFG2 { get; set; }
-        public string CFG3 { get; set; }
+        public Dictionary<string, string> Sources { get; set; }
+        public List<IOptions> NestedSources { get; set; }
+    }
+
+    public interface IOptionBuilder<TOption>
+    {
+        public Dictionary<string, string> Sources { get; set; }
+        public List<IOptionBuilder<IOptions>> Builders { get; set; }
+
+        public TOption Build();
+    }
+
+    public class MyOption : IOptions
+    {
+        public Dictionary<string, string> Sources { get; set; } = new();
+        public List<IOptions> NestedSources { get; set; } = new();
 
         public override string ToString()
         {
-            return JsonSerializer.Serialize(this);
+            return JsonSerializer.Serialize(this, new JsonSerializerOptions()
+            {
+                WriteIndented = true,
+            });
         }
+    }
+
+
+    public class MyOptionBuilder : IOptionBuilder<IOptions>
+    {
+        public Dictionary<string, string> Sources { get; set; } = new();
+        public List<IOptionBuilder<IOptions>> Builders { get; set; } = new();
+
+        public MyOptionBuilder Add(string key, string val)
+        {
+            Sources.Add(key, val);
+            return this;
+        }
+
+        public MyOptionBuilder Add<TBuilder>(Action<TBuilder> action) where TBuilder : IOptionBuilder<IOptions>, new()
+        {
+            var builder = new TBuilder();
+            action(builder);
+            Builders.Add(builder);
+            return this;
+        }
+
+        public IOptions Build()
+        {
+            var opt = new MyOption();
+            foreach (var src in Sources)
+            {
+                opt.Sources.Add(src.Key, src.Value);
+            }
+            foreach (var builder in Builders)
+            {
+                opt.NestedSources.Add(builder.Build());
+            }
+            return opt;
+        }
+    }
+
+    public class StreamOption : IOptions
+    {
+        public Dictionary<string, string> Sources { get; set; } = new();
+        public List<IOptions> NestedSources { get; set; } = new();
+    }
+
+    public class StreamOptionBuilder : IOptionBuilder<IOptions>
+    {
+        public Dictionary<string, string> Sources { get; set; } = new();
+        public List<IOptionBuilder<IOptions>> Builders { get; set; } = new();
+
+        public StreamOptionBuilder Add(string key, string val)
+        {
+            Sources.Add(key, val);
+            return this;
+        }
+
+        public IOptions Build()
+        {
+            var opt = new StreamOption();
+            foreach (var src in Sources)
+            {
+                opt.Sources.Add(src.Key, src.Value);
+            }
+            foreach (var builder in Builders)
+            {
+                opt.NestedSources.Add(builder.Build());
+            }
+            return opt;
+        }
+    }
+
+    public static class MyOptionBuilderExtensions
+    {
     }
 
 
 
     internal class Program
     {
+
         static async Task Main(string[] args)
         {
             Console.WriteLine("Hello, World!");
-            Dictionary<string, string> dic = new();
-            dic["NAME"] = "MYNAME";
-            dic["DESC"] = "MYDESC";
-            dic["CFG1"] = "111";
-            dic["CFG2"] = "222";
-            dic["CFG3"] = "333";
 
-            var services = new ServiceCollection();
-            services.AddOptions<MyOption>();
-            services.Configure<MyOption>("option1",o =>
-            {
-                o.NAME = "MyOption1";
-                o.CFG1 = "1111";
-            });
-            services.Configure<MyOption>("option2", o =>
-            {
-                o.NAME = "MyOption2";
-                o.CFG1 = "2222";
-            });
-            var provider = services.BuildServiceProvider();
-            var option1 = provider.GetService<IOptionsSnapshot<MyOption>>();
-            Console.WriteLine(option1.Get("option1"));
-            Console.WriteLine(option1.Get("option2"));
+            var x = new MyOptionBuilder()
+                .Add("ROOT", "INST_ROOT")
+                .Add<StreamOptionBuilder>(b => b.Add("TYPE1", "INST1"))
+                .Add<StreamOptionBuilder>(b => b.Add("TYPE1", "INST2"))
+                .Add<StreamOptionBuilder>(b => b.Add("TYPE1", "INST3"))
+                .Build();
+
+
+            Console.WriteLine(x);
         }
     }
+
 }
