@@ -16,7 +16,7 @@ namespace MeasureAppConsole
         public TOption Build();
     }
 
-    public class MyOption : IOptions
+    public class SessionOptions : IOptions
     {
         public Dictionary<string, string> Sources { get; set; } = new();
         public List<IOptions> NestedSources { get; set; } = new();
@@ -30,29 +30,18 @@ namespace MeasureAppConsole
         }
     }
 
-
-    public class MyOptionBuilder : IOptionBuilder<IOptions>
+    public class SessionOptionsBuilder : IOptionBuilder<IOptions>
     {
         public Dictionary<string, string> Sources { get; set; } = new();
         public List<IOptionBuilder<IOptions>> Builders { get; set; } = new();
 
-        public MyOptionBuilder Add(string key, string val)
+        public SessionOptionsBuilder()
         {
-            Sources.Add(key, val);
-            return this;
-        }
-
-        public MyOptionBuilder Add<TBuilder>(Action<TBuilder> action) where TBuilder : IOptionBuilder<IOptions>, new()
-        {
-            var builder = new TBuilder();
-            action(builder);
-            Builders.Add(builder);
-            return this;
         }
 
         public IOptions Build()
         {
-            var opt = new MyOption();
+            var opt = new SessionOptions();
             foreach (var src in Sources)
             {
                 opt.Sources.Add(src.Key, src.Value);
@@ -65,26 +54,32 @@ namespace MeasureAppConsole
         }
     }
 
-    public class StreamOption : IOptions
+    public class StreamOptions : IOptions
     {
         public Dictionary<string, string> Sources { get; set; } = new();
         public List<IOptions> NestedSources { get; set; } = new();
+
+        public override string ToString()
+        {
+            return JsonSerializer.Serialize(this, new JsonSerializerOptions()
+            {
+                WriteIndented = true,
+            });
+        }
     }
 
-    public class StreamOptionBuilder : IOptionBuilder<IOptions>
+    public class StreamOptionsBuilder : IOptionBuilder<IOptions>
     {
         public Dictionary<string, string> Sources { get; set; } = new();
         public List<IOptionBuilder<IOptions>> Builders { get; set; } = new();
 
-        public StreamOptionBuilder Add(string key, string val)
+        public StreamOptionsBuilder()
         {
-            Sources.Add(key, val);
-            return this;
         }
 
         public IOptions Build()
         {
-            var opt = new StreamOption();
+            var opt = new StreamOptions();
             foreach (var src in Sources)
             {
                 opt.Sources.Add(src.Key, src.Value);
@@ -99,6 +94,31 @@ namespace MeasureAppConsole
 
     public static class MyOptionBuilderExtensions
     {
+        public static IOptionBuilder<IOptions> Add(this IOptionBuilder<IOptions> builder, string key, string val)
+        {
+            builder.Sources.Add(key, val);
+            return builder;
+        }
+
+        public static IOptionBuilder<IOptions> Add<TBuilder>(this IOptionBuilder<IOptions> builder, Action<TBuilder> action) where TBuilder : IOptionBuilder<IOptions>, new()
+        {
+            var inst = new TBuilder();
+            action(inst);
+            builder.Builders.Add(inst);
+            return builder;
+        }
+
+        public static IOptionBuilder<IOptions> Name(this IOptionBuilder<IOptions> builder, string name)
+        {
+            builder.Sources.Add("name", name);
+            return builder;
+        }
+
+        public static IOptionBuilder<IOptions> Type(this IOptionBuilder<IOptions> builder, string type)
+        {
+            builder.Sources.Add("type", type);
+            return builder;
+        }
     }
 
 
@@ -110,11 +130,10 @@ namespace MeasureAppConsole
         {
             Console.WriteLine("Hello, World!");
 
-            var x = new MyOptionBuilder()
-                .Add("ROOT", "INST_ROOT")
-                .Add<StreamOptionBuilder>(b => b.Add("TYPE1", "INST1"))
-                .Add<StreamOptionBuilder>(b => b.Add("TYPE1", "INST2"))
-                .Add<StreamOptionBuilder>(b => b.Add("TYPE1", "INST3"))
+            var x = new SessionOptionsBuilder().Name("INST_ROOT")
+                .Add<StreamOptionsBuilder>(b => b.Type("TYPE1").Name("INST1"))
+                .Add<StreamOptionsBuilder>(b => b.Type("TYPE2").Name("INST2"))
+                .Add<StreamOptionsBuilder>(b => b.Type("TYPE3").Name("INST3"))
                 .Build();
 
 
