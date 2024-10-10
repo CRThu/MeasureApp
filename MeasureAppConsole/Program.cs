@@ -15,11 +15,16 @@ namespace MeasureAppConsole
 
         public TOption Build();
     }
-
-    public class SessionOptions : IOptions
+    public class Options : IOptions
     {
-        public Dictionary<string, string> Sources { get; set; } = new();
-        public List<IOptions> NestedSources { get; set; } = new();
+        public Dictionary<string, string> Sources { get; set; }
+        public List<IOptions> NestedSources { get; set; }
+
+        public Options()
+        {
+            Sources = new();
+            NestedSources = new();
+        }
 
         public override string ToString()
         {
@@ -30,56 +35,18 @@ namespace MeasureAppConsole
         }
     }
 
-    public class SessionOptionsBuilder : IOptionBuilder<IOptions>
+    public class OptionsBuilder : IOptionBuilder<IOptions>
     {
         public Dictionary<string, string> Sources { get; set; } = new();
         public List<IOptionBuilder<IOptions>> Builders { get; set; } = new();
 
-        public SessionOptionsBuilder()
+        public OptionsBuilder()
         {
         }
 
         public IOptions Build()
         {
-            var opt = new SessionOptions();
-            foreach (var src in Sources)
-            {
-                opt.Sources.Add(src.Key, src.Value);
-            }
-            foreach (var builder in Builders)
-            {
-                opt.NestedSources.Add(builder.Build());
-            }
-            return opt;
-        }
-    }
-
-    public class StreamOptions : IOptions
-    {
-        public Dictionary<string, string> Sources { get; set; } = new();
-        public List<IOptions> NestedSources { get; set; } = new();
-
-        public override string ToString()
-        {
-            return JsonSerializer.Serialize(this, new JsonSerializerOptions()
-            {
-                WriteIndented = true,
-            });
-        }
-    }
-
-    public class StreamOptionsBuilder : IOptionBuilder<IOptions>
-    {
-        public Dictionary<string, string> Sources { get; set; } = new();
-        public List<IOptionBuilder<IOptions>> Builders { get; set; } = new();
-
-        public StreamOptionsBuilder()
-        {
-        }
-
-        public IOptions Build()
-        {
-            var opt = new StreamOptions();
+            var opt = new Options();
             foreach (var src in Sources)
             {
                 opt.Sources.Add(src.Key, src.Value);
@@ -100,11 +67,25 @@ namespace MeasureAppConsole
             return builder;
         }
 
+        public static IOptionBuilder<IOptions> Add(this IOptionBuilder<IOptions> builder, Action<IOptionBuilder<IOptions>> action)
+        {
+            var inst = new OptionsBuilder();
+            action(inst);
+            builder.Builders.Add(inst);
+            return builder;
+        }
+
         public static IOptionBuilder<IOptions> Add<TBuilder>(this IOptionBuilder<IOptions> builder, Action<TBuilder> action) where TBuilder : IOptionBuilder<IOptions>, new()
         {
             var inst = new TBuilder();
             action(inst);
             builder.Builders.Add(inst);
+            return builder;
+        }
+
+        public static IOptionBuilder<IOptions> Interface(this IOptionBuilder<IOptions> builder, string @interface)
+        {
+            builder.Sources.Add("interface", @interface);
             return builder;
         }
 
@@ -130,12 +111,13 @@ namespace MeasureAppConsole
         {
             Console.WriteLine("Hello, World!");
 
-            var x = new SessionOptionsBuilder().Name("INST_ROOT")
-                .Add<StreamOptionsBuilder>(b => b.Type("TYPE1").Name("INST1"))
-                .Add<StreamOptionsBuilder>(b => b.Type("TYPE2").Name("INST2"))
-                .Add<StreamOptionsBuilder>(b => b.Type("TYPE3").Name("INST3"))
+            var x = new OptionsBuilder()
+                .Add(b => b.Name("INST_ROOT")
+                            .Add(b => b.Interface("stream").Type("TYPE1").Name("INST1"))
+                            .Add(b => b.Interface("protocol").Type("TYPE2").Name("INST2"))
+                            .Add(b => b.Interface("logger").Type("LOG1").Name("LOG_INST1"))
+                            .Add(b => b.Interface("logger").Type("LOG2").Name("LOG_INST2")))
                 .Build();
-
 
             Console.WriteLine(x);
         }
