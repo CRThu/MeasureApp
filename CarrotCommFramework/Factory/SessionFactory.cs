@@ -1,6 +1,5 @@
 ﻿using CarrotCommFramework.Sessions;
 using System.Diagnostics;
-using static CarrotCommFramework.Sessions.SessionComponentInfo;
 
 namespace CarrotCommFramework.Factory
 {
@@ -16,47 +15,36 @@ namespace CarrotCommFramework.Factory
         {
         }
 
-        public Session CreateSession(string addrs, SessionConfig? config)
+        public Session CreateSession(string addrs, Options options)
         {
-            if (config == null)
-            {
-                config = SessionConfig.Empty;
-            }
-
-            SessionConfig cfg = new SessionConfig(config);
-
-            var parseConfig = SessionConfigParser.Parse(addrs);
-
-            for (int i = 0; i < parseConfig.Components.Count; i++)
-                cfg.Add(parseConfig.Components[i]);
-
             Session s = new();
+            /*
             for (int i = 0; i < cfg.Components.Count; i++)
             {
                 SessionComponentInfo info = cfg.Components[i];
 
                 switch (info.Type)
                 {
-                    case ComponentType.SESSION:
+                    case "session":
                         s.Name = info.ServiceName;
                         Console.WriteLine($"Create Session: {info.ServiceName}");
                         break;
-                    case ComponentType.STREAM:
+                    case "stream":
                         var stream = StreamFactory.Current.Get(info.ServiceName, info.InstanceName, info.Params);
                         Console.WriteLine($"Create Stream: {info.ServiceName}:{info.InstanceName}");
                         s.Streams.Add(stream);
                         break;
-                    case ComponentType.LOGGER:
+                    case "logger":
                         var logger = LoggerFactory.Current.Get(info.ServiceName, info.InstanceName, info.Params);
                         Console.WriteLine($"Create Logger: {info.ServiceName}:{info.InstanceName}");
                         s.Loggers.Add(logger);
                         break;
-                    case ComponentType.PROTOCOL:
+                    case "protocol":
                         var protocol = ProtocolFactory.Current.Get(info.ServiceName, info.InstanceName, info.Params);
                         Console.WriteLine($"Create Protocol: {info.ServiceName}:{info.InstanceName}");
                         s.Protocols.Add(protocol);
                         break;
-                    case ComponentType.SERVICE:
+                    case "service":
                         var service = ServiceFactory.Current.Get(info.ServiceName, info.InstanceName, info.Params);
                         Console.WriteLine($"Create Service: {info.ServiceName}:{info.InstanceName}");
                         s.Services.Add(service);
@@ -68,6 +56,7 @@ namespace CarrotCommFramework.Factory
 
             s.Bind();
             Sessions.Add(s.Name, s);
+            */
             return s;
         }
 
