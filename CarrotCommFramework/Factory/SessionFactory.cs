@@ -17,47 +17,88 @@ namespace CarrotCommFramework.Factory
 
         public Session CreateSession(string addrs, Options options)
         {
-            Session s = new();
-            /*
-            for (int i = 0; i < cfg.Components.Count; i++)
-            {
-                SessionComponentInfo info = cfg.Components[i];
 
-                switch (info.Type)
+            // create
+            var opts = options.Flatten();
+            foreach (var opt in opts)
+            {
+                string interf = opt.Sources.TryGetValue("interface", out string? val1) ? val1 : "null";
+                string type = opt.Sources.TryGetValue("type", out string? val2) ? val2 : "default";
+                string name = opt.Sources.TryGetValue("name", out string? val3) ? val3 : "unnamed";
+                switch (interf)
                 {
                     case "session":
-                        s.Name = info.ServiceName;
-                        Console.WriteLine($"Create Session: {info.ServiceName}");
+                        Session s = new();
+                        Sessions.Add(name, s);
+                        Console.WriteLine($"Create Session: {name}");
                         break;
                     case "stream":
-                        var stream = StreamFactory.Current.Get(info.ServiceName, info.InstanceName, info.Params);
-                        Console.WriteLine($"Create Stream: {info.ServiceName}:{info.InstanceName}");
-                        s.Streams.Add(stream);
+                        var stream = StreamFactory.Current.Get(type, name, opt.Sources);
+                        Console.WriteLine($"Create Stream: {type}:{name}");
+                        //s.Streams.Add(stream);
                         break;
                     case "logger":
-                        var logger = LoggerFactory.Current.Get(info.ServiceName, info.InstanceName, info.Params);
-                        Console.WriteLine($"Create Logger: {info.ServiceName}:{info.InstanceName}");
-                        s.Loggers.Add(logger);
+                        var logger = LoggerFactory.Current.Get(type, name, opt.Sources);
+                        Console.WriteLine($"Create Logger: {type}:{name}");
+                        //s.Loggers.Add(logger);
                         break;
                     case "protocol":
-                        var protocol = ProtocolFactory.Current.Get(info.ServiceName, info.InstanceName, info.Params);
-                        Console.WriteLine($"Create Protocol: {info.ServiceName}:{info.InstanceName}");
-                        s.Protocols.Add(protocol);
+                        var protocol = ProtocolFactory.Current.Get(type, name, opt.Sources);
+                        Console.WriteLine($"Create Protocol: {type}:{name}");
+                        //s.Protocols.Add(protocol);
                         break;
                     case "service":
-                        var service = ServiceFactory.Current.Get(info.ServiceName, info.InstanceName, info.Params);
-                        Console.WriteLine($"Create Service: {info.ServiceName}:{info.InstanceName}");
-                        s.Services.Add(service);
+                        var service = ServiceFactory.Current.Get(type, name, opt.Sources);
+                        Console.WriteLine($"Create Service: {type}:{name}");
+                        //s.Services.Add(service);
                         break;
                     default:
-                        throw new NotImplementedException();
+                        break;
                 }
             }
 
-            s.Bind();
-            Sessions.Add(s.Name, s);
-            */
-            return s;
+            // bind
+            foreach (var opt in opts)
+            {
+                if (opt.NestedSources.Count != 0
+                    && opt.Sources.TryGetValue("interface", out string? val3)
+                    && val3 == "session")
+                {
+                    string name1 = opt.Sources.TryGetValue("name", out string? val1) ? val1 : "unnamed";
+                    Current.TryGet(name1, out Session? s);
+                    foreach (var src in opt.NestedSources)
+                    {
+                        string interf = src.Sources.TryGetValue("interface", out string? val4) ? val4 : "null";
+                        string name = src.Sources.TryGetValue("name", out string? val5) ? val5 : "unnamed";
+
+                        switch (interf)
+                        {
+                            case "stream":
+                                var stream = StreamFactory.Current.Get(null, name, null);
+                                s.Streams.Add(stream);
+                                break;
+                            case "logger":
+                                var logger = LoggerFactory.Current.Get(null, name, null);
+                                s.Loggers.Add(logger);
+                                break;
+                            case "protocol":
+                                var protocol = ProtocolFactory.Current.Get(null, name, null);
+                                s.Protocols.Add(protocol);
+                                break;
+                            case "service":
+                                var service = ServiceFactory.Current.Get(null, name, null);
+                                s.Services.Add(service);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    s.Bind();
+                    return s;
+                }
+            }
+
+            return null;
         }
 
         public bool TryGet(string id, out Session? session)
