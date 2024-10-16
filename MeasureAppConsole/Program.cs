@@ -32,18 +32,18 @@ namespace MeasureAppConsole
             }
 
             var s = SessionFactory.Current.CreateSession(null, x);
-            s.Services[1].Logging += (sender, args) =>
-            {
-                RawAsciiProtocolPacket? packet = (args.Packet) as RawAsciiProtocolPacket;
-                if (packet is not null)
-                {
-                    Console.WriteLine($"RECV RawAsciiProtocolPacket: {packet}");
-                }
-                else
-                {
-                    Console.WriteLine("RECV MSGS");
-                }
-            };
+            //s.Services[1].Logging += (sender, args) =>
+            //{
+            //    RawAsciiProtocolPacket? packet = (args.Packet) as RawAsciiProtocolPacket;
+            //    if (packet is not null)
+            //    {
+            //        Console.WriteLine($"RECV RawAsciiProtocolPacket: {packet}");
+            //    }
+            //    else
+            //    {
+            //        Console.WriteLine("RECV MSGS");
+            //    }
+            //};
 
             s.Open();
             s.Write(new RawAsciiProtocolPacket("HELLOWORLD"));

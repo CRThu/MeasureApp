@@ -14,7 +14,10 @@ namespace CarrotCommFramework.Loggers
         /// </summary>
         public ConsoleLogger() : base()
         {
-
+        }
+        public override void Log(object sender, LogEventArgs e)
+        {
+            Console.WriteLine($"{GetType().FullName}: " + e.Packet.Message);
         }
     }
 }
