@@ -48,6 +48,9 @@
     <ClCompile Include="Protocol\Src\io_retarget.c">
       <Filter>源文件\Protocol</Filter>
     </ClCompile>
+    <ClCompile Include="xml.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Protocol\Inc\cmd_parse.h">
@@ -70,6 +73,9 @@
     </ClInclude>
     <ClInclude Include="Protocol\Inc\delay.h">
       <Filter>头文件\Protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="xml.h">
+      <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

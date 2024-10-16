@@ -14,7 +14,7 @@ namespace MeasureAppConsole
 
             var x = new OptionsBuilder()
                 .Add(b => b.Interface("session").Name("INST_ROOT")
-                            .Add(b => b.Interface("stream").Type("COM").Name("COM250").Add("port", "COM250"))
+                            .Add(b => b.Interface("stream").Type("COM").Name("COM250").Add("port", "COM24").Add("baudrate", "12000000"))
                             .Add(b => b.Interface("protocol").Type("RAPV1").Name("RAPV1_1"))
                             .Add(b => b.Interface("logger").Type("CONSOLE").Name("LOG_INST1"))
                             .Add(b => b.Interface("logger").Type("NLOG").Name("LOG_INST2"))
@@ -46,7 +46,9 @@ namespace MeasureAppConsole
             //};
 
             s.Open();
-            s.Write(new RawAsciiProtocolPacket("HELLOWORLD"));
+            s.Write(new RawAsciiProtocolPacket("ping()"));
+            Thread.Sleep(1000);
+            s.Write(new RawAsciiProtocolPacket("ping_data()"));
 
             Console.ReadKey();
         }
