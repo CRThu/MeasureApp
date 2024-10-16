@@ -29,7 +29,7 @@ namespace CarrotCommFramework.Factory
         private static void Register()
         {
             ProductProvider.Current.Register<IProtocol, RawAsciiProtocol>("RAPV1");
-            ProductProvider.Current.Register<IProtocol, CarrotDataProtocol>("CDPV1");
+            //ProductProvider.Current.Register<IProtocol, CarrotDataProtocol>("CDPV1");
         }
 
         public static IProtocol Create(string serviceKey, string instanceKey)

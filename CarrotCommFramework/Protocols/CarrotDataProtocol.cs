@@ -9,6 +9,7 @@ using static CarrotCommFramework.Protocols.CarrotDataProtocolPacket;
 
 namespace CarrotCommFramework.Protocols
 {
+    /*
     public class CarrotDataProtocol : ProtocolBase
     {
         public static new string Version { get; } = "CDPV1";
@@ -84,4 +85,5 @@ namespace CarrotCommFramework.Protocols
         }
 
     }
+    */
 }

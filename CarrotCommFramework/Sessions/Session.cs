@@ -119,7 +119,7 @@ namespace CarrotCommFramework.Sessions
         {
             return Streams[0].Read(buffer, offset, count);
         }
-
+        /*
         public void Read(out IEnumerable<Packet>? packets)
         {
             byte[] bytes = new byte[1048576];
@@ -128,7 +128,7 @@ namespace CarrotCommFramework.Sessions
             // TODO
             Protocols[0].TryParse(ref mem, out packets,out _);
         }
-
+        */
         public bool TryReadLast(string filter, out Packet? packet)
         {
             int loggerNo = Convert.ToInt16(filter);

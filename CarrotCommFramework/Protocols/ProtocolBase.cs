@@ -14,7 +14,7 @@ namespace CarrotCommFramework.Protocols
         /// </summary>
         public string Name { get; set; }
         public static string Version { get; }
-        public bool TryParse(ref ReadOnlySequence<byte> buffer, out IEnumerable<Packet>? packets, out long comsumedLength);
+        public bool TryParse(ref ReadOnlySequence<byte> buffer, out Packet? packet);
     }
 
     /// <summary>
@@ -25,10 +25,9 @@ namespace CarrotCommFramework.Protocols
         public static string Version { get; set; } = nameof(ProtocolBase);
         public string Name { get; set; }
 
-        public virtual bool TryParse(ref ReadOnlySequence<byte> buffer, out IEnumerable<Packet>? packets, out long comsumedLength)
+        public virtual bool TryParse(ref ReadOnlySequence<byte> buffer, out Packet? packet)
         {
-            packets = null;
-            comsumedLength = 0;
+            packet = null;
             return false;
         }
     }

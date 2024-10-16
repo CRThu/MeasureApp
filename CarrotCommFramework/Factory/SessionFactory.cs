@@ -15,7 +15,7 @@ namespace CarrotCommFramework.Factory
         {
         }
 
-        public Session CreateSession(string addrs, Options options)
+        public Session CreateSession(string addrs, IOptions options)
         {
 
             // create

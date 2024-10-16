@@ -41,26 +41,24 @@ namespace CarrotCommFramework.Services
 
                     ReadOnlySequence<byte> buffer = result.Buffer;
 
-                    bool isPacketsResolved = Protocol!.TryParse(ref buffer, out IEnumerable<Packet>? ResolvedPackets, out long comsumedLength);
-                    if (isPacketsResolved)
+                    if (RawAsciiProtocol.TryParse(ref buffer, out var pkt))
                     {
                         // 处理数据流
-                        foreach (Packet packet in ResolvedPackets)
-                        {
-                            //Debug.WriteLine($"RECV PACKET: {packet.Message}");
-                            OnServiceLogging(this,
-                                new LogEventArgs()
-                                {
-                                    Time = DateTime.Now,
-                                    From = "RX",
-                                    Packet = packet
-                                });
-                        }
+                        //Debug.WriteLine($"RECV PACKET: {packet.Message}");
+                        OnServiceLogging(this,
+                            new LogEventArgs()
+                            {
+                                Time = DateTime.Now,
+                                From = "RX",
+                                Packet = pkt
+                            });
+                        reader.AdvanceTo(buffer.Start);
                     }
-
-                    // 通知PipeWriter已读取字节流长度
-                    reader.AdvanceTo(buffer.GetPosition(comsumedLength));
-
+                    else
+                    {
+                        // Tell the PipeReader how much of the buffer has been consumed.
+                        reader.AdvanceTo(buffer.Start, buffer.End);
+                    }
 
                     // 来自PipeWriter EOF数据传输结束
                     if (result.IsCompleted)
