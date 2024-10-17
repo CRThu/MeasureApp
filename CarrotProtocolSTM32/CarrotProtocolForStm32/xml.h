@@ -19,17 +19,34 @@ extern "C"
 {
 #endif
 
-#define XML_VERSION		"1.0.0"
+#define XML_VERSION		    "1.0.0"
 
+#define XML_NO_ERR          (0)
+#define XML_MALLOC_FAILED   (-1)
+
+    typedef int8_t xml_err_t;
 
     typedef struct {
         const uint8_t* buffer;
-        uint16_t len;
+        size_t len;
     }xml_object_t;
 
     typedef struct {
-        xml_node_t* child;
+        xml_object_t* name;
+        xml_object_t* content;
 
+        // struct has next elements if parent is an array
+        xml_attribute_t* next;
+    }xml_attribute_t;
+
+    typedef struct {
+        xml_object_t* name;
+        xml_object_t* content;
+        xml_attribute_t* attributes;
+        xml_node_t* children;
+
+        // struct has next elements if parent is an array
+        xml_node_t* next;
     }xml_node_t;
 
 
