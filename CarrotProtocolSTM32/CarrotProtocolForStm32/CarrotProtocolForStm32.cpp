@@ -55,13 +55,13 @@ void xml_test()
 {
     xml_node_t* root = NULL;
     uint8_t buf[4096];
-    size_t len;
+    size_t consumed = 0;
     xml_create_root(&root, "root");
     xml_add_child(root, "head");
     xml_add_child(root, "body");
-    xml_generate(root, buf, sizeof(buf), &len);
+    xml_generate(root, buf, sizeof(buf), &consumed);
     printf("BUFFER:");
-    for (int i = 0; i < len; i++)
+    for (int i = 0; i < consumed; i++)
         printf("%c", buf[i]);
 }
 

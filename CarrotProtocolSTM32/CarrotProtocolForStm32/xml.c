@@ -186,13 +186,48 @@ xml_err_t xml_generate_ltag(xml_node_t* node, uint8_t* buffer, size_t bufsize, s
     buffer[*consumed] = '>';
     (*consumed)++;
 
+    // CONTENT
+    xml_object_t* content = node->content;
+    if (content != NULL)
+    {
+        memcpy(&buffer[*consumed], node->content->buffer, node->content->len);
+        *consumed += node->content->len;
+    }
+
     return XML_NO_ERR;
 }
 
-xml_err_t xml_generate(xml_node_t* root, uint8_t* buffer, size_t bufsize, size_t* len)
+xml_err_t xml_generate_rtag(xml_node_t* node, uint8_t* buffer, size_t bufsize, size_t* consumed)
 {
-    *len = 0;
-    xml_generate_ltag(root, buffer, bufsize, len);
+    if (node == NULL)
+        return XML_NO_ERR;
+
+    // <
+    buffer[*consumed] = '<';
+    (*consumed)++;
+
+    // /
+    buffer[*consumed] = '/';
+    (*consumed)++;
+
+    // tagname
+    memcpy(&buffer[*consumed], node->name->buffer, node->name->len);
+    *consumed += node->name->len;
+
+    // >
+    buffer[*consumed] = '>';
+    (*consumed)++;
+
+}
+
+xml_err_t xml_generate(xml_node_t* root, uint8_t* buffer, size_t bufsize, size_t* consumed)
+{
+    xml_generate_ltag(root, buffer, bufsize, consumed);
+    if (root->children != NULL)
+        xml_generate(root->children, buffer, bufsize, consumed);
+    xml_generate_rtag(root, buffer, bufsize, consumed);
+    if (root->next != NULL)
+        xml_generate(root->next, buffer, bufsize, consumed);
 
     return XML_NO_ERR;
 }

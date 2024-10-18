@@ -54,7 +54,7 @@ extern "C"
 
     xml_err_t xml_create_root(xml_node_t** root, const char* name);
     xml_err_t xml_add_child(xml_node_t* node, const char* name);
-    xml_err_t xml_generate(xml_node_t* root, uint8_t* buffer, size_t bufsize, size_t* len);
+    xml_err_t xml_generate(xml_node_t* root, uint8_t* buffer, size_t bufsize, size_t* consumed);
 
 #ifdef __cplusplus
 }
