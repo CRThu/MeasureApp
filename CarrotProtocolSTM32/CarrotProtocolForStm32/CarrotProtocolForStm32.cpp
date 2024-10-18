@@ -1,6 +1,7 @@
 ﻿#include "cmd_parse.h"
 #include "dynamic_call.h"
 #include "DynamicCallTest.h"
+#include "xml.h"
 
 void parse_test(dynamic_pool_t* pool)
 {
@@ -50,12 +51,34 @@ void dyncall_test(dynamic_pool_t* pool)
     invoke(pool, sel);
 }
 
+void xml_test()
+{
+    xml_node_t* root = NULL;
+    uint8_t buf[4096];
+    size_t len;
+    xml_create_root(&root, "root");
+    xml_add_child(root, "head");
+    xml_add_child(root, "body");
+    xml_generate(root, buf, sizeof(buf), &len);
+    printf("BUFFER:");
+    for (int i = 0; i < len; i++)
+        printf("%c", buf[i]);
+}
+
+void create(xml_node_t** node)
+{
+    *node = (xml_node_t*)malloc(sizeof(xml_node_t) * 1);
+}
+
+
 int main()
 {
-    dynamic_call_register();
+    //dynamic_call_register();
 
-    dynamic_pool_t pool;
+    //dynamic_pool_t pool;
     //parse_test(&pool);
     //invoke_test(&pool);
-    dyncall_test(&pool);
+    //dyncall_test(&pool);
+
+    xml_test();
 }

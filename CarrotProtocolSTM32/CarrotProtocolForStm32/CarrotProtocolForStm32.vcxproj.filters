@@ -36,18 +36,6 @@
     <ClCompile Include="DynamicCallTest.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Protocol\Src\ascii_protocol.c">
-      <Filter>源文件\Protocol</Filter>
-    </ClCompile>
-    <ClCompile Include="Protocol\Src\uart_comm.c">
-      <Filter>源文件\Protocol</Filter>
-    </ClCompile>
-    <ClCompile Include="Protocol\Src\delay.c">
-      <Filter>源文件\Protocol</Filter>
-    </ClCompile>
-    <ClCompile Include="Protocol\Src\io_retarget.c">
-      <Filter>源文件\Protocol</Filter>
-    </ClCompile>
     <ClCompile Include="xml.c">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -64,15 +52,6 @@
     </ClInclude>
     <ClInclude Include="DynamicCallTest.h">
       <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Protocol\Inc\ascii_protocol.h">
-      <Filter>头文件\Protocol</Filter>
-    </ClInclude>
-    <ClInclude Include="Protocol\Inc\uart_comm.h">
-      <Filter>头文件\Protocol</Filter>
-    </ClInclude>
-    <ClInclude Include="Protocol\Inc\delay.h">
-      <Filter>头文件\Protocol</Filter>
     </ClInclude>
     <ClInclude Include="xml.h">
       <Filter>头文件</Filter>

@@ -25,21 +25,24 @@ extern "C"
 #define XML_MALLOC_FAILED   (-1)
 
     typedef int8_t xml_err_t;
+    typedef struct _xml_object_t xml_object_t;
+    typedef struct _xml_attribute_t xml_attribute_t;
+    typedef struct _xml_node_t  xml_node_t;
 
-    typedef struct {
+    typedef struct _xml_object_t {
         const uint8_t* buffer;
         size_t len;
-    }xml_object_t;
+    };
 
-    typedef struct {
+    struct _xml_attribute_t {
         xml_object_t* name;
         xml_object_t* content;
 
         // struct has next elements if parent is an array
         xml_attribute_t* next;
-    }xml_attribute_t;
+    };
 
-    typedef struct {
+    struct _xml_node_t {
         xml_object_t* name;
         xml_object_t* content;
         xml_attribute_t* attributes;
@@ -47,8 +50,11 @@ extern "C"
 
         // struct has next elements if parent is an array
         xml_node_t* next;
-    }xml_node_t;
+    };
 
+    xml_err_t xml_create_root(xml_node_t** root, const char* name);
+    xml_err_t xml_add_child(xml_node_t* node, const char* name);
+    xml_err_t xml_generate(xml_node_t* root, uint8_t* buffer, size_t bufsize, size_t* len);
 
 #ifdef __cplusplus
 }
