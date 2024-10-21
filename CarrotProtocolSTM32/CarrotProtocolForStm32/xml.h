@@ -34,13 +34,13 @@ extern "C"
     typedef struct _xml_node_t  xml_node_t;
 
     typedef struct _xml_object_t {
-        const uint8_t* buffer;
+        const uint8_t* value;
         size_t len;
     };
 
     struct _xml_attribute_t {
         xml_object_t* name;
-        xml_object_t* content;
+        xml_object_t* value;
 
         // struct has next elements if parent is an array
         xml_attribute_t* next;

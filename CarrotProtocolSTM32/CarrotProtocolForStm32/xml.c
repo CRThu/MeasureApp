@@ -78,7 +78,7 @@ void xml_mem_attribute_free(xml_attribute_t* attr)
 
 void xml_obj_set_ref(xml_object_t* obj, const void* ref, size_t len)
 {
-    obj->buffer = ref;
+    obj->value = ref;
     obj->len = len;
 }
 
@@ -125,11 +125,11 @@ xml_err_t xml_create_attribute(xml_attribute_t** attr, const char* name, const c
         return err;
     xml_obj_set_ref(name_obj, name, strlen(name));
 
-    xml_object_t* content_obj = NULL;
-    err = xml_mem_object_create(&content_obj);
+    xml_object_t* value_obj = NULL;
+    err = xml_mem_object_create(&value_obj);
     if (err != XML_NO_ERR)
         return err;
-    xml_obj_set_ref(content_obj, content, strlen(content));
+    xml_obj_set_ref(value_obj, content, strlen(content));
 
     // malloc attribute
     err = xml_mem_attribute_create(attr);
@@ -138,7 +138,7 @@ xml_err_t xml_create_attribute(xml_attribute_t** attr, const char* name, const c
 
     // set node
     (*attr)->name = name_obj;
-    (*attr)->content = content_obj;
+    (*attr)->value = value_obj;
     (*attr)->next = NULL;
 
     return XML_NO_ERR;
@@ -149,7 +149,7 @@ xml_node_t* xml_is_child_exist(xml_node_t* root, char* name)
     xml_node_t* node = root->children;
     while (node != NULL)
     {
-        if (strcmp(node->name->buffer, name) == 0)
+        if (strcmp(node->name->value, name) == 0)
             return node;
         node = node->next;
     }
@@ -161,7 +161,7 @@ xml_attribute_t* xml_is_attribute_exist(xml_node_t* root, char* name)
     xml_attribute_t* attr = root->attributes;
     while (attr != NULL)
     {
-        if (strcmp(attr->name->buffer, name) == 0)
+        if (strcmp(attr->name->value, name) == 0)
             return attr;
         attr = attr->next;
     }
@@ -222,9 +222,9 @@ xml_err_t xml_add_child(xml_node_t* node, char* name)
 /// </summary>
 /// <param name="node"></param>
 /// <param name="name"></param>
-/// <param name="content"></param>
+/// <param name="value"></param>
 /// <returns></returns>
-xml_err_t xml_add_attribute(xml_node_t* node, char* name, const char* content)
+xml_err_t xml_add_attribute(xml_node_t* node, char* name, const char* value)
 {
     xml_err_t err;
 
@@ -234,7 +234,7 @@ xml_err_t xml_add_attribute(xml_node_t* node, char* name, const char* content)
     {
         // create attribute
         //xml_attribute_t* attr = NULL;
-        err = xml_create_attribute(&attr, name, content);
+        err = xml_create_attribute(&attr, name, value);
         if (err != XML_NO_ERR)
             return err;
 
@@ -255,10 +255,15 @@ xml_err_t xml_add_attribute(xml_node_t* node, char* name, const char* content)
     }
     else
     {
-        xml_obj_set_ref(attr->content, content, strlen(content));
+        xml_obj_set_ref(attr->value, value, strlen(value));
     }
 
     return XML_NO_ERR;
+}
+
+xml_err_t xml_add_content(xml_node_t* node, char* name, const char* content)
+{
+
 }
 
 xml_err_t xml_generate_ltag(xml_node_t* node, uint8_t* buffer, size_t bufsize, size_t* consumed)
@@ -271,7 +276,7 @@ xml_err_t xml_generate_ltag(xml_node_t* node, uint8_t* buffer, size_t bufsize, s
     (*consumed)++;
 
     // tagname
-    memcpy(&buffer[*consumed], node->name->buffer, node->name->len);
+    memcpy(&buffer[*consumed], node->name->value, node->name->len);
     *consumed += node->name->len;
 
     xml_attribute_t* attr = node->attributes;
@@ -285,7 +290,7 @@ xml_err_t xml_generate_ltag(xml_node_t* node, uint8_t* buffer, size_t bufsize, s
 
 
             // ATTRx
-            memcpy(&buffer[*consumed], attr->name->buffer, attr->name->len);
+            memcpy(&buffer[*consumed], attr->name->value, attr->name->len);
             *consumed += attr->name->len;
 
             // =
@@ -297,8 +302,8 @@ xml_err_t xml_generate_ltag(xml_node_t* node, uint8_t* buffer, size_t bufsize, s
             (*consumed)++;
 
             // CONTENTx
-            memcpy(&buffer[*consumed], attr->content->buffer, attr->content->len);
-            *consumed += attr->content->len;
+            memcpy(&buffer[*consumed], attr->value->value, attr->value->len);
+            *consumed += attr->value->len;
 
             // "
             buffer[*consumed] = '\"';
@@ -317,8 +322,8 @@ xml_err_t xml_generate_ltag(xml_node_t* node, uint8_t* buffer, size_t bufsize, s
     xml_object_t* content = node->content;
     if (content != NULL)
     {
-        memcpy(&buffer[*consumed], node->content->buffer, node->content->len);
-        *consumed += node->content->len;
+        memcpy(&buffer[*consumed], content->value, content->len);
+        *consumed += content->len;
     }
 
     return XML_NO_ERR;
@@ -338,7 +343,7 @@ xml_err_t xml_generate_rtag(xml_node_t* node, uint8_t* buffer, size_t bufsize, s
     (*consumed)++;
 
     // tagname
-    memcpy(&buffer[*consumed], node->name->buffer, node->name->len);
+    memcpy(&buffer[*consumed], node->name->value, node->name->len);
     *consumed += node->name->len;
 
     // >
