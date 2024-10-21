@@ -21,10 +21,14 @@ extern "C"
 
 #define XML_VERSION		    "1.0.0"
 
+#define XML_BOOL_TRUE       (1)
+#define XML_BOOL_FALSE      (0)
+
 #define XML_NO_ERR          (0)
 #define XML_MALLOC_FAILED   (-1)
 
     typedef int8_t xml_err_t;
+    typedef int8_t xml_bool_t;
     typedef struct _xml_object_t xml_object_t;
     typedef struct _xml_attribute_t xml_attribute_t;
     typedef struct _xml_node_t  xml_node_t;

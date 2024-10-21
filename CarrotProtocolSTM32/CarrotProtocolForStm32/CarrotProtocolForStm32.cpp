@@ -59,7 +59,9 @@ void xml_test()
     xml_create_root(&root, "root");
     xml_add_child(root, "head");
     xml_add_child(root, "body");
+    xml_add_child(root, "body");
     xml_add_attribute(root, "path", "parent");
+    xml_add_attribute(root, "path", "parent.override");
     xml_add_attribute(root->children, "path", "children.first");
     xml_add_attribute(root->children->next, "path", "children.next");
     xml_add_attribute(root->children->next, "name1", "content1");

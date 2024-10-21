@@ -144,6 +144,29 @@ xml_err_t xml_create_attribute(xml_attribute_t** attr, const char* name, const c
     return XML_NO_ERR;
 }
 
+xml_node_t* xml_is_child_exist(xml_node_t* root, char* name)
+{
+    xml_node_t* node = root->children;
+    while (node != NULL)
+    {
+        if (strcmp(node->name->buffer, name) == 0)
+            return node;
+        node = node->next;
+    }
+    return NULL;
+}
+
+xml_attribute_t* xml_is_attribute_exist(xml_node_t* root, char* name)
+{
+    xml_attribute_t* attr = root->attributes;
+    while (attr != NULL)
+    {
+        if (strcmp(attr->name->buffer, name) == 0)
+            return attr;
+        attr = attr->next;
+    }
+    return NULL;
+}
 // --------------- XML OPERATE FUNCTION ---------------
 
 xml_err_t xml_create_root(xml_node_t** root, char* name)
@@ -161,27 +184,34 @@ xml_err_t xml_add_child(xml_node_t* node, char* name)
 {
     xml_err_t err;
 
-    // TODO find if there is a duplicate element or not
-
-    // create node
-    xml_node_t* child = NULL;
-    err = xml_create_node(&child, name);
-    if (err != XML_NO_ERR)
-        return err;
-
-    // update node
-    if (node->children == NULL)
+    // to find if there is a duplicate element or not
+    xml_node_t* child = xml_is_child_exist(node, name);
+    if (child == NULL)
     {
-        node->children = child;
+        // create node
+        //xml_node_t* child = NULL;
+        err = xml_create_node(&child, name);
+        if (err != XML_NO_ERR)
+            return err;
+
+        // update node
+        if (node->children == NULL)
+        {
+            node->children = child;
+        }
+        else
+        {
+            xml_node_t* last = node->children;
+            while (last->next != NULL)
+            {
+                last = last->next;
+            }
+            last->next = child;
+        }
     }
     else
     {
-        xml_node_t* last = node->children;
-        while (last->next != NULL)
-        {
-            last = last->next;
-        }
-        last->next = child;
+
     }
 
     return XML_NO_ERR;
@@ -198,27 +228,34 @@ xml_err_t xml_add_attribute(xml_node_t* node, char* name, const char* content)
 {
     xml_err_t err;
 
-    // TODO find if there is a duplicate element or not
-
-    // create attribute
-    xml_attribute_t* attr = NULL;
-    err = xml_create_attribute(&attr, name, content);
-    if (err != XML_NO_ERR)
-        return err;
-
-    // update node
-    if (node->attributes == NULL)
+    // to find if there is a duplicate element or not
+    xml_attribute_t* attr = xml_is_attribute_exist(node, name);
+    if (attr == NULL)
     {
-        node->attributes = attr;
+        // create attribute
+        //xml_attribute_t* attr = NULL;
+        err = xml_create_attribute(&attr, name, content);
+        if (err != XML_NO_ERR)
+            return err;
+
+        // update node
+        if (node->attributes == NULL)
+        {
+            node->attributes = attr;
+        }
+        else
+        {
+            xml_attribute_t* last = node->attributes;
+            while (last->next != NULL)
+            {
+                last = last->next;
+            }
+            last->next = attr;
+        }
     }
     else
     {
-        xml_attribute_t* last = node->attributes;
-        while (last->next != NULL)
-        {
-            last = last->next;
-        }
-        last->next = attr;
+        xml_obj_set_ref(attr->content, content, strlen(content));
     }
 
     return XML_NO_ERR;
