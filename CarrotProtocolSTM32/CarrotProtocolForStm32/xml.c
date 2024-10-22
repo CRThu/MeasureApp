@@ -379,7 +379,30 @@ xml_err_t xml_add_bdata(xml_node_t* node, uint8_t* data, size_t datasize)
     xml_add_content(node, XML_BDATA_END, strlen(XML_BDATA_END));
 }
 
-xml_err_t xml_generate_ltag(xml_node_t* node, uint8_t* buffer, size_t bufsize, size_t* consumed)
+xml_err_t xml_generate_indent(uint8_t* buffer, size_t bufsize, size_t* consumed, uint8_t indent, uint8_t* currindent, uint8_t* isroot)
+{
+    if (indent != XML_FORMAT_INDENT_NONE)
+    {
+        if (!(*isroot))
+        {
+            buffer[*consumed] = '\r';
+            (*consumed)++;
+            buffer[*consumed] = '\n';
+            (*consumed)++;
+        }
+        else
+        {
+            (*isroot) = 0;
+        }
+        for (int i = 0; i < *currindent; i++)
+        {
+            buffer[*consumed] = ' ';
+            (*consumed)++;
+        }
+    }
+}
+
+xml_err_t xml_generate_ltag(xml_node_t* node, uint8_t* buffer, size_t bufsize, size_t* consumed, uint8_t indent, uint8_t* currindent, uint8_t* isroot)
 {
     if (node == NULL)
         return XML_NO_ERR;
@@ -431,8 +454,17 @@ xml_err_t xml_generate_ltag(xml_node_t* node, uint8_t* buffer, size_t bufsize, s
     buffer[*consumed] = '>';
     (*consumed)++;
 
+    (*currindent) += indent;
+
     // CONTENT
     xml_object_t* content = node->content;
+
+    if (content != NULL)
+    {
+        // append indent before content
+        xml_generate_indent(buffer, bufsize, consumed, indent, currindent, isroot);
+    }
+
     while (content != NULL)
     {
         memcpy(&buffer[*consumed], content->value, content->len);
@@ -444,7 +476,7 @@ xml_err_t xml_generate_ltag(xml_node_t* node, uint8_t* buffer, size_t bufsize, s
     return XML_NO_ERR;
 }
 
-xml_err_t xml_generate_rtag(xml_node_t* node, uint8_t* buffer, size_t bufsize, size_t* consumed)
+xml_err_t xml_generate_rtag(xml_node_t* node, uint8_t* buffer, size_t bufsize, size_t* consumed, uint8_t indent, uint8_t* currindent)
 {
     if (node == NULL)
         return XML_NO_ERR;
@@ -467,18 +499,37 @@ xml_err_t xml_generate_rtag(xml_node_t* node, uint8_t* buffer, size_t bufsize, s
 
 }
 
-xml_err_t xml_generate(xml_node_t* root, uint8_t* buffer, size_t bufsize, size_t* consumed)
+xml_err_t xml_generate_nested(xml_node_t* root, uint8_t* buffer, size_t bufsize, size_t* consumed, uint8_t indent, uint8_t* currindent, uint8_t* isroot)
 {
-    xml_generate_ltag(root, buffer, bufsize, consumed);
-    if (root->children != NULL)
-        xml_generate(root->children, buffer, bufsize, consumed);
-    xml_generate_rtag(root, buffer, bufsize, consumed);
-    if (root->next != NULL)
-        xml_generate(root->next, buffer, bufsize, consumed);
+    // append indent before ltag
+    xml_generate_indent(buffer, bufsize, consumed, indent, currindent, isroot);
 
+    xml_generate_ltag(root, buffer, bufsize, consumed, indent, currindent, isroot);
+
+    if (root->children != NULL)
+    {
+        xml_generate_nested(root->children, buffer, bufsize, consumed, indent, currindent, isroot);
+    }
+
+    (*currindent) -= indent;
+    // append indent before rtag
+    xml_generate_indent(buffer, bufsize, consumed, indent, currindent, isroot);
+
+    xml_generate_rtag(root, buffer, bufsize, consumed, indent, currindent);
+
+    if (root->next != NULL)
+    {
+        xml_generate_nested(root->next, buffer, bufsize, consumed, indent, currindent, isroot);
+    }
     return XML_NO_ERR;
 }
 
+xml_err_t xml_generate(xml_node_t* root, uint8_t* buffer, size_t bufsize, size_t* consumed, uint8_t indent)
+{
+    uint8_t currindent = 0;
+    uint8_t isroot = 1;
+    return xml_generate_nested(root, buffer, bufsize, consumed, indent, &currindent, &isroot);
+}
 
 void xml_free_object(xml_object_t* obj)
 {

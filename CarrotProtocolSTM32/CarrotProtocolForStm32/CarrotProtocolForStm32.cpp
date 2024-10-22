@@ -85,8 +85,8 @@ void xml_test()
     xml_add_bdata(bdata_test_node, (uint8_t*)CDATA_PAYLOAD, strlen(CDATA_PAYLOAD));
     xml_add_cdata(cdata_test_node, CDATA_PAYLOAD, strlen(CDATA_PAYLOAD));
 
-    xml_generate(root, buf, sizeof(buf), &consumed);
-    printf("BUFFER:");
+    xml_generate(root, buf, sizeof(buf), &consumed, XML_FORMAT_INDENT_SPACE_4);
+    printf("BUFFER:\r\n");
     for (int i = 0; i < consumed; i++)
         printf("%c", buf[i]);
     xml_free_node(root);

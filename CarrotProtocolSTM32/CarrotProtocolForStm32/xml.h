@@ -27,6 +27,9 @@ extern "C"
 #define XML_NO_ERR          (0)
 #define XML_MALLOC_FAILED   (-1)
 
+#define XML_FORMAT_INDENT_NONE      (0)
+#define XML_FORMAT_INDENT_SPACE_4   (4)
+
     typedef int8_t xml_err_t;
     typedef int8_t xml_bool_t;
     typedef struct _xml_object_t xml_object_t;
@@ -66,7 +69,7 @@ extern "C"
     xml_err_t xml_add_content(xml_node_t* node, const char* content, size_t len);
     xml_err_t xml_add_cdata(xml_node_t* node, const char* data, size_t len);
     xml_err_t xml_add_bdata(xml_node_t* node, uint8_t* data, size_t datasize);
-    xml_err_t xml_generate(xml_node_t* root, uint8_t* buffer, size_t bufsize, size_t* consumed);
+    xml_err_t xml_generate(xml_node_t* root, uint8_t* buffer, size_t bufsize, size_t* consumed, uint8_t indent);
     void xml_free_node(xml_node_t* node);
 
 #ifdef __cplusplus
