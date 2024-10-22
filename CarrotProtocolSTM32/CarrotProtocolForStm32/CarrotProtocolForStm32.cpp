@@ -65,8 +65,9 @@ void xml_test()
     xml_add_attribute(root->children, "path", "children.first");
     xml_add_attribute(root->children->next, "path", "children.next");
     xml_add_attribute(root->children->next, "name1", "content1");
-    xml_add_content(root, "12345");
-    xml_add_content(root, "67890");
+    xml_add_content(root, "123", strlen("123"));
+    xml_add_content(root, "456", strlen("456"));
+    xml_add_content(root, "789", strlen("789"));
 
     xml_node_t* node1 = xml_get_node(root, "");
     xml_node_t* node2 = xml_get_node(root, "/");
@@ -77,6 +78,12 @@ void xml_test()
     xml_node_t* node_wrong1 = xml_get_node(root, "/123");
     xml_node_t* node_new1 = xml_get_node(root, "/root/new");
     //xml_node_t* node_new2 = xml_get_node(root, "/root/new/");
+
+    const char* CDATA_PAYLOAD = "<TEST PAYLOAD>";
+    xml_node_t* bdata_test_node = xml_get_node(root, "/root/bdata");
+    xml_node_t* cdata_test_node = xml_get_node(root, "/root/cdata");
+    xml_add_bdata(bdata_test_node, (uint8_t*)CDATA_PAYLOAD, strlen(CDATA_PAYLOAD));
+    xml_add_cdata(cdata_test_node, CDATA_PAYLOAD, strlen(CDATA_PAYLOAD));
 
     xml_generate(root, buf, sizeof(buf), &consumed);
     printf("BUFFER:");

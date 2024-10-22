@@ -2,6 +2,14 @@
 #include "stdlib.h"
 #include "string.h"
 
+// CDATA
+const char* XML_CDATA_START = "<![CDATA[";
+const char* XML_CDATA_END = "]]>";
+
+// BDATA (not exist in standard xml, extend by carrotxml)
+const char* XML_BDATA_START = "<![BDATA[";
+const char* XML_BDATA_END = "]]>";
+
 // --------------- MEMORY CREATE AND FREE FUNCTION ---------------
 
 /// <summary>
@@ -331,7 +339,7 @@ xml_err_t xml_add_attribute(xml_node_t* node, char* name, const char* value)
     return XML_NO_ERR;
 }
 
-xml_err_t xml_add_content(xml_node_t* node, const char* content)
+xml_err_t xml_add_content(xml_node_t* node, const char* content, size_t len)
 {
     xml_err_t err;
 
@@ -339,16 +347,36 @@ xml_err_t xml_add_content(xml_node_t* node, const char* content)
     err = xml_mem_object_create(&content_obj);
     if (err != XML_NO_ERR)
         return err;
-    xml_obj_set_ref(content_obj, content, strlen(content));
+    xml_obj_set_ref(content_obj, content, len);
 
+    // update content
     if (node->content == NULL)
     {
         node->content = content_obj;
     }
     else
     {
-        node->content->next = content_obj;
+        xml_object_t* last = node->content;
+        while (last->next != NULL)
+        {
+            last = last->next;
+        }
+        last->next = content_obj;
     }
+}
+
+xml_err_t xml_add_cdata(xml_node_t* node, const char* data, size_t len)
+{
+    xml_add_content(node, XML_CDATA_START, strlen(XML_CDATA_START));
+    xml_add_content(node, data, len);
+    xml_add_content(node, XML_CDATA_END, strlen(XML_CDATA_END));
+}
+
+xml_err_t xml_add_bdata(xml_node_t* node, uint8_t* data, size_t datasize)
+{
+    xml_add_content(node, XML_BDATA_START, strlen(XML_BDATA_START));
+    xml_add_content(node, data, datasize);
+    xml_add_content(node, XML_BDATA_END, strlen(XML_BDATA_END));
 }
 
 xml_err_t xml_generate_ltag(xml_node_t* node, uint8_t* buffer, size_t bufsize, size_t* consumed)
