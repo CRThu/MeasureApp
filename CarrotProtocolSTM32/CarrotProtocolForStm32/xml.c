@@ -105,7 +105,7 @@ void xml_obj_set_ref(xml_object_t* obj, const void* ref, size_t len)
 /// <param name="node"></param>
 /// <param name="name"></param>
 /// <returns></returns>
-xml_err_t xml_create_node(xml_node_t** node, const char* name)
+xml_err_t xml_create_node(xml_node_t** node, const char* name, size_t len)
 {
     xml_err_t err;
 
@@ -114,7 +114,7 @@ xml_err_t xml_create_node(xml_node_t** node, const char* name)
     err = xml_mem_object_create(&name_obj);
     if (err != XML_NO_ERR)
         return err;
-    xml_obj_set_ref(name_obj, name, strlen(name));
+    xml_obj_set_ref(name_obj, name, len);
 
     // malloc node
     err = xml_mem_node_create(node);
@@ -226,19 +226,11 @@ xml_node_t* xml_get_node(xml_node_t* root, const char* path)
         }
         else
         {
-            result = xml_is_child_exist(curr, start, len);
-            if (result != NULL)
-            {
-                curr = result;
-            }
-            else
-            {
-                //xml_add_child(curr, start, len);
-            }
+            curr = xml_add_child(curr, start, len);
         }
 
 
-        start =  (end + 1);
+        start = (end + 1);
     }
 
     return curr;
@@ -247,9 +239,9 @@ xml_node_t* xml_get_node(xml_node_t* root, const char* path)
 
 // --------------- XML OPERATE FUNCTION ---------------
 
-xml_err_t xml_create_root(xml_node_t** root, char* name)
+xml_err_t xml_create_root(xml_node_t** root, char* name, size_t len)
 {
-    return xml_create_node(root, name);
+    return xml_create_node(root, name, len);
 }
 
 /// <summary>
@@ -258,19 +250,19 @@ xml_err_t xml_create_root(xml_node_t** root, char* name)
 /// <param name="node"></param>
 /// <param name="name"></param>
 /// <returns></returns>
-xml_err_t xml_add_child(xml_node_t* node, char* name)
+xml_node_t* xml_add_child(xml_node_t* node, const char* name, size_t len)
 {
     xml_err_t err;
 
     // to find if there is a duplicate element or not
-    xml_node_t* child = xml_is_child_exist(node, name, strlen(name));
+    xml_node_t* child = xml_is_child_exist(node, name, len);
     if (child == NULL)
     {
         // create node
         //xml_node_t* child = NULL;
-        err = xml_create_node(&child, name);
+        err = xml_create_node(&child, name, len);
         if (err != XML_NO_ERR)
-            return err;
+            return NULL;
 
         // update node
         if (node->children == NULL)
@@ -292,7 +284,7 @@ xml_err_t xml_add_child(xml_node_t* node, char* name)
 
     }
 
-    return XML_NO_ERR;
+    return child;
 }
 
 /// <summary>

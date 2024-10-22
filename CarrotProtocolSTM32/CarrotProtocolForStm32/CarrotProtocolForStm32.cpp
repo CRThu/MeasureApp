@@ -56,10 +56,10 @@ void xml_test()
     xml_node_t* root = NULL;
     uint8_t buf[4096];
     size_t consumed = 0;
-    xml_create_root(&root, "root");
-    xml_add_child(root, "head");
-    xml_add_child(root, "body");
-    xml_add_child(root, "body");
+    xml_create_root(&root, "root", strlen("root"));
+    xml_add_child(root, "head", strlen("head"));
+    xml_add_child(root, "body", strlen("body"));
+    xml_add_child(root, "body", strlen("body"));
     xml_add_attribute(root, "path", "parent");
     xml_add_attribute(root, "path", "parent.override");
     xml_add_attribute(root->children, "path", "children.first");
@@ -67,7 +67,6 @@ void xml_test()
     xml_add_attribute(root->children->next, "name1", "content1");
     xml_add_content(root, "12345");
     xml_add_content(root, "67890");
-    xml_generate(root, buf, sizeof(buf), &consumed);
 
     xml_node_t* node1 = xml_get_node(root, "");
     xml_node_t* node2 = xml_get_node(root, "/");
@@ -76,8 +75,10 @@ void xml_test()
     xml_node_t* node5 = xml_get_node(root, "/root/body");
     xml_node_t* node6 = xml_get_node(root, "/root/body/");
     xml_node_t* node_wrong1 = xml_get_node(root, "/123");
-    xml_node_t* node_wrong2 = xml_get_node(root, "/root/new");
+    xml_node_t* node_new1 = xml_get_node(root, "/root/new");
+    //xml_node_t* node_new2 = xml_get_node(root, "/root/new/");
 
+    xml_generate(root, buf, sizeof(buf), &consumed);
     printf("BUFFER:");
     for (int i = 0; i < consumed; i++)
         printf("%c", buf[i]);
