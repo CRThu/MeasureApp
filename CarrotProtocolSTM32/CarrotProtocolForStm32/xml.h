@@ -36,6 +36,9 @@ extern "C"
     typedef struct _xml_object_t {
         const uint8_t* value;
         size_t len;
+
+        // struct has next elements if parent is an array
+        xml_object_t* next;
     };
 
     struct _xml_attribute_t {
@@ -59,7 +62,9 @@ extern "C"
     xml_err_t xml_create_root(xml_node_t** root, const char* name);
     xml_err_t xml_add_child(xml_node_t* node, const char* name);
     xml_err_t xml_add_attribute(xml_node_t* node, const char* name, const char* content);
+    xml_err_t xml_add_content(xml_node_t* node, const char* content);
     xml_err_t xml_generate(xml_node_t* root, uint8_t* buffer, size_t bufsize, size_t* consumed);
+    void xml_free_node(xml_node_t* node);
 
 #ifdef __cplusplus
 }

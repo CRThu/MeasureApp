@@ -16,6 +16,13 @@ xml_err_t xml_mem_node_create(xml_node_t** node)
     {
         return XML_MALLOC_FAILED;
     }
+
+    (*node)->name = NULL;
+    (*node)->content = NULL;
+    (*node)->attributes = NULL;
+    (*node)->children = NULL;
+    (*node)->next = NULL;
+
     return XML_NO_ERR;
 }
 
@@ -31,6 +38,11 @@ xml_err_t xml_mem_object_create(xml_object_t** obj)
     {
         return XML_MALLOC_FAILED;
     }
+
+    (*obj)->value = NULL;
+    (*obj)->len = 0;
+    (*obj)->next = NULL;
+
     return XML_NO_ERR;
 }
 
@@ -46,6 +58,11 @@ xml_err_t xml_mem_attribute_create(xml_attribute_t** attr)
     {
         return XML_MALLOC_FAILED;
     }
+
+    (*attr)->name = NULL;
+    (*attr)->value = NULL;
+    (*attr)->next = NULL;
+
     return XML_NO_ERR;
 }
 
@@ -261,9 +278,24 @@ xml_err_t xml_add_attribute(xml_node_t* node, char* name, const char* value)
     return XML_NO_ERR;
 }
 
-xml_err_t xml_add_content(xml_node_t* node, char* name, const char* content)
+xml_err_t xml_add_content(xml_node_t* node, const char* content)
 {
+    xml_err_t err;
 
+    xml_object_t* content_obj = NULL;
+    err = xml_mem_object_create(&content_obj);
+    if (err != XML_NO_ERR)
+        return err;
+    xml_obj_set_ref(content_obj, content, strlen(content));
+
+    if (node->content == NULL)
+    {
+        node->content = content_obj;
+    }
+    else
+    {
+        node->content->next = content_obj;
+    }
 }
 
 xml_err_t xml_generate_ltag(xml_node_t* node, uint8_t* buffer, size_t bufsize, size_t* consumed)
@@ -320,10 +352,12 @@ xml_err_t xml_generate_ltag(xml_node_t* node, uint8_t* buffer, size_t bufsize, s
 
     // CONTENT
     xml_object_t* content = node->content;
-    if (content != NULL)
+    while (content != NULL)
     {
         memcpy(&buffer[*consumed], content->value, content->len);
         *consumed += content->len;
+
+        content = content->next;
     }
 
     return XML_NO_ERR;
@@ -362,4 +396,65 @@ xml_err_t xml_generate(xml_node_t* root, uint8_t* buffer, size_t bufsize, size_t
         xml_generate(root->next, buffer, bufsize, consumed);
 
     return XML_NO_ERR;
+}
+
+
+void xml_free_object(xml_object_t* obj)
+{
+    if (obj != NULL)
+    {
+        if (obj->next != NULL)
+        {
+            xml_free_object(obj->next);
+            obj->next = NULL;
+        }
+
+        obj->len = 0;
+        xml_mem_object_free(obj);
+        obj = NULL;
+    }
+}
+
+void xml_free_attribute(xml_attribute_t* attr)
+{
+    if (attr != NULL)
+    {
+        if (attr->next != NULL)
+        {
+            xml_free_attribute(attr->next);
+            attr->next = NULL;
+        }
+
+        xml_mem_object_free(attr->name);
+        attr->name = NULL;
+        xml_mem_object_free(attr->value);
+        attr->value = NULL;
+        xml_mem_attribute_free(attr);
+        attr = NULL;
+    }
+}
+
+void xml_free_node(xml_node_t* node)
+{
+    if (node != NULL)
+    {
+        if (node->children != NULL)
+        {
+            xml_free_node(node->children);
+            node->children = NULL;
+        }
+
+        if (node->next != NULL)
+        {
+            xml_free_node(node->next);
+            node->next = NULL;
+        }
+
+        xml_free_object(node->name);
+        node->name = NULL;
+        xml_free_object(node->content);
+        node->content = NULL;
+        xml_free_attribute(node->attributes);
+        node->attributes = NULL;
+    }
 }

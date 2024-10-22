@@ -65,10 +65,13 @@ void xml_test()
     xml_add_attribute(root->children, "path", "children.first");
     xml_add_attribute(root->children->next, "path", "children.next");
     xml_add_attribute(root->children->next, "name1", "content1");
+    xml_add_content(root, "12345");
+    xml_add_content(root, "67890");
     xml_generate(root, buf, sizeof(buf), &consumed);
     printf("BUFFER:");
     for (int i = 0; i < consumed; i++)
         printf("%c", buf[i]);
+    xml_free_node(root);
 }
 
 void create(xml_node_t** node)
