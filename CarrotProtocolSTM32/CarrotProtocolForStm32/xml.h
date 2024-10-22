@@ -59,6 +59,7 @@ extern "C"
         xml_node_t* next;
     };
 
+    xml_node_t* xml_get_node(xml_node_t* root, const char* path);
     xml_err_t xml_create_root(xml_node_t** root, const char* name);
     xml_err_t xml_add_child(xml_node_t* node, const char* name);
     xml_err_t xml_add_attribute(xml_node_t* node, const char* name, const char* content);

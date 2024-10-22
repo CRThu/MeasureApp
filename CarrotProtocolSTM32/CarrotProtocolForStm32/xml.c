@@ -161,29 +161,90 @@ xml_err_t xml_create_attribute(xml_attribute_t** attr, const char* name, const c
     return XML_NO_ERR;
 }
 
-xml_node_t* xml_is_child_exist(xml_node_t* root, char* name)
+xml_node_t* xml_is_child_exist(xml_node_t* root, char* name, size_t len)
 {
     xml_node_t* node = root->children;
     while (node != NULL)
     {
-        if (strcmp(node->name->value, name) == 0)
+        if (strncmp(node->name->value, name, len) == 0
+            && node->name->len == len)
             return node;
         node = node->next;
     }
     return NULL;
 }
 
-xml_attribute_t* xml_is_attribute_exist(xml_node_t* root, char* name)
+xml_attribute_t* xml_is_attribute_exist(xml_node_t* root, char* name, size_t len)
 {
     xml_attribute_t* attr = root->attributes;
     while (attr != NULL)
     {
-        if (strcmp(attr->name->value, name) == 0)
+        if (strncmp(attr->name->value, name, len) == 0
+            && attr->name->len == len)
             return attr;
         attr = attr->next;
     }
     return NULL;
 }
+
+
+xml_node_t* xml_get_node(xml_node_t* root, const char* path)
+{
+    uint8_t search_root = 1;
+    xml_node_t* curr = root;
+    const char* start = path;
+
+    while (*start)
+    {
+        // find next '/' in the path
+        const char* end = strchr(start, '/');
+        if (end == NULL)
+            end = start + strlen(start);
+        size_t len = (end - start);
+        if (len == 0)
+        {
+            // input="/"
+            start = end + 1;
+            continue;
+        }
+
+        // search for existing children nodes
+        xml_node_t* result;
+
+        if (search_root)
+        {
+            result = (strncmp(curr->name->value, start, len) == 0 && curr->name->len == len) ? root : NULL;
+            if (result != NULL)
+            {
+                search_root = 0;
+            }
+            else
+            {
+                // there is no specifed root
+                return NULL;
+            }
+        }
+        else
+        {
+            result = xml_is_child_exist(curr, start, len);
+            if (result != NULL)
+            {
+                curr = result;
+            }
+            else
+            {
+                //xml_add_child(curr, start, len);
+            }
+        }
+
+
+        start =  (end + 1);
+    }
+
+    return curr;
+}
+
+
 // --------------- XML OPERATE FUNCTION ---------------
 
 xml_err_t xml_create_root(xml_node_t** root, char* name)
@@ -202,7 +263,7 @@ xml_err_t xml_add_child(xml_node_t* node, char* name)
     xml_err_t err;
 
     // to find if there is a duplicate element or not
-    xml_node_t* child = xml_is_child_exist(node, name);
+    xml_node_t* child = xml_is_child_exist(node, name, strlen(name));
     if (child == NULL)
     {
         // create node
@@ -246,7 +307,7 @@ xml_err_t xml_add_attribute(xml_node_t* node, char* name, const char* value)
     xml_err_t err;
 
     // to find if there is a duplicate element or not
-    xml_attribute_t* attr = xml_is_attribute_exist(node, name);
+    xml_attribute_t* attr = xml_is_attribute_exist(node, name, strlen(name));
     if (attr == NULL)
     {
         // create attribute
@@ -458,3 +519,4 @@ void xml_free_node(xml_node_t* node)
         node->attributes = NULL;
     }
 }
+

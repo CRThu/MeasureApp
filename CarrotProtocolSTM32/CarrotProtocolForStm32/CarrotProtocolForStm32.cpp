@@ -68,6 +68,16 @@ void xml_test()
     xml_add_content(root, "12345");
     xml_add_content(root, "67890");
     xml_generate(root, buf, sizeof(buf), &consumed);
+
+    xml_node_t* node1 = xml_get_node(root, "");
+    xml_node_t* node2 = xml_get_node(root, "/");
+    xml_node_t* node3 = xml_get_node(root, "/root");
+    xml_node_t* node4 = xml_get_node(root, "/root/");
+    xml_node_t* node5 = xml_get_node(root, "/root/body");
+    xml_node_t* node6 = xml_get_node(root, "/root/body/");
+    xml_node_t* node_wrong1 = xml_get_node(root, "/123");
+    xml_node_t* node_wrong2 = xml_get_node(root, "/root/new");
+
     printf("BUFFER:");
     for (int i = 0; i < consumed; i++)
         printf("%c", buf[i]);
