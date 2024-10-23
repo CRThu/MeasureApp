@@ -588,6 +588,9 @@ void xml_free_node(xml_node_t* node)
         node->content = NULL;
         xml_free_attribute(node->attributes);
         node->attributes = NULL;
+
+        xml_mem_node_free(node);
+        node = NULL;
     }
 }
 

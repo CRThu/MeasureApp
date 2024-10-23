@@ -3,6 +3,10 @@
 #include "DynamicCallTest.h"
 #include "xml.h"
 
+#ifdef _DEBUG_VLD_
+    #include "vld.h"
+#endif
+
 void parse_test(dynamic_pool_t* pool)
 {
     dynamic_pool_init(pool);
@@ -89,14 +93,9 @@ void xml_test()
     printf("BUFFER:\r\n");
     for (int i = 0; i < consumed; i++)
         printf("%c", buf[i]);
+    printf("\r\n");
     xml_free_node(root);
 }
-
-void create(xml_node_t** node)
-{
-    *node = (xml_node_t*)malloc(sizeof(xml_node_t) * 1);
-}
-
 
 int main()
 {
