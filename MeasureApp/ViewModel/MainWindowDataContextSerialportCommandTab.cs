@@ -472,7 +472,7 @@ PA5.FREQ;
                                 if (lastLogFromHost is not null && ((string)lastLogFromHost.Message.ToString()).Contains(waitKeyword0, StringComparison.CurrentCultureIgnoreCase))
                                 {
                                     string[] storeKeyStrs = ((string)lastLogFromHost.Message.ToString()).Split(':');
-                                    decimal storeKeyData = Convert.ToDecimal(storeKeyStrs[1].Trim());
+                                    decimal storeKeyData = Convert.ToDecimal(storeKeyStrs[storeKeyStrs.Length - 1].Trim());
                                     DataStorageInstance.AddValue(waitStoreKey0, storeKeyData);
                                 }
                             }
@@ -929,6 +929,7 @@ REGW;01;{i:D};
                         <comm session="com" oper="write" cmd="HELLOWORLD;"/>
                         <comm session="com" oper="close"/>
                          */
+                        /*
                         string sessionName = TagAttrs.TryGetValue("session", out string sessionStringTemp) ? sessionStringTemp : null;
                         string operName = TagAttrs.TryGetValue("oper", out string operStringTemp) ? operStringTemp : null;
                         string sessionCommand = TagAttrs.TryGetValue("cmd", out string cmdStringTemp) ? cmdStringTemp : null;
@@ -952,6 +953,7 @@ REGW;01;{i:D};
                             default:
                                 break;
                         }
+                        */
                         break;
                     case "MUTEX":
                         // <mutex mode="add/del/sync"/>
@@ -1375,7 +1377,7 @@ REGW;{i+j+3:D};{Round(j+8):D};{Max(i,j,0.5):F3};
                     SerialportCommandScriptVarDict.Clear();
                     foreach (JProperty kv in j)
                     {
-                        if (kv.Value.Type == JTokenType.Float)
+                        if (kv.Value.Type == JTokenType.Float || kv.Value.Type == JTokenType.Integer )
                             SerialportCommandScriptVarDict.Add(kv.Name, new(kv.Name, kv.Value.Value<decimal>()));
                         else
                             SerialportCommandScriptVarDict.Add(kv.Name, new(kv.Name, kv.Value.Values<decimal>()));
