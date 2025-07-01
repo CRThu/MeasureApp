@@ -13,6 +13,7 @@ using System.Collections.ObjectModel;
 using RoslynPad.Roslyn;
 using ScottPlot;
 using MeasureApp.ViewModel.Common;
+using ScottPlot.WPF;
 
 namespace MeasureApp.ViewModel
 {
@@ -31,8 +32,8 @@ namespace MeasureApp.ViewModel
 
         public void PlotUpdate()
         {
-            double[] values = DataGen.RandomWalk(1_000_000);
-            PlotControl.Plot.AddSignal(values, sampleRate: 48_000);
+            double[] values = Generate.RandomWalk(1_000_000);
+            PlotControl.Plot.Add.Signal(values);
             PlotControl.Plot.Title("One Million Points");
             PlotControl.Refresh();
         }
