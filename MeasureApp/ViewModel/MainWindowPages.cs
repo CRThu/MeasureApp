@@ -21,6 +21,17 @@ namespace MeasureApp.ViewModel
             }
         }
 
+        private DeviceCommDebugPage deviceCommDebugPage;
+        public DeviceCommDebugPage DeviceCommDebugPage
+        {
+            get => deviceCommDebugPage;
+            set
+            {
+                deviceCommDebugPage = value;
+                RaisePropertyChanged(() => DeviceCommDebugPage);
+            }
+        }
+
         private Multimeter3458AControlPage multimeter3458AControlPage;
         public Multimeter3458AControlPage Multimeter3458AControlPage
         {
@@ -146,6 +157,7 @@ namespace MeasureApp.ViewModel
         public MainWindowPages(object dataContext)
         {
             DevicesConnectionPage = new DevicesConnectionPage(dataContext);
+            DeviceCommDebugPage = new DeviceCommDebugPage(dataContext);
             Multimeter3458AControlPage = new Multimeter3458AControlPage(dataContext);
             TempControlPage = new TempControlPage(dataContext);
             SerialPortInstructionPage = new SerialPortInstructionPage(dataContext);

@@ -64,6 +64,11 @@
                                     <Frame Content="{Binding Pages.DevicesConnectionPage}"/>
                                 </ad:LayoutAnchorable.Content>
                             </ad:LayoutAnchorable>
+                            <ad:LayoutAnchorable Title="设备通信调试" CanHide="False">
+                                <ad:LayoutAnchorable.Content>
+                                    <Frame Content="{Binding Pages.DeviceCommDebugPage}"/>
+                                </ad:LayoutAnchorable.Content>
+                            </ad:LayoutAnchorable>
                             <ad:LayoutAnchorable Title="3458A万用表控制" CanHide="False">
                                 <ad:LayoutAnchorable.Content>
                                     <Frame Content="{Binding Pages.Multimeter3458AControlPage}"/>
