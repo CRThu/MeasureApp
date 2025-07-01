@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MeasureApp.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -13,6 +14,8 @@ namespace MeasureApp
     /// </summary>
     public partial class App : Application
     {
+        public static ViewModelLocator Locator => (ViewModelLocator)App.Current.Resources["Locator"];
+
         //public App()
         //{
         //    Application.Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;

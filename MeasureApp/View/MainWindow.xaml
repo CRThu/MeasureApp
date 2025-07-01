@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:local="clr-namespace:MeasureApp"
-        xmlns:viewmodel="clr-namespace:MeasureApp.ViewModel"
+        xmlns:vm="clr-namespace:MeasureApp.ViewModel"
         xmlns:vmc="clr-namespace:MeasureApp.ViewModel.Common"
         xmlns:view="clr-namespace:MeasureApp.View.Control"
         xmlns:webview="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
@@ -13,19 +13,19 @@
         xmlns:editor="clr-namespace:RoslynPad.Editor;assembly=RoslynPad.Editor.Windows"
         xmlns:hc="https://handyorg.github.io/handycontrol"
         xmlns:ad="https://github.com/Dirkster99/AvalonDock"
-        d:DataContext="{d:DesignInstance Type=viewmodel:MainWindowDataContext}"
+        DataContext="{Binding Source={StaticResource Locator},Path=MainWindow}"
         mc:Ignorable="d"
         Title="MeasureApp" Height="650" Width="1200">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
-            <vmc:EventCommandBase Command="{Binding MainWindowLoadedEvent}"/>
+            <vmc:EventCommandBase Command="{Binding MainWindowLoaded}"/>
         </i:EventTrigger>
         <i:EventTrigger EventName="Closed">
-            <vmc:EventCommandBase Command="{Binding MainWindowClosedEvent}"/>
+            <vmc:EventCommandBase Command="{Binding MainWindowClosed}"/>
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <Window.Resources>
-        <viewmodel:SecondsToTimeFormatConverter x:Key="SecondsToTimeFormatConverter"/>
+        <vm:SecondsToTimeFormatConverter x:Key="SecondsToTimeFormatConverter"/>
     </Window.Resources>
     <DockPanel>
         <StatusBar DockPanel.Dock="Bottom" MaxHeight="20" VerticalAlignment="Bottom">

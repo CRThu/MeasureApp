@@ -25,16 +25,16 @@ namespace MeasureApp
     /// </summary>
     public partial class MainWindow : Window
     {
-        public AppConfig AppConfig { get; set; }
+        //public AppConfig AppConfig { get; set; }
 
 
         public MainWindow()
         {
             InitializeComponent();
 
-            AppConfig = AppConfig.Read();
+            //AppConfig = AppConfig.Read();
 
-            DataContext = new MainWindowDataContext(AppConfig);
+            //DataContext = new MainWindowDataContext(AppConfig);
         }
     }
 }
