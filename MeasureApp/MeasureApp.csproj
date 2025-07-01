@@ -97,10 +97,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\CarrotCommFramework\CarrotCommFramework.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <Reference Include="NationalInstruments.Common">
 	    <HintPath>..\DLL\NationalInstruments\NationalInstruments.Common.dll</HintPath>
 	    <Private>True</Private>

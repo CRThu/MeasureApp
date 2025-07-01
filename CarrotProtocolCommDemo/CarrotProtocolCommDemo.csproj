@@ -14,14 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CarrotCommFramework\CarrotCommFramework.csproj">
-      <EmbedInteropTypes></EmbedInteropTypes>
-      <CopyLocalSatelliteAssemblies></CopyLocalSatelliteAssemblies>
-      <Private></Private>
-    </ProjectReference>
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Update="View\.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
