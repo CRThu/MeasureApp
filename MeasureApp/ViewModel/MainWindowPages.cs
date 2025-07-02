@@ -10,16 +10,16 @@ namespace MeasureApp.ViewModel
 {
     public class MainWindowPages : NotificationObjectBase
     {
-        private DevicesConnectionPage devicesConnectionPage;
-        public DevicesConnectionPage DevicesConnectionPage
-        {
-            get => devicesConnectionPage;
-            set
-            {
-                devicesConnectionPage = value;
-                RaisePropertyChanged(() => DevicesConnectionPage);
-            }
-        }
+        //private DevicesConnectionPage devicesConnectionPage;
+        //public DevicesConnectionPage DevicesConnectionPage
+        //{
+        //    get => devicesConnectionPage;
+        //    set
+        //    {
+        //        devicesConnectionPage = value;
+        //        RaisePropertyChanged(() => DevicesConnectionPage);
+        //    }
+        //}
 
         private DeviceCommDebugPage deviceCommDebugPage;
         public DeviceCommDebugPage DeviceCommDebugPage
@@ -156,7 +156,7 @@ namespace MeasureApp.ViewModel
 
         public MainWindowPages(object dataContext)
         {
-            DevicesConnectionPage = new DevicesConnectionPage(dataContext);
+            //DevicesConnectionPage = new DevicesConnectionPage(dataContext);
             DeviceCommDebugPage = new DeviceCommDebugPage(dataContext);
             Multimeter3458AControlPage = new Multimeter3458AControlPage(dataContext);
             TempControlPage = new TempControlPage(dataContext);

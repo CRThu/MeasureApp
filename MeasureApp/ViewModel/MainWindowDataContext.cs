@@ -107,46 +107,46 @@ namespace MeasureApp.ViewModel
         }
 
 
-        // MainWindow加载事件
-        public void MainWindowLoaded()
-        {
-            try
-            {
-                GpibSearchDevice();
-                SerialPortSearchDevice();
-            }
-            catch (Exception ex)
-            {
-                _ = MessageBox.Show(ex.ToString());
-            }
-        }
+        //// MainWindow加载事件
+        //public void MainWindowLoaded()
+        //{
+        //    try
+        //    {
+        //        GpibSearchDevice();
+        //        SerialPortSearchDevice();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _ = MessageBox.Show(ex.ToString());
+        //    }
+        //}
 
-        // MainWindow关闭事件
-        public void MainWindowClosed()
-        {
-            try
-            {
-                Measure3458AInstance.Dispose();
-                SerialPortsInstance.CloseAll();
-                AppConfig.Update();
-            }
-            catch (Exception ex)
-            {
-                _ = MessageBox.Show(ex.ToString());
-            }
-        }
+        //// MainWindow关闭事件
+        //public void MainWindowClosed()
+        //{
+        //    try
+        //    {
+        //        Measure3458AInstance.Dispose();
+        //        SerialPortsInstance.CloseAll();
+        //        AppConfig.Update();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _ = MessageBox.Show(ex.ToString());
+        //    }
+        //}
 
-        // 状态栏文本
-        private string statusBarText = "<NULL>";
-        public string StatusBarText
-        {
-            get => statusBarText;
-            set
-            {
-                statusBarText = value;
-                RaisePropertyChanged(() => StatusBarText);
-            }
-        }
+        //// 状态栏文本
+        //private string statusBarText = "<NULL>";
+        //public string StatusBarText
+        //{
+        //    get => statusBarText;
+        //    set
+        //    {
+        //        statusBarText = value;
+        //        RaisePropertyChanged(() => StatusBarText);
+        //    }
+        //}
 
         // 通用DataGrid自动添加行号
         public static void DataGridLoadingRowAddRowIndex(object param)
@@ -170,32 +170,32 @@ namespace MeasureApp.ViewModel
             Clipboard.SetText(param.ToString());
         }
 
-        // CommandBase
-        private CommandBase mainWindowLoadedEvent;
-        public CommandBase MainWindowLoadedEvent
-        {
-            get
-            {
-                if (mainWindowLoadedEvent == null)
-                {
-                    mainWindowLoadedEvent = new CommandBase(new Action<object>(param => MainWindowLoaded()));
-                }
-                return mainWindowLoadedEvent;
-            }
-        }
+        //// CommandBase
+        //private CommandBase mainWindowLoadedEvent;
+        //public CommandBase MainWindowLoadedEvent
+        //{
+        //    get
+        //    {
+        //        if (mainWindowLoadedEvent == null)
+        //        {
+        //            mainWindowLoadedEvent = new CommandBase(new Action<object>(param => MainWindowLoaded()));
+        //        }
+        //        return mainWindowLoadedEvent;
+        //    }
+        //}
 
-        private CommandBase mainWindowClosedEvent;
-        public CommandBase MainWindowClosedEvent
-        {
-            get
-            {
-                if (mainWindowClosedEvent == null)
-                {
-                    mainWindowClosedEvent = new CommandBase(new Action<object>(param => MainWindowClosed()));
-                }
-                return mainWindowClosedEvent;
-            }
-        }
+        //private CommandBase mainWindowClosedEvent;
+        //public CommandBase MainWindowClosedEvent
+        //{
+        //    get
+        //    {
+        //        if (mainWindowClosedEvent == null)
+        //        {
+        //            mainWindowClosedEvent = new CommandBase(new Action<object>(param => MainWindowClosed()));
+        //        }
+        //        return mainWindowClosedEvent;
+        //    }
+        //}
 
         private CommandBase dataGridLoadingRowAddRowIndexEvent;
         public CommandBase DataGridLoadingRowAddRowIndexEvent

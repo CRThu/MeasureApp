@@ -22,7 +22,7 @@ namespace MeasureApp.ViewModel
         {
             try
             {
-                MessageBox.Show("MainWindowLoaded");
+                //MessageBox.Show("MainWindowLoaded");
             }
             catch (Exception ex)
             {
@@ -35,7 +35,7 @@ namespace MeasureApp.ViewModel
         {
             try
             {
-                MessageBox.Show("MainWindowClosed");
+                //MessageBox.Show("MainWindowClosed");
             }
             catch (Exception ex)
             {

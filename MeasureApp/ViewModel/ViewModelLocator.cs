@@ -1,4 +1,5 @@
 ﻿using DryIoc;
+using MeasureApp.View;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,8 +18,11 @@ namespace MeasureApp.ViewModel
 
             // Register
             container.Register<MainWindowVM>();
+            container.Register<DeviceConnectionVM>();
         }
 
         public MainWindowVM MainWindow => container.Resolve<MainWindowVM>();
+
+        public DeviceConnectionVM DeviceConnection => container.Resolve<DeviceConnectionVM>();
     }
 }

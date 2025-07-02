@@ -6,11 +6,7 @@
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:local="clr-namespace:MeasureApp"
         xmlns:vm="clr-namespace:MeasureApp.ViewModel"
-        xmlns:vmc="clr-namespace:MeasureApp.ViewModel.Common"
-        xmlns:view="clr-namespace:MeasureApp.View.Control"
-        xmlns:webview="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
-        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-        xmlns:editor="clr-namespace:RoslynPad.Editor;assembly=RoslynPad.Editor.Windows"
+        xmlns:v="clr-namespace:MeasureApp.View"
         xmlns:hc="https://handyorg.github.io/handycontrol"
         xmlns:ad="https://github.com/Dirkster99/AvalonDock"
         DataContext="{Binding Source={StaticResource Locator},Path=MainWindow}"
@@ -18,10 +14,10 @@
         Title="MeasureApp" Height="650" Width="1200">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
-            <vmc:EventCommandBase Command="{Binding MainWindowLoaded}"/>
+            <i:InvokeCommandAction Command="{Binding MainWindowLoadedCommand}"/>
         </i:EventTrigger>
         <i:EventTrigger EventName="Closed">
-            <vmc:EventCommandBase Command="{Binding MainWindowClosed}"/>
+            <i:InvokeCommandAction Command="{Binding MainWindowClosedCommand}"/>
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <Window.Resources>
@@ -29,19 +25,19 @@
     </Window.Resources>
     <DockPanel>
         <StatusBar DockPanel.Dock="Bottom" MaxHeight="20" VerticalAlignment="Bottom">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="500"/>
-                        <ColumnDefinition Width="60"/>
-                        <ColumnDefinition Width="160"/>
-                        <ColumnDefinition Width="60"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Margin="5,0,5,0" Text="{Binding StatusBarText}"></TextBlock>
-                    <TextBlock Grid.Column="1" Margin="3,0,3,0" HorizontalAlignment="Right" Text="{Binding TaskProgressInstance.TaskProgressElapsedTime, Converter={StaticResource SecondsToTimeFormatConverter}}"></TextBlock>
-                    <ProgressBar Grid.Column="2" Margin="5,0,5,0" Minimum="{Binding TaskProgressInstance.TaskProgressStart}" Maximum="{Binding TaskProgressInstance.TaskProgressEnd}" Value="{Binding TaskProgressInstance.TaskProgressValue}"/>
-                    <TextBlock Grid.Column="3" Margin="3,0,3,0" HorizontalAlignment="Left" Text="{Binding TaskProgressInstance.TaskProgressETATime, Converter={StaticResource SecondsToTimeFormatConverter}}"></TextBlock>
-                </Grid>
-            </StatusBar>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="500"/>
+                    <ColumnDefinition Width="60"/>
+                    <ColumnDefinition Width="160"/>
+                    <ColumnDefinition Width="60"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Margin="5,0,5,0" Text="{Binding StatusBarText}"></TextBlock>
+                <TextBlock Grid.Column="1" Margin="3,0,3,0" HorizontalAlignment="Right" Text="{Binding TaskProgressInstance.TaskProgressElapsedTime, Converter={StaticResource SecondsToTimeFormatConverter}}"></TextBlock>
+                <ProgressBar Grid.Column="2" Margin="5,0,5,0" Minimum="{Binding TaskProgressInstance.TaskProgressStart}" Maximum="{Binding TaskProgressInstance.TaskProgressEnd}" Value="{Binding TaskProgressInstance.TaskProgressValue}"/>
+                <TextBlock Grid.Column="3" Margin="3,0,3,0" HorizontalAlignment="Left" Text="{Binding TaskProgressInstance.TaskProgressETATime, Converter={StaticResource SecondsToTimeFormatConverter}}"></TextBlock>
+            </Grid>
+        </StatusBar>
         <ad:DockingManager>
             <ad:DockingManager.Theme>
                 <!--<ad:Vs2013DarkTheme/>-->
@@ -60,11 +56,9 @@
                     <ad:LayoutDocumentPaneGroup DockHeight="Auto" DockWidth="Auto">
                         <ad:LayoutDocumentPane x:Name="panelTop" DockHeight="*" DockWidth="*">
                             <ad:LayoutAnchorable Title="设备连接" CanHide="False">
-                                <ad:LayoutAnchorable.Content>
-                                    <Frame Content="{Binding Pages.DevicesConnectionPage}"/>
-                                </ad:LayoutAnchorable.Content>
+                                <v:DeviceConnectionView />
                             </ad:LayoutAnchorable>
-                            <ad:LayoutAnchorable Title="设备通信调试" CanHide="False">
+                            <!--<ad:LayoutAnchorable Title="设备通信调试" CanHide="False">
                                 <ad:LayoutAnchorable.Content>
                                     <Frame Content="{Binding Pages.DeviceCommDebugPage}"/>
                                 </ad:LayoutAnchorable.Content>
@@ -123,7 +117,7 @@
                                 <ad:LayoutAnchorable.Content>
                                     <Frame Content="{Binding Pages.TestPage}"/>
                                 </ad:LayoutAnchorable.Content>
-                            </ad:LayoutAnchorable>
+                            </ad:LayoutAnchorable>-->
                         </ad:LayoutDocumentPane>
                     </ad:LayoutDocumentPaneGroup>
                 </ad:LayoutPanel>

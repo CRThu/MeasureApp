@@ -1,0 +1,221 @@
+﻿<UserControl x:Class="MeasureApp.View.DeviceConnectionView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+      xmlns:local="clr-namespace:MeasureApp.View"
+      xmlns:vm="clr-namespace:MeasureApp.ViewModel"
+      xmlns:v="clr-namespace:MeasureApp.View"
+      xmlns:c="clr-namespace:MeasureApp.View.Converter"
+      xmlns:hc="https://handyorg.github.io/handycontrol"
+      DataContext="{Binding Source={StaticResource Locator},Path=DeviceConnection}"
+      mc:Ignorable="d">
+    <UserControl.Resources>
+        <DataTemplate x:Key="SerialTemplate">
+            <Grid Margin="0,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="端口号:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                <ComboBox Grid.Row="0" Grid.Column="1"
+                          ItemsSource="{Binding AvailableSerialPorts}"
+                          SelectedItem="{Binding SelectedSerialPorts}"/>
+                <TextBlock Grid.Row="0" Grid.Column="2" Text="波特率:" VerticalAlignment="Center" Margin="10,0,10,0"/>
+                <ComboBox Grid.Row="0" Grid.Column="3"
+                          ItemsSource="{Binding SerialPortBaudRates}"
+                          SelectedItem="{Binding SelectedSerialPortBaudRate}"/>
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="数据位:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                <ComboBox Grid.Row="1" Grid.Column="1"
+                          ItemsSource="{Binding SerialPortDataBits}"
+                          SelectedItem="{Binding SelectedSerialPortDataBit}"/>
+                <TextBlock Grid.Row="1" Grid.Column="2" Text="停止位:" VerticalAlignment="Center" Margin="10,0,10,0"/>
+                <ComboBox Grid.Row="1" Grid.Column="3"
+                          ItemsSource="{Binding SerialPortStopBits}"
+                          SelectedItem="{Binding SelectedSerialPortStopBit}"/>
+            </Grid>
+        </DataTemplate>
+        <DataTemplate x:Key="UsbTemplate">
+            <Grid Margin="0,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                    <TextBlock Text="设备" Margin="0,0,0,5"/>
+                    <ComboBox ItemsSource="{Binding UsbDevices}"
+                              SelectedItem="{Binding SelectedUsbDevice}"
+                              DisplayMemberPath="Description"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                    <TextBlock Text="驱动" Margin="0,0,0,5"/>
+                    <ComboBox ItemsSource="{Binding UsbDrivers}"
+                              SelectedItem="{Binding SelectedUsbDriver}"/>
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="GpibTemplate">
+            <Grid Margin="0,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                    <TextBlock Text="设备地址" Margin="0,0,0,5"/>
+                    <ComboBox ItemsSource="{Binding GpibAddresses}"
+                              SelectedItem="{Binding SelectedGpibAddress}"
+                              DisplayMemberPath="Description"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                    <TextBlock Text="驱动" Margin="0,0,0,5"/>
+                    <ComboBox ItemsSource="{Binding GpibDrivers}"
+                              SelectedItem="{Binding SelectedGpibDriver}"/>
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
+
+        <c:BoolToStringConverter x:Key="BoolToStringConverter"/>
+        <!--<viewmodel:SerialPortsStatusTextConverter x:Key="SerialPortsStatusTextConverter"/>-->
+    </UserControl.Resources>
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- 设备与协议选择 -->
+        <StackPanel Grid.Row="0" Margin="0,10" Orientation="Vertical">
+            <StackPanel Orientation="Horizontal" Margin="0,5">
+                <TextBlock Text="设备" VerticalAlignment="Center" Margin="0,0,15,0"/>
+                <ComboBox ItemsSource="{Binding AvailableDevices}"
+                      SelectedItem="{Binding SelectedDevice}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="0,5">
+                <TextBlock Text="协议" VerticalAlignment="Center" Margin="0,0,15,0"/>
+                <ComboBox ItemsSource="{Binding AvailableProtocols}"
+                      SelectedItem="{Binding SelectedProtocol}"/>
+            </StackPanel>
+        </StackPanel>
+
+        <!-- 设备连接配置 -->
+        <GroupBox Grid.Row="1" Margin="0,10" Header="{Binding CurrentConnectionType}">
+            <StackPanel Orientation="Vertical">
+                <ContentControl Content="{Binding}" Margin="0,10">
+                    <ContentControl.Style>
+                        <Style TargetType="ContentControl">
+                            <Setter Property="ContentTemplate" Value="{StaticResource SerialTemplate}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding CurrentConnectionType}" Value="USB">
+                                    <Setter Property="ContentTemplate" Value="{StaticResource UsbTemplate}"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding CurrentConnectionType}" Value="GPIB">
+                                    <Setter Property="ContentTemplate" Value="{StaticResource GpibTemplate}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ContentControl.Style>
+                </ContentControl>
+
+                <StackPanel Margin="0,10" Orientation="Vertical">
+                    <TextBlock Text="高级" Margin="0,0,0,5"/>
+                    <hc:TextBox Text="{Binding DeviceJsonConfiguration,UpdateSourceTrigger=PropertyChanged}"
+                        AcceptsReturn="True"
+                        VerticalScrollBarVisibility="Auto"
+                        HorizontalScrollBarVisibility="Auto"
+                        FontFamily="Consolas"
+                        FontSize="12"
+                        Padding="5"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+                        <Button Content="格式化" Command="{Binding FormatJsonCommand}" Margin="0,0,10,0"/>
+                        <Button Content="更新" Command="{Binding ApplyJsonCommand}" Margin="0,0,10,0"/>
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+        </GroupBox>
+
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20">
+            <Button Content="{Binding IsSelectedDeviceConnected,
+                                Converter={StaticResource BoolToStringConverter},
+                                ConverterParameter='关闭|打开'}"
+                    Command="{Binding ConnectDeviceCommand}"/>
+        </StackPanel>
+    </Grid>
+    <!--<Grid>
+        <GroupBox Header="GPIB设备发现" HorizontalAlignment="Left" Height="166" Margin="10,10,0,0" VerticalAlignment="Top" Width="407">
+            <Grid>
+                <Button x:Name="SearchGPIBDevicesButton" Content="搜索GPIB设备" HorizontalAlignment="Left" Margin="227,60,0,0" VerticalAlignment="Top" Width="158" Height="23">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Click">
+                            <vmc:EventCommandBase Command="{Binding GpibDeviceSearchEvent}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </Button>
+                <Button x:Name="OpenGPIBDeviceButton" Content="打开GPIB设备" HorizontalAlignment="Left" Margin="227,88,0,0" VerticalAlignment="Top" Width="158" Height="23">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Click">
+                            <vmc:EventCommandBase Command="{Binding GpibDeviceOpenEvent}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </Button>
+
+                <Button x:Name="CloseGPIBDeviceButton" Content="关闭GPIB设备" HorizontalAlignment="Left" Margin="227,116,0,0" VerticalAlignment="Top" Width="158" Height="23">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Click">
+                            <vmc:EventCommandBase Command="{Binding GpibDeviceCloseEvent}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </Button>
+                <ComboBox x:Name="GpibDeviceComboBox" ItemsSource="{Binding GpibDevicesName}" SelectedValue="{Binding GpibDevicesSelectedName}" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="201" Height="23"/>
+                <TextBlock x:Name="DeviceNameLabel" Text="{Binding GpibDeviceConnectStatusText}" HorizontalAlignment="Left" Margin="227,10,0,0" VerticalAlignment="Top" Width="158" Height="23"/>
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="串口设备发现" HorizontalAlignment="Left" Height="166" Margin="422,10,0,0" VerticalAlignment="Top" Width="407">
+            <Grid>
+                <Button x:Name="SearchSerialPortButton" Content="搜索串口设备" Margin="231,0,10,0" VerticalAlignment="Center" Height="23">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Click">
+                            <vmc:EventCommandBase Command="{Binding SerialPortDeviceSearchEvent}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </Button>
+                <Button x:Name="OpenSerialPortButton" Content="打开串口设备" Margin="231,88,10,0" VerticalAlignment="Top" Height="23">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Click">
+                            <vmc:EventCommandBase Command="{Binding SerialPortDeviceOpenEvent}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </Button>
+                <Button x:Name="CloseSerialPortButton" Content="关闭串口设备" Margin="231,116,10,0" VerticalAlignment="Top" Height="23">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Click">
+                            <vmc:EventCommandBase Command="{Binding SerialPortDeviceCloseEvent}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </Button>
+                <ComboBox x:Name="SerialPortNameComboBox" ItemsSource="{Binding SerialportDevicesNameComboBoxItems}" SelectedValue="{Binding SerialportDevicesNameSelectedValue}" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="201" Height="23"/>
+                <TextBlock Text="波特率：" HorizontalAlignment="Left" Margin="10,41,0,0" Width="71" TextWrapping="Wrap" Height="18" VerticalAlignment="Top"/>
+                <ComboBox x:Name="SerialPortBaudRateComboBox" ItemsSource="{Binding SerialportDeviceBaudRateList}" Text="{Binding SerialportDeviceBaudRate}" IsEditable="True" HorizontalAlignment="Left" Margin="86,38,0,0" VerticalAlignment="Top" Width="125" Height="23"/>
+                <TextBlock Text="校验位：" HorizontalAlignment="Left" Margin="10,67,0,0" Width="71" TextWrapping="Wrap" Height="18" VerticalAlignment="Top"/>
+                <ComboBox ItemsSource="{Binding SerialportDeviceParityList}" SelectedValue="{Binding SerialportDeviceParitySelectedValue}" HorizontalAlignment="Left" Margin="86,64,0,0" VerticalAlignment="Top" Width="125" Height="23"/>
+                <TextBlock Text="数据位：" HorizontalAlignment="Left" Margin="10,92,0,0" Width="71" TextWrapping="Wrap" Height="18" VerticalAlignment="Top"/>
+                <ComboBox ItemsSource="{Binding SerialportDeviceDataBitsList}" SelectedValue="{Binding SerialportDeviceDataBitsSelectedValue}" HorizontalAlignment="Left" Margin="86,90,0,0" VerticalAlignment="Top" Width="125" Height="23"/>
+                <TextBlock Text="停止位：" HorizontalAlignment="Left" Margin="10,121,0,0" Width="71" TextWrapping="Wrap" Height="18" VerticalAlignment="Top"/>
+                <ComboBox ItemsSource="{Binding SerialportDeviceStopBitsList}" SelectedValue="{Binding SerialportDeviceStopBitsSelectedValue}" HorizontalAlignment="Left" Margin="86,118,0,0" VerticalAlignment="Top" Width="125" Height="23"/>
+                <TextBlock x:Name="SerialPortDeviceNameTextBlock" Text="{Binding SerialPortsInstance.SerialPortsDict.Values, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource SerialPortsStatusTextConverter}}" HorizontalAlignment="Left" Margin="231,10,0,0" Width="154" TextWrapping="Wrap" Height="45" VerticalAlignment="Top"/>
+            </Grid>
+        </GroupBox>
+    </Grid>-->
+</UserControl>

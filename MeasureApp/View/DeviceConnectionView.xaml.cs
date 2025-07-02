@@ -13,21 +13,16 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace MeasureApp.View.Pages
+namespace MeasureApp.View
 {
     /// <summary>
-    /// DevicesConnectPage.xaml 的交互逻辑
+    /// DeviceConnectionView.xaml 的交互逻辑
     /// </summary>
-    public partial class DevicesConnectionPage : Page
+    public partial class DeviceConnectionView : UserControl
     {
-        public DevicesConnectionPage()
+        public DeviceConnectionView()
         {
             InitializeComponent();
-        }
-
-        public DevicesConnectionPage(object dataContext) : this()
-        {
-            DataContext = dataContext;
         }
     }
 }

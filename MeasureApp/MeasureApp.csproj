@@ -99,6 +99,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Reference Include="CarrotLink.Core">
+	    <HintPath>..\..\..\..\GitHub\CarrotLink.NET\CarrotLink.Core\bin\Debug\net8.0\CarrotLink.Core.dll</HintPath>
+	    <Private>True</Private>
+	  </Reference>
 	  <Reference Include="NationalInstruments.Common">
 	    <HintPath>..\DLL\NationalInstruments\NationalInstruments.Common.dll</HintPath>
 	    <Private>True</Private>
