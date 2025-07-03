@@ -8,9 +8,9 @@
         <ResourceDictionary>
             <vm:ViewModelLocator x:Key="Locator"/>
             <ResourceDictionary.MergedDictionaries>
-                <!--<ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/SkinDefault.xaml"/>-->
+                <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/SkinDefault.xaml"/>
                 <!--<ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/SkinDark.xaml"/>-->
-                <!--<ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/Theme.xaml"/>-->
+                <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/Theme.xaml"/>
                 <!--<ResourceDictionary Source="pack://application:,,,/Mahapps.Metro;component/Styles/Controls.xaml"/>-->
                 <!--<ResourceDictionary Source="pack://application:,,,/Mahapps.Metro;component/Styles/Fonts.xaml"/>-->
                 <!--<ResourceDictionary Source="pack://application:,,,/Mahapps.Metro;component/Styles/Themes/Dark.Blue.xaml"/>-->
