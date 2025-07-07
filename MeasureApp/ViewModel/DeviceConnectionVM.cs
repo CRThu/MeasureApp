@@ -7,6 +7,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -26,6 +27,33 @@ namespace MeasureApp.ViewModel
         Serial,
         Usb,
         Gpib
+    }
+
+    public partial class DeviceConnectionInfo : ObservableObject
+    {
+        [ObservableProperty]
+        ConnectionType type;
+
+        [ObservableProperty]
+        public string name;
+
+        [ObservableProperty]
+        ProtocolType protocol;
+
+        [ObservableProperty]
+        public string config;
+
+        [ObservableProperty]
+        public long bytesReceived;
+
+        [ObservableProperty]
+        public long bytesSent;
+
+        [ObservableProperty]
+        public bool hasError;
+
+        [ObservableProperty]
+        public string errorDescription;
     }
 
     public partial class DeviceConnectionVM : BaseVM
@@ -76,6 +104,9 @@ namespace MeasureApp.ViewModel
         [ObservableProperty]
         private SerialStopBits selectedSerialPortStopBit = SerialStopBits.One;
 
+        [ObservableProperty]
+        private ObservableCollection<DeviceConnectionInfo> devicesConnectionInfo = new ObservableCollection<DeviceConnectionInfo>();
+
 
 
         [RelayCommand]
@@ -105,7 +136,17 @@ namespace MeasureApp.ViewModel
         [RelayCommand]
         private void ConnectDevice()
         {
-
+            DevicesConnectionInfo.Add(new DeviceConnectionInfo()
+            {
+                Type = ConnectionType.Serial,
+                Name = "COM999",
+                Protocol = ProtocolType.CarrotAsciiProtocol,
+                Config = "{}",
+                BytesSent = 0,
+                BytesReceived = 0,
+                HasError = false,
+                ErrorDescription = "<NULL>"
+            });
         }
     }
 }

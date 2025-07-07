@@ -15,35 +15,24 @@
         <DataTemplate x:Key="NullTemplate">
         </DataTemplate>
         <DataTemplate x:Key="SerialTemplate">
-            <Grid Margin="0,10">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="波特率:" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                <ComboBox Grid.Row="0" Grid.Column="1"
-                          ItemsSource="{Binding SerialPortBaudRates}"
-                          SelectedItem="{Binding SelectedSerialPortBaudRate}"/>
-                <TextBlock Grid.Row="0" Grid.Column="2" Text="校验位:" VerticalAlignment="Center" Margin="10,0,10,0"/>
-                <ComboBox Grid.Row="0" Grid.Column="3"
-                          ItemsSource="{Binding SerialPortParitys}"
-                          SelectedItem="{Binding SelectedSerialPortParity}"/>
-                <TextBlock Grid.Row="1" Grid.Column="0" Text="数据位:" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                <ComboBox Grid.Row="1" Grid.Column="1"
-                          ItemsSource="{Binding SerialPortDataBits}"
-                          SelectedItem="{Binding SelectedSerialPortDataBit}"/>
-                <TextBlock Grid.Row="1" Grid.Column="2" Text="停止位:" VerticalAlignment="Center" Margin="10,0,10,0"/>
-                <ComboBox Grid.Row="1" Grid.Column="3"
-                          ItemsSource="{Binding SerialPortStopBits}"
-                          SelectedItem="{Binding SelectedSerialPortStopBit}"/>
-            </Grid>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="波特率:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                <ComboBox ItemsSource="{Binding SerialPortBaudRates}"
+                          SelectedItem="{Binding SelectedSerialPortBaudRate}"
+                          Margin="0,0,15,0"/>
+                <TextBlock Text="校验位:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                <ComboBox ItemsSource="{Binding SerialPortParitys}"
+                          SelectedItem="{Binding SelectedSerialPortParity}"
+                          Margin="0,0,15,0"/>
+                <TextBlock Text="数据位:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                <ComboBox ItemsSource="{Binding SerialPortDataBits}"
+                          SelectedItem="{Binding SelectedSerialPortDataBit}"
+                          Margin="0,0,15,0"/>
+                <TextBlock Text="停止位:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                <ComboBox ItemsSource="{Binding SerialPortStopBits}"
+                          SelectedItem="{Binding SelectedSerialPortStopBit}"
+                          Margin="0,0,5,0"/>
+            </StackPanel>
         </DataTemplate>
         <DataTemplate x:Key="UsbTemplate">
             <Grid Margin="0,10">
@@ -88,25 +77,29 @@
         </DataTemplate>
 
         <c:BoolToStringConverter x:Key="BoolToStringConverter"/>
+        <c:ErrorColorConverter x:Key="ErrorColorConverter"/>
         <!--<viewmodel:SerialPortsStatusTextConverter x:Key="SerialPortsStatusTextConverter"/>-->
     </UserControl.Resources>
     <Grid Margin="10">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <!-- 设备与协议选择 -->
-        <StackPanel Grid.Row="0" Margin="0,10" Orientation="Vertical">
+        <StackPanel Grid.Row="0" Margin="0,5" Orientation="Vertical">
             <StackPanel Orientation="Horizontal" Margin="0,5">
                 <TextBlock Text="设备" VerticalAlignment="Center" Margin="0,0,15,0"/>
                 <ComboBox ItemsSource="{Binding AvailableDevices}" 
                           SelectedItem="{Binding SelectedDevice}"
-                          MinWidth="180"/>
-                <Button Content="刷新" Margin="15,0,0,0"
+                          MinWidth="180" Margin="0,0,15,0"/>
+                <Button Content="刷新" Margin="0,0,15,0"
                         Command="{Binding DeviceDiscoveryRefreshCommand}"/>
+                <Button Content="{Binding IsSelectedDeviceConnected,
+                                Converter={StaticResource BoolToStringConverter},
+                                ConverterParameter='关闭|打开'}"
+                        Command="{Binding ConnectDeviceCommand}"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="0,5">
                 <TextBlock Text="协议" VerticalAlignment="Center" Margin="0,0,15,0"/>
@@ -117,9 +110,13 @@
         </StackPanel>
 
         <!-- 设备连接配置 -->
-        <GroupBox Grid.Row="1" Margin="0,10" Header="{Binding CurrentConnectionType}" Style="{StaticResource BaseStyle}">
-            <StackPanel Orientation="Vertical">
-                <ContentControl Content="{Binding}" Margin="0,10">
+        <GroupBox Grid.Row="1" Header="{Binding CurrentConnectionType}" Style="{StaticResource BaseStyle}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <ContentControl Grid.Row="0" Content="{Binding}" Margin="0,10">
                     <ContentControl.Style>
                         <Style TargetType="ContentControl">
                             <Setter Property="ContentTemplate" Value="{StaticResource NullTemplate}"/>
@@ -138,32 +135,56 @@
                     </ContentControl.Style>
                 </ContentControl>
 
-                <StackPanel Margin="5,5" Orientation="Vertical">
-                    <TextBlock Text="高级" Margin="0,0,0,5"/>
-                    <hc:TextBox Text="{Binding DeviceJsonConfiguration,UpdateSourceTrigger=PropertyChanged}"
-                                AcceptsReturn="True"
-                                AcceptsTab="True"
+                <Grid Grid.Row="1" Margin="5,5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Text="高级" Margin="0,0,0,5"/>
+                    <hc:TextBox Grid.Row="1" Text="{Binding DeviceJsonConfiguration,UpdateSourceTrigger=PropertyChanged}"
+                                AcceptsReturn="True" AcceptsTab="True"
                                 VerticalScrollBarVisibility="Auto"
                                 HorizontalScrollBarVisibility="Auto"
                                 HorizontalContentAlignment="Left"
                                 VerticalContentAlignment="Top"
-                                FontFamily="Consolas"
-                                FontSize="12"
-                                Padding="5"
-                                MinLines="8"/>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+                                FontFamily="Consolas" FontSize="12" Padding="5"/>
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,10,0,0">
                         <Button Content="格式化" Command="{Binding FormatJsonCommand}" Margin="0,0,10,0"/>
                         <Button Content="更新" Command="{Binding ApplyJsonCommand}" Margin="0,0,10,0"/>
                     </StackPanel>
-                </StackPanel>
-            </StackPanel>
+                </Grid>
+            </Grid>
         </GroupBox>
-
-        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20">
-            <Button Content="{Binding IsSelectedDeviceConnected,
-                                Converter={StaticResource BoolToStringConverter},
-                                ConverterParameter='关闭|打开'}"
-                    Command="{Binding ConnectDeviceCommand}"/>
+        <StackPanel Grid.Row="2" Orientation="Vertical" Margin="0,10">
+            <TextBlock Text="设备连接信息"/>
+            <DataGrid ItemsSource="{Binding DevicesConnectionInfo}"
+                      hc:DataGridAttach.ShowRowNumber="True" RowHeaderWidth="60"
+                      SelectionMode="Single" IsReadOnly="True" AutoGenerateColumns="False" CanUserAddRows="False"
+                      Style="{StaticResource DataGrid.Small}" Margin="5" Height="170"
+                      ScrollViewer.VerticalScrollBarVisibility="Auto"
+                      ScrollViewer.HorizontalScrollBarVisibility="Auto">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="接口类型" Binding="{Binding Type}" Width="120"/>
+                    <DataGridTextColumn Header="设备名称" Binding="{Binding Name}" Width="120"/>
+                    <DataGridTextColumn Header="协议类型" Binding="{Binding Protocol}" Width="120"/>
+                    <DataGridTextColumn Header="设备配置" Binding="{Binding Config}" Width="*"/>
+                    <DataGridTextColumn Header="接收" Binding="{Binding BytesReceived}" Width="100"/>
+                    <DataGridTextColumn Header="发送" Binding="{Binding BytesSent}" Width="100"/>
+                    <DataGridTemplateColumn Header="错误" Width="100">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <Ellipse Width="12" Height="12" Margin="0,0,5,0"
+                                         Fill="{Binding HasError,Converter={StaticResource ErrorColorConverter}}"/>
+                                    <TextBlock Text="{Binding ErrorDescription}"
+                                               Foreground="{Binding HasError,Converter={StaticResource ErrorColorConverter}}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
         </StackPanel>
     </Grid>
     <!--<Grid>
