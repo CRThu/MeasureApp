@@ -1,10 +1,13 @@
 ﻿using CarrotLink.Core.Devices.Configuration;
+using CarrotLink.Core.Devices.Impl;
+using CarrotLink.Core.Devices.Interfaces;
 using CarrotLink.Core.Discovery;
 using CarrotLink.Core.Discovery.Models;
 using CarrotLink.Core.Protocols.Impl;
 using CarrotLink.Core.Protocols.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using MeasureApp.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -21,18 +24,10 @@ namespace MeasureApp.ViewModel
         CarrotBinaryProtocol
     }
 
-    public enum ConnectionType
-    {
-        Null,
-        Serial,
-        Usb,
-        Gpib
-    }
-
     public partial class DeviceConnectionInfo : ObservableObject
     {
         [ObservableProperty]
-        ConnectionType type;
+        DeviceType type;
 
         [ObservableProperty]
         public string name;
@@ -58,6 +53,8 @@ namespace MeasureApp.ViewModel
 
     public partial class DeviceConnectionVM : BaseVM
     {
+        private readonly AppContextManager _context;
+
         [ObservableProperty]
         private DeviceInfo[] availableDevices = Array.Empty<DeviceInfo>();
 
@@ -74,17 +71,17 @@ namespace MeasureApp.ViewModel
         private ProtocolType selectedProtocol = ProtocolType.CarrotAsciiProtocol;
 
         [ObservableProperty]
-        private ConnectionType currentConnectionType = ConnectionType.Serial;
+        private DeviceType currentConnectionType = DeviceType.Serial;
 
         [ObservableProperty]
         private string deviceJsonConfiguration = "";
+
 
         [ObservableProperty]
         private int[] serialPortBaudRates = new int[] { 9600, 38400, 115200, 921600, 1000000, 2000000, 6000000, 12000000 };
 
         [ObservableProperty]
         private int selectedSerialPortBaudRate = 115200;
-
 
         [ObservableProperty]
         private SerialParity[] serialPortParitys = Enum.GetValues<SerialParity>();
@@ -104,10 +101,14 @@ namespace MeasureApp.ViewModel
         [ObservableProperty]
         private SerialStopBits selectedSerialPortStopBit = SerialStopBits.One;
 
+
         [ObservableProperty]
         private ObservableCollection<DeviceConnectionInfo> devicesConnectionInfo = new ObservableCollection<DeviceConnectionInfo>();
 
-
+        public DeviceConnectionVM(AppContextManager context)
+        {
+            _context = context;
+        }
 
         [RelayCommand]
         private void DeviceDiscoveryRefresh()
@@ -116,9 +117,30 @@ namespace MeasureApp.ViewModel
             var service = new DeviceDiscoveryService(factory);
             var allDevices = service.DiscoverAll();
 
-            AvailableDevices = allDevices.ToArray();
+            AvailableDevices = allDevices
+                .OrderBy(d => d.Type)
+                .ThenBy(d => d.Name)
+                .ToArray();
             SelectedDevice = AvailableDevices.FirstOrDefault();
-            IsSelectedDeviceConnected = false; //TODO
+
+        }
+
+        partial void OnSelectedDeviceChanged(DeviceInfo value)
+        {
+            if (value != null)
+            {
+                CurrentConnectionType = value.Type;
+                UpdateUIConfigToJson();
+                IsSelectedDeviceConnected = DevicesConnectionInfo.Any(
+                    dev => dev.Name == SelectedDevice.Name
+                    && dev.Type == SelectedDevice.Type);
+            }
+        }
+
+        private void UpdateUIConfigToJson()
+        {
+            // TODO
+            DeviceJsonConfiguration = "{}";
         }
 
         [RelayCommand]
@@ -136,17 +158,39 @@ namespace MeasureApp.ViewModel
         [RelayCommand]
         private void ConnectDevice()
         {
-            DevicesConnectionInfo.Add(new DeviceConnectionInfo()
+            switch (CurrentConnectionType)
             {
-                Type = ConnectionType.Serial,
-                Name = "COM999",
-                Protocol = ProtocolType.CarrotAsciiProtocol,
-                Config = "{}",
-                BytesSent = 0,
-                BytesReceived = 0,
-                HasError = false,
-                ErrorDescription = "<NULL>"
-            });
+                case DeviceType.Serial:
+
+                    var config = new SerialConfiguration
+                    {
+                        DeviceId = $"{SelectedDevice.Type} | {SelectedDevice.Name}",
+                        PortName = SelectedDevice.Name,
+                        BaudRate = SelectedSerialPortBaudRate,
+                    };
+                    IDevice dev = new SerialDevice(config);
+
+                    // TODO dev
+                    break;
+                case DeviceType.Ftdi:
+                    //var config = new FtdiConfiguration
+                    //{
+                    //    DeviceId = "ftdi-1",
+                    //    SerialNumber = "FTA8EKKFA",
+                    //    Mode = FtdiCommMode.AsyncFifo,
+                    //    Model = FtdiModel.Ft2232h,
+                    //};
+                    //context.Device = new FtdiDevice(config);
+                    throw new NotImplementedException();
+                    break;
+                case DeviceType.NiVisa:
+                    throw new NotImplementedException();
+                    break;
+                default:
+                    _context.Logger.Log($"Unsupported device type: {CurrentConnectionType}", LogLevel.Error);
+                    break;
+                    //throw new NotSupportedException($"Unsupported device type: {CurrentConnectionType}");
+            }
         }
     }
 }

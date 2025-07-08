@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using DryIoc;
 using MeasureApp.Model.Common;
+using MeasureApp.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -14,8 +15,15 @@ namespace MeasureApp.ViewModel
 {
     public partial class MainWindowVM : BaseVM
     {
+        private readonly AppContextManager _context;
+
         [ObservableProperty]
         private string statusBarText= "Text from MainWindowVM";
+
+        public MainWindowVM(AppContextManager context)
+        {
+            _context = context;
+        }
 
         [RelayCommand]
         public void MainWindowLoaded()

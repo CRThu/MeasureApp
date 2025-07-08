@@ -7,9 +7,10 @@ using System.Threading.Tasks;
 
 namespace MeasureApp.Services
 {
-    public interface IAppContext
+    public class AppContextManager
     {
-        DeviceManager Devices { get; }
-        ConfigManager Configs { get; }
+        public DeviceManager Devices { get; }
+        public ConfigManager Configs { get; }
+        public AppLogService Logger { get; }
     }
 }
