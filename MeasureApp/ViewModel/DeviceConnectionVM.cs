@@ -5,8 +5,10 @@ using CarrotLink.Core.Discovery;
 using CarrotLink.Core.Discovery.Models;
 using CarrotLink.Core.Protocols.Impl;
 using CarrotLink.Core.Protocols.Models;
+using CarrotLink.Core.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using ControlzEx.Standard;
 using MeasureApp.Services;
 using System;
 using System.Collections.Generic;
@@ -161,16 +163,7 @@ namespace MeasureApp.ViewModel
             switch (CurrentConnectionType)
             {
                 case DeviceType.Serial:
-
-                    var config = new SerialConfiguration
-                    {
-                        DeviceId = $"{SelectedDevice.Type} | {SelectedDevice.Name}",
-                        PortName = SelectedDevice.Name,
-                        BaudRate = SelectedSerialPortBaudRate,
-                    };
-                    IDevice dev = new SerialDevice(config);
-
-                    // TODO dev
+                    ConnectSerialDevice();
                     break;
                 case DeviceType.Ftdi:
                     //var config = new FtdiConfiguration
@@ -191,6 +184,39 @@ namespace MeasureApp.ViewModel
                     break;
                     //throw new NotSupportedException($"Unsupported device type: {CurrentConnectionType}");
             }
+        }
+
+        private void ConnectSerialDevice()
+        {
+            var config = new SerialConfiguration
+            {
+                DeviceId = $"{SelectedDevice.Type} | {SelectedDevice.Name}",
+                PortName = SelectedDevice.Name,
+                BaudRate = SelectedSerialPortBaudRate,
+            };
+            IDevice ser = new SerialDevice(config);
+
+            IProtocol protocol;
+            switch (SelectedProtocol)
+            {
+                case ProtocolType.CarrotAsciiProtocol:
+                    protocol = new CarrotAsciiProtocol();
+                    break;
+                case ProtocolType.CarrotBinaryProtocol:
+                    protocol = new CarrotBinaryProtocol();
+                    break;
+                default:
+                    _context.Logger.Log($"Unsupported protocol type: {SelectedProtocol}", LogLevel.Error);
+                    return;
+            }
+
+            var service = DeviceService.Create()
+                .WithDevice(ser)
+                .WithProtocol(protocol)
+                //.WithLoggers()
+                .Build();
+            //Task procTask = service.StartProcessingAsync(cts.Token);
+            //Task pollTask = service.StartAutoPollingAsync(15, cts.Token);
         }
     }
 }
