@@ -26,33 +26,6 @@ namespace MeasureApp.ViewModel
         CarrotBinaryProtocol
     }
 
-    public partial class DeviceConnectionInfo : ObservableObject
-    {
-        [ObservableProperty]
-        DeviceType type;
-
-        [ObservableProperty]
-        public string name;
-
-        [ObservableProperty]
-        ProtocolType protocol;
-
-        [ObservableProperty]
-        public string config;
-
-        [ObservableProperty]
-        public long bytesReceived;
-
-        [ObservableProperty]
-        public long bytesSent;
-
-        [ObservableProperty]
-        public bool hasError;
-
-        [ObservableProperty]
-        public string errorDescription;
-    }
-
     public partial class DeviceConnectionVM : BaseVM
     {
         private readonly AppContextManager _context;
@@ -103,10 +76,6 @@ namespace MeasureApp.ViewModel
         [ObservableProperty]
         private SerialStopBits selectedSerialPortStopBit = SerialStopBits.One;
 
-
-        [ObservableProperty]
-        private ObservableCollection<DeviceConnectionInfo> devicesConnectionInfo = new ObservableCollection<DeviceConnectionInfo>();
-
         public DeviceConnectionVM(AppContextManager context)
         {
             _context = context;
@@ -133,7 +102,7 @@ namespace MeasureApp.ViewModel
             {
                 CurrentConnectionType = value.Type;
                 UpdateUIConfigToJson();
-                IsSelectedDeviceConnected = DevicesConnectionInfo.Any(
+                IsSelectedDeviceConnected = _context.Devices.Info.Any(
                     dev => dev.Name == SelectedDevice.Name
                     && dev.Type == SelectedDevice.Type);
             }
