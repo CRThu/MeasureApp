@@ -2,10 +2,13 @@
 using CarrotLink.Core.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using MeasureApp.ViewModel;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace MeasureApp.Services
 {
@@ -38,44 +41,60 @@ namespace MeasureApp.Services
         public string InternalKey => $"{Type}::{Name}";
     }
 
-    public partial class DeviceManager : ObservableObject
+    public partial class DeviceManager : ObservableObject, IDisposable
     {
         public readonly ConcurrentDictionary<string, DeviceService> _services = new ConcurrentDictionary<string, DeviceService>();
 
         [ObservableProperty]
         private ObservableCollection<ConnectionInfo> info = new ObservableCollection<ConnectionInfo>();
 
-        private readonly System.Timers.Timer _uiUpdateTimer;
+        private readonly System.Threading.Timer _backgroundTimer;
+        private readonly object _updateLock = new object();
+        private bool _disposed;
 
         public DeviceManager()
         {
-            _uiUpdateTimer = new System.Timers.Timer(100);
-            _uiUpdateTimer.Elapsed += (s, e) => UpdateUI();
-            _uiUpdateTimer.AutoReset = true;
-            _uiUpdateTimer.Start();
+            _backgroundTimer = new System.Threading.Timer(
+                callback: _ => UpdateUI(),
+                state: null,
+                dueTime: 100,
+                period: 100);
         }
 
         private void UpdateUI()
         {
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                foreach (var infoItem in Info)
-                {
-                    if (_services.TryGetValue(infoItem.InternalKey, out var service))
-                    {
-                        infoItem.BytesSent = service.TotalWriteBytes;
-                        infoItem.BytesReceived = service.TotalReadBytes;
+            if (_disposed)
+                return;
 
-                        // TODO
-                        infoItem.HasError = false;
-                        infoItem.ErrorDescription = "<NULL>";
-                    }
-                    else
+            lock (_updateLock)
+            {
+                Application.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    foreach (var infoItem in Info)
                     {
-                        // TODO
+                        if (_services.TryGetValue(infoItem.InternalKey, out var service))
+                        {
+                            try
+                            {
+                                infoItem.BytesSent = service.TotalWriteBytes;
+                                infoItem.BytesReceived = service.TotalReadBytes;
+
+                                // TODO
+                                infoItem.HasError = false;
+                                infoItem.ErrorDescription = "<NULL>";
+                            }
+                            catch (Exception ex)
+                            {
+                                // TODO
+                            }
+                        }
+                        else
+                        {
+                            // TODO
+                        }
                     }
-                }
-            });
+                }, DispatcherPriority.Background);
+            }
         }
 
         public void AddService(DeviceType type, string name, ProtocolType protocol, string config, DeviceService service)
@@ -92,9 +111,9 @@ namespace MeasureApp.Services
                 ErrorDescription = ""
             };
 
-            if (_services.TryAdd(info.InternalKey,service))
+            if (_services.TryAdd(info.InternalKey, service))
             {
-
+                Application.Current.Dispatcher.BeginInvoke(() => Info.Add(info));
             }
             else
             {
@@ -104,7 +123,55 @@ namespace MeasureApp.Services
 
         public void RemoveService(string key)
         {
-
+            if (_services.TryRemove(key, out var info))
+            {
+                var itemToRemove = Info.FirstOrDefault(i => i.InternalKey == key);
+                if (itemToRemove != null)
+                {
+                    Application.Current.Dispatcher.BeginInvoke(() => Info.Remove(itemToRemove));
+                }
+            }
+            else
+            {
+                // TODO
+            }
         }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed)
+            {
+                return;
+            }
+
+            if (disposing)
+            {
+                // 释放托管资源
+                _backgroundTimer.Dispose();
+
+                foreach (var service in _services.Values)
+                {
+                    try
+                    {
+                        service.Dispose();
+                    }
+                    catch
+                    {
+
+                    }
+                }
+            }
+            // 释放非托管资源
+
+            _disposed = true;
+        }
+
+        ~DeviceManager() => Dispose(false);
     }
 }

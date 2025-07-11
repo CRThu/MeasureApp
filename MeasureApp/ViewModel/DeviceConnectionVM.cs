@@ -29,6 +29,7 @@ namespace MeasureApp.ViewModel
     public partial class DeviceConnectionVM : BaseVM
     {
         private readonly AppContextManager _context;
+        public AppContextManager Context => _context;
 
         [ObservableProperty]
         private DeviceInfo[] availableDevices = Array.Empty<DeviceInfo>();
@@ -186,6 +187,13 @@ namespace MeasureApp.ViewModel
                 .Build();
             //Task procTask = service.StartProcessingAsync(cts.Token);
             //Task pollTask = service.StartAutoPollingAsync(15, cts.Token);
+
+            _context.Devices.AddService(
+                SelectedDevice.Type,
+                SelectedDevice.Name,
+                SelectedProtocol,
+                DeviceJsonConfiguration,
+                service);
         }
     }
 }

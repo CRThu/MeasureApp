@@ -168,7 +168,7 @@
         </GroupBox>
         <StackPanel Grid.Row="2" Orientation="Vertical" Margin="0,10">
             <TextBlock Text="设备连接信息"/>
-            <DataGrid ItemsSource="{Binding DevicesConnectionInfo}"
+            <DataGrid ItemsSource="{Binding Context.Devices.Info}"
                       hc:DataGridAttach.ShowRowNumber="True" RowHeaderWidth="60"
                       SelectionMode="Single" IsReadOnly="True" AutoGenerateColumns="False" CanUserAddRows="False"
                       Style="{StaticResource DataGrid.Small}" Margin="5" Height="170"

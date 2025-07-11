@@ -12,5 +12,12 @@ namespace MeasureApp.Services
         public DeviceManager Devices { get; }
         public ConfigManager Configs { get; }
         public AppLogService Logger { get; }
+
+        public AppContextManager(DeviceManager devices, ConfigManager configs, AppLogService logger)
+        {
+            Devices = devices;
+            Configs = configs;
+            Logger = logger;
+        }
     }
 }
