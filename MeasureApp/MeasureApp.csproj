@@ -36,20 +36,18 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="Example\**" />
 	  <Compile Remove="View\Web\**" />
+	  <EmbeddedResource Remove="Example\**" />
 	  <EmbeddedResource Remove="View\Web\**" />
+	  <None Remove="Example\**" />
 	  <None Remove="View\Web\**" />
+	  <Page Remove="Example\**" />
 	  <Page Remove="View\Web\**" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<Compile Remove="AutomationExample.cs" />
-		<Compile Remove="Example\AD7124IoutTest.cs" />
-		<Compile Remove="Example\AutomationExample.cs" />
-		<Compile Remove="Example\AutomationExample2.cs" />
-		<Compile Remove="Example\AutomationTemplate.cs" />
-		<Compile Remove="Example\PlotViewExample.cs" />
-		<Compile Remove="Example\StatusBarProgressBarExample.cs" />
 		<Compile Remove="Model\TaskRunClassDemo.cs" />
 		<Compile Remove="PlotViewExample.cs" />
 		<Compile Remove="StatusBarProgressBarExample.cs" />
@@ -57,16 +55,6 @@
 
 	<ItemGroup>
 	  <Content Include="Icon\AppIcon.ico" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<None Include="Example\AD7124IoutTest.cs" />
-		<None Include="Example\AutomationExample2.cs" />
-		<None Include="Example\AutomationExample.cs" />
-		<None Include="Example\AutomationTemplate.cs" />
-		<None Include="Example\PlotViewExample.cs" />
-		<None Include="Example\StatusBarProgressBarExample.cs" />
-		<None Include="Example\TaskRunStaticClassDemo.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
