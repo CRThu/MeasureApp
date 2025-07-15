@@ -134,7 +134,7 @@ namespace MeasureApp.ViewModel
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             bool isChecked = (bool)value;
-            return !isChecked ? null : (object)(SerialPortRecvDataTypeEnum)int.Parse(parameter.ToString());
+            return !isChecked ? null : (SerialPortRecvDataTypeEnum)int.Parse(parameter.ToString());
         }
     }
 
@@ -149,7 +149,7 @@ namespace MeasureApp.ViewModel
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             bool isChecked = (bool)value;
-            return !isChecked ? null : (object)(SerialPortRecvDataEncodeEnum)int.Parse(parameter.ToString());
+            return !isChecked ? null : (SerialPortRecvDataEncodeEnum)int.Parse(parameter.ToString());
         }
     }
 

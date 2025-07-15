@@ -9,8 +9,8 @@
 		<SatelliteResourceLanguages>zh-Hans</SatelliteResourceLanguages>
 		<ApplicationIcon>Icon\AppIcon.ico</ApplicationIcon>
 		<PlatformTarget>AnyCPU</PlatformTarget>
-		<AssemblyVersion>2.0.22.0</AssemblyVersion>
-		<FileVersion>2.0.22.0</FileVersion>
+		<AssemblyVersion>2.0.27.0</AssemblyVersion>
+		<FileVersion>2.0.27.0</FileVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -34,6 +34,13 @@
 	  <AssemblyInfoVersionType>SettingsVersion</AssemblyInfoVersionType>
 	  <InheritWinAppVersionFrom>AssemblyVersion</InheritWinAppVersionFrom>
 	</PropertyGroup>
+
+	<ItemGroup>
+	  <Compile Remove="View\Web\**" />
+	  <EmbeddedResource Remove="View\Web\**" />
+	  <None Remove="View\Web\**" />
+	  <Page Remove="View\Web\**" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<Compile Remove="AutomationExample.cs" />
@@ -107,20 +114,6 @@
 			<Generator>SettingsSingleFileGenerator</Generator>
 			<LastGenOutput>Settings.Designer.cs</LastGenOutput>
 		</None>
-		<None Update="View\Web\Chart1.html">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="View\Web\echarts.js">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="View\Web\echarts.js.map">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Model\V2\" />
-	  <Folder Include="View\Web\" />
 	</ItemGroup>
 
 	<ItemGroup>

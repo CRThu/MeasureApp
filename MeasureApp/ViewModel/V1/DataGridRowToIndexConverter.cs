@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Data;
 
-namespace MeasureApp
+namespace MeasureApp.ViewModel
 {
     public class DataGridRowToIndexConverter
     {
