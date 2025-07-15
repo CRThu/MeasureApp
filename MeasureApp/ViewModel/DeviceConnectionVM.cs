@@ -1,8 +1,10 @@
-﻿using CarrotLink.Core.Devices.Configuration;
+﻿using CarrotLink.Core.Devices;
+using CarrotLink.Core.Devices.Configuration;
 using CarrotLink.Core.Devices.Impl;
 using CarrotLink.Core.Devices.Interfaces;
 using CarrotLink.Core.Discovery;
 using CarrotLink.Core.Discovery.Models;
+using CarrotLink.Core.Protocols;
 using CarrotLink.Core.Protocols.Impl;
 using CarrotLink.Core.Protocols.Models;
 using CarrotLink.Core.Services;
@@ -17,15 +19,10 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace MeasureApp.ViewModel
 {
-    public enum ProtocolType
-    {
-        CarrotAsciiProtocol,
-        CarrotBinaryProtocol
-    }
-
     public partial class DeviceConnectionVM : BaseVM
     {
         private readonly AppContextManager _context;
@@ -35,19 +32,23 @@ namespace MeasureApp.ViewModel
         private DeviceInfo[] availableDevices = Array.Empty<DeviceInfo>();
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsSelectedDeviceConnected))]
+        [NotifyPropertyChangedFor(nameof(CurrentConnectionType))]
         private DeviceInfo selectedDevice = default;
 
-        [ObservableProperty]
-        private bool isSelectedDeviceConnected = false;
+        public bool IsSelectedDeviceConnected =>
+            _context.Devices.Info.Any(
+                dev => dev.Name == SelectedDevice.Name
+                && dev.Driver == SelectedDevice.Driver
+                && dev.Intf == SelectedDevice.Interface);
 
         [ObservableProperty]
         private ProtocolType[] availableProtocols = Enum.GetValues<ProtocolType>();
 
         [ObservableProperty]
-        private ProtocolType selectedProtocol = ProtocolType.CarrotAsciiProtocol;
+        private ProtocolType selectedProtocol = ProtocolType.CarrotAscii;
 
-        [ObservableProperty]
-        private DeviceType currentConnectionType = DeviceType.Serial;
+        public InterfaceType CurrentConnectionType => SelectedDevice != null ? SelectedDevice.Interface : InterfaceType.Serial;
 
         [ObservableProperty]
         private string deviceJsonConfiguration = "";
@@ -80,32 +81,38 @@ namespace MeasureApp.ViewModel
         public DeviceConnectionVM(AppContextManager context)
         {
             _context = context;
+            _context.Devices.Info.CollectionChanged += (s, e) => OnPropertyChanged(nameof(IsSelectedDeviceConnected));
         }
 
         [RelayCommand]
         private void DeviceDiscoveryRefresh()
         {
-            var factory = new DeviceSearcherFactory();
-            var service = new DeviceDiscoveryService(factory);
-            var allDevices = service.DiscoverAll();
+            try
+            {
+                var factory = new DeviceSearcherFactory();
+                var service = new DeviceDiscoveryService(factory);
+                var allDevices = service.DiscoverAll();
 
-            AvailableDevices = allDevices
-                .OrderBy(d => d.Type)
-                .ThenBy(d => d.Name)
-                .ToArray();
-            SelectedDevice = AvailableDevices.FirstOrDefault();
+                AvailableDevices = allDevices
+                    .OrderBy(d => d.Interface)
+                    .ThenBy(d => d.Name)
+                    .ToArray();
 
+                if (!AvailableDevices.Contains(SelectedDevice))
+                    SelectedDevice = AvailableDevices.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+                _context.Logger.Log(ex.Message, LogLevel.Error);
+            }
         }
 
         partial void OnSelectedDeviceChanged(DeviceInfo value)
         {
             if (value != null)
             {
-                CurrentConnectionType = value.Type;
                 UpdateUIConfigToJson();
-                IsSelectedDeviceConnected = _context.Devices.Info.Any(
-                    dev => dev.Name == SelectedDevice.Name
-                    && dev.Type == SelectedDevice.Type);
             }
         }
 
@@ -128,72 +135,72 @@ namespace MeasureApp.ViewModel
         }
 
         [RelayCommand]
+        private void ConnectOrDisconnectDevice(bool isOpen)
+        {
+            try
+            {
+                if (!isOpen)
+                {
+                    // Connect
+                    ConnectDevice();
+                }
+                else
+                {
+                    // Disconnect
+                    DisonnectDevice();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+                _context.Logger.Log(ex.Message, LogLevel.Error);
+            }
+        }
+
+
         private void ConnectDevice()
         {
+            IDevice dev = null;
             switch (CurrentConnectionType)
             {
-                case DeviceType.Serial:
-                    ConnectSerialDevice();
+                case InterfaceType.Serial:
+                    var config = new SerialConfiguration
+                    {
+                        DeviceId = $"{SelectedDevice.Interface} | {SelectedDevice.Name}",
+                        PortName = SelectedDevice.Name,
+                        BaudRate = SelectedSerialPortBaudRate,
+                    };
+                    dev = DeviceFactory.Create(InterfaceType.Serial, config);
                     break;
-                case DeviceType.Ftdi:
-                    //var config = new FtdiConfiguration
-                    //{
-                    //    DeviceId = "ftdi-1",
-                    //    SerialNumber = "FTA8EKKFA",
-                    //    Mode = FtdiCommMode.AsyncFifo,
-                    //    Model = FtdiModel.Ft2232h,
-                    //};
-                    //context.Device = new FtdiDevice(config);
-                    throw new NotImplementedException();
-                    break;
-                case DeviceType.NiVisa:
-                    throw new NotImplementedException();
-                    break;
+                case InterfaceType.Ftdi:
+                case InterfaceType.NiVisa:
                 default:
                     _context.Logger.Log($"Unsupported device type: {CurrentConnectionType}", LogLevel.Error);
                     break;
                     //throw new NotSupportedException($"Unsupported device type: {CurrentConnectionType}");
             }
-        }
 
-        private void ConnectSerialDevice()
-        {
-            var config = new SerialConfiguration
-            {
-                DeviceId = $"{SelectedDevice.Type} | {SelectedDevice.Name}",
-                PortName = SelectedDevice.Name,
-                BaudRate = SelectedSerialPortBaudRate,
-            };
-            IDevice ser = new SerialDevice(config);
+            // todo protocol config
+            IProtocol protocol = ProtocolFactory.Create(SelectedProtocol, null);
 
-            IProtocol protocol;
-            switch (SelectedProtocol)
-            {
-                case ProtocolType.CarrotAsciiProtocol:
-                    protocol = new CarrotAsciiProtocol();
-                    break;
-                case ProtocolType.CarrotBinaryProtocol:
-                    protocol = new CarrotBinaryProtocol();
-                    break;
-                default:
-                    _context.Logger.Log($"Unsupported protocol type: {SelectedProtocol}", LogLevel.Error);
-                    return;
-            }
-
-            var service = DeviceService.Create()
-                .WithDevice(ser)
+            var session = DeviceSession.Create()
+                .WithDevice(dev)
                 .WithProtocol(protocol)
                 //.WithLoggers()
                 .Build();
-            //Task procTask = service.StartProcessingAsync(cts.Token);
-            //Task pollTask = service.StartAutoPollingAsync(15, cts.Token);
 
             _context.Devices.AddService(
-                SelectedDevice.Type,
+                SelectedDevice.Driver,
+                SelectedDevice.Interface,
                 SelectedDevice.Name,
                 SelectedProtocol,
                 DeviceJsonConfiguration,
-                service);
+                session);
+        }
+
+        private void DisonnectDevice()
+        {
+            _context.Devices.RemoveService(ConnectionInfo.GetInternalKey(SelectedDevice.Driver, SelectedDevice.Interface, SelectedDevice.Name));
         }
     }
 }

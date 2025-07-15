@@ -1,4 +1,6 @@
-﻿using CarrotLink.Core.Discovery.Models;
+﻿using CarrotLink.Core.Devices;
+using CarrotLink.Core.Discovery.Models;
+using CarrotLink.Core.Protocols;
 using CarrotLink.Core.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using MeasureApp.ViewModel;
@@ -15,7 +17,10 @@ namespace MeasureApp.Services
     public partial class ConnectionInfo : ObservableObject
     {
         [ObservableProperty]
-        DeviceType type;
+        DriverType driver;
+
+        [ObservableProperty]
+        InterfaceType intf;
 
         [ObservableProperty]
         public string name;
@@ -38,12 +43,17 @@ namespace MeasureApp.Services
         [ObservableProperty]
         public string errorDescription;
 
-        public string InternalKey => $"{Type}::{Name}";
+        public string InternalKey => GetInternalKey(Driver, Intf, Name);
+
+        public static string GetInternalKey(DriverType driver, InterfaceType intf, string name)
+        {
+            return $"{driver}::{intf}::{name}";
+        }
     }
 
     public partial class DeviceManager : ObservableObject, IDisposable
     {
-        public readonly ConcurrentDictionary<string, DeviceService> _services = new ConcurrentDictionary<string, DeviceService>();
+        public readonly ConcurrentDictionary<string, DeviceSession> _services = new ConcurrentDictionary<string, DeviceSession>();
 
         [ObservableProperty]
         private ObservableCollection<ConnectionInfo> info = new ObservableCollection<ConnectionInfo>();
@@ -68,7 +78,7 @@ namespace MeasureApp.Services
 
             lock (_updateLock)
             {
-                Application.Current.Dispatcher.BeginInvoke(() =>
+                Application.Current?.Dispatcher.BeginInvoke(() =>
                 {
                     foreach (var infoItem in Info)
                     {
@@ -97,11 +107,12 @@ namespace MeasureApp.Services
             }
         }
 
-        public void AddService(DeviceType type, string name, ProtocolType protocol, string config, DeviceService service)
+        public void AddService(DriverType driver, InterfaceType intf, string name, ProtocolType protocol, string config, DeviceSession service)
         {
             var info = new ConnectionInfo()
             {
-                Type = type,
+                Driver = driver,
+                Intf = intf,
                 Name = name,
                 Protocol = protocol,
                 Config = config,
@@ -113,7 +124,8 @@ namespace MeasureApp.Services
 
             if (_services.TryAdd(info.InternalKey, service))
             {
-                Application.Current.Dispatcher.BeginInvoke(() => Info.Add(info));
+                //Application.Current.Dispatcher.BeginInvoke(() => Info.Add(info));
+                Application.Current.Dispatcher.Invoke(() => Info.Add(info));
             }
             else
             {
@@ -128,7 +140,8 @@ namespace MeasureApp.Services
                 var itemToRemove = Info.FirstOrDefault(i => i.InternalKey == key);
                 if (itemToRemove != null)
                 {
-                    Application.Current.Dispatcher.BeginInvoke(() => Info.Remove(itemToRemove));
+                    //Application.Current.Dispatcher.BeginInvoke(() => Info.Remove(itemToRemove));
+                    Application.Current.Dispatcher.Invoke(() => Info.Remove(itemToRemove));
                 }
             }
             else
