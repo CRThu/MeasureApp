@@ -27,10 +27,11 @@ namespace MeasureApp.ViewModel
             container.Register<AppLogService>();
         }
 
-        public MainWindowVM MainWindow => container.Resolve<MainWindowVM>();
-
-        public DeviceConnectionVM DeviceConnection => container.Resolve<DeviceConnectionVM>();
-
         public AppContextManager Context => container.Resolve<AppContextManager>();
+
+
+        public MainWindowVM MainWindow => container.Resolve<MainWindowVM>();
+        public DeviceConnectionVM DeviceConnection => container.Resolve<DeviceConnectionVM>();
+        public DeviceDebugVM DeviceDebug => container.Resolve<DeviceDebugVM>();
     }
 }

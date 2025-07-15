@@ -13,21 +13,16 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace MeasureApp.View.Pages
+namespace MeasureApp.View
 {
     /// <summary>
-    /// DeviceCommDebugPage.xaml 的交互逻辑
+    /// DeviceDebugView.xaml 的交互逻辑
     /// </summary>
-    public partial class DeviceCommDebugPage : Page
+    public partial class DeviceDebugView : UserControl
     {
-        public DeviceCommDebugPage()
+        public DeviceDebugView()
         {
             InitializeComponent();
-        }
-
-        public DeviceCommDebugPage(object dataContext) : this()
-        {
-            DataContext = dataContext;
         }
     }
 }

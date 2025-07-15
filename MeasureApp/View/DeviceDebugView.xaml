@@ -1,19 +1,20 @@
-﻿<Page x:Class="MeasureApp.View.Pages.DeviceCommDebugPage"
+﻿<UserControl x:Class="MeasureApp.View.DeviceDebugView"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:MeasureApp.View.Pages"
-      xmlns:viewmodel="clr-namespace:MeasureApp.ViewModel"
       xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-      xmlns:vmc="clr-namespace:MeasureApp.ViewModel.Common"
-      d:DataContext="{d:DesignInstance Type=viewmodel:MainWindowDataContext}"
-      mc:Ignorable="d" 
-      Title="DeviceCommDebugPage">
-    <Page.Resources>
-    </Page.Resources>
+      xmlns:local="clr-namespace:MeasureApp.View"
+      xmlns:vm="clr-namespace:MeasureApp.ViewModel"
+      xmlns:v="clr-namespace:MeasureApp.View"
+      xmlns:c="clr-namespace:MeasureApp.View.Converter"
+      xmlns:hc="https://handyorg.github.io/handycontrol"
+      DataContext="{Binding Source={StaticResource Locator},Path=DeviceDebug}"
+      mc:Ignorable="d">
+    <UserControl.Resources>
+    </UserControl.Resources>
     <Grid>
-        <GroupBox Header="GPIB调试" HorizontalAlignment="Left" Margin="10,10,0,0" Width="407">
+        <!--<GroupBox Header="GPIB调试" HorizontalAlignment="Left" Margin="10,10,0,0" Width="407">
             <Grid>
                 <TextBlock Text="Write Command" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top" Width="201"/>
                 <TextBlock Text="Read Data" HorizontalAlignment="Left" Margin="10,117,0,0" VerticalAlignment="Top" Width="201"/>
@@ -67,6 +68,6 @@
                 <TextBlock Text="Read Data" HorizontalAlignment="Left" Margin="10,117,0,0" VerticalAlignment="Top" Width="114"/>
                 <TextBlock Text="串口选择" HorizontalAlignment="Left" Margin="227,21,0,0" VerticalAlignment="Top" Width="56"/>
             </Grid>
-        </GroupBox>
+        </GroupBox>-->
     </Grid>
-</Page>
+</UserControl>

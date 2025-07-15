@@ -9,8 +9,8 @@
 		<SatelliteResourceLanguages>zh-Hans</SatelliteResourceLanguages>
 		<ApplicationIcon>Icon\AppIcon.ico</ApplicationIcon>
 		<PlatformTarget>AnyCPU</PlatformTarget>
-		<AssemblyVersion>2.0.27.0</AssemblyVersion>
-		<FileVersion>2.0.27.0</FileVersion>
+		<AssemblyVersion>2.0.32.0</AssemblyVersion>
+		<FileVersion>2.0.32.0</FileVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -51,10 +51,27 @@
 		<Compile Remove="Model\TaskRunClassDemo.cs" />
 		<Compile Remove="PlotViewExample.cs" />
 		<Compile Remove="StatusBarProgressBarExample.cs" />
+		<Compile Remove="V1\Example\AD7124IoutTest.cs" />
+		<Compile Remove="V1\Example\AutomationExample.cs" />
+		<Compile Remove="V1\Example\AutomationExample2.cs" />
+		<Compile Remove="V1\Example\AutomationTemplate.cs" />
+		<Compile Remove="V1\Example\PlotViewExample.cs" />
+		<Compile Remove="V1\Example\StatusBarProgressBarExample.cs" />
+		<Compile Remove="V1\Example\TaskRunStaticClassDemo.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <Content Include="Icon\AppIcon.ico" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="V1\Example\AD7124IoutTest.cs" />
+	  <None Include="V1\Example\AutomationExample.cs" />
+	  <None Include="V1\Example\AutomationExample2.cs" />
+	  <None Include="V1\Example\AutomationTemplate.cs" />
+	  <None Include="V1\Example\PlotViewExample.cs" />
+	  <None Include="V1\Example\StatusBarProgressBarExample.cs" />
+	  <None Include="V1\Example\TaskRunStaticClassDemo.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
