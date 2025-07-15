@@ -18,7 +18,7 @@ namespace MeasureApp.ViewModel
         private readonly AppContextManager _context;
 
         [ObservableProperty]
-        private string statusBarText= "Text from MainWindowVM";
+        private string statusBarText = "Text from MainWindowVM";
 
         public MainWindowVM(AppContextManager context)
         {
@@ -43,6 +43,7 @@ namespace MeasureApp.ViewModel
         {
             try
             {
+                _context?.Dispose();
                 //MessageBox.Show("MainWindowClosed");
             }
             catch (Exception ex)

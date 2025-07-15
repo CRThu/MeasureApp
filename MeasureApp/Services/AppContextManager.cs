@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MeasureApp.Services
 {
-    public class AppContextManager
+    public class AppContextManager : IDisposable
     {
         public DeviceManager Devices { get; }
         public ConfigManager Configs { get; }
@@ -18,6 +18,11 @@ namespace MeasureApp.Services
             Devices = devices;
             Configs = configs;
             Logger = logger;
+        }
+
+        public void Dispose()
+        {
+            Devices?.Dispose();
         }
     }
 }
