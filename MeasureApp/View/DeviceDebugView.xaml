@@ -14,6 +14,65 @@
     <UserControl.Resources>
     </UserControl.Resources>
     <Grid>
+        <StackPanel Orientation="Vertical">
+            <StackPanel Orientation="Horizontal" Margin="5,5,5,5">
+                <TextBlock Text="设备" Margin="10,0,10,0" VerticalAlignment="Center"/>
+                <ComboBox ItemsSource="{Binding Context.Devices.Info}" DisplayMemberPath="Name" Margin="10,0,10,0" MinWidth="200"/>
+            </StackPanel>
+            <Grid Margin="5,5,5,5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10,10,10,10">
+                        <TextBlock Text="指令" VerticalAlignment="Center" Margin="10,0,10,0"/>
+                        <TextBox Text="TEST" MinWidth="200" Margin="10,0,10,0"/>
+                        <Button Content="发送" Margin="10,0,10,0"/>
+                    </StackPanel>
+                    <Grid Grid.Row="1" IsEnabled="False" ShowGridLines="True" Margin="10,10,10,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="80"/>
+                            <ColumnDefinition Width="80"/>
+                            <ColumnDefinition Width="80"/>
+                            <ColumnDefinition Width="80"/>
+                            <ColumnDefinition Width="80"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="40"/>
+                            <RowDefinition Height="40"/>
+                            <RowDefinition Height="40"/>
+                            <RowDefinition Height="40"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="REG.WR" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        <TextBox Grid.Row="0" Grid.Column="1" Text="*" Margin="5,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+                        <TextBox Grid.Row="0" Grid.Column="2" Text="*" Margin="5,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+                        <Button Grid.Row="0" Grid.Column="4" Content="发送" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="REG.RD" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        <TextBox Grid.Row="1" Grid.Column="1" Text="*" Margin="5,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+                        <Button Grid.Row="1" Grid.Column="4" Content="发送" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="REG.BITS.WR" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        <TextBox Grid.Row="2" Grid.Column="1" Text="*" Margin="5,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+                        <TextBox Grid.Row="2" Grid.Column="2" Text="*" Margin="5,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+                        <TextBox Grid.Row="2" Grid.Column="3" Text="*" Margin="5,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+                        <Button Grid.Row="2" Grid.Column="4" Content="发送" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="REG.BITS.RD" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        <TextBox Grid.Row="3" Grid.Column="1" Text="*" Margin="5,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+                        <TextBox Grid.Row="3" Grid.Column="2" Text="*" Margin="5,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+                        <Button Grid.Row="3" Grid.Column="4" Content="发送" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    </Grid>
+                </Grid>
+                <Grid Grid.Column="1">
+                    <DataGrid Margin="5,5,5,5"/>
+                </Grid>
+            </Grid>
+        </StackPanel>
         <!--<GroupBox Header="GPIB调试" HorizontalAlignment="Left" Margin="10,10,0,0" Width="407">
             <Grid>
                 <TextBlock Text="Write Command" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top" Width="201"/>

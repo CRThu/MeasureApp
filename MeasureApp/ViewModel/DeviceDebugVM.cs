@@ -16,6 +16,7 @@ namespace MeasureApp.ViewModel
     public partial class DeviceDebugVM : BaseVM
     {
         private readonly AppContextManager _context;
+        public AppContextManager Context => _context;
 
         [ObservableProperty]
         private string text = "Text from VM";

@@ -20,6 +20,7 @@ namespace MeasureApp.ViewModel
             // Register
             container.Register<MainWindowVM>();
             container.Register<DeviceConnectionVM>();
+            container.Register<DeviceDebugVM>();
 
             container.Register<AppContextManager>(Reuse.Singleton);
             container.Register<DeviceManager>(Reuse.Singleton);
