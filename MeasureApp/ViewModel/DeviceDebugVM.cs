@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CarrotLink.Core.Services;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DryIoc;
 using MeasureApp.Model.Common;
@@ -19,7 +20,10 @@ namespace MeasureApp.ViewModel
         public AppContextManager Context => _context;
 
         [ObservableProperty]
-        private string text = "Text from VM";
+        private ConnectionInfo selectedDevice;
+
+        [ObservableProperty]
+        private string commandPacketText = "OPEN;";
 
         public DeviceDebugVM(AppContextManager context)
         {
@@ -27,10 +31,14 @@ namespace MeasureApp.ViewModel
         }
 
         [RelayCommand]
-        public void Test()
+        public void SendCommandPacket()
         {
             try
             {
+                if (SelectedDevice != null)
+                {
+                    Context.Devices[SelectedDevice.InternalKey].SendAscii(CommandPacketText);
+                }
             }
             catch (Exception ex)
             {

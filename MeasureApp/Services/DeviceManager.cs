@@ -62,6 +62,8 @@ namespace MeasureApp.Services
         private readonly object _updateLock = new object();
         private bool _disposed;
 
+        public DeviceSession this[string key] => _services[key];
+
         public DeviceManager()
         {
             _backgroundTimer = new System.Threading.Timer(

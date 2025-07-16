@@ -104,7 +104,7 @@ namespace MeasureApp.ViewModel
             catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
-                _context.Logger.Log(ex.Message, LogLevel.Error);
+                _context.AppLogger.Log(ex.Message, LogLevel.Error);
             }
         }
 
@@ -153,7 +153,7 @@ namespace MeasureApp.ViewModel
             catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
-                _context.Logger.Log(ex.Message, LogLevel.Error);
+                _context.AppLogger.Log(ex.Message, LogLevel.Error);
             }
         }
 
@@ -175,7 +175,7 @@ namespace MeasureApp.ViewModel
                 case InterfaceType.Ftdi:
                 case InterfaceType.NiVisa:
                 default:
-                    _context.Logger.Log($"Unsupported device type: {CurrentConnectionType}", LogLevel.Error);
+                    _context.AppLogger.Log($"Unsupported device type: {CurrentConnectionType}", LogLevel.Error);
                     break;
                     //throw new NotSupportedException($"Unsupported device type: {CurrentConnectionType}");
             }
@@ -186,7 +186,7 @@ namespace MeasureApp.ViewModel
             var session = DeviceSession.Create()
                 .WithDevice(dev)
                 .WithProtocol(protocol)
-                //.WithLoggers()
+                .WithLogger(Context.SessionLogger)
                 .Build();
 
             _context.Devices.AddService(

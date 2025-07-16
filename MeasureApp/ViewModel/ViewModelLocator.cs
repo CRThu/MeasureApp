@@ -25,7 +25,8 @@ namespace MeasureApp.ViewModel
             container.Register<AppContextManager>(Reuse.Singleton);
             container.Register<DeviceManager>(Reuse.Singleton);
             container.Register<ConfigManager>(Reuse.Singleton);
-            container.Register<AppLogService>();
+            container.Register<AppLogService>(Reuse.Singleton);
+            container.Register<SessionLogService>(Reuse.Singleton);
         }
 
         public AppContextManager Context => container.Resolve<AppContextManager>();
