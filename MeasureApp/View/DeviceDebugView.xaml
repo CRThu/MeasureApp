@@ -72,10 +72,10 @@
                     <DataGrid ItemsSource="{Binding Context.SessionLogger.Logs}"
                       hc:DataGridAttach.ShowRowNumber="True" RowHeaderWidth="60"
                       SelectionMode="Single" IsReadOnly="True" AutoGenerateColumns="False" CanUserAddRows="False"
-                      Style="{StaticResource DataGrid.Small}" Margin="5,5,5,5"  Height="170"
+                      Style="{StaticResource DataGrid.Small}" Margin="5,5,5,5" Height="300"
                       ScrollViewer.VerticalScrollBarVisibility="Auto">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="时间" Binding="{Binding TimeStamp}" Width="120"/>
+                            <DataGridTextColumn Header="时间" Binding="{Binding TimeStamp,StringFormat='yyyy-MM-dd HH:mm:ss.fff'}" Width="120"/>
                             <DataGridTextColumn Header="发送设备" Binding="{Binding Sender}" Width="120"/>
                             <DataGridTextColumn Header="消息" Binding="{Binding Message}" Width="*"/>
                         </DataGrid.Columns>

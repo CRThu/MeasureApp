@@ -7,7 +7,7 @@ using CarrotLink.Core.Discovery.Models;
 using CarrotLink.Core.Protocols;
 using CarrotLink.Core.Protocols.Impl;
 using CarrotLink.Core.Protocols.Models;
-using CarrotLink.Core.Services;
+using CarrotLink.Core.Session;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ControlzEx.Standard;
@@ -171,6 +171,7 @@ namespace MeasureApp.ViewModel
                         BaudRate = SelectedSerialPortBaudRate,
                     };
                     dev = DeviceFactory.Create(InterfaceType.Serial, config);
+                    dev.Connect();
                     break;
                 case InterfaceType.Ftdi:
                 case InterfaceType.NiVisa:
@@ -179,6 +180,8 @@ namespace MeasureApp.ViewModel
                     break;
                     //throw new NotSupportedException($"Unsupported device type: {CurrentConnectionType}");
             }
+
+            dev.Connect();
 
             // todo protocol config
             IProtocol protocol = ProtocolFactory.Create(SelectedProtocol, null);
@@ -200,7 +203,11 @@ namespace MeasureApp.ViewModel
 
         private void DisonnectDevice()
         {
-            _context.Devices.RemoveService(ConnectionInfo.GetInternalKey(SelectedDevice.Driver, SelectedDevice.Interface, SelectedDevice.Name));
+            string key = ConnectionInfo.GetInternalKey(SelectedDevice.Driver, SelectedDevice.Interface, SelectedDevice.Name);
+            _context.Devices[key].Device.Disconnect();
+            _context.Devices[key].Device.Dispose();
+            _context.Devices[key].Dispose();
+            _context.Devices.RemoveService(key);
         }
     }
 }

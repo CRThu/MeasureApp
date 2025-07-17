@@ -1,7 +1,7 @@
 ﻿using CarrotLink.Core.Devices;
 using CarrotLink.Core.Discovery.Models;
 using CarrotLink.Core.Protocols;
-using CarrotLink.Core.Services;
+using CarrotLink.Core.Session;
 using CommunityToolkit.Mvvm.ComponentModel;
 using MeasureApp.ViewModel;
 using System;
