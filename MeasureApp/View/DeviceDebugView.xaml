@@ -31,6 +31,7 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
+                    <!--TODO 预设指令-->
                     <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10,10,10,10">
                         <TextBlock Text="指令" VerticalAlignment="Center" Margin="10,0,10,0"/>
                         <TextBox Text="{Binding CommandPacketText}" MinWidth="200" Margin="10,0,10,0"/>
@@ -69,13 +70,15 @@
                     </Grid>
                 </Grid>
                 <Grid Grid.Column="1">
-                    <DataGrid ItemsSource="{Binding Context.SessionLogger.Logs}"
+                    <!--TODO 删除Log-->
+                    <!--TODO 导出Log-->
+                    <DataGrid ItemsSource="{Binding Context.CommandLogger.Logs}"
                       hc:DataGridAttach.ShowRowNumber="True" RowHeaderWidth="60"
                       SelectionMode="Single" IsReadOnly="True" AutoGenerateColumns="False" CanUserAddRows="False"
                       Style="{StaticResource DataGrid.Small}" Margin="5,5,5,5" Height="300"
                       ScrollViewer.VerticalScrollBarVisibility="Auto">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="时间" Binding="{Binding TimeStamp,StringFormat='yyyy-MM-dd HH:mm:ss.fff'}" Width="120"/>
+                            <DataGridTextColumn Header="时间" Binding="{Binding TimeStamp,StringFormat='{}{0:yyyy-MM-dd HH:mm:ss.fff}'}" Width="120"/>
                             <DataGridTextColumn Header="发送设备" Binding="{Binding Sender}" Width="120"/>
                             <DataGridTextColumn Header="消息" Binding="{Binding Message}" Width="*"/>
                         </DataGrid.Columns>

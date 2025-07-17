@@ -189,7 +189,7 @@ namespace MeasureApp.ViewModel
             var session = DeviceSession.Create()
                 .WithDevice(dev)
                 .WithProtocol(protocol)
-                .WithLogger(Context.SessionLogger)
+                .WithLogger(Context.CommandLogger)
                 .Build();
 
             _context.Devices.AddService(

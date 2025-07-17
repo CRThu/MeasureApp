@@ -53,7 +53,7 @@ namespace MeasureApp.Services
 
     public partial class DeviceManager : ObservableObject, IDisposable
     {
-        public readonly ConcurrentDictionary<string, DeviceSession> _services = new ConcurrentDictionary<string, DeviceSession>();
+        public readonly ConcurrentDictionary<string, DeviceSession> _sessions = new ConcurrentDictionary<string, DeviceSession>();
 
         [ObservableProperty]
         private ObservableCollection<ConnectionInfo> info = new ObservableCollection<ConnectionInfo>();
@@ -62,7 +62,7 @@ namespace MeasureApp.Services
         private readonly object _updateLock = new object();
         private bool _disposed;
 
-        public DeviceSession this[string key] => _services[key];
+        public DeviceSession this[string key] => _sessions[key];
 
         public DeviceManager()
         {
@@ -84,12 +84,12 @@ namespace MeasureApp.Services
                 {
                     foreach (var infoItem in Info)
                     {
-                        if (_services.TryGetValue(infoItem.InternalKey, out var service))
+                        if (_sessions.TryGetValue(infoItem.InternalKey, out var session))
                         {
                             try
                             {
-                                infoItem.BytesSent = service.TotalWriteBytes;
-                                infoItem.BytesReceived = service.TotalReadBytes;
+                                infoItem.BytesSent = session.TotalWriteBytes;
+                                infoItem.BytesReceived = session.TotalReadBytes;
 
                                 // TODO
                                 infoItem.HasError = false;
@@ -124,7 +124,7 @@ namespace MeasureApp.Services
                 ErrorDescription = ""
             };
 
-            if (_services.TryAdd(info.InternalKey, service))
+            if (_sessions.TryAdd(info.InternalKey, service))
             {
                 //Application.Current.Dispatcher.BeginInvoke(() => Info.Add(info));
                 Application.Current.Dispatcher.Invoke(() => Info.Add(info));
@@ -137,7 +137,7 @@ namespace MeasureApp.Services
 
         public void RemoveService(string key)
         {
-            if (_services.TryRemove(key, out var info))
+            if (_sessions.TryRemove(key, out var info))
             {
                 var itemToRemove = Info.FirstOrDefault(i => i.InternalKey == key);
                 if (itemToRemove != null)
@@ -170,7 +170,7 @@ namespace MeasureApp.Services
                 // 释放托管资源
                 _backgroundTimer.Dispose();
 
-                foreach (var service in _services.Values)
+                foreach (var service in _sessions.Values)
                 {
                     try
                     {

@@ -12,7 +12,7 @@ using System.Windows.Threading;
 
 namespace MeasureApp.Services
 {
-    public record SessionLogEntry
+    public record CommandLogEntry
     {
         public DateTime TimeStamp { get; init; }
         public string Sender { get; init; }
@@ -24,10 +24,12 @@ namespace MeasureApp.Services
         }
     }
 
-    public partial class SessionLogService : ObservableObject, IPacketLogger
+    public partial class CommandLogService : ObservableObject, IPacketLogger
     {
+        // TODO 性能优化
+
         [ObservableProperty]
-        private ObservableCollection<SessionLogEntry> logs = new ObservableCollection<SessionLogEntry>();
+        private ObservableCollection<CommandLogEntry> logs = new ObservableCollection<CommandLogEntry>();
 
         public void Dispose()
         {
@@ -36,7 +38,7 @@ namespace MeasureApp.Services
 
         public void HandlePacket(IPacket packet)
         {
-            SessionLogEntry logEntry = new SessionLogEntry()
+            CommandLogEntry logEntry = new CommandLogEntry()
             {
                 TimeStamp = DateTime.Now,
                 Sender = "<sender>",
