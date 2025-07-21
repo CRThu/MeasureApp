@@ -61,6 +61,11 @@
                             <ad:LayoutAnchorable Title="设备通信调试" CanHide="False">
                                 <v:DeviceDebugView Margin="10,10,10,10"/>
                             </ad:LayoutAnchorable>
+                            <ad:LayoutAnchorable Title="可视化" CanHide="False">
+                                <ad:LayoutAnchorable.Content>
+                                    <v:DataMonitorView Margin="10,10,10,10"/>
+                                </ad:LayoutAnchorable.Content>
+                            </ad:LayoutAnchorable>
                             <!--<ad:LayoutAnchorable Title="3458A万用表控制" CanHide="False">
                                 <ad:LayoutAnchorable.Content>
                                     <Frame Content="{Binding Pages.Multimeter3458AControlPage}"/>
@@ -79,11 +84,6 @@
                             <ad:LayoutAnchorable Title="串口数据包通信" CanHide="False">
                                 <ad:LayoutAnchorable.Content>
                                     <Frame Content="{Binding Pages.SerialPortPacketPage}"/>
-                                </ad:LayoutAnchorable.Content>
-                            </ad:LayoutAnchorable>
-                            <ad:LayoutAnchorable Title="可视化" CanHide="False">
-                                <ad:LayoutAnchorable.Content>
-                                    <Frame Content="{Binding Pages.DataStorageVisualizationPage}"/>
                                 </ad:LayoutAnchorable.Content>
                             </ad:LayoutAnchorable>
                             <ad:LayoutAnchorable Title="自动化" CanHide="False">

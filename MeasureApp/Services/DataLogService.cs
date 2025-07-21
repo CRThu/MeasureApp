@@ -93,7 +93,7 @@ namespace MeasureApp.Services
     public partial class DataLogList : ObservableObject, IDisposable
     {
         private readonly ConcurrentQueue<DataLogValue> _quene = new ConcurrentQueue<DataLogValue>();
-        private readonly DispatcherTimer _timer;
+        private DispatcherTimer _timer;
         private bool _disposed = false;
 
         public readonly List<DataLogValue> items = new List<DataLogValue>();
@@ -101,10 +101,13 @@ namespace MeasureApp.Services
 
         public DataLogList()
         {
-            _timer = new DispatcherTimer();
-            _timer.Interval = TimeSpan.FromMicroseconds(100);
-            _timer.Tick += ProcessQuene;
-            _timer.Start();
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                _timer = new DispatcherTimer();
+                _timer.Interval = TimeSpan.FromMicroseconds(100);
+                _timer.Tick += ProcessQuene;
+                _timer.Start();
+            });
         }
 
         private void ProcessQuene(object sender, EventArgs e)
@@ -161,29 +164,76 @@ namespace MeasureApp.Services
         private readonly ConcurrentDictionary<string, DataLogList> logs = new ConcurrentDictionary<string, DataLogList>();
         private bool _disposed = false;
 
-        public IEnumerable<string> Keys => logs.Keys;
+        //public IEnumerable<string> Keys => logs.Keys;
+        [ObservableProperty]
+        private ObservableCollection<string> keys = new ObservableCollection<string>();
+        private readonly object _keysLock = new object();
 
-        public DataLogList this[string key] => logs.GetOrAdd(key, vf =>
-        {
-            var l = new DataLogList();
-            // notifty when update key
-            OnPropertyChanged(nameof(Keys));
-            return l;
-        });
+        public bool Contains(string key) => logs.ContainsKey(key);
 
-        public void Add<T>(string key, T value)
-        {
-            this[key].Add<T>(value);
-        }
+        public DataLogList this[string key] => GetOrAddKey(key);
 
-        public void AddRange<T>(string key, IEnumerable<T> value)
+        public DataLogList GetOrAddKey(string key)
         {
-            this[key].AddRange<T>(value);
+            if (logs.TryGetValue(key, out var v1))
+            {
+                return v1;
+            }
+
+            lock (_keysLock)
+            {
+                if (logs.TryGetValue(key, out var v2))
+                {
+                    return v2;
+                }
+
+                if (logs.TryAdd(key, new DataLogList()))
+                {
+                    Application.Current.Dispatcher.Invoke(() => Keys.Add(key));
+                    // notify when update key
+                    //OnPropertyChanged(nameof(Keys));
+                }
+            }
+            return logs[key];
         }
 
         public void RemoveKey(string key)
         {
-            logs.TryRemove
+            lock (_keysLock)
+            {
+                if (logs.TryRemove(key, out var l))
+                {
+                    l.Dispose();
+                    Application.Current.Dispatcher.Invoke(() => Keys.Remove(key));
+                    // notify when remove key
+                    //OnPropertyChanged(nameof(Keys));
+                }
+            }
+        }
+
+        public void Clear()
+        {
+            lock (_keysLock)
+            {
+                foreach (var log in logs.Values)
+                {
+                    log.Dispose();
+                }
+                logs.Clear();
+                Application.Current.Dispatcher.Invoke(() => Keys.Clear());
+                // notify when remove key
+                //OnPropertyChanged(nameof(Keys));
+            }
+        }
+
+        public void Add<T>(string key, T value)
+        {
+            GetOrAddKey(key).Add<T>(value);
+        }
+
+        public void AddRange<T>(string key, IEnumerable<T> value)
+        {
+            GetOrAddKey(key).AddRange<T>(value);
         }
 
         public void HandlePacket(IPacket packet)
@@ -195,11 +245,10 @@ namespace MeasureApp.Services
                 {
                     // TODO datatype and key with sender
                     var vals = pkt.GetValues<UInt64>(channel);
-                    this[channel.ToString()].AddRange(vals);
+                    GetOrAddKey(channel.ToString()).AddRange(vals);
                 }
             }
         }
-
 
         public void Dispose()
         {

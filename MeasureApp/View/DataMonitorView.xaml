@@ -1,0 +1,69 @@
+﻿<UserControl x:Class="MeasureApp.View.DataMonitorView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MeasureApp.View"
+             xmlns:vm="clr-namespace:MeasureApp.ViewModel"
+             xmlns:v="clr-namespace:MeasureApp.View"
+             xmlns:c="clr-namespace:MeasureApp.View.Converter"
+             xmlns:hc="https://handyorg.github.io/handycontrol"
+             DataContext="{Binding Source={StaticResource Locator},Path=DataMonitor}"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="3*"/>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Margin="10,5,10,5">
+                <Run Text="数据键列表("/>
+                <Run Text="{Binding Context.DataLogger.Keys.Count,Mode=OneWay}"/>
+                <Run Text="项)"/>
+            </TextBlock>
+            <ListBox Grid.Row="1"
+                     ItemsSource="{Binding Context.DataLogger.Keys}"
+                     SelectedItem="{Binding SelectedKey}"
+                     Height="350" Margin="10,0,10,0"
+                     VirtualizingPanel.IsVirtualizing="True"
+                     VirtualizingPanel.VirtualizationMode="Recycling"
+                     ScrollViewer.CanContentScroll="True"/>
+            <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="10,10,10,10">
+                <TextBlock Text="新增" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                <TextBox Text="{Binding AddKeyText}" MinWidth="150" Margin="5,0,0,0" Width="141"/>
+                <Button Content="+" Command="{Binding AddKeyCommand}" Margin="5,0,0,0"/>
+            </StackPanel>
+            <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="10,10,10,10">
+                <TextBlock Text="删除" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                <Button Content="选中键" Command="{Binding RemoveSelectedKeyCommand}" Margin="5,0,0,0"/>
+                <Button Content="所有键" Command="{Binding RemoveAllKeysCommand}" Margin="5,0,0,0"/>
+            </StackPanel>
+            <StackPanel Grid.Row="4" Orientation="Horizontal" Margin="10,10,10,10">
+                <TextBlock Text="测试" VerticalAlignment="Center" Margin="10,0,10,0"/>
+                <Button Content="T:D+1" Command="{Binding DataTestCommand}" CommandParameter="D+1" Margin="5,0,0,0"/>
+                <Button Content="T:D+1M" Command="{Binding DataTestCommand}" CommandParameter="D+1M" Margin="5,0,0,0"/>
+                <Button Content="T:K+1" Command="{Binding DataTestCommand}" CommandParameter="K+1" Margin="5,0,0,0"/>
+                <Button Content="T:K+1K" Command="{Binding DataTestCommand}" CommandParameter="K+1K" Margin="5,0,0,0"/>
+            </StackPanel>
+        </Grid>
+        <DataGrid Grid.Column="1" ItemsSource="{Binding SelectedData.Items}"
+          hc:DataGridAttach.ShowRowNumber="True" RowHeaderWidth="60"
+          SelectionMode="Single" IsReadOnly="True" AutoGenerateColumns="False" CanUserAddRows="False"
+          Style="{StaticResource DataGrid.Small}" Margin="5,10,5,10"
+          ScrollViewer.VerticalScrollBarVisibility="Auto">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Data" Binding="{Binding .}" Width="120"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

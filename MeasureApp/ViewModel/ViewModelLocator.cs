@@ -21,12 +21,14 @@ namespace MeasureApp.ViewModel
             container.Register<MainWindowVM>();
             container.Register<DeviceConnectionVM>();
             container.Register<DeviceDebugVM>();
+            container.Register<DataMonitorVM>();
 
             container.Register<AppContextManager>(Reuse.Singleton);
             container.Register<DeviceManager>(Reuse.Singleton);
             container.Register<ConfigManager>(Reuse.Singleton);
             container.Register<AppLogService>(Reuse.Singleton);
             container.Register<CommandLogService>(Reuse.Singleton);
+            container.Register<DataLogService>(Reuse.Singleton);
         }
 
         public AppContextManager Context => container.Resolve<AppContextManager>();
@@ -35,5 +37,6 @@ namespace MeasureApp.ViewModel
         public MainWindowVM MainWindow => container.Resolve<MainWindowVM>();
         public DeviceConnectionVM DeviceConnection => container.Resolve<DeviceConnectionVM>();
         public DeviceDebugVM DeviceDebug => container.Resolve<DeviceDebugVM>();
+        public DataMonitorVM DataMonitor => container.Resolve<DataMonitorVM>();
     }
 }

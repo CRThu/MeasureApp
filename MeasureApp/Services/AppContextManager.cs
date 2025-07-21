@@ -13,13 +13,15 @@ namespace MeasureApp.Services
         public ConfigManager Configs { get; }
         public AppLogService AppLogger { get; }
         public CommandLogService CommandLogger { get; }
+        public DataLogService DataLogger { get; }
 
-        public AppContextManager(DeviceManager devices, ConfigManager configs, AppLogService appLogger, CommandLogService commandLogger)
+        public AppContextManager(DeviceManager devices, ConfigManager configs, AppLogService appLogger, CommandLogService commandLogger, DataLogService dataLogger)
         {
             Devices = devices;
             Configs = configs;
             AppLogger = appLogger;
             CommandLogger = commandLogger;
+            DataLogger = dataLogger;
         }
 
         public void Dispose()
