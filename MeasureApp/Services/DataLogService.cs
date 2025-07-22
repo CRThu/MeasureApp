@@ -92,12 +92,20 @@ namespace MeasureApp.Services
 
     public partial class DataLogList : ObservableObject, IDisposable
     {
-        private static readonly Lazy<DispatcherTimer> _sharedTimer = new Lazy<DispatcherTimer>(() =>
+        //private static readonly Lazy<DispatcherTimer> _sharedTimer = new Lazy<DispatcherTimer>(() =>
+        //{
+        //    var timer = new DispatcherTimer();
+        //    timer.Interval = TimeSpan.FromMicroseconds(100);
+        //    timer.Tick += SharedTimer_Tick;
+        //    Application.Current.Dispatcher.Invoke(() => timer.Start());
+        //    return timer;
+        //}, LazyThreadSafetyMode.ExecutionAndPublication);
+        private static readonly Lazy<System.Timers.Timer> _sharedTimer = new Lazy<System.Timers.Timer>(() =>
         {
-            var timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromMicroseconds(100);
-            timer.Tick += SharedTimer_Tick;
-            Application.Current.Dispatcher.Invoke(() => timer.Start());
+            var timer = new System.Timers.Timer(100);
+            timer.Elapsed += SharedTimer_Tick;
+            timer.AutoReset = true;
+            timer.Start();
             return timer;
         }, LazyThreadSafetyMode.ExecutionAndPublication);
 
