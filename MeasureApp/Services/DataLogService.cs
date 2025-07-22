@@ -92,8 +92,18 @@ namespace MeasureApp.Services
 
     public partial class DataLogList : ObservableObject, IDisposable
     {
+        private static readonly Lazy<DispatcherTimer> _sharedTimer = new Lazy<DispatcherTimer>(() =>
+        {
+            var timer = new DispatcherTimer();
+            timer.Interval = TimeSpan.FromMicroseconds(100);
+            timer.Tick += SharedTimer_Tick;
+            Application.Current.Dispatcher.Invoke(() => timer.Start());
+            return timer;
+        }, LazyThreadSafetyMode.ExecutionAndPublication);
+
+        private static readonly ConcurrentBag<WeakReference<DataLogList>> _activeInstances = new ConcurrentBag<WeakReference<DataLogList>>();
+
         private readonly ConcurrentQueue<DataLogValue> _quene = new ConcurrentQueue<DataLogValue>();
-        private DispatcherTimer _timer;
         private bool _disposed = false;
 
         public readonly List<DataLogValue> items = new List<DataLogValue>();
@@ -101,24 +111,34 @@ namespace MeasureApp.Services
 
         public DataLogList()
         {
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                _timer = new DispatcherTimer();
-                _timer.Interval = TimeSpan.FromMicroseconds(100);
-                _timer.Tick += ProcessQuene;
-                _timer.Start();
-            });
+            var _ = _sharedTimer.Value;
+            _activeInstances.Add(new WeakReference<DataLogList>(this));
         }
 
-        private void ProcessQuene(object sender, EventArgs e)
+        private static void SharedTimer_Tick(object sender, EventArgs e)
         {
+            foreach (var weakRef in _activeInstances)
+            {
+                if (weakRef.TryGetTarget(out var instance) && !instance._disposed)
+                {
+                    instance.ProcessQuene();
+                }
+            }
+        }
+
+        private void ProcessQuene()
+        {
+            bool hasChanges = false;
             while (_quene.TryDequeue(out var dataLogValue))
             {
                 items.Add(dataLogValue);
+                hasChanges = true;
             }
-
-            // 手动触发更新
-            OnPropertyChanged(nameof(Items));
+            if (hasChanges)
+            {
+                // 手动触发更新
+                OnPropertyChanged(nameof(Items));
+            }
         }
 
         public void Add<T>(T value) => _quene.Enqueue(DataLogValue.From<T>(value));
@@ -142,12 +162,6 @@ namespace MeasureApp.Services
 
             if (disposing)
             {
-                if (_timer != null)
-                {
-                    _timer.Stop();
-                    _timer.Tick -= ProcessQuene;
-                    //_timer = null;
-                }
             }
 
             _disposed = true;
