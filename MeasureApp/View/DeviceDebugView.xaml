@@ -77,7 +77,8 @@
                       hc:DataGridAttach.ShowRowNumber="True" RowHeaderWidth="60"
                       SelectionMode="Single" IsReadOnly="True" AutoGenerateColumns="False" CanUserAddRows="False"
                       Style="{StaticResource DataGrid.Small}" Margin="5,5,5,5" Height="300"
-                      ScrollViewer.VerticalScrollBarVisibility="Auto">
+                      ScrollViewer.VerticalScrollBarVisibility="Auto"
+                      ScrollViewer.HorizontalScrollBarVisibility="Auto">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="时间" Binding="{Binding TimeStamp,StringFormat='{}{0:yyyy-MM-dd HH:mm:ss.fff}'}" Width="120"/>
                             <DataGridTextColumn Header="发送设备" Binding="{Binding Sender}" Width="120"/>

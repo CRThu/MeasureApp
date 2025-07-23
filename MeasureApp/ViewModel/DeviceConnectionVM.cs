@@ -190,6 +190,7 @@ namespace MeasureApp.ViewModel
                 .WithDevice(dev)
                 .WithProtocol(protocol)
                 .WithLogger(Context.CommandLogger)
+                .WithLogger(Context.DataLogger)
                 .Build();
 
             _context.Devices.AddService(

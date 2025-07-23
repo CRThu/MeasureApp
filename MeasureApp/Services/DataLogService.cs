@@ -157,6 +157,12 @@ namespace MeasureApp.Services
                 _quene.Enqueue(DataLogValue.From<T>(value));
         }
 
+        public void AddRange<T>(ReadOnlySpan<T> values)
+        {
+            foreach (var value in values)
+                _quene.Enqueue(DataLogValue.From<T>(value));
+        }
+
         public void Dispose()
         {
             Dispose(true);
@@ -263,11 +269,23 @@ namespace MeasureApp.Services
             if (packet.PacketType == PacketType.Data)
             {
                 var pkt = packet as IDataPacket;
-                foreach (var channel in pkt.Channels)
+                foreach (var key in pkt.Keys)
                 {
-                    // TODO datatype and key with sender
-                    var vals = pkt.GetValues<UInt64>(channel);
-                    GetOrAddKey(channel.ToString()).AddRange(vals);
+                    // and key with sender
+                    switch ((pkt.Type, pkt.Encoding))
+                    {
+                        case (DataType.INT64, DataEncoding.TwosComplement):
+                            GetOrAddKey(key).AddRange(pkt.Get<Int64>(0));
+                            break;
+                        case (DataType.INT64, DataEncoding.OffsetBinary):
+                            GetOrAddKey(key).AddRange(pkt.Get<UInt64>(0));
+                            break;
+                        case (DataType.FP64, _):
+                            GetOrAddKey(key).AddRange(pkt.Get<double>(0));
+                            break;
+                        default:
+                            throw new NotSupportedException($"Type {pkt.Type} is not supported");
+                    }
                 }
             }
         }
