@@ -66,6 +66,11 @@
                                     <v:DataMonitorView Margin="10,10,10,10"/>
                                 </ad:LayoutAnchorable.Content>
                             </ad:LayoutAnchorable>
+                            <ad:LayoutAnchorable Title="脚本运行" CanHide="False">
+                                <ad:LayoutAnchorable.Content>
+                                    <v:ScriptRunnerView Margin="10,10,10,10"/>
+                                </ad:LayoutAnchorable.Content>
+                            </ad:LayoutAnchorable>
                             <!--<ad:LayoutAnchorable Title="3458A万用表控制" CanHide="False">
                                 <ad:LayoutAnchorable.Content>
                                     <Frame Content="{Binding Pages.Multimeter3458AControlPage}"/>

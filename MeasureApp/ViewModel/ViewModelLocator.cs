@@ -22,6 +22,7 @@ namespace MeasureApp.ViewModel
             container.Register<DeviceConnectionVM>();
             container.Register<DeviceDebugVM>();
             container.Register<DataMonitorVM>();
+            container.Register<ScriptRunnerVM>();
 
             container.Register<AppContextManager>(Reuse.Singleton);
             container.Register<DeviceManager>(Reuse.Singleton);
@@ -38,5 +39,6 @@ namespace MeasureApp.ViewModel
         public DeviceConnectionVM DeviceConnection => container.Resolve<DeviceConnectionVM>();
         public DeviceDebugVM DeviceDebug => container.Resolve<DeviceDebugVM>();
         public DataMonitorVM DataMonitor => container.Resolve<DataMonitorVM>();
+        public ScriptRunnerVM ScriptRunner => container.Resolve<ScriptRunnerVM>();
     }
 }
