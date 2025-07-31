@@ -41,7 +41,7 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                <!--<StackPanel Grid.Column="0" Margin="0,0,10,0">
                     <TextBlock Text="设备" Margin="0,0,0,5"/>
                     <ComboBox ItemsSource="{Binding UsbDevices}"
                               SelectedItem="{Binding SelectedUsbDevice}"
@@ -51,7 +51,7 @@
                     <TextBlock Text="驱动" Margin="0,0,0,5"/>
                     <ComboBox ItemsSource="{Binding UsbDrivers}"
                               SelectedItem="{Binding SelectedUsbDriver}"/>
-                </StackPanel>
+                </StackPanel>-->
             </Grid>
         </DataTemplate>
 
@@ -62,7 +62,7 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                <!--<StackPanel Grid.Column="0" Margin="0,0,10,0">
                     <TextBlock Text="设备地址" Margin="0,0,0,5"/>
                     <ComboBox ItemsSource="{Binding GpibAddresses}"
                               SelectedItem="{Binding SelectedGpibAddress}"
@@ -72,7 +72,7 @@
                     <TextBlock Text="驱动" Margin="0,0,0,5"/>
                     <ComboBox ItemsSource="{Binding GpibDrivers}"
                               SelectedItem="{Binding SelectedGpibDriver}"/>
-                </StackPanel>
+                </StackPanel>-->
             </Grid>
         </DataTemplate>
 
@@ -117,6 +117,7 @@
                 <ComboBox ItemsSource="{Binding AvailableProtocols}"
                           SelectedItem="{Binding SelectedProtocol}"
                           MinWidth="180"/>
+                <CheckBox Content="自动轮询" IsChecked="{Binding IsAutoPollingEnabled}" Margin="15,0,15,0"/>
             </StackPanel>
         </StackPanel>
 

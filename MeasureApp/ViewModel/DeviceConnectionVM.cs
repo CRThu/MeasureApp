@@ -10,7 +10,6 @@ using CarrotLink.Core.Protocols.Models;
 using CarrotLink.Core.Session;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using ControlzEx.Standard;
 using MeasureApp.Services;
 using System;
 using System.Collections.Generic;
@@ -47,6 +46,9 @@ namespace MeasureApp.ViewModel
 
         [ObservableProperty]
         private ProtocolType selectedProtocol = ProtocolType.CarrotAscii;
+
+        [ObservableProperty]
+        private bool isAutoPollingEnabled = true;
 
         public InterfaceType CurrentConnectionType => SelectedDevice != null ? SelectedDevice.Interface : InterfaceType.Serial;
 
@@ -191,6 +193,7 @@ namespace MeasureApp.ViewModel
                 .WithProtocol(protocol)
                 .WithLogger(Context.CommandLogger)
                 .WithLogger(Context.DataLogger)
+                .WithPolling(IsAutoPollingEnabled)
                 .Build();
 
             _context.Devices.AddService(
