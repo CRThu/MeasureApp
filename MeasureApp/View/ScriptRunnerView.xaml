@@ -13,6 +13,7 @@
       mc:Ignorable="d"
       d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
+        <c:BoolToStringConverter x:Key="BoolToStringConverter"/>
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -25,23 +26,27 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <StackPanel Grid.Row="0" Orientation="Horizontal">
+                <TextBlock Text="设备" Margin="10,0,10,0" VerticalAlignment="Center"/>
+                <ComboBox ItemsSource="{Binding Context.Devices.Info}" SelectedItem="{Binding SelectedDevice}" DisplayMemberPath="Name" Margin="10,0,10,0" MinWidth="200"/>
                 <TextBlock Text="脚本管理" Margin="5,5,5,5" VerticalAlignment="Center"/>
-                <Button Content="打开" Margin="5,5,5,5"/>
+                <Button Content="打开" Margin="5,5,5,5" Command="{Binding OpenScriptFileCommand}"/>
+                <TextBlock Text="{Binding ScriptPath}" VerticalAlignment="Center"/>
             </StackPanel>
-            <hc:TabControl Grid.Row="1" ItemsSource="{Binding ScriptViewers}" IsAnimationEnabled="True" ShowCloseButton="True" IsDraggable="True">
+            <TextBox Grid.Row="1" Text="{Binding ScriptCode}" AcceptsReturn="True" AcceptsTab="True" Margin="5,5,5,5"/>
+            <!--<hc:TabControl Grid.Row="1" ItemsSource="{Binding ScriptViewers}" IsAnimationEnabled="True" ShowCloseButton="True" IsDraggable="True">
                 <hc:Interaction.Triggers>
                     <hc:RoutedEventTrigger RoutedEvent="hc:TabItem.Closed">
                         <hc:EventToCommand Command="{Binding ClosedCommand}" PassEventArgsToCommand="True" />
                     </hc:RoutedEventTrigger>
                 </hc:Interaction.Triggers>
-                <!--<i:Interaction.Triggers>
-                    <i:EventTrigger EventName="Closed">
-                        <i:InvokeCommandAction Command="{Binding ClosedCommand}"/>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>-->
                 <hc:TabControl.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock Text="{Binding Header}"/>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Header}"/>
+                            -->
+            <!--<Button Content="Close" Command="{Binding DataContext.ClosedCommand,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type hc:TabControl}}}" CommandParameter="{Binding}"/>-->
+            <!--
+                        </StackPanel>
                     </DataTemplate>
                 </hc:TabControl.ItemTemplate>
                 <hc:TabControl.ContentTemplate>
@@ -51,14 +56,22 @@
                         </Grid>
                     </DataTemplate>
                 </hc:TabControl.ContentTemplate>
-            </hc:TabControl>
+            </hc:TabControl>-->
         </Grid>
         <Grid Grid.Column="1" Width="200">
             <Grid.RowDefinitions>
-                <RowDefinition Height="1*"/>
-                <RowDefinition Height="1*"/>
-                <RowDefinition Height="1*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="间隔" VerticalAlignment="Center" Margin="5,5,5,5"/>
+                <TextBox Text="{Binding ScriptRunInterval}" Width="60" Margin="5,5,5,5"/>
+                <Button Content="{Binding IsScriptRunning,
+                                Converter={StaticResource BoolToStringConverter},
+                                ConverterParameter='停止|运行'}"
+                        Command="{Binding ScriptRunCommand}"
+                        Width="60" Margin="5,5,5,5"/>
+            </StackPanel>
         </Grid>
     </Grid>
 </UserControl>
