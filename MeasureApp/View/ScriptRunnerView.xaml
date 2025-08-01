@@ -15,8 +15,50 @@
     <UserControl.Resources>
     </UserControl.Resources>
     <Grid>
-        <StackPanel Orientation="Horizontal">
-            
-        </StackPanel>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                <TextBlock Text="脚本管理" Margin="5,5,5,5" VerticalAlignment="Center"/>
+                <Button Content="打开" Margin="5,5,5,5"/>
+            </StackPanel>
+            <hc:TabControl Grid.Row="1" ItemsSource="{Binding ScriptViewers}" IsAnimationEnabled="True" ShowCloseButton="True" IsDraggable="True">
+                <hc:Interaction.Triggers>
+                    <hc:RoutedEventTrigger RoutedEvent="hc:TabItem.Closed">
+                        <hc:EventToCommand Command="{Binding ClosedCommand}" PassEventArgsToCommand="True" />
+                    </hc:RoutedEventTrigger>
+                </hc:Interaction.Triggers>
+                <!--<i:Interaction.Triggers>
+                    <i:EventTrigger EventName="Closed">
+                        <i:InvokeCommandAction Command="{Binding ClosedCommand}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>-->
+                <hc:TabControl.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Header}"/>
+                    </DataTemplate>
+                </hc:TabControl.ItemTemplate>
+                <hc:TabControl.ContentTemplate>
+                    <DataTemplate>
+                        <Grid Margin="5,5,5,5">
+                            <TextBlock Text="{Binding Text}"/>
+                        </Grid>
+                    </DataTemplate>
+                </hc:TabControl.ContentTemplate>
+            </hc:TabControl>
+        </Grid>
+        <Grid Grid.Column="1" Width="200">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+            </Grid.RowDefinitions>
+        </Grid>
     </Grid>
 </UserControl>
