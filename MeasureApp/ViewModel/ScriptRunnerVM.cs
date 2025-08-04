@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using MeasureApp.Model;
 using MeasureApp.Services;
+using MeasureApp.Services.Script;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -21,7 +21,8 @@ namespace MeasureApp.ViewModel
         private readonly AppContextManager _context;
         public AppContextManager Context => _context;
 
-        private readonly ScriptExec _scriptExec;
+        [ObservableProperty]
+        private ScriptExec exec;
 
         //[ObservableProperty]
         //private ObservableCollection<ScriptViewer> scriptViewers = new()
@@ -31,26 +32,12 @@ namespace MeasureApp.ViewModel
         //};
 
         [ObservableProperty]
-        private int scriptRunInterval = 500;
-
-        [ObservableProperty]
-        private bool isScriptRunnning = false;
-
-        [ObservableProperty]
         private string scriptPath;
 
-        [ObservableProperty]
-        private string scriptCode;
-
-        //[RelayCommand]
-        //public void Closed(object v)
-        //{
-        //    MessageBox.Show($"Closed Called: {v}");
-        //}
         public ScriptRunnerVM(AppContextManager context)
         {
             _context = context;
-            _scriptExec = new ScriptExec(_context);
+            Exec = new ScriptExec(_context);
         }
 
         [RelayCommand]
@@ -63,28 +50,51 @@ namespace MeasureApp.ViewModel
             if (ofd.ShowDialog() == DialogResult.OK)
             {
                 ScriptPath = ofd.FileName;
-                ScriptCode = File.ReadAllText(ScriptPath);
+                Exec.ScriptCode = File.ReadAllText(ScriptPath);
             }
         }
 
         [RelayCommand]
         public void ScriptRun()
         {
-            if (!IsScriptRunnning)
+            if (!Exec.IsRunning)
             {
                 if (SelectedDevice == null)
                 {
                     MessageBox.Show("需要选择设备");
                     return;
                 }
-                _scriptExec.PreferredDevice = SelectedDevice.InternalKey;
-                _scriptExec.Start(ScriptCode, ScriptRunInterval);
-                IsScriptRunnning = true;
+                Exec.PreferredDevice = SelectedDevice.InternalKey;
+                Exec.Start();
             }
             else
             {
-                _scriptExec.Stop();
-                IsScriptRunnning = false;
+                Exec.Stop();
+            }
+        }
+
+        [RelayCommand]
+        public void ScriptRunStep()
+        {
+            if (!Exec.IsRunning)
+            {
+                if (SelectedDevice == null)
+                {
+                    MessageBox.Show("需要选择设备");
+                    return;
+                }
+                Exec.PreferredDevice = SelectedDevice.InternalKey;
+
+                Exec.Step();
+            }
+        }
+
+        [RelayCommand]
+        public void ScriptReset()
+        {
+            if (!Exec.IsRunning)
+            {
+                Exec.Reset();
             }
         }
     }

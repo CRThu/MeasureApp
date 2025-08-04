@@ -9,6 +9,7 @@ using System.Windows;
 
 namespace MeasureApp.Model
 {
+    /*
     public partial class ScriptViewer : ObservableObject
     {
         [ObservableProperty]
@@ -17,4 +18,5 @@ namespace MeasureApp.Model
         [ObservableProperty]
         public string text;
     }
+    */
 }
