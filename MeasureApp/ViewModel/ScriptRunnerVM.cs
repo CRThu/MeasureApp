@@ -40,6 +40,11 @@ namespace MeasureApp.ViewModel
             Exec = new ScriptExec(_context);
         }
 
+        partial void OnSelectedDeviceChanged(ConnectionInfo value)
+        {
+            Exec.SetEnv(Exec.EnvDefaultIOName, value.InternalKey);
+        }
+
         [RelayCommand]
         public void OpenScriptFile()
         {
@@ -57,44 +62,57 @@ namespace MeasureApp.ViewModel
         [RelayCommand]
         public void ScriptRun()
         {
-            if (!Exec.IsRunning)
+            try
             {
-                if (SelectedDevice == null)
+                if (!Exec.IsRunning)
                 {
-                    MessageBox.Show("需要选择设备");
-                    return;
+                    if (SelectedDevice == null)
+                    {
+                        MessageBox.Show("需要选择设备");
+                        return;
+                    }
+                    Exec.Start();
                 }
-                Exec.PreferredDevice = SelectedDevice.InternalKey;
-                Exec.Start();
+                else
+                {
+                    Exec.Stop();
+                }
             }
-            else
+            catch (Exception ex)
             {
-                Exec.Stop();
+                MessageBox.Show(ex.ToString());
             }
         }
 
         [RelayCommand]
         public void ScriptRunStep()
         {
-            if (!Exec.IsRunning)
+            try
             {
-                if (SelectedDevice == null)
+                if (!Exec.IsRunning)
                 {
-                    MessageBox.Show("需要选择设备");
-                    return;
+                    Exec.Step();
                 }
-                Exec.PreferredDevice = SelectedDevice.InternalKey;
-
-                Exec.Step();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
             }
         }
 
         [RelayCommand]
         public void ScriptReset()
         {
-            if (!Exec.IsRunning)
+            try
             {
-                Exec.Reset();
+                if (!Exec.IsRunning)
+                {
+                    Exec.Reset();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
             }
         }
     }

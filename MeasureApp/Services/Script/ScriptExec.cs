@@ -1,5 +1,7 @@
 ﻿using CarrotLink.Core.Session;
 using CommunityToolkit.Mvvm.ComponentModel;
+using MeasureApp.Model.Script;
+using MeasureApp.Model.SerialPortScript;
 using MeasureApp.Services;
 using Newtonsoft.Json.Linq;
 using ScottPlot.TickGenerators.Financial;
@@ -15,7 +17,7 @@ namespace MeasureApp.Services.Script
 {
     public partial class ScriptExec : ObservableObject
     {
-        public string PreferredDevice { get; set; }
+        public readonly string EnvDefaultIOName = "Env::Default::IO";
 
         [ObservableProperty]
         private int interval = 500;
@@ -37,9 +39,22 @@ namespace MeasureApp.Services.Script
 
         private readonly AppContextManager _context;
 
+        private readonly Dictionary<string, string> _env;
+        private readonly object _envLock = new object();
+
         public ScriptExec(AppContextManager context)
         {
             _context = context;
+            _env = new Dictionary<string, string>();
+        }
+
+        public void SetEnv(string key, string val)
+        {
+            lock (_envLock)
+            {
+                if (!_env.TryAdd(key, val))
+                    _env[key] = val;
+            }
         }
 
         public void Step()
@@ -67,6 +82,10 @@ namespace MeasureApp.Services.Script
         public void Reset()
         {
             CurrentLine = 1;
+            lock (_envLock)
+            {
+                _env.Clear();
+            }
         }
 
         private void SkipEmptyLine()
@@ -83,7 +102,15 @@ namespace MeasureApp.Services.Script
 
             // 运行当前行
             if (CurrentLine <= ScriptLines?.Length)
-                await Emit(ScriptLines[CurrentLine - 1]);
+            {
+                // 若存在注释则滤除注释
+                string scriptLine = ScriptLines[CurrentLine - 1];
+                if (ScriptLines[CurrentLine - 1].Contains('#'))
+                    scriptLine = scriptLine.Split('#', 2).First().Trim();
+
+                if (scriptLine.Length > 0)
+                    await Emit(scriptLine);
+            }
 
             CurrentLine++;
 
@@ -131,7 +158,43 @@ namespace MeasureApp.Services.Script
 
         private async Task Emit(string code)
         {
-            await _context.Devices[PreferredDevice].SendAscii(code + "\n");
+            if (XmlTag.IsMatchXmlTag(code))
+            {
+                // 调用脚本库方法
+                // TODO 重写
+                ScriptMethodParameters parameters = new ScriptMethodParameters(
+                    XmlTag.GetXmlTagAttrs(code));
+
+                string methodName = parameters.Get<string>("Tag");
+
+                switch (methodName.ToUpper())
+                {
+                    case "ENV":
+                        string k = parameters.Get<string>("key") ?? "<null>";
+                        string v = parameters.Get<string>("value") ?? "<null>";
+                        SetEnv(k, v);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            else
+            {
+                // default operation
+                string defaultIOKey;
+                lock (_envLock)
+                {
+                    _env.TryGetValue(EnvDefaultIOName, out defaultIOKey);
+                }
+                if (defaultIOKey != null)
+                {
+                    await _context.Devices[defaultIOKey].SendAscii(code + "\n");
+                }
+                else
+                {
+                    throw new InvalidOperationException("No default IO");
+                }
+            }
         }
     }
 }
