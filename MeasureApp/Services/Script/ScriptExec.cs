@@ -1,8 +1,10 @@
 ﻿using CarrotLink.Core.Session;
 using CommunityToolkit.Mvvm.ComponentModel;
+using DryIoc;
 using MeasureApp.Model.Script;
 using MeasureApp.Model.SerialPortScript;
 using MeasureApp.Services;
+using MeasureApp.Services.ScriptLibrary;
 using Newtonsoft.Json.Linq;
 using ScottPlot.TickGenerators.Financial;
 using System;
@@ -18,6 +20,7 @@ namespace MeasureApp.Services.Script
     public partial class ScriptExec : ObservableObject
     {
         public readonly string EnvDefaultIOName = "Env::Default::IO";
+        public readonly string EnvDefaultMeasureName = "Env::Default::Measure";
 
         [ObservableProperty]
         private int interval = 500;
@@ -71,7 +74,8 @@ namespace MeasureApp.Services.Script
         public void Start()
         {
             _cts = new CancellationTokenSource();
-            _exec = ExecTask();
+            // todo
+            _exec = Task.Run(ExecTask);
         }
 
         public void Stop()
@@ -170,10 +174,30 @@ namespace MeasureApp.Services.Script
                 switch (methodName.ToUpper())
                 {
                     case "ENV":
-                        string k = parameters.Get<string>("key") ?? "<null>";
-                        string v = parameters.Get<string>("value") ?? "<null>";
-                        SetEnv(k, v);
-                        break;
+                        {
+                            string k = parameters.Get<string>("key");
+                            string v = parameters.Get<string>("value");
+                            SetEnv(k, v);
+                            break;
+                        }
+                    case "MEASURE":
+                        {
+                            // <measure addr="Serial::Serial::COM100" mode="DCV"/>
+                            string addr = parameters.Get<string>("addr");
+                            string mode = parameters.Get<string>("mode");
+                            //string key = parameters.Get<string>("key");
+
+                            if (addr == null)
+                            {
+                                lock (_envLock)
+                                {
+                                    _env.TryGetValue(EnvDefaultMeasureName, out addr);
+                                }
+                            }
+
+                            await Measurement.Query(_context, addr, mode);
+                            break;
+                        }
                     default:
                         break;
                 }

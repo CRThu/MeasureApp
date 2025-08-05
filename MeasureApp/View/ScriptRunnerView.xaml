@@ -88,13 +88,16 @@
                     Converter={StaticResource BoolToStringConverter},
                     ConverterParameter='停止|运行'}"
                     Command="{Binding ScriptRunCommand}"
-                    Width="60" Margin="5,5,5,5"/>
+                    Width="50" Margin="5,5,5,5"/>
                 <Button Content="单步"
                     Command="{Binding ScriptRunStepCommand}"
-                    Width="60" Margin="5,5,5,5"/>
+                    Width="50" Margin="5,5,5,5"/>
                 <Button Content="重置"
                     Command="{Binding ScriptResetCommand}"
-                    Width="60" Margin="5,5,5,5"/>
+                    Width="50" Margin="5,5,5,5"/>
+            </StackPanel>
+            <StackPanel Grid.Row="3" Orientation="Horizontal">
+                
             </StackPanel>
         </Grid>
     </Grid>
