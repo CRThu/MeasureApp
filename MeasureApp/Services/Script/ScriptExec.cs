@@ -183,6 +183,7 @@ namespace MeasureApp.Services.Script
                     case "MEASURE":
                         {
                             // <measure addr="Serial::Serial::COM100" mode="DCV"/>
+                            // <measure addr="NiVisa::NiVisa::ASRL100::INSTR" mode="DCV"/>
                             string addr = parameters.Get<string>("addr");
                             string mode = parameters.Get<string>("mode");
                             //string key = parameters.Get<string>("key");
