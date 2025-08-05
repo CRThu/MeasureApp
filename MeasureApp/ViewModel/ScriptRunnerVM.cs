@@ -42,7 +42,7 @@ namespace MeasureApp.ViewModel
 
         partial void OnSelectedDeviceChanged(ConnectionInfo value)
         {
-            Exec.SetEnv(Exec.EnvDefaultIOName, value.InternalKey);
+            Exec.SetEnv(Exec.EnvDefaultIOName, value?.InternalKey);
         }
 
         [RelayCommand]

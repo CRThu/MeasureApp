@@ -163,26 +163,39 @@ namespace MeasureApp.ViewModel
         private void ConnectDevice()
         {
             IDevice dev = null;
+            DeviceConfigurationBase config;
             switch (CurrentConnectionType)
             {
                 case InterfaceType.Serial:
-                    var config = new SerialConfiguration
+                    config = new SerialConfiguration
                     {
                         DeviceId = $"{SelectedDevice.Interface} | {SelectedDevice.Name}",
                         PortName = SelectedDevice.Name,
                         BaudRate = SelectedSerialPortBaudRate,
                     };
                     dev = DeviceFactory.Create(InterfaceType.Serial, config);
-                    dev.Connect();
+                    break;
+                case InterfaceType.NiVisa:
+                    config = new NiVisaConfiguration
+                    {
+                        DeviceId = $"{SelectedDevice.Interface} | {SelectedDevice.Name}",
+                        ResourceString = SelectedDevice.Name,
+                    };
+                    dev = DeviceFactory.Create(InterfaceType.NiVisa, config);
                     break;
                 case InterfaceType.Ftdi:
-                case InterfaceType.NiVisa:
+                    config = new FtdiConfiguration
+                    {
+                        DeviceId = $"{SelectedDevice.Interface} | {SelectedDevice.Name}",
+                        SerialNumber = SelectedDevice.Name,
+                    };
+                    dev = DeviceFactory.Create(InterfaceType.Ftdi, config);
+                    break;
                 default:
                     _context.AppLogger.Log($"Unsupported device type: {CurrentConnectionType}", LogLevel.Error);
-                    break;
+                    return;
                     //throw new NotSupportedException($"Unsupported device type: {CurrentConnectionType}");
             }
-
             dev.Connect();
 
             // todo protocol config
