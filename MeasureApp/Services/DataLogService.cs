@@ -42,8 +42,41 @@ namespace MeasureApp.Services
             Type = ValueType.UInt64;
             UInt64 = value;
         }
+        public DataLogValue(UInt32 value)
+        {
+            Type = ValueType.UInt64;
+            UInt64 = value;
+        }
+        public DataLogValue(UInt16 value)
+        {
+            Type = ValueType.UInt64;
+            UInt64 = value;
+        }
+        public DataLogValue(byte value)
+        {
+            Type = ValueType.UInt64;
+            UInt64 = value;
+        }
 
         public DataLogValue(Int64 value)
+        {
+            Type = ValueType.Int64;
+            Int64 = value;
+        }
+
+        public DataLogValue(Int32 value)
+        {
+            Type = ValueType.Int64;
+            Int64 = value;
+        }
+
+        public DataLogValue(Int16 value)
+        {
+            Type = ValueType.Int64;
+            Int64 = value;
+        }
+
+        public DataLogValue(sbyte value)
         {
             Type = ValueType.Int64;
             Int64 = value;
@@ -57,16 +90,20 @@ namespace MeasureApp.Services
 
         public static DataLogValue Null => new DataLogValue();
 
-        public static DataLogValue FromUInt64(UInt64 value) => new DataLogValue(value);
-        public static DataLogValue FromInt64(Int64 value) => new DataLogValue(value);
-        public static DataLogValue FromDouble(double value) => new DataLogValue(value);
-
         public static DataLogValue From<T>(T value)
         {
             return value switch
             {
                 UInt64 u => new DataLogValue(u),
+                UInt32 u32 => new DataLogValue(u32),
+                UInt16 u16 => new DataLogValue(u16),
+                byte u8 => new DataLogValue(u8),
+
                 Int64 i => new DataLogValue(i),
+                Int32 i32 => new DataLogValue(i32),
+                Int16 i16 => new DataLogValue(i16),
+                sbyte i8 => new DataLogValue(i8),
+
                 Double d => new DataLogValue(d),
                 _ => throw new NotSupportedException($"Type {typeof(T)} is not supported")
             };
@@ -272,16 +309,37 @@ namespace MeasureApp.Services
                 foreach (var key in pkt.Keys)
                 {
                     // and key with sender
+                    int ch = Convert.ToInt32(key);
+
+                    // TODO channel
                     switch ((pkt.Type, pkt.Encoding))
                     {
                         case (DataType.INT64, DataEncoding.TwosComplement):
-                            GetOrAddKey(key).AddRange(pkt.Get<Int64>(0));
+                            GetOrAddKey(key).AddRange(pkt.Get<Int64>(ch));
                             break;
                         case (DataType.INT64, DataEncoding.OffsetBinary):
-                            GetOrAddKey(key).AddRange(pkt.Get<UInt64>(0));
+                            GetOrAddKey(key).AddRange(pkt.Get<UInt64>(ch));
+                            break;
+                        case (DataType.INT32, DataEncoding.TwosComplement):
+                            GetOrAddKey(key).AddRange(pkt.Get<Int32>(ch));
+                            break;
+                        case (DataType.INT32, DataEncoding.OffsetBinary):
+                            GetOrAddKey(key).AddRange(pkt.Get<UInt32>(ch));
+                            break;
+                        case (DataType.INT16, DataEncoding.TwosComplement):
+                            GetOrAddKey(key).AddRange(pkt.Get<Int16>(ch));
+                            break;
+                        case (DataType.INT16, DataEncoding.OffsetBinary):
+                            GetOrAddKey(key).AddRange(pkt.Get<UInt16>(ch));
+                            break;
+                        case (DataType.INT8, DataEncoding.TwosComplement):
+                            GetOrAddKey(key).AddRange(pkt.Get<sbyte>(ch));
+                            break;
+                        case (DataType.INT8, DataEncoding.OffsetBinary):
+                            GetOrAddKey(key).AddRange(pkt.Get<byte>(ch));
                             break;
                         case (DataType.FP64, _):
-                            GetOrAddKey(key).AddRange(pkt.Get<double>(0));
+                            GetOrAddKey(key).AddRange(pkt.Get<double>(ch));
                             break;
                         default:
                             throw new NotSupportedException($"Type {pkt.Type} is not supported");
