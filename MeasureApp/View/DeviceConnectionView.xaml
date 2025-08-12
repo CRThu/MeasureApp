@@ -181,16 +181,16 @@
                     <DataGridTextColumn Header="接口类型" Binding="{Binding Intf}" Width="120"/>
                     <DataGridTextColumn Header="设备名称" Binding="{Binding Name}" Width="120"/>
                     <DataGridTextColumn Header="协议类型" Binding="{Binding Protocol}" Width="120"/>
-                    <DataGridTextColumn Header="设备配置" Binding="{Binding Config}" Width="*"/>
+                    <DataGridTextColumn Header="设备配置" Binding="{Binding Config}" Width="150"/>
                     <DataGridTextColumn Header="接收" Binding="{Binding BytesReceived}" Width="100"/>
                     <DataGridTextColumn Header="发送" Binding="{Binding BytesSent}" Width="100"/>
-                    <DataGridTemplateColumn Header="错误" Width="100">
+                    <DataGridTemplateColumn Header="错误" Width="*">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
                                     <Ellipse Width="12" Height="12" Margin="0,0,5,0"
                                          Fill="{Binding HasError,Converter={StaticResource ErrorColorConverter}}"/>
-                                    <TextBlock Text="{Binding ErrorDescription}"
+                                    <TextBlock Text="{Binding ErrorDesc}"
                                                Foreground="{Binding HasError,Converter={StaticResource ErrorColorConverter}}"/>
                                 </StackPanel>
                             </DataTemplate>

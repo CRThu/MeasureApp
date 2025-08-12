@@ -310,36 +310,37 @@ namespace MeasureApp.Services
                 {
                     // and key with sender
                     int ch = Convert.ToInt32(key);
+                    var list = GetOrAddKey(key);
 
                     // TODO channel
                     switch ((pkt.Type, pkt.Encoding))
                     {
                         case (DataType.INT64, DataEncoding.TwosComplement):
-                            GetOrAddKey(key).AddRange(pkt.Get<Int64>(ch));
+                            list.AddRange(pkt.Get<Int64>(ch));
                             break;
                         case (DataType.INT64, DataEncoding.OffsetBinary):
-                            GetOrAddKey(key).AddRange(pkt.Get<UInt64>(ch));
+                            list.AddRange(pkt.Get<UInt64>(ch));
                             break;
                         case (DataType.INT32, DataEncoding.TwosComplement):
-                            GetOrAddKey(key).AddRange(pkt.Get<Int32>(ch));
+                            list.AddRange(pkt.Get<Int32>(ch));
                             break;
                         case (DataType.INT32, DataEncoding.OffsetBinary):
-                            GetOrAddKey(key).AddRange(pkt.Get<UInt32>(ch));
+                            list.AddRange(pkt.Get<UInt32>(ch));
                             break;
                         case (DataType.INT16, DataEncoding.TwosComplement):
-                            GetOrAddKey(key).AddRange(pkt.Get<Int16>(ch));
+                            list.AddRange(pkt.Get<Int16>(ch));
                             break;
                         case (DataType.INT16, DataEncoding.OffsetBinary):
-                            GetOrAddKey(key).AddRange(pkt.Get<UInt16>(ch));
+                            list.AddRange(pkt.Get<UInt16>(ch));
                             break;
                         case (DataType.INT8, DataEncoding.TwosComplement):
-                            GetOrAddKey(key).AddRange(pkt.Get<sbyte>(ch));
+                            list.AddRange(pkt.Get<sbyte>(ch));
                             break;
                         case (DataType.INT8, DataEncoding.OffsetBinary):
-                            GetOrAddKey(key).AddRange(pkt.Get<byte>(ch));
+                            list.AddRange(pkt.Get<byte>(ch));
                             break;
                         case (DataType.FP64, _):
-                            GetOrAddKey(key).AddRange(pkt.Get<double>(ch));
+                            list.AddRange(pkt.Get<double>(ch));
                             break;
                         default:
                             throw new NotSupportedException($"Type {pkt.Type} is not supported");

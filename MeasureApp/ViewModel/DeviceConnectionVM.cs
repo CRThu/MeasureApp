@@ -4,6 +4,7 @@ using CarrotLink.Core.Devices.Impl;
 using CarrotLink.Core.Devices.Interfaces;
 using CarrotLink.Core.Discovery;
 using CarrotLink.Core.Discovery.Models;
+using CarrotLink.Core.Logging;
 using CarrotLink.Core.Protocols;
 using CarrotLink.Core.Protocols.Impl;
 using CarrotLink.Core.Protocols.Models;
@@ -206,6 +207,7 @@ namespace MeasureApp.ViewModel
                 .WithProtocol(protocol)
                 .WithLogger(Context.CommandLogger)
                 .WithLogger(Context.DataLogger)
+                .WithRuntimeLogger(Context.AppLogger)
                 .WithPolling(IsAutoPollingEnabled)
                 .Build();
 

@@ -41,7 +41,7 @@ namespace MeasureApp.Services
         public bool hasError;
 
         [ObservableProperty]
-        public string errorDescription;
+        public string errorDesc;
 
         public string InternalKey => GetInternalKey(Driver, Intf, Name);
 
@@ -92,8 +92,8 @@ namespace MeasureApp.Services
                                 infoItem.BytesReceived = session.TotalReadBytes;
 
                                 // TODO
-                                infoItem.HasError = false;
-                                infoItem.ErrorDescription = "<NULL>";
+                                infoItem.HasError = !session.IsAutoPollingTaskRunning;
+                                infoItem.ErrorDesc = session.ErrorDesc;
                             }
                             catch (Exception ex)
                             {
@@ -121,7 +121,7 @@ namespace MeasureApp.Services
                 BytesReceived = 0,
                 BytesSent = 0,
                 HasError = false,
-                ErrorDescription = ""
+                ErrorDesc = ""
             };
 
             if (_sessions.TryAdd(info.InternalKey, service))
