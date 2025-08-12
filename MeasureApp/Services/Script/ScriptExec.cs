@@ -1,15 +1,12 @@
 ﻿using CarrotLink.Core.Session;
 using CommunityToolkit.Mvvm.ComponentModel;
-using DryIoc;
 using MeasureApp.Model.Script;
 using MeasureApp.Model.SerialPortScript;
-using MeasureApp.Services;
 using MeasureApp.Services.ScriptLibrary;
-using Newtonsoft.Json.Linq;
-using ScottPlot.TickGenerators.Financial;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,6 +18,9 @@ namespace MeasureApp.Services.Script
     {
         public readonly string EnvDefaultIOName = "Env::Default::IO";
         public readonly string EnvDefaultMeasureName = "Env::Default::Measure";
+
+        // A dictionary to hold registered script commands
+        private readonly Dictionary<string, IScriptCommand> _commands = new();
 
         [ObservableProperty]
         private int interval = 500;
@@ -41,6 +41,7 @@ namespace MeasureApp.Services.Script
         private CancellationTokenSource _cts;
 
         private readonly AppContextManager _context;
+        private readonly ScriptContext _scriptContext;
 
         private readonly Dictionary<string, string> _env;
         private readonly object _envLock = new object();
@@ -49,6 +50,30 @@ namespace MeasureApp.Services.Script
         {
             _context = context;
             _env = new Dictionary<string, string>();
+            _scriptContext = new ScriptContext(_context, _env);
+
+            // Automatically register commands on initialization
+            RegisterCommands();
+        }
+
+        /// <summary>
+        /// Uses reflection to find and register all classes that implement IScriptCommand.
+        /// </summary>
+        private void RegisterCommands()
+        {
+            var commandTypes = Assembly.GetExecutingAssembly().GetTypes()
+                .Where(t => t.IsClass && !t.IsAbstract && typeof(IScriptCommand).IsAssignableFrom(t));
+
+            foreach (var type in commandTypes)
+            {
+                var attr = type.GetCustomAttribute<ScriptCommandAttribute>();
+                if (attr != null)
+                {
+                    var commandInstance = (IScriptCommand)Activator.CreateInstance(type);
+                    _commands.Add(attr.CommandName, commandInstance);
+                    Console.WriteLine($"Registered script command: '{attr.CommandName}' -> {type.Name}");
+                }
+            }
         }
 
         public void SetEnv(string key, string val)
@@ -64,7 +89,7 @@ namespace MeasureApp.Services.Script
         {
             if (!IsRunning)
             {
-                RunOneLine().GetAwaiter().GetResult();
+                RunOneLineAsync().GetAwaiter().GetResult();
 
                 if (CurrentLine > ScriptLines?.Length)
                     CurrentLine = 1;
@@ -75,7 +100,7 @@ namespace MeasureApp.Services.Script
         {
             _cts = new CancellationTokenSource();
             // todo
-            _exec = Task.Run(ExecTask);
+            _exec = Task.Run(ExecTaskAsync);
         }
 
         public void Stop()
@@ -99,7 +124,7 @@ namespace MeasureApp.Services.Script
                 CurrentLine++;
         }
 
-        private async Task RunOneLine()
+        private async Task RunOneLineAsync()
         {
             // 跳过前空行
             SkipEmptyLine();
@@ -113,7 +138,7 @@ namespace MeasureApp.Services.Script
                     scriptLine = scriptLine.Split('#', 2).First().Trim();
 
                 if (scriptLine.Length > 0)
-                    await Emit(scriptLine);
+                    await EmitAsync(scriptLine);
             }
 
             CurrentLine++;
@@ -122,7 +147,7 @@ namespace MeasureApp.Services.Script
             SkipEmptyLine();
         }
 
-        public async Task ExecTask()
+        public async Task ExecTaskAsync()
         {
             try
             {
@@ -132,7 +157,7 @@ namespace MeasureApp.Services.Script
                     if (_cts.IsCancellationRequested)
                         return;
 
-                    await RunOneLine();
+                    await RunOneLineAsync();
 
                     // 最后一行不需要delay
                     if (CurrentLine > ScriptLines?.Length)
@@ -160,47 +185,27 @@ namespace MeasureApp.Services.Script
             }
         }
 
-        private async Task Emit(string code)
+        /// <summary>
+        /// The refactored Emit method. It now dispatches commands instead of handling them directly.
+        /// </summary>
+        private async Task EmitAsync(string code)
         {
             if (XmlTag.IsMatchXmlTag(code))
             {
-                // 调用脚本库方法
-                // TODO 重写
-                ScriptMethodParameters parameters = new ScriptMethodParameters(
-                    XmlTag.GetXmlTagAttrs(code));
+                var attributes = XmlTag.GetXmlTagAttrs(code);
+                var parameters = new ScriptMethodParameters(attributes);
+                string commandName = parameters.Get<string>("Tag").ToUpperInvariant();
 
-                string methodName = parameters.Get<string>("Tag");
-
-                switch (methodName.ToUpper())
+                if (_commands.TryGetValue(commandName, out IScriptCommand command))
                 {
-                    case "ENV":
-                        {
-                            string k = parameters.Get<string>("key");
-                            string v = parameters.Get<string>("value");
-                            SetEnv(k, v);
-                            break;
-                        }
-                    case "MEASURE":
-                        {
-                            // <measure addr="Serial::Serial::COM100" mode="DCV"/>
-                            // <measure addr="NiVisa::NiVisa::ASRL100::INSTR" mode="DCV"/>
-                            string addr = parameters.Get<string>("addr");
-                            string mode = parameters.Get<string>("mode");
-                            //string key = parameters.Get<string>("key");
-
-                            if (addr == null)
-                            {
-                                lock (_envLock)
-                                {
-                                    _env.TryGetValue(EnvDefaultMeasureName, out addr);
-                                }
-                            }
-
-                            await Measurement.Query(_context, addr, mode);
-                            break;
-                        }
-                    default:
-                        break;
+                    // Found a registered command, execute it
+                    await command.ExecuteAsync(_scriptContext, parameters);
+                }
+                else
+                {
+                    // Command not found, you can log a warning or throw an exception
+                    Console.WriteLine($"Warning: Unknown script command '{commandName}'");
+                    // Optionally, you could fall back to the default IO behavior here too
                 }
             }
             else
@@ -217,7 +222,7 @@ namespace MeasureApp.Services.Script
                 }
                 else
                 {
-                    throw new InvalidOperationException("No default IO");
+                    throw new InvalidOperationException("No default IO device specified for raw command.");
                 }
             }
         }
