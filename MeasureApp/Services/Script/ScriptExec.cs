@@ -41,16 +41,16 @@ namespace MeasureApp.Services.Script
         private CancellationTokenSource _cts;
 
         private readonly AppContextManager _context;
+        private readonly ScriptEnvironment _environment;
         private readonly ScriptContext _scriptContext;
 
-        private readonly Dictionary<string, string> _env;
-        private readonly object _envLock = new object();
+        public ScriptEnvironment Environment => _environment;
 
         public ScriptExec(AppContextManager context)
         {
             _context = context;
-            _env = new Dictionary<string, string>();
-            _scriptContext = new ScriptContext(_context, _env);
+            _environment = new ScriptEnvironment();
+            _scriptContext = new ScriptContext(_context, _environment);
 
             // Automatically register commands on initialization
             RegisterCommands();
@@ -73,15 +73,6 @@ namespace MeasureApp.Services.Script
                     _commands.Add(attr.CommandName, commandInstance);
                     Console.WriteLine($"Registered script command: '{attr.CommandName}' -> {type.Name}");
                 }
-            }
-        }
-
-        public void SetEnv(string key, string val)
-        {
-            lock (_envLock)
-            {
-                if (!_env.TryAdd(key, val))
-                    _env[key] = val;
             }
         }
 
@@ -111,10 +102,6 @@ namespace MeasureApp.Services.Script
         public void Reset()
         {
             CurrentLine = 1;
-            lock (_envLock)
-            {
-                _env.Clear();
-            }
         }
 
         private void SkipEmptyLine()
@@ -193,8 +180,8 @@ namespace MeasureApp.Services.Script
             if (XmlTag.IsMatchXmlTag(code))
             {
                 var attributes = XmlTag.GetXmlTagAttrs(code);
-                var parameters = new ScriptMethodParameters(attributes);
-                string commandName = parameters.Get<string>("Tag").ToUpperInvariant();
+                var parameters = new CommandParameters(attributes);
+                string commandName = parameters.CommandName.ToUpperInvariant();
 
                 if (_commands.TryGetValue(commandName, out IScriptCommand command))
                 {
@@ -210,13 +197,8 @@ namespace MeasureApp.Services.Script
             }
             else
             {
-                // default operation
-                string defaultIOKey;
-                lock (_envLock)
-                {
-                    _env.TryGetValue(EnvDefaultIOName, out defaultIOKey);
-                }
-                if (defaultIOKey != null)
+                // Default operation for non-tagged commands
+                if (_environment.TryGet<string>(EnvDefaultIOName, out var defaultIOKey) && !string.IsNullOrEmpty(defaultIOKey))
                 {
                     await _context.Devices[defaultIOKey].SendAscii(code + "\n");
                 }

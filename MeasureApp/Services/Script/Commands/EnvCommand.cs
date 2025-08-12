@@ -7,7 +7,7 @@ namespace MeasureApp.Services.Script.Commands
     [ScriptCommand("ENV")]
     public class EnvCommand : IScriptCommand
     {
-        public Task ExecuteAsync(ScriptContext context, ScriptMethodParameters parameters)
+        public Task ExecuteAsync(ScriptContext context, CommandParameters parameters)
         {
             string key = parameters.Get<string>("key");
             string value = parameters.Get<string>("value");

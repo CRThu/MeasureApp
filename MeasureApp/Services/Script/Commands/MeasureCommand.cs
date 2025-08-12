@@ -10,7 +10,7 @@ namespace MeasureApp.Services.Script.Commands
     {
         // <measure addr="Serial::Serial::COM100" mode="DCV"/>
         // <measure addr="NiVisa::NiVisa::ASRL100::INSTR" mode="DCV"/>
-        public async Task ExecuteAsync(ScriptContext context, ScriptMethodParameters parameters)
+        public async Task ExecuteAsync(ScriptContext context, CommandParameters parameters)
         {
             // Get "addr" parameter, if not present, try to get it from the environment default.
             string addr = parameters.Get<string>("addr");

@@ -14,9 +14,9 @@ namespace MeasureApp.Services.Script
     public class ScriptContext
     {
         public AppContextManager AppContext { get; }
-        public Dictionary<string, string> Environment { get; }
+        public ScriptEnvironment Environment { get; }
 
-        public ScriptContext(AppContextManager appContext, Dictionary<string, string> environment)
+        public ScriptContext(AppContextManager appContext, ScriptEnvironment environment)
         {
             AppContext = appContext;
             Environment = environment;
@@ -34,6 +34,6 @@ namespace MeasureApp.Services.Script
         /// <param name="context">The execution context, providing access to app services and environment variables.</param>
         /// <param name="parameters">A dictionary of parameters for the command, parsed from the script line.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        Task ExecuteAsync(ScriptContext context, ScriptMethodParameters parameters);
+        Task ExecuteAsync(ScriptContext context, CommandParameters parameters);
     }
 }
