@@ -14,7 +14,7 @@ using System.Windows.Forms;
 
 namespace MeasureApp.Services.Script
 {
-    public partial class ScriptExecution : ObservableObject
+    public partial class ScriptExecutor : ObservableObject
     {
         public readonly string EnvDefaultIOName = "Env::Default::IO";
         public readonly string EnvDefaultMeasureName = "Env::Default::Measure";
@@ -49,7 +49,7 @@ namespace MeasureApp.Services.Script
 
         public ScriptEnvironment Environment => _environment;
 
-        public ScriptExecution(AppContextManager context)
+        public ScriptExecutor(AppContextManager context)
         {
             _context = context;
             _environment = new ScriptEnvironment();

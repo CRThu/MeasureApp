@@ -15,9 +15,9 @@ namespace MeasureApp.Services.Script
     {
         public AppContextManager AppContext { get; }
         public ScriptEnvironment Environment { get; }
-        public ScriptExecution Executor { get; }
+        public ScriptExecutor Executor { get; }
 
-        public ScriptContext(AppContextManager appContext, ScriptEnvironment environment, ScriptExecution executor)
+        public ScriptContext(AppContextManager appContext, ScriptEnvironment environment, ScriptExecutor executor)
         {
             AppContext = appContext;
             Environment = environment;

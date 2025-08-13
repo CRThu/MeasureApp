@@ -22,7 +22,7 @@ namespace MeasureApp.ViewModel
         public AppContextManager Context => _context;
 
         [ObservableProperty]
-        private ScriptExecution exec;
+        private ScriptExecutor exec;
 
         //[ObservableProperty]
         //private ObservableCollection<ScriptViewer> scriptViewers = new()
@@ -37,7 +37,7 @@ namespace MeasureApp.ViewModel
         public ScriptRunnerVM(AppContextManager context)
         {
             _context = context;
-            Exec = new ScriptExecution(_context);
+            Exec = new ScriptExecutor(_context);
         }
 
         partial void OnSelectedDeviceChanged(ConnectionInfo value)
