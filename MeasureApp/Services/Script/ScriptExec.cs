@@ -21,6 +21,7 @@ namespace MeasureApp.Services.Script
 
         // A dictionary to hold registered script commands
         private readonly Dictionary<string, IScriptCommand> _commands = new();
+        private readonly Stack<ControlFlowState> _controlFlow = new();
 
         [ObservableProperty]
         private int interval = 500;
@@ -78,30 +79,51 @@ namespace MeasureApp.Services.Script
 
         public void Step()
         {
-            if (!IsRunning)
-            {
-                RunOneLineAsync().GetAwaiter().GetResult();
+            if (IsRunning)
+                return;
 
-                if (CurrentLine > ScriptLines?.Length)
-                    CurrentLine = 1;
+            if (ScriptLines == null || ScriptLines.Length == 0)
+                return;
+
+            if (CurrentLine > ScriptLines.Length)
+            {
+                MessageBox.Show("current line out of range.");
+                return;
+            }
+
+            IsRunning = true;
+            RunOneLineAsync().GetAwaiter().GetResult();
+            IsRunning = false;
+
+            if (CurrentLine > ScriptLines?.Length)
+            {
+                CurrentLine = 1;
             }
         }
 
         public void Start()
         {
+            if (CurrentLine > ScriptLines?.Length)
+            {
+                MessageBox.Show("current line out of range.");
+                return;
+            }
+
             _cts = new CancellationTokenSource();
-            // todo
+            IsRunning = true;
             _exec = Task.Run(ExecTaskAsync);
         }
 
         public void Stop()
         {
-            _cts.Cancel();
+            _cts?.Cancel();
         }
 
         public void Reset()
         {
             CurrentLine = 1;
+            //_environment.Clear();
+            _controlFlow.Clear();
         }
 
         private void SkipEmptyLine()
@@ -117,18 +139,30 @@ namespace MeasureApp.Services.Script
             SkipEmptyLine();
 
             // 运行当前行
-            if (CurrentLine <= ScriptLines?.Length)
+            if (CurrentLine > ScriptLines?.Length)
+                return;
+
+            // 若存在注释则滤除注释
+            string scriptLine = ScriptLines[CurrentLine - 1].Split('#', 2).First().Trim();
+
+            ExecutionDirective directive = string.IsNullOrEmpty(scriptLine)
+            ? ContinueExecution.Instance
+            : await EmitAsync(scriptLine);
+
+            // --- Process the returned directive ---
+            switch (directive)
             {
-                // 若存在注释则滤除注释
-                string scriptLine = ScriptLines[CurrentLine - 1];
-                if (ScriptLines[CurrentLine - 1].Contains('#'))
-                    scriptLine = scriptLine.Split('#', 2).First().Trim();
-
-                if (scriptLine.Length > 0)
-                    await EmitAsync(scriptLine);
+                case ContinueExecution:
+                    CurrentLine++;
+                    break;
+                case JumpToLine jump:
+                    CurrentLine = jump.TargetLine;
+                    break;
+                case StopExecution:
+                    IsRunning = false;
+                    CurrentLine++;
+                    break;
             }
-
-            CurrentLine++;
 
             // 跳过后空行
             SkipEmptyLine();
@@ -138,24 +172,21 @@ namespace MeasureApp.Services.Script
         {
             try
             {
-                IsRunning = true;
-                while (CurrentLine <= ScriptLines?.Length)
+                while (IsRunning && !_cts.IsCancellationRequested)
                 {
-                    if (_cts.IsCancellationRequested)
-                        return;
+                    if (CurrentLine > ScriptLines?.Length)
+                    {
+                        IsRunning = false;
+                        break;
+                    }
 
                     await RunOneLineAsync();
 
-                    // 最后一行不需要delay
-                    if (CurrentLine > ScriptLines?.Length)
-                        break;
-
-                    // 延迟
-                    await Task.Delay(Interval, _cts.Token);
+                    if (IsRunning)
+                    {
+                        await Task.Delay(Interval, _cts.Token);
+                    }
                 }
-
-                // 运行结束置起始位
-                CurrentLine = 1;
             }
             catch (TaskCanceledException)
             {
@@ -163,11 +194,14 @@ namespace MeasureApp.Services.Script
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString());
+                MessageBox.Show($"Error on line {CurrentLine}: {ex}");
             }
             finally
             {
-                _cts.Cancel();
+                if (CurrentLine > ScriptLines?.Length)
+                {
+                    CurrentLine = 1;
+                }
                 IsRunning = false;
             }
         }
@@ -175,7 +209,7 @@ namespace MeasureApp.Services.Script
         /// <summary>
         /// The refactored Emit method. It now dispatches commands instead of handling them directly.
         /// </summary>
-        private async Task EmitAsync(string code)
+        private async Task<ExecutionDirective> EmitAsync(string code)
         {
             if (XmlTag.IsMatchXmlTag(code))
             {
@@ -183,22 +217,40 @@ namespace MeasureApp.Services.Script
                 var parameters = new CommandParameters(attributes);
                 string commandName = parameters.CommandName.ToUpperInvariant();
 
+                // --- 1. Handle internal control flow commands first ---
+                switch (commandName)
+                {
+                    case "STOP":
+                        return StopExecution.Instance;
+                    case "FOR":
+                        return HandleFor(parameters);
+                    case "ENDFOR":
+                        return HandleEndFor();
+                    case "IF":
+                        return HandleIf(parameters);
+                    case "ELSE":
+                        return HandleElse();
+                    case "ENDIF":
+                        return HandleEndIf();
+                }
+
+                // --- 2. If not a control flow command, dispatch to registered action commands ---
                 if (_commands.TryGetValue(commandName, out IScriptCommand command))
                 {
                     // Found a registered command, execute it
-                    await command.ExecuteAsync(_scriptContext, parameters);
+                    return await command.ExecuteAsync(_scriptContext, parameters);
                 }
                 else
                 {
-                    // Command not found, you can log a warning or throw an exception
-                    Console.WriteLine($"Warning: Unknown script command '{commandName}'");
-                    // Optionally, you could fall back to the default IO behavior here too
+                    MessageBox.Show($"Warning: Unknown script command '{commandName}'");
+                    return ContinueExecution.Instance;
                 }
             }
             else
             {
                 // Default operation for non-tagged commands
-                if (_environment.TryGet<string>(EnvDefaultIOName, out var defaultIOKey) && !string.IsNullOrEmpty(defaultIOKey))
+                if (_environment.TryGet<string>(EnvDefaultIOName, out var defaultIOKey)
+                    && !string.IsNullOrEmpty(defaultIOKey))
                 {
                     await _context.Devices[defaultIOKey].SendAscii(code + "\n");
                 }
@@ -206,7 +258,133 @@ namespace MeasureApp.Services.Script
                 {
                     throw new InvalidOperationException("No default IO device specified for raw command.");
                 }
+                return ContinueExecution.Instance;
             }
         }
+
+
+        #region Internal Control Flow Handlers
+
+        private ExecutionDirective HandleFor(CommandParameters parameters)
+        {
+            var variable = parameters.Get<string>("var");
+            var start = parameters.Get<double>("from");
+            var end = parameters.Get<double>("to");
+            var step = parameters.Get<double>("step", 1.0);
+
+            _environment.Set(variable, start.ToString());
+            bool conditionMet = (step > 0) ? (start <= end) : (start >= end);
+
+            if (conditionMet)
+            {
+                _controlFlow.Push(new ForLoopState(CurrentLine, variable, end, step));
+                return ContinueExecution.Instance;
+            }
+            else
+            {
+                int endForLine = FindMatchingEndTag(CurrentLine + 1, "FOR", "ENDFOR");
+                return new JumpToLine(endForLine + 1);
+            }
+        }
+
+        private ExecutionDirective HandleEndFor()
+        {
+            if (!_controlFlow.TryPop(out var state) || state is not ForLoopState loopState)
+                throw new InvalidOperationException($"ENDFOR on line {CurrentLine} has no matching FOR.");
+
+            double currentValue = _environment.Get<double>(loopState.Variable);
+            double nextValue = currentValue + loopState.Step;
+            _environment.Set(loopState.Variable, nextValue.ToString());
+
+            bool conditionMet = (loopState.Step > 0) ? (nextValue <= loopState.End) : (nextValue >= loopState.End);
+
+            if (conditionMet)
+            {
+                _controlFlow.Push(loopState);
+                return new JumpToLine(loopState.StartLine + 1);
+            }
+            else
+            {
+                return ContinueExecution.Instance;
+            }
+        }
+
+        private ExecutionDirective HandleIf(CommandParameters parameters)
+        {
+            // Example: <if condition="true"> or <if condition="{var} > 5">
+            // For now, we'll keep it simple. A full expression parser is a larger topic.
+            bool condition = parameters.Get<bool>("condition");
+
+            // Check if an ELSE tag exists for this IF block
+            bool elseExists = false;
+            try
+            { FindMatchingEndTag(CurrentLine + 1, "IF", "ELSE"); elseExists = true; }
+            catch { }
+
+            _controlFlow.Push(new IfState(CurrentLine, condition, elseExists));
+
+            if (condition)
+            {
+                return ContinueExecution.Instance;
+            }
+            else
+            {
+                if (elseExists)
+                {
+                    int elseLine = FindMatchingEndTag(CurrentLine + 1, "IF", "ELSE");
+                    return new JumpToLine(elseLine + 1);
+                }
+                int endIfLine = FindMatchingEndTag(CurrentLine + 1, "IF", "ENDIF");
+                return new JumpToLine(endIfLine + 1);
+            }
+        }
+
+        private ExecutionDirective HandleElse()
+        {
+            if (!_controlFlow.TryPeek(out var state) || state is not IfState ifState)
+                throw new InvalidOperationException($"ELSE on line {CurrentLine} has no matching IF.");
+
+            if (ifState.ConditionMet)
+            {
+                int endIfLine = FindMatchingEndTag(CurrentLine + 1, "ELSE", "ENDIF");
+                return new JumpToLine(endIfLine + 1);
+            }
+            else
+            {
+                return ContinueExecution.Instance;
+            }
+        }
+
+        private ExecutionDirective HandleEndIf()
+        {
+            if (!_controlFlow.TryPop(out var state) || state is not IfState)
+                throw new InvalidOperationException($"ENDIF on line {CurrentLine} has no matching IF.");
+
+            return ContinueExecution.Instance;
+        }
+
+        private int FindMatchingEndTag(int startLine, string openTag, string closeTag)
+        {
+            int nestingLevel = 1;
+            for (int i = startLine - 1; i < ScriptLines.Length; i++)
+            {
+                string line = ScriptLines[i].Split('#', 2).First().Trim();
+                if (XmlTag.IsMatchXmlTag(line))
+                {
+                    var tag = XmlTag.GetXmlTagAttrs(line)["Tag"];
+                    if (tag.Equals(openTag, StringComparison.OrdinalIgnoreCase))
+                        nestingLevel++;
+                    else if (tag.Equals(closeTag, StringComparison.OrdinalIgnoreCase))
+                    {
+                        nestingLevel--;
+                        if (nestingLevel == 0)
+                            return i + 1; // 1-based
+                    }
+                }
+            }
+            throw new InvalidOperationException($"Could not find matching '{closeTag}' for '{openTag}' on line {startLine - 1}.");
+        }
+
+        #endregion
     }
 }

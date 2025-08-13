@@ -18,9 +18,9 @@ namespace MeasureApp.Services.Script.Commands
             }
 
             // Set the environment variable in the context
-            context.Environment[key] = value;
+            context.Environment.Set(key, value);
 
-            return Task.CompletedTask;
+            return Task.FromResult<ExecutionDirective>(ContinueExecution.Instance);
         }
     }
 }
