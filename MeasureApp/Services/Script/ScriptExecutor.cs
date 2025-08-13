@@ -139,47 +139,6 @@ namespace MeasureApp.Services.Script
                 CurrentLine++;
         }
 
-        private async Task RunOneLineAsync()
-        {
-            // 跳过前空行
-            SkipEmptyLine();
-
-            // 运行当前行
-            if (CurrentLine > ScriptLines?.Length)
-                return;
-
-            // 若存在注释则滤除注释
-            string scriptLine = ScriptLines[CurrentLine - 1].Split('#', 2).First().Trim();
-
-            ExecutionDirective directive = string.IsNullOrEmpty(scriptLine)
-                ? ContinueExecution.Instance
-                : await EmitAsync(scriptLine);
-
-            // --- Process the returned directive ---
-            switch (directive)
-            {
-                case ContinueExecution:
-                    CurrentLine++;
-                    break;
-                case JumpToLine jump:
-                    CurrentLine = jump.TargetLine;
-                    break;
-                case StopExecution:
-                    SetIsRunning(false);
-                    CurrentLine++;
-                    break;
-            }
-
-            // 跳过后空行
-            SkipEmptyLine();
-
-            if (CurrentLine > ScriptLines?.Length)
-            {
-                SetIsRunning(false);
-                CurrentLine = 1;
-            }
-        }
-
         public async Task ExecTaskAsync()
         {
             try
@@ -193,7 +152,7 @@ namespace MeasureApp.Services.Script
                         break;
                     }
 
-                    await RunOneLineAsync();
+                    await RunOneLineAsync(_cts.Token);
 
                     if (_executionMode == ScriptExecutionMode.Step)
                     {
@@ -224,10 +183,52 @@ namespace MeasureApp.Services.Script
             }
         }
 
+        private async Task RunOneLineAsync(CancellationToken cancellationToken)
+        {
+            // 跳过前空行
+            SkipEmptyLine();
+
+            // 运行当前行
+            if (CurrentLine > ScriptLines?.Length)
+                return;
+
+            // 若存在注释则滤除注释
+            string scriptLine = ScriptLines[CurrentLine - 1].Split('#', 2).First().Trim();
+
+            ExecutionDirective directive = string.IsNullOrEmpty(scriptLine)
+                ? ContinueExecution.Instance
+                : await EmitAsync(scriptLine, cancellationToken);
+
+            // --- Process the returned directive ---
+            switch (directive)
+            {
+                case ContinueExecution:
+                    CurrentLine++;
+                    break;
+                case JumpToLine jump:
+                    CurrentLine = jump.TargetLine;
+                    break;
+                case StopExecution:
+                    SetIsRunning(false);
+                    CurrentLine++;
+                    break;
+            }
+
+            // 跳过后空行
+            SkipEmptyLine();
+
+            if (CurrentLine > ScriptLines?.Length)
+            {
+                SetIsRunning(false);
+                CurrentLine = 1;
+            }
+        }
+
+
         /// <summary>
         /// The refactored Emit method. It now dispatches commands instead of handling them directly.
         /// </summary>
-        private async Task<ExecutionDirective> EmitAsync(string code)
+        private async Task<ExecutionDirective> EmitAsync(string code, CancellationToken cancellationToken)
         {
             if (XmlTag.IsMatchXmlTag(code))
             {
@@ -256,7 +257,7 @@ namespace MeasureApp.Services.Script
                 if (_commands.TryGetValue(commandName, out IScriptCommand command))
                 {
                     // Found a registered command, execute it
-                    return await command.ExecuteAsync(_scriptContext, parameters);
+                    return await command.ExecuteAsync(_scriptContext, parameters, cancellationToken);
                 }
                 else
                 {

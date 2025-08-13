@@ -1,5 +1,6 @@
 using MeasureApp.Model.Script;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MeasureApp.Services.Script.Commands
@@ -7,7 +8,7 @@ namespace MeasureApp.Services.Script.Commands
     [ScriptCommand("ENV")]
     public class EnvCommand : IScriptCommand
     {
-        public Task<ExecutionDirective> ExecuteAsync(ScriptContext context, CommandParameters parameters)
+        public Task<ExecutionDirective> ExecuteAsync(ScriptContext context, CommandParameters parameters, CancellationToken cancellationToken)
         {
             string key = parameters.Get<string>("key");
             string value = parameters.Get<string>("value");

@@ -1,4 +1,5 @@
 using MeasureApp.Model.Script;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MeasureApp.Services.Script.Commands
@@ -7,12 +8,19 @@ namespace MeasureApp.Services.Script.Commands
     public class DelayCommand : IScriptCommand
     {
         // <delay time="..."/>
-        public async Task<ExecutionDirective> ExecuteAsync(ScriptContext context, CommandParameters parameters)
+        public async Task<ExecutionDirective> ExecuteAsync(ScriptContext context, CommandParameters parameters, CancellationToken cancellationToken)
         {
-            // Get "ms" parameter, default to 1000ms if not provided.
+            // Get "time" parameter, default to 1000ms if not provided.
             int milliseconds = parameters.Get<int>("time", 1000);
 
-            await Task.Delay(milliseconds);
+            try
+            {
+                await Task.Delay(milliseconds, cancellationToken);
+            }
+            catch (TaskCanceledException)
+            {
+                return StopExecution.Instance;
+            }
 
             return ContinueExecution.Instance;
         }

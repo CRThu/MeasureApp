@@ -1,6 +1,8 @@
 using MeasureApp.Model.Script;
 using MeasureApp.Services.ScriptLibrary;
+using ScottPlot.TickGenerators.TimeUnits;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MeasureApp.Services.Script.Commands
@@ -10,7 +12,7 @@ namespace MeasureApp.Services.Script.Commands
     {
         // <measure addr="Serial::Serial::COM100" mode="DCV"/>
         // <measure addr="NiVisa::NiVisa::ASRL100::INSTR" mode="DCV"/>
-        public async Task<ExecutionDirective> ExecuteAsync(ScriptContext context, CommandParameters parameters)
+        public async Task<ExecutionDirective> ExecuteAsync(ScriptContext context, CommandParameters parameters, CancellationToken cancellationToken)
         {
             // Get "addr" parameter, if not present, try to get it from the environment default.
             string addr = parameters.Get<string>("addr");
@@ -27,7 +29,14 @@ namespace MeasureApp.Services.Script.Commands
             string mode = parameters.Get<string>("mode");
             string storeKey = parameters.Get<string>("key"); // Optional key for data storage
 
-            await Measurement.QueryAsync(context.AppContext, addr, mode, storeKey);
+            try
+            {
+                await Measurement.QueryAsync(context.AppContext, addr, mode, storeKey, cancellationToken);
+            }
+            catch (TaskCanceledException)
+            {
+                return StopExecution.Instance;
+            }
 
             return ContinueExecution.Instance;
         }

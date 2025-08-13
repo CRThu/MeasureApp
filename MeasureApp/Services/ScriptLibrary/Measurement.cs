@@ -5,13 +5,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MeasureApp.Services.ScriptLibrary
 {
     public static class Measurement
     {
-        public static async Task QueryAsync(AppContextManager context, string sessionKey, string command, string storeKey = null)
+        public static async Task QueryAsync(AppContextManager context, string sessionKey, string command, string storeKey = null, CancellationToken? cancellationToken = null)
         {
             await context.Devices[sessionKey].SendAscii(command + "\n");
             var pkt = await context.Devices[sessionKey].ReadAsync();
