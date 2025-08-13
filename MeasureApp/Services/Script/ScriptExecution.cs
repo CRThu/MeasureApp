@@ -14,7 +14,7 @@ using System.Windows.Forms;
 
 namespace MeasureApp.Services.Script
 {
-    public partial class ScriptExec : ObservableObject
+    public partial class ScriptExecution : ObservableObject
     {
         public readonly string EnvDefaultIOName = "Env::Default::IO";
         public readonly string EnvDefaultMeasureName = "Env::Default::Measure";
@@ -35,8 +35,10 @@ namespace MeasureApp.Services.Script
         [ObservableProperty]
         private int currentLine = 1;
 
-        [ObservableProperty]
-        private bool isRunning;
+        private volatile ScriptExecutionMode _executionMode = ScriptExecutionMode.None;
+        private int _isRunningFlag = 0;
+
+        public bool IsRunning => _isRunningFlag == 1;
 
         private Task _exec;
         private CancellationTokenSource _cts;
@@ -47,11 +49,11 @@ namespace MeasureApp.Services.Script
 
         public ScriptEnvironment Environment => _environment;
 
-        public ScriptExec(AppContextManager context)
+        public ScriptExecution(AppContextManager context)
         {
             _context = context;
             _environment = new ScriptEnvironment();
-            _scriptContext = new ScriptContext(_context, _environment);
+            _scriptContext = new ScriptContext(_context, _environment, this);
 
             // Automatically register commands on initialization
             RegisterCommands();
@@ -77,7 +79,17 @@ namespace MeasureApp.Services.Script
             }
         }
 
-        public void Step()
+        private void SetIsRunning(bool value)
+        {
+            int newVal = value ? 1 : 0;
+            int oldVal = Interlocked.Exchange(ref _isRunningFlag, newVal);
+            if (oldVal != newVal)
+            {
+                OnPropertyChanged(nameof(IsRunning));
+            }
+        }
+
+        public void Start(ScriptExecutionMode mode)
         {
             if (IsRunning)
                 return;
@@ -91,27 +103,18 @@ namespace MeasureApp.Services.Script
                 return;
             }
 
-            IsRunning = true;
-            RunOneLineAsync().GetAwaiter().GetResult();
-            IsRunning = false;
-
-            if (CurrentLine > ScriptLines?.Length)
-            {
-                CurrentLine = 1;
-            }
+            _executionMode = mode;
+            EnsureTaskIsRunning();
         }
 
-        public void Start()
+        private void EnsureTaskIsRunning()
         {
-            if (CurrentLine > ScriptLines?.Length)
+            if (!IsRunning)
             {
-                MessageBox.Show("current line out of range.");
-                return;
+                SetIsRunning(true);
+                _cts = new CancellationTokenSource();
+                _exec = Task.Run(ExecTaskAsync, _cts.Token);
             }
-
-            _cts = new CancellationTokenSource();
-            IsRunning = true;
-            _exec = Task.Run(ExecTaskAsync);
         }
 
         public void Stop()
@@ -121,6 +124,9 @@ namespace MeasureApp.Services.Script
 
         public void Reset()
         {
+            if (IsRunning)
+                return;
+
             CurrentLine = 1;
             //_environment.Clear();
             _controlFlow.Clear();
@@ -146,8 +152,8 @@ namespace MeasureApp.Services.Script
             string scriptLine = ScriptLines[CurrentLine - 1].Split('#', 2).First().Trim();
 
             ExecutionDirective directive = string.IsNullOrEmpty(scriptLine)
-            ? ContinueExecution.Instance
-            : await EmitAsync(scriptLine);
+                ? ContinueExecution.Instance
+                : await EmitAsync(scriptLine);
 
             // --- Process the returned directive ---
             switch (directive)
@@ -159,28 +165,40 @@ namespace MeasureApp.Services.Script
                     CurrentLine = jump.TargetLine;
                     break;
                 case StopExecution:
-                    IsRunning = false;
+                    SetIsRunning(false);
                     CurrentLine++;
                     break;
             }
 
             // 跳过后空行
             SkipEmptyLine();
+
+            if (CurrentLine > ScriptLines?.Length)
+            {
+                SetIsRunning(false);
+                CurrentLine = 1;
+            }
         }
 
         public async Task ExecTaskAsync()
         {
             try
             {
-                while (IsRunning && !_cts.IsCancellationRequested)
+                while (IsRunning)
                 {
+                    _cts.Token.ThrowIfCancellationRequested();
+
                     if (CurrentLine > ScriptLines?.Length)
                     {
-                        IsRunning = false;
                         break;
                     }
 
                     await RunOneLineAsync();
+
+                    if (_executionMode == ScriptExecutionMode.Step)
+                    {
+                        break;
+                    }
 
                     if (IsRunning)
                     {
@@ -198,11 +216,11 @@ namespace MeasureApp.Services.Script
             }
             finally
             {
+                SetIsRunning(false);
                 if (CurrentLine > ScriptLines?.Length)
                 {
                     CurrentLine = 1;
                 }
-                IsRunning = false;
             }
         }
 
@@ -265,11 +283,24 @@ namespace MeasureApp.Services.Script
 
         #region Internal Control Flow Handlers
 
+        /*
+            <for var="i" begin="1" end="2" step="1"/>
+                <for var="j" begin="1" end="3" step="1"/>
+                    REGW;{i:X};{j:D};
+                <forend/>
+            <forend/>
+        
+            <if condition="true"/>
+                IF.TRUE;
+            <else/>
+                IF.FALSE;
+            <endif/>
+         */
         private ExecutionDirective HandleFor(CommandParameters parameters)
         {
             var variable = parameters.Get<string>("var");
-            var start = parameters.Get<double>("from");
-            var end = parameters.Get<double>("to");
+            var start = parameters.Get<double>("begin");
+            var end = parameters.Get<double>("end");
             var step = parameters.Get<double>("step", 1.0);
 
             _environment.Set(variable, start.ToString());

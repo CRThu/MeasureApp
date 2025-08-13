@@ -22,7 +22,7 @@ namespace MeasureApp.ViewModel
         public AppContextManager Context => _context;
 
         [ObservableProperty]
-        private ScriptExec exec;
+        private ScriptExecution exec;
 
         //[ObservableProperty]
         //private ObservableCollection<ScriptViewer> scriptViewers = new()
@@ -37,7 +37,7 @@ namespace MeasureApp.ViewModel
         public ScriptRunnerVM(AppContextManager context)
         {
             _context = context;
-            Exec = new ScriptExec(_context);
+            Exec = new ScriptExecution(_context);
         }
 
         partial void OnSelectedDeviceChanged(ConnectionInfo value)
@@ -66,12 +66,7 @@ namespace MeasureApp.ViewModel
             {
                 if (!Exec.IsRunning)
                 {
-                    if (SelectedDevice == null)
-                    {
-                        MessageBox.Show("需要选择设备");
-                        return;
-                    }
-                    Exec.Start();
+                    Exec.Start(ScriptExecutionMode.Continuous);
                 }
                 else
                 {
@@ -91,7 +86,7 @@ namespace MeasureApp.ViewModel
             {
                 if (!Exec.IsRunning)
                 {
-                    Exec.Step();
+                    Exec.Start(ScriptExecutionMode.Step);
                 }
             }
             catch (Exception ex)

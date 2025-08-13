@@ -16,7 +16,7 @@ namespace MeasureApp.Services.Script.Commands
             string addr = parameters.Get<string>("addr");
             if (string.IsNullOrEmpty(addr))
             {
-                context.Environment.Get<string>("Env::Default::Measure", out addr);
+                addr = context.Environment.Get<string>("Env::Default::Measure");
             }
 
             if (string.IsNullOrEmpty(addr))
