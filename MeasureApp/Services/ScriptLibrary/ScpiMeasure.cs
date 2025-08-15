@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace MeasureApp.Services.ScriptLibrary
 {
-    public static class Measurement
+    public static class ScpiMeasure
     {
         public static async Task QueryAsync(AppContextManager context, string sessionKey, string command, string storeKey = null, CancellationToken? cancellationToken = null)
         {

@@ -31,7 +31,7 @@ namespace MeasureApp.Services.Script.Commands
 
             try
             {
-                await Measurement.QueryAsync(context.AppContext, addr, mode, storeKey, cancellationToken);
+                await ScpiMeasure.QueryAsync(context.AppContext, addr, mode, storeKey, cancellationToken);
             }
             catch (TaskCanceledException)
             {
