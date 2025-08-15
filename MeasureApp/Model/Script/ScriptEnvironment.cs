@@ -40,5 +40,19 @@ namespace MeasureApp.Model.Script
                 _parameters.Clear();
             }
         }
+
+
+        /// <summary>
+        /// Gets a snapshot of all variables, converting them to decimal for expression evaluation.
+        /// </summary>
+        public Dictionary<string, decimal> GetAllVariables()
+        {
+            lock (_lock)
+            {
+                return _parameters
+                    .Where(kvp => !kvp.Value.Contains('[') && decimal.TryParse(kvp.Value, out _))
+                    .ToDictionary(kvp => kvp.Key, kvp => Convert.ToDecimal(kvp.Value));
+            }
+        }
     }
 }

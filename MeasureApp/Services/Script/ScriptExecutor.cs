@@ -3,11 +3,14 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using MeasureApp.Model.Script;
 using MeasureApp.Model.SerialPortScript;
 using MeasureApp.Services.ScriptLibrary;
+using NCalc;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -18,6 +21,9 @@ namespace MeasureApp.Services.Script
     {
         public readonly string EnvDefaultIOName = "Env::Default::IO";
         public readonly string EnvDefaultMeasureName = "Env::Default::Measure";
+
+        // 正则表达式用于匹配 {expression:format} 或 {expression}
+        private static readonly Regex _inlineExpressionRegex = new Regex(@"\{([^}]+)\}", RegexOptions.Compiled);
 
         // A dictionary to hold registered script commands
         private readonly Dictionary<string, IScriptCommand> _commands = new();
@@ -230,9 +236,12 @@ namespace MeasureApp.Services.Script
         /// </summary>
         private async Task<ExecutionDirective> EmitAsync(string code, CancellationToken cancellationToken)
         {
-            if (XmlTag.IsMatchXmlTag(code))
+            // --- 在所有处理之前，先解析内联表达式 ---
+            string evaluatedCode = EvaluateInlineExpressions(code);
+
+            if (XmlTag.IsMatchXmlTag(evaluatedCode))
             {
-                var attributes = XmlTag.GetXmlTagAttrs(code);
+                var attributes = XmlTag.GetXmlTagAttrs(evaluatedCode);
                 var parameters = new CommandParameters(attributes);
                 string commandName = parameters.CommandName.ToUpperInvariant();
 
@@ -271,7 +280,7 @@ namespace MeasureApp.Services.Script
                 if (_environment.TryGet<string>(EnvDefaultIOName, out var defaultIOKey)
                     && !string.IsNullOrEmpty(defaultIOKey))
                 {
-                    await _context.Devices[defaultIOKey].SendAscii(code + "\n");
+                    await _context.Devices[defaultIOKey].SendAscii(evaluatedCode + "\n");
                 }
                 else
                 {
@@ -281,6 +290,89 @@ namespace MeasureApp.Services.Script
             }
         }
 
+        /// <summary>
+        /// Creates a new NCalc Expression instance with the current script environment's variables.
+        /// </summary>
+        /// <param name="expressionText">The string expression to evaluate.</param>
+        /// <returns>A configured NCalc Expression object.</returns>
+        private Expression CreateExpression(string expressionText)
+        {
+            var expression = new Expression(expressionText);
+
+            // 将脚本环境中的所有变量注入到表达式上下文中
+            foreach (var variable in _environment.GetAllVariables())
+            {
+                expression.Parameters[variable.Key] = variable.Value;
+            }
+
+            // (可选) 添加自定义函数
+            expression.EvaluateFunction += (name, args) =>
+            {
+                if (name.Equals("round", StringComparison.OrdinalIgnoreCase))
+                {
+                    args.Result = Math.Round(Convert.ToDecimal(args.Parameters[0].Evaluate()));
+                }
+            };
+
+            return expression;
+        }
+
+        /// <summary>
+        /// Parses a string containing inline expressions like "{i+j:X}" and evaluates them.
+        /// </summary>
+        /// <param name="input">The raw string from the script.</param>
+        /// <returns>The processed string with expressions replaced by their results.</returns>
+        private string EvaluateInlineExpressions(string input)
+        {
+            return _inlineExpressionRegex.Replace(input, match =>
+            {
+                string fullMatch = match.Groups[1].Value; // "i+j:X" or "i"
+                string expressionText = fullMatch;
+                string format = null;
+
+                // 检查是否存在格式化字符串
+                int colonIndex = fullMatch.LastIndexOf(':');
+                if (colonIndex > 0)
+                {
+                    expressionText = fullMatch.Substring(0, colonIndex).Trim();
+                    format = fullMatch.Substring(colonIndex + 1).Trim();
+                }
+
+                // 求值
+                var expression = CreateExpression(expressionText);
+                object result;
+                try
+                {
+                    result = expression.Evaluate();
+                }
+                catch (Exception ex)
+                {
+                    throw new InvalidOperationException($"Failed to evaluate inline expression '{{{expressionText}}}'. Error: {ex.Message}");
+                }
+
+                // 格式化输出
+                if (string.IsNullOrEmpty(format))
+                {
+                    return result.ToString();
+                }
+                else
+                {
+                    // 支持标准的 .NET 格式化字符串 (X, D, F2, etc.)
+                    if (result is IFormattable formattable)
+                    {
+                        // 对于十六进制，需要先转为整数
+                        if (format.StartsWith("X", StringComparison.OrdinalIgnoreCase)
+                        || format.StartsWith("D", StringComparison.OrdinalIgnoreCase))
+                        {
+                            return Convert.ToInt64(result).ToString(format);
+                        }
+                        //return formattable.ToString(format, CultureInfo.InvariantCulture);
+                        throw new FormatException($"Format Error, result:{result}, format:{format}.");
+                    }
+                    return result.ToString();
+                }
+            });
+        }
 
         #region Internal Control Flow Handlers
 
@@ -344,18 +436,34 @@ namespace MeasureApp.Services.Script
         private ExecutionDirective HandleIf(CommandParameters parameters)
         {
             // Example: <if condition="true"> or <if condition="{var} > 5">
-            // For now, we'll keep it simple. A full expression parser is a larger topic.
-            bool condition = parameters.Get<bool>("condition");
+            string conditionExpression = parameters.Get<string>("condition");
+            if (string.IsNullOrEmpty(conditionExpression))
+                throw new ArgumentException("IF command requires a 'condition' parameter.");
+
+            // 使用 NCalc 求值
+            var expression = CreateExpression(conditionExpression);
+            bool conditionMet = false;
+            try
+            {
+                conditionMet = Convert.ToBoolean(expression.Evaluate());
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Failed to evaluate IF condition '{conditionExpression}'. Error: {ex.Message}");
+            }
 
             // Check if an ELSE tag exists for this IF block
             bool elseExists = false;
             try
-            { FindMatchingEndTag(CurrentLine + 1, "IF", "ELSE"); elseExists = true; }
+            {
+                FindMatchingEndTag(CurrentLine + 1, "IF", "ELSE");
+                elseExists = true;
+            }
             catch { }
 
-            _controlFlow.Push(new IfState(CurrentLine, condition, elseExists));
+            _controlFlow.Push(new IfState(CurrentLine, conditionMet, elseExists));
 
-            if (condition)
+            if (conditionMet)
             {
                 return ContinueExecution.Instance;
             }
