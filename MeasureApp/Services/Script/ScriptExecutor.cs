@@ -366,6 +366,10 @@ namespace MeasureApp.Services.Script
                         {
                             return Convert.ToInt64(result).ToString(format);
                         }
+                        else if (format.StartsWith("F", StringComparison.OrdinalIgnoreCase))
+                        {
+                            return Convert.ToDecimal(result).ToString(format);
+                        }
                         //return formattable.ToString(format, CultureInfo.InvariantCulture);
                         throw new FormatException($"Format Error, result:{result}, format:{format}.");
                     }
