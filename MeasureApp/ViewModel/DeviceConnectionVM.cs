@@ -189,6 +189,8 @@ namespace MeasureApp.ViewModel
                     {
                         DeviceId = $"{SelectedDevice.Interface} | {SelectedDevice.Name}",
                         SerialNumber = SelectedDevice.Name,
+                        Mode = FtdiCommMode.AsyncFifo,
+                        Model = FtdiModel.Ft2232h,
                     };
                     dev = DeviceFactory.Create(InterfaceType.Ftdi, config);
                     break;
