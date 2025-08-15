@@ -19,8 +19,7 @@ namespace MeasureApp.Services.ScriptLibrary
 
             if (pkt is IDataPacket dataPacket)
             {
-                // todo
-                var data = dataPacket.Get<double>(0)[0];
+                var data = dataPacket.Get<double>(dataPacket.Keys[0])[0];
                 context.DataLogger.Add(storeKey ?? $"{sessionKey}::{command}", data);
             }
         }
