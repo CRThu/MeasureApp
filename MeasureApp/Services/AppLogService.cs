@@ -62,7 +62,7 @@ namespace MeasureApp.Services
                 Message = message
             };
 
-            Application.Current.Dispatcher.BeginInvoke(() => Logs.Add(logEntry), DispatcherPriority.Background);
+            Application.Current?.Dispatcher?.BeginInvoke(() => Logs.Add(logEntry), DispatcherPriority.Background);
         }
     }
 
