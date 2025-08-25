@@ -42,13 +42,6 @@ namespace MeasureApp.Services
 
         [ObservableProperty]
         public string errorDesc;
-
-        public string InternalKey => GetInternalKey(Driver, Intf, Name);
-
-        public static string GetInternalKey(DriverType driver, InterfaceType intf, string name)
-        {
-            return $"{driver}::{intf}::{name}";
-        }
     }
 
     public partial class DeviceManager : ObservableObject, IDisposable
@@ -84,14 +77,12 @@ namespace MeasureApp.Services
                 {
                     foreach (var infoItem in Info)
                     {
-                        if (_sessions.TryGetValue(infoItem.InternalKey, out var session))
+                        if (_sessions.TryGetValue(infoItem.Name, out var session))
                         {
                             try
                             {
                                 infoItem.BytesSent = session.TotalWriteBytes;
                                 infoItem.BytesReceived = session.TotalReadBytes;
-
-                                // TODO
                                 infoItem.HasError = !session.IsAutoPollingTaskRunning;
                                 infoItem.ErrorDesc = session.ErrorDesc;
                             }
@@ -109,7 +100,7 @@ namespace MeasureApp.Services
             }
         }
 
-        public void AddService(DriverType driver, InterfaceType intf, string name, ProtocolType protocol, string config, DeviceSession service)
+        public void AddService(DriverType driver, InterfaceType intf, string name, ProtocolType protocol, string config, DeviceSession session)
         {
             var info = new ConnectionInfo()
             {
@@ -124,22 +115,24 @@ namespace MeasureApp.Services
                 ErrorDesc = ""
             };
 
-            if (_sessions.TryAdd(info.InternalKey, service))
+            if (_sessions.TryAdd(name, session))
             {
                 //Application.Current.Dispatcher.BeginInvoke(() => Info.Add(info));
                 Application.Current.Dispatcher.Invoke(() => Info.Add(info));
             }
             else
             {
-                // TODO
+                session.Dispose();
+                throw new InvalidOperationException($"A device with name '{name}' is already connected.");
             }
         }
 
         public void RemoveService(string key)
         {
-            if (_sessions.TryRemove(key, out var info))
+            if (_sessions.TryRemove(key, out var session))
             {
-                var itemToRemove = Info.FirstOrDefault(i => i.InternalKey == key);
+                session.Dispose();
+                var itemToRemove = Info.FirstOrDefault(i => i.Name == key);
                 if (itemToRemove != null)
                 {
                     //Application.Current.Dispatcher.BeginInvoke(() => Info.Remove(itemToRemove));

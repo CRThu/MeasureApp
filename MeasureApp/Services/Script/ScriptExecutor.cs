@@ -19,8 +19,8 @@ namespace MeasureApp.Services.Script
 {
     public partial class ScriptExecutor : ObservableObject
     {
-        public readonly string EnvDefaultIOName = "Env::Default::IO";
-        public readonly string EnvDefaultMeasureName = "Env::Default::Measure";
+        public static readonly string EnvDefaultIOName = "Env::Default::IO";
+        public static readonly string EnvDefaultMeasureName = "Env::Default::Measure";
 
         // 正则表达式用于匹配 {expression:format} 或 {expression}
         private static readonly Regex _inlineExpressionRegex = new Regex(@"\{([^}]+)\}", RegexOptions.Compiled);

@@ -16,7 +16,10 @@ namespace MeasureApp.ViewModel
     public partial class ScriptRunnerVM : BaseVM
     {
         [ObservableProperty]
-        private ConnectionInfo selectedDevice;
+        private ConnectionInfo defaultIO;
+
+        [ObservableProperty]
+        private ConnectionInfo defaultMeasure;
 
         private readonly AppContextManager _context;
         public AppContextManager Context => _context;
@@ -40,9 +43,14 @@ namespace MeasureApp.ViewModel
             Exec = new ScriptExecutor(_context);
         }
 
-        partial void OnSelectedDeviceChanged(ConnectionInfo value)
+        partial void OnDefaultIOChanged(ConnectionInfo value)
         {
-            Exec.Environment.Set(Exec.EnvDefaultIOName, value?.InternalKey);
+            Exec.Environment.Set(ScriptExecutor.EnvDefaultIOName, value?.Name);
+        }
+
+        partial void OnDefaultMeasureChanged(ConnectionInfo value)
+        {
+            Exec.Environment.Set(ScriptExecutor.EnvDefaultMeasureName, value?.Name);
         }
 
         [RelayCommand]

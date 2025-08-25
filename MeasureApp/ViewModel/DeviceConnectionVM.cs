@@ -37,10 +37,7 @@ namespace MeasureApp.ViewModel
         private DeviceInfo selectedDevice = default;
 
         public bool IsSelectedDeviceConnected =>
-            _context.Devices.Info.Any(
-                dev => dev.Name == SelectedDevice.Name
-                && dev.Driver == SelectedDevice.Driver
-                && dev.Intf == SelectedDevice.Interface);
+            _context.Devices.Info.Any(dev => dev.Name == SelectedDevice.Name);
 
         [ObservableProperty]
         private ProtocolType[] availableProtocols = Enum.GetValues<ProtocolType>();
@@ -224,10 +221,9 @@ namespace MeasureApp.ViewModel
 
         private void DisonnectDevice()
         {
-            string key = ConnectionInfo.GetInternalKey(SelectedDevice.Driver, SelectedDevice.Interface, SelectedDevice.Name);
+            string key = SelectedDevice.Name;
             _context.Devices[key].Device.Disconnect();
             _context.Devices[key].Device.Dispose();
-            _context.Devices[key].Dispose();
             _context.Devices.RemoveService(key);
         }
     }

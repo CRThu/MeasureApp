@@ -37,7 +37,7 @@ namespace MeasureApp.ViewModel
             {
                 if (SelectedDevice != null)
                 {
-                    Context.Devices[SelectedDevice.InternalKey].SendAscii(CommandPacketText + "\n");
+                    Context.Devices[SelectedDevice.Name].SendAscii(CommandPacketText + "\n");
                 }
             }
             catch (Exception ex)

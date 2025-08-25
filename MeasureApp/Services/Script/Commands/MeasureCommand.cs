@@ -10,15 +10,19 @@ namespace MeasureApp.Services.Script.Commands
     [ScriptCommand("MEASURE")]
     public class MeasureCommand : IScriptCommand
     {
-        // <measure addr="Serial::Serial::COM100" mode="DCV"/>
-        // <measure addr="NiVisa::NiVisa::ASRL100::INSTR" mode="DCV"/>
+        // <measure addr="COM100" mode="DCV"/>
+        // <measure addr="ASRL100::INSTR" mode="DCV"/>
+        /*
+<measure addr="USB0::0x0699::0x0413::C012473::INSTR" mode="*IDN?"/>
+<measure addr="USB0::0x0699::0x0413::C012473::INSTR" mode="MEASU:MEAS1:VAL?"/>
+         */
         public async Task<ExecutionDirective> ExecuteAsync(ScriptContext context, CommandParameters parameters, CancellationToken cancellationToken)
         {
             // Get "addr" parameter, if not present, try to get it from the environment default.
             string addr = parameters.Get<string>("addr");
             if (string.IsNullOrEmpty(addr))
             {
-                addr = context.Environment.Get<string>("Env::Default::Measure");
+                addr = context.Environment.Get<string>(ScriptExecutor.EnvDefaultMeasureName);
             }
 
             if (string.IsNullOrEmpty(addr))
