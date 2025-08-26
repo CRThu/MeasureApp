@@ -7,8 +7,9 @@
              xmlns:vm="clr-namespace:MeasureApp.ViewModel"
              xmlns:v="clr-namespace:MeasureApp.View"
              xmlns:c="clr-namespace:MeasureApp.View.Converter"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:hc="https://handyorg.github.io/handycontrol"
-             xmlns:sp="clr-namespace:ScottPlot.WPF;assembly=ScottPlot.WPF"
+             xmlns:ScottPlot="clr-namespace:ScottPlot.WPF;assembly=ScottPlot.WPF" xmlns:behaviors="clr-namespace:MeasureApp.Behaviors"
              DataContext="{Binding Source={StaticResource Locator},Path=DataMonitor}"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="800">
@@ -74,7 +75,11 @@
                 </DataGrid.Columns>
             </DataGrid>
             <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch" VerticalAlignment="Center" Background="Gray"/>
-            <!--<sp:WpfPlot Grid.Row="2"/>-->
+            <ScottPlot:WpfPlot Grid.Row="2">
+                <i:Interaction.Behaviors>
+                    <behaviors:ScottPlotBehavior Plot="{Binding Plot, Mode=OneWayToSource}"/>
+                </i:Interaction.Behaviors>
+            </ScottPlot:WpfPlot>
         </Grid>
     </Grid>
 </UserControl>

@@ -151,8 +151,19 @@ namespace MeasureApp.Services
         private readonly ConcurrentQueue<DataLogValue> _quene = new ConcurrentQueue<DataLogValue>();
         private bool _disposed = false;
 
-        public readonly List<DataLogValue> items = new List<DataLogValue>();
-        public IReadOnlyList<DataLogValue> Items => items.AsReadOnly();
+        // The internal, mutable list. Access MUST be synchronized.
+        // 内部的可变列表。访问必须同步。
+        private readonly List<DataLogValue> _items = new List<DataLogValue>();
+
+        // A lock object dedicated to protecting the _items list.
+        // 一个专用于保护 _items 列表的锁对象。
+        private readonly object _itemsLock = new object();
+
+        // Public property returns a read-only wrapper for safe data binding.
+        // It does NOT provide thread safety for enumeration.
+        // 公共属性返回一个只读包装器，用于安全的数据绑定。
+        // 它不为枚举提供线程安全。
+        public IReadOnlyList<DataLogValue> Items => _items.AsReadOnly();
 
         public DataLogList()
         {
@@ -173,16 +184,42 @@ namespace MeasureApp.Services
 
         private void ProcessQuene()
         {
-            bool hasChanges = false;
+            var batch = new List<DataLogValue>();
             while (_quene.TryDequeue(out var dataLogValue))
             {
-                items.Add(dataLogValue);
-                hasChanges = true;
+                batch.Add(dataLogValue);
             }
-            if (hasChanges)
+
+            if (batch.Count > 0)
             {
-                // 手动触发更新
-                OnPropertyChanged(nameof(Items));
+                // Safely update the internal list.
+                // 安全地更新内部列表。
+                lock (_itemsLock)
+                {
+                    _items.AddRange(batch);
+                }
+
+                // Notify UI on the correct thread.
+                // 在正确的线程上通知UI。
+                Application.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    OnPropertyChanged(nameof(Items));
+                });
+            }
+        }
+
+        /// <summary>
+        /// Provides a thread-safe snapshot of the current data.
+        /// This is the correct way to access the collection for enumeration from a background thread.
+        /// 提供当前数据的线程安全快照。
+        /// 这是从后台线程访问集合以进行枚举的正确方法。
+        /// </summary>
+        /// <returns>A new array containing a copy of the data at this moment.</returns>
+        public DataLogValue[] GetSnapshot()
+        {
+            lock (_itemsLock)
+            {
+                return _items.ToArray();
             }
         }
 
