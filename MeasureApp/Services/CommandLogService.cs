@@ -36,12 +36,12 @@ namespace MeasureApp.Services
 
         }
 
-        public void HandlePacket(IPacket packet)
+        public void HandlePacket(IPacket packet, string sender)
         {
             CommandLogEntry logEntry = new CommandLogEntry()
             {
                 TimeStamp = DateTime.Now,
-                Sender = "<sender>",
+                Sender = sender ?? "<sender>",
                 Message = packet.ToString()
             };
             // TODO 性能优化
