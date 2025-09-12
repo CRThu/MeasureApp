@@ -76,7 +76,7 @@
                       Style="{StaticResource DataGrid.Small}" Margin="5,10,5,10"
                       ScrollViewer.VerticalScrollBarVisibility="Auto">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Data" Binding="{Binding .}" Width="120"/>
+                    <DataGridTextColumn Header="Data" Binding="{Binding .}" Width="200"/>
                 </DataGrid.Columns>
             </DataGrid>
             <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch" VerticalAlignment="Center" Background="Gray"/>
