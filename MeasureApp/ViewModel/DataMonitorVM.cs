@@ -7,7 +7,6 @@ using MeasureApp.Messages;
 using MeasureApp.Model.Common;
 using MeasureApp.Services;
 using ScottPlot;
-using ScottPlot.Plottables;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -182,26 +181,63 @@ namespace MeasureApp.ViewModel
         [RelayCommand]
         public void AddKey()
         {
-            Context.DataLogger.GetOrAddKey(AddKeyText);
-            if (SelectedKey == null)
-                SelectedKey = Context.DataLogger.Keys.FirstOrDefault();
+            try
+            {
+                Context.DataLogger.GetOrAddKey(AddKeyText);
+                if (SelectedKey == null)
+                    SelectedKey = Context.DataLogger.Keys.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
+            }
         }
 
         [RelayCommand]
         public void RemoveSelectedKey()
         {
-            if (SelectedKey != null && Context.DataLogger.Contains(SelectedKey))
+            try
             {
-                Context.DataLogger.RemoveKey(SelectedKey);
+                if (SelectedKey != null && Context.DataLogger.Contains(SelectedKey))
+                {
+                    Context.DataLogger.RemoveKey(SelectedKey);
+                }
+                SelectedKey = Context.DataLogger.Keys.FirstOrDefault();
             }
-            SelectedKey = Context.DataLogger.Keys.FirstOrDefault();
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
+            }
         }
 
         [RelayCommand]
         public void RemoveAllKeys()
         {
-            Context.DataLogger.Clear();
-            SelectedKey = null;
+            try
+            {
+                Context.DataLogger.Clear();
+                SelectedKey = null;
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
+            }
+        }
+
+        [RelayCommand]
+        public void CopySelectedKeyToClipboard()
+        {
+            try
+            {
+                if (SelectedKey != null && Context.DataLogger.Contains(SelectedKey))
+                {
+                    Context.DataLogger.CopyToClipboard(SelectedKey);
+                }
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
+            }
         }
 
         [RelayCommand]
