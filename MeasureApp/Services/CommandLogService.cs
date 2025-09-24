@@ -1,5 +1,6 @@
 ﻿using CarrotLink.Core.Logging;
 using CarrotLink.Core.Protocols.Models;
+using CarrotLink.Core.Utility;
 using CommunityToolkit.Mvvm.ComponentModel;
 using System;
 using System.Collections.Generic;
@@ -17,10 +18,11 @@ namespace MeasureApp.Services
         public DateTime TimeStamp { get; init; }
         public string Sender { get; init; }
         public string Message { get; init; }
+        public string FriendlyMessage => Message.ToEscapeString();
 
         public override string ToString()
         {
-            return $"[{TimeStamp:yyyy-MM-dd hh:mm:ss.fff}] {Sender}: {Message}";
+            return $"[{TimeStamp:yyyy-MM-dd hh:mm:ss.fff}] {Sender}: {FriendlyMessage}";
         }
     }
 

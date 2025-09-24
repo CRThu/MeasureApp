@@ -8,6 +8,7 @@
       xmlns:vmc="clr-namespace:MeasureApp.ViewModel.Common"
       xmlns:view="clr-namespace:MeasureApp.View.Control"
       xmlns:viewmodel="clr-namespace:MeasureApp.ViewModel"
+      xmlns:b="clr-namespace:MeasureApp.View.Behavior"
       mc:Ignorable="d"
       Title="SerialPortInstructionPage">
     <Page.Resources>
@@ -55,7 +56,7 @@
                 </GridView>
             </ListView.View>
             <i:Interaction.Behaviors>
-                <viewmodel:AutoScrollBehavior IsAutoScroll="{Binding ElementName=SerialPortCommandLogIsAutoScrollCheckBox, Path=IsChecked}"/>
+                <b:AutoScrollBehavior IsAutoScroll="{Binding ElementName=SerialPortCommandLogIsAutoScrollCheckBox, Path=IsChecked}"/>
             </i:Interaction.Behaviors>
         </ListView>
         <TabControl Margin="3,38,0,3" HorizontalAlignment="Left" Width="582" TabStripPlacement="Left">

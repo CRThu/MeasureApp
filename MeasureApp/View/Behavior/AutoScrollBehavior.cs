@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace MeasureApp.ViewModel
+namespace MeasureApp.View.Behavior
 {
     // Behavior<T> T设置行为产生作用的元素类型
     // ListBox/ListView

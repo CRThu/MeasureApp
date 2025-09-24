@@ -23,6 +23,9 @@ namespace MeasureApp.ViewModel
         private ConnectionInfo selectedDevice;
 
         [ObservableProperty]
+        private bool isLogAutoScroll = true;
+
+        [ObservableProperty]
         private string commandPacketText = "OPEN;";
 
         public DeviceDebugVM(AppContextManager context)
@@ -39,6 +42,30 @@ namespace MeasureApp.ViewModel
                 {
                     Context.Devices[SelectedDevice.Name].SendAscii(CommandPacketText + "\n");
                 }
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
+            }
+        }
+
+        [RelayCommand]
+        public void CleanLog()
+        {
+            try
+            {
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
+            }
+        }
+
+        [RelayCommand]
+        public void SaveLog()
+        {
+            try
+            {
             }
             catch (Exception ex)
             {
