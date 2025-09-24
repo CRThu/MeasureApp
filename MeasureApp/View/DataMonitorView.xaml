@@ -56,7 +56,7 @@
                 <TextBlock Text="复制到剪切板" VerticalAlignment="Center" Margin="5,0,0,0"/>
                 <Button Content="选中键" Command="{Binding CopySelectedKeyToClipboardCommand}" Margin="5,0,0,0"/>
             </StackPanel>
-            <StackPanel Grid.Row="5" Orientation="Horizontal" Margin="10,10,10,10">
+            <StackPanel Grid.Row="5" Visibility="Collapsed" Orientation="Horizontal" Margin="10,10,10,10">
                 <TextBlock Text="测试" VerticalAlignment="Center" Margin="10,0,10,0"/>
                 <Button Content="T:D+1" Command="{Binding DataTestCommand}" CommandParameter="D+1" Margin="5,0,0,0"/>
                 <Button Content="T:D+1M" Command="{Binding DataTestCommand}" CommandParameter="D+1M" Margin="5,0,0,0"/>

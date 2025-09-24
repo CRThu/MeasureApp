@@ -61,9 +61,24 @@
                             <ad:LayoutAnchorable Title="设备通信调试" CanHide="False">
                                 <v:DeviceDebugView Margin="10,10,10,10"/>
                             </ad:LayoutAnchorable>
-                            <ad:LayoutAnchorable Title="可视化" CanHide="False">
+                            <ad:LayoutAnchorable Title="通信日志" CanHide="False">
+                                <ad:LayoutAnchorable.Content>
+                                    <v:AppLogView Margin="10,10,10,10"/>
+                                </ad:LayoutAnchorable.Content>
+                            </ad:LayoutAnchorable>
+                            <ad:LayoutAnchorable Title="数据监视器" CanHide="False">
                                 <ad:LayoutAnchorable.Content>
                                     <v:DataMonitorView Margin="10,10,10,10"/>
+                                </ad:LayoutAnchorable.Content>
+                            </ad:LayoutAnchorable>
+                            <ad:LayoutAnchorable Title="数据可视化" CanHide="False">
+                                <ad:LayoutAnchorable.Content>
+                                    <v:DataPlotView Margin="10,10,10,10"/>
+                                </ad:LayoutAnchorable.Content>
+                            </ad:LayoutAnchorable>
+                            <ad:LayoutAnchorable Title="数据处理" CanHide="False">
+                                <ad:LayoutAnchorable.Content>
+                                    <v:DataProcView Margin="10,10,10,10"/>
                                 </ad:LayoutAnchorable.Content>
                             </ad:LayoutAnchorable>
                             <ad:LayoutAnchorable Title="脚本运行" CanHide="False">

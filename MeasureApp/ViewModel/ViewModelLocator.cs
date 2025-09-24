@@ -22,7 +22,11 @@ namespace MeasureApp.ViewModel
             container.Register<DeviceConnectionVM>();
             container.Register<DeviceDebugVM>();
             container.Register<DataMonitorVM>();
+            container.Register<DataProcVM>();
             container.Register<ScriptRunnerVM>();
+            // todo
+            container.Register<AppLogVM>();
+            container.Register<DataPlotVM>();
 
             container.Register<AppContextManager>(Reuse.Singleton);
             container.Register<DeviceManager>(Reuse.Singleton);
@@ -39,6 +43,10 @@ namespace MeasureApp.ViewModel
         public DeviceConnectionVM DeviceConnection => container.Resolve<DeviceConnectionVM>();
         public DeviceDebugVM DeviceDebug => container.Resolve<DeviceDebugVM>();
         public DataMonitorVM DataMonitor => container.Resolve<DataMonitorVM>();
+        public DataProcVM DataProc => container.Resolve<DataProcVM>();
         public ScriptRunnerVM ScriptRunner => container.Resolve<ScriptRunnerVM>();
+
+        public AppLogVM AppLog => container.Resolve<AppLogVM>();
+        public DataPlotVM DataPlot => container.Resolve<DataPlotVM>();
     }
 }
