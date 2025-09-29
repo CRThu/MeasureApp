@@ -61,21 +61,21 @@
                             <ad:LayoutAnchorable Title="设备通信调试" CanHide="False">
                                 <v:DeviceDebugView Margin="10,10,10,10"/>
                             </ad:LayoutAnchorable>
-                            <ad:LayoutAnchorable Title="通信日志" CanHide="False">
+                            <!--<ad:LayoutAnchorable Title="通信日志" CanHide="False">
                                 <ad:LayoutAnchorable.Content>
                                     <v:AppLogView Margin="10,10,10,10"/>
                                 </ad:LayoutAnchorable.Content>
-                            </ad:LayoutAnchorable>
+                            </ad:LayoutAnchorable>-->
                             <ad:LayoutAnchorable Title="数据监视器" CanHide="False">
                                 <ad:LayoutAnchorable.Content>
                                     <v:DataMonitorView Margin="10,10,10,10"/>
                                 </ad:LayoutAnchorable.Content>
                             </ad:LayoutAnchorable>
-                            <ad:LayoutAnchorable Title="数据可视化" CanHide="False">
+                            <!--<ad:LayoutAnchorable Title="数据可视化" CanHide="False">
                                 <ad:LayoutAnchorable.Content>
                                     <v:DataPlotView Margin="10,10,10,10"/>
                                 </ad:LayoutAnchorable.Content>
-                            </ad:LayoutAnchorable>
+                            </ad:LayoutAnchorable>-->
                             <ad:LayoutAnchorable Title="数据处理" CanHide="False">
                                 <ad:LayoutAnchorable.Content>
                                     <v:DataProcView Margin="10,10,10,10"/>
@@ -84,6 +84,16 @@
                             <ad:LayoutAnchorable Title="脚本运行" CanHide="False">
                                 <ad:LayoutAnchorable.Content>
                                     <v:ScriptRunnerView Margin="10,10,10,10"/>
+                                </ad:LayoutAnchorable.Content>
+                            </ad:LayoutAnchorable>
+                            <ad:LayoutAnchorable Title="寄存器可视化" CanHide="False">
+                                <ad:LayoutAnchorable.Content>
+                                    <v:RegisterMapView Margin="10,10,10,10"/>
+                                </ad:LayoutAnchorable.Content>
+                            </ad:LayoutAnchorable>
+                            <ad:LayoutAnchorable Title="关于" CanHide="False">
+                                <ad:LayoutAnchorable.Content>
+                                    <v:AboutAppView Margin="10,10,10,10"/>
                                 </ad:LayoutAnchorable.Content>
                             </ad:LayoutAnchorable>
                             <!--<ad:LayoutAnchorable Title="3458A万用表控制" CanHide="False">

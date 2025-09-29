@@ -27,6 +27,8 @@ namespace MeasureApp.ViewModel
             // todo
             container.Register<AppLogVM>();
             container.Register<DataPlotVM>();
+            container.Register<AboutAppVM>();
+            container.Register<RegisterMapVM>();
 
             container.Register<AppContextManager>(Reuse.Singleton);
             container.Register<DeviceManager>(Reuse.Singleton);
@@ -48,5 +50,8 @@ namespace MeasureApp.ViewModel
 
         public AppLogVM AppLog => container.Resolve<AppLogVM>();
         public DataPlotVM DataPlot => container.Resolve<DataPlotVM>();
+
+        public AboutAppVM AboutApp => container.Resolve<AboutAppVM>();
+        public RegisterMapVM RegisterMap => container.Resolve<RegisterMapVM>();
     }
 }
