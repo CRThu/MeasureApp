@@ -16,5 +16,86 @@
     <UserControl.Resources>
     </UserControl.Resources>
     <Grid>
+        <Grid Margin="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <!-- 用于放置文件操作按钮 -->
+                <RowDefinition Height="*"/>
+                <!-- 用于放置主要的TabControl -->
+            </Grid.RowDefinitions>
+            <!-- ****** 顶部操作栏 ****** -->
+            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="5">
+                <Button Content="导入" Width="80" Margin="20,0" Command="{Binding ImportRegisterMapCommand}"/>
+            </StackPanel>
+            <!-- ****** 寄存器显示区域 ****** -->
+            <TabControl Grid.Row="1" ItemsSource="{Binding RegFiles}" SelectedItem="{Binding SelectedRegFile}" Margin="0,10,0,0">
+                <!-- 1. 定义Tab的标题样式 -->
+                <TabControl.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Name}" Padding="5" FontWeight="Bold"/>
+                    </DataTemplate>
+                </TabControl.ItemTemplate>
+                <!-- 2. 定义每个Tab内部的内容样式 -->
+                <TabControl.ContentTemplate>
+                    <DataTemplate>
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <!-- 使用ItemsControl来显示一个RegFile下的所有Register -->
+                            <ItemsControl ItemsSource="{Binding Registers}" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <!-- 每个Register使用一个GroupBox进行分组 -->
+                                        <GroupBox Margin="10" BorderBrush="Gray" BorderThickness="1">
+                                            <!-- GroupBox的Header部分，包含名称、地址和更新按钮 -->
+                                            <GroupBox.Header>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock FontWeight="Bold" FontSize="14" Text="{Binding Name}" VerticalAlignment="Center"/>
+                                                    <TextBlock Margin="10,0,0,0" Foreground="DarkSlateGray" VerticalAlignment="Center">
+                                                        <Run Text="(Address:"/>
+                                                        <Run Text="{Binding Address, StringFormat=X8}"/>
+                                                        <Run Text=")"/>
+                                                    </TextBlock>
+                                                    <Button Content="更新" Width="75" Margin="20,0,0,0"
+                                                    Command="{Binding WriteRegisterCommand}"
+                                                    CommandParameter="{Binding}"/>
+                                                </StackPanel>
+                                            </GroupBox.Header>
+                                            <!-- GroupBox的内容部分，使用DataGrid显示位段信息 -->
+                                            <DataGrid ItemsSource="{Binding BitFields}"
+                                              AutoGenerateColumns="False"
+                                              CanUserAddRows="False"
+                                              CanUserDeleteRows="False"
+                                              GridLinesVisibility="All"
+                                              HeadersVisibility="Column">
+                                                <DataGrid.Columns>
+                                                    <DataGridTextColumn Header="位段名称" Binding="{Binding Name}" IsReadOnly="True" Width="2*"/>
+
+                                                    <!-- 自定义一列来显示 [结束位:起始位] -->
+                                                    <DataGridTemplateColumn Header="位位置" IsReadOnly="True" Width="1*">
+                                                        <DataGridTemplateColumn.CellTemplate>
+                                                            <DataTemplate>
+                                                                <TextBlock HorizontalAlignment="Center">
+                                                            <Run Text="["/>
+                                                            <Run Text="{Binding EndBit}"/>
+                                                            <Run Text=":"/>
+                                                            <Run Text="{Binding StartBit}"/>
+                                                            <Run Text="]"/>
+                                                                </TextBlock>
+                                                            </DataTemplate>
+                                                        </DataGridTemplateColumn.CellTemplate>
+                                                    </DataGridTemplateColumn>
+                                                    <DataGridTextColumn Header="数值 (Hex)" Binding="{Binding Value, StringFormat=X}" Width="1*"/>
+
+                                                    <DataGridTextColumn Header="功能描述" Binding="{Binding Desc}" IsReadOnly="True" Width="4*"/>
+                                                </DataGrid.Columns>
+                                            </DataGrid>
+                                        </GroupBox>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </DataTemplate>
+                </TabControl.ContentTemplate>
+            </TabControl>
+        </Grid>
     </Grid>
 </UserControl>

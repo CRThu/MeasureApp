@@ -46,7 +46,7 @@ namespace MeasureApp.Services
                 Sender = sender ?? "<sender>",
                 Message = packet.ToString()
             };
-            // TODO 性能优化
+            // TODO 线程安全问题
             Application.Current.Dispatcher.BeginInvoke(() => Logs.Add(logEntry), DispatcherPriority.Background);
         }
     }

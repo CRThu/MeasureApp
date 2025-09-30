@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using MeasureApp.Services;
 using MeasureApp.Services.Script;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -9,7 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
+using System.Windows;
 
 namespace MeasureApp.ViewModel
 {
@@ -60,7 +61,7 @@ namespace MeasureApp.ViewModel
             {
                 InitialDirectory = Environment.CurrentDirectory,
             };
-            if (ofd.ShowDialog() == DialogResult.OK)
+            if (ofd.ShowDialog() == true)
             {
                 ScriptPath = ofd.FileName;
                 Exec.ScriptCode = File.ReadAllText(ScriptPath);
