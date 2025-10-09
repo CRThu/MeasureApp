@@ -77,11 +77,11 @@ namespace MeasureApp.ViewModel
                 {
                     Title = "Open File...",
                     Filter = "CSharp文件|*.cs|动态链接库|*.dll|所有文件|*.*",
-                    InitialDirectory = AppConfig.General.DefaultDirectory
+                    InitialDirectory = OldAppConfig.General.DefaultDirectory
                 };
                 if (openFileDialog.ShowDialog() == true)
                 {
-                    AppConfig.General.DefaultDirectory = Path.GetDirectoryName(openFileDialog.FileName);
+                    OldAppConfig.General.DefaultDirectory = Path.GetDirectoryName(openFileDialog.FileName);
                     TaskRunConfigFilePath = openFileDialog.FileName;
 
                     Assembly assembly;
@@ -126,12 +126,12 @@ namespace MeasureApp.ViewModel
                 {
                     Title = "Open Json File...",
                     Filter = "Json File|*.json",
-                    InitialDirectory = AppConfig.General.DefaultDirectory,
+                    InitialDirectory = OldAppConfig.General.DefaultDirectory,
                     CheckFileExists = false
                 };
                 if (openFileDialog.ShowDialog() == true)
                 {
-                    AppConfig.General.DefaultDirectory = Path.GetDirectoryName(openFileDialog.FileName);
+                    OldAppConfig.General.DefaultDirectory = Path.GetDirectoryName(openFileDialog.FileName);
                     TaskRunResultsConfigFilePath = openFileDialog.FileName;
 
                     var storage = TaskResultsStorage.Deserialize(File.ReadAllText(openFileDialog.FileName));
@@ -252,11 +252,11 @@ namespace MeasureApp.ViewModel
                         FileName = $"TaskResultsStorage.{DataStorage.GenerateDateTimeNow()}.json",
                         DefaultExt = ".json",
                         Filter = "Json File|*.json",
-                        InitialDirectory = AppConfig.General.DefaultDirectory
+                        InitialDirectory = OldAppConfig.General.DefaultDirectory
                     };
                     if (saveFileDialog.ShowDialog() == true)
                     {
-                        AppConfig.General.DefaultDirectory = Path.GetDirectoryName(saveFileDialog.FileName);
+                        OldAppConfig.General.DefaultDirectory = Path.GetDirectoryName(saveFileDialog.FileName);
                         TaskRunResultsConfigFilePath = saveFileDialog.FileName;
 
                         string ext = Path.GetExtension(TaskRunConfigFilePath);

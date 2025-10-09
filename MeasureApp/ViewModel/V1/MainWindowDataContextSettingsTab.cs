@@ -18,39 +18,39 @@ namespace MeasureApp.ViewModel
         // 设置
         public int GPIBTimeoutSetting
         {
-            get => AppConfig.Device.VISA.Timeout;
+            get => OldAppConfig.Device.VISA.Timeout;
             set
             {
-                AppConfig.Device.VISA.Timeout = value;
+                OldAppConfig.Device.VISA.Timeout = value;
                 RaisePropertyChanged(() => GPIBTimeoutSetting);
             }
         }
         public int SerialPortTimeoutSetting
         {
-            get => AppConfig.Device.SerialPort.Timeout;
+            get => OldAppConfig.Device.SerialPort.Timeout;
             set
             {
-                AppConfig.Device.SerialPort.Timeout = value;
+                OldAppConfig.Device.SerialPort.Timeout = value;
                 RaisePropertyChanged(() => SerialPortTimeoutSetting);
             }
         }
 
         public int SerialPortBufferSetting
         {
-            get => AppConfig.Device.SerialPort.Buffer;
+            get => OldAppConfig.Device.SerialPort.Buffer;
             set
             {
-                AppConfig.Device.SerialPort.Buffer = value;
+                OldAppConfig.Device.SerialPort.Buffer = value;
                 RaisePropertyChanged(() => SerialPortBufferSetting);
             }
         }
 
         public bool SerialPortLogKeywordHighlightSetting
         {
-            get => AppConfig.Logger.IsHighLight;
+            get => OldAppConfig.Logger.IsHighLight;
             set
             {
-                AppConfig.Logger.IsHighLight = value;
+                OldAppConfig.Logger.IsHighLight = value;
                 RaisePropertyChanged(() => SerialPortLogKeywordHighlightSetting);
             }
         }

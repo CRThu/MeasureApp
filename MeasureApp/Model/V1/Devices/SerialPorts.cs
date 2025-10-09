@@ -37,7 +37,7 @@ namespace MeasureApp.Model.Devices
         {
         }
 
-        public bool Open(string portName, int baudRate = 115200, Parity parity = Parity.None, int dataBits = 8, StopBits stopBits = StopBits.One, AppConfig appConfig = null)
+        public bool Open(string portName, int baudRate = 115200, Parity parity = Parity.None, int dataBits = 8, StopBits stopBits = StopBits.One, OldAppConfig appConfig = null)
         {
             appConfig ??= new();
 

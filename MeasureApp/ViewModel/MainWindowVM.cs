@@ -39,6 +39,20 @@ namespace MeasureApp.ViewModel
         }
 
         [RelayCommand]
+        public void MainWindowClosing()
+        {
+            try
+            {
+                _context.Configs.AppConfig.PresetCommands = App.Locator.DeviceDebug.Presets;
+                _context.Configs.Update();
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
+            }
+        }
+
+        [RelayCommand]
         public void MainWindowClosed()
         {
             try

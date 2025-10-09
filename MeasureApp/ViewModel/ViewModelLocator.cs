@@ -18,17 +18,17 @@ namespace MeasureApp.ViewModel
             container = new Container();
 
             // Register
-            container.Register<MainWindowVM>();
-            container.Register<DeviceConnectionVM>();
-            container.Register<DeviceDebugVM>();
-            container.Register<DataMonitorVM>();
-            container.Register<DataProcVM>();
-            container.Register<ScriptRunnerVM>();
+            container.Register<MainWindowVM>(Reuse.Singleton);
+            container.Register<DeviceConnectionVM>(Reuse.Singleton);
+            container.Register<DeviceDebugVM>(Reuse.Singleton);
+            container.Register<DataMonitorVM>(Reuse.Singleton);
+            container.Register<DataProcVM>(Reuse.Singleton);
+            container.Register<ScriptRunnerVM>(Reuse.Singleton);
             // todo
-            container.Register<AppLogVM>();
-            container.Register<DataPlotVM>();
-            container.Register<AboutAppVM>();
-            container.Register<RegisterMapVM>();
+            container.Register<AppLogVM>(Reuse.Singleton);
+            container.Register<DataPlotVM>(Reuse.Singleton);
+            container.Register<AboutAppVM>(Reuse.Singleton);
+            container.Register<RegisterMapVM>(Reuse.Singleton);
 
             container.Register<AppContextManager>(Reuse.Singleton);
             container.Register<DeviceManager>(Reuse.Singleton);

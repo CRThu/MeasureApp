@@ -45,7 +45,7 @@ namespace MeasureApp.ViewModel
         private ConnectionInfo selectedDevice;
 
         [ObservableProperty]
-        private ObservableCollection<PresetCommandItem> presets = new ObservableCollection<PresetCommandItem>();
+        private ObservableCollection<PresetCommandItem> presets;
 
         [ObservableProperty]
         private bool isLogAutoScroll = true;
@@ -56,6 +56,16 @@ namespace MeasureApp.ViewModel
         public DeviceDebugVM(AppContextManager context)
         {
             _context = context;
+
+            Presets = new ObservableCollection<PresetCommandItem>();
+            // 读取默认appconfig保存的预设
+            if (Context.Configs.AppConfig.PresetCommands != null)
+            {
+                foreach (var item in Context.Configs.AppConfig.PresetCommands)
+                {
+                    Presets.Add(item);
+                }
+            }
         }
 
         [RelayCommand]

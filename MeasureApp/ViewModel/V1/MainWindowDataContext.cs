@@ -33,12 +33,12 @@ namespace MeasureApp.ViewModel
             }
         }
 
-        public AppConfig AppConfig { get; set; }
+        public OldAppConfig OldAppConfig { get; set; }
 
-        public MainWindowDataContext(AppConfig appConfig)
+        public MainWindowDataContext(OldAppConfig appConfig)
         {
             Pages = new(this);
-            this.AppConfig = appConfig;
+            this.OldAppConfig = appConfig;
 
             // 添加默认Key
             DataStorageInstance.AddKey(Key3458AString);
@@ -49,13 +49,13 @@ namespace MeasureApp.ViewModel
             BindingOperations.EnableCollectionSynchronization(SerialportCommandScriptVarDict, SerialportCommandScriptVarDictLocker);
 
             // 加载串口预设指令
-            if (File.Exists(AppConfig.General.DefaultPresetCommandsJsonPath))
+            if (File.Exists(OldAppConfig.General.DefaultPresetCommandsJsonPath))
             {
-                SerialPortLoadPresetCommandsFromJson(AppConfig.General.DefaultPresetCommandsJsonPath);
+                SerialPortLoadPresetCommandsFromJson(OldAppConfig.General.DefaultPresetCommandsJsonPath);
             }
 
             // 加载串口记录模块关键词颜色文件
-            SerialPortLogger.LoadKeywordColorDict(AppConfig.Logger.KeywordColor);
+            SerialPortLogger.LoadKeywordColorDict(OldAppConfig.Logger.KeywordColor);
         }
 
         // 3458A 通信类

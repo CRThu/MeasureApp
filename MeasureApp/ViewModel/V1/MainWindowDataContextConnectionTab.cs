@@ -78,7 +78,7 @@ namespace MeasureApp.ViewModel
             try
             {
                 GpibDeviceConnectStatusText = $"{Measure3458AInstance.Open(GpibDevicesSelectedName)} Connected.";
-                Measure3458AInstance.Timeout = AppConfig.Device.VISA.Timeout;
+                Measure3458AInstance.Timeout = OldAppConfig.Device.VISA.Timeout;
             }
             catch (Exception ex)
             {
@@ -128,10 +128,10 @@ namespace MeasureApp.ViewModel
         public int[] SerialportDeviceBaudRateList { get; set; } = new[] { 9600, 38400, 115200, 921600 };
         public int SerialportDeviceBaudRate
         {
-            get => AppConfig.Device.SerialPort.DefaultBaudRate;
+            get => OldAppConfig.Device.SerialPort.DefaultBaudRate;
             set
             {
-                AppConfig.Device.SerialPort.DefaultBaudRate = value;
+                OldAppConfig.Device.SerialPort.DefaultBaudRate = value;
                 RaisePropertyChanged(() => SerialportDeviceBaudRate);
             }
         }
@@ -143,10 +143,10 @@ namespace MeasureApp.ViewModel
         // Enum.GetName(typeof(Parity), Parity.None);
         public string SerialportDeviceParitySelectedValue
         {
-            get => AppConfig.Device.SerialPort.DefaultParity;
+            get => OldAppConfig.Device.SerialPort.DefaultParity;
             set
             {
-                AppConfig.Device.SerialPort.DefaultParity = value;
+                OldAppConfig.Device.SerialPort.DefaultParity = value;
                 RaisePropertyChanged(() => SerialportDeviceParitySelectedValue);
             }
         }
@@ -156,10 +156,10 @@ namespace MeasureApp.ViewModel
 
         public int SerialportDeviceDataBitsSelectedValue
         {
-            get => AppConfig.Device.SerialPort.DefaultDataBits;
+            get => OldAppConfig.Device.SerialPort.DefaultDataBits;
             set
             {
-                AppConfig.Device.SerialPort.DefaultDataBits = value;
+                OldAppConfig.Device.SerialPort.DefaultDataBits = value;
                 RaisePropertyChanged(() => SerialportDeviceDataBitsSelectedValue);
             }
         }
@@ -169,10 +169,10 @@ namespace MeasureApp.ViewModel
 
         public float SerialportDeviceStopBitsSelectedValue
         {
-            get => AppConfig.Device.SerialPort.DefaultStopBits;
+            get => OldAppConfig.Device.SerialPort.DefaultStopBits;
             set
             {
-                AppConfig.Device.SerialPort.DefaultStopBits = value;
+                OldAppConfig.Device.SerialPort.DefaultStopBits = value;
                 RaisePropertyChanged(() => SerialportDeviceStopBitsSelectedValue);
             }
         }

@@ -12,7 +12,7 @@ namespace MeasureApp.Model.Common
     /// <summary>
     /// 程序配置类
     /// </summary>
-    public class AppConfig
+    public class OldAppConfig
     {
         public GeneralSettings General { get; set; } = new();
         public DeviceSettings Device { get; set; } = new();
@@ -31,7 +31,7 @@ namespace MeasureApp.Model.Common
         /// 读取配置文件,若不存在则新建默认配置传入
         /// </summary>
         /// <returns>返回程序配置类</returns>
-        public static AppConfig Read()
+        public static OldAppConfig Read()
         {
             return Read(DefaultAppConfigFilePath);
         }
@@ -41,18 +41,18 @@ namespace MeasureApp.Model.Common
         /// </summary>
         /// <param name="configFilePath">配置文件路径</param>
         /// <returns>返回程序配置类</returns>
-        public static AppConfig Read(string configFilePath)
+        public static OldAppConfig Read(string configFilePath)
         {
             try
             {
-                AppConfig appConfig;
+                OldAppConfig appConfig;
                 if (File.Exists(configFilePath))
                 {
-                    appConfig = Json.DeSerializeFromFile<AppConfig>(configFilePath);
+                    appConfig = Json.DeSerializeFromFile<OldAppConfig>(configFilePath);
                 }
                 else
                 {
-                    appConfig = new AppConfig();
+                    appConfig = new OldAppConfig();
                     Json.SerializeToFile(appConfig, configFilePath);
                 }
                 CheckPath(appConfig);
@@ -61,7 +61,7 @@ namespace MeasureApp.Model.Common
             catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
-                return new AppConfig();
+                return new OldAppConfig();
             }
         }
 
@@ -92,7 +92,7 @@ namespace MeasureApp.Model.Common
         /// 检查默认路径是否存在
         /// </summary>
         /// <param name="appConfig"></param>
-        public static void CheckPath(AppConfig appConfig)
+        public static void CheckPath(OldAppConfig appConfig)
         {
             if ((!Directory.Exists(appConfig.General.DefaultDirectory)) && (appConfig.General.DefaultDirectory != ""))
                 appConfig.General.DefaultDirectory = "";

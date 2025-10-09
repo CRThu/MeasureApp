@@ -16,6 +16,9 @@
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding MainWindowLoadedCommand}"/>
         </i:EventTrigger>
+        <i:EventTrigger EventName="Closing">
+            <i:InvokeCommandAction Command="{Binding MainWindowClosingCommand}"/>
+        </i:EventTrigger>
         <i:EventTrigger EventName="Closed">
             <i:InvokeCommandAction Command="{Binding MainWindowClosedCommand}"/>
         </i:EventTrigger>

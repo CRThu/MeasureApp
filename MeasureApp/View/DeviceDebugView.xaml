@@ -64,37 +64,6 @@
                     </ControlTemplate>
                 </ItemsControl.Template>
             </ItemsControl>
-            <!--<Grid Grid.Row="2" IsEnabled="False" ShowGridLines="True" Margin="10,10,10,10">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="80"/>
-                    <ColumnDefinition Width="80"/>
-                    <ColumnDefinition Width="80"/>
-                    <ColumnDefinition Width="80"/>
-                    <ColumnDefinition Width="80"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="40"/>
-                    <RowDefinition Height="40"/>
-                    <RowDefinition Height="40"/>
-                    <RowDefinition Height="40"/>
-                </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="REG.WR" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                <TextBox Grid.Row="0" Grid.Column="1" Text="*" Margin="5,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
-                <TextBox Grid.Row="0" Grid.Column="2" Text="*" Margin="5,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
-                <Button Grid.Row="0" Grid.Column="4" Content="发送" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                <TextBlock Grid.Row="1" Grid.Column="0" Text="REG.RD" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                <TextBox Grid.Row="1" Grid.Column="1" Text="*" Margin="5,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
-                <Button Grid.Row="1" Grid.Column="4" Content="发送" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                <TextBlock Grid.Row="2" Grid.Column="0" Text="REG.BITS.WR" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                <TextBox Grid.Row="2" Grid.Column="1" Text="*" Margin="5,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
-                <TextBox Grid.Row="2" Grid.Column="2" Text="*" Margin="5,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
-                <TextBox Grid.Row="2" Grid.Column="3" Text="*" Margin="5,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
-                <Button Grid.Row="2" Grid.Column="4" Content="发送" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                <TextBlock Grid.Row="3" Grid.Column="0" Text="REG.BITS.RD" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                <TextBox Grid.Row="3" Grid.Column="1" Text="*" Margin="5,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
-                <TextBox Grid.Row="3" Grid.Column="2" Text="*" Margin="5,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
-                <Button Grid.Row="3" Grid.Column="4" Content="发送" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-            </Grid>-->
         </Grid>
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
