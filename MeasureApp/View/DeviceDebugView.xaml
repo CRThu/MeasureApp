@@ -11,6 +11,7 @@
       xmlns:b="clr-namespace:MeasureApp.View.Behavior"
       xmlns:hc="https://handyorg.github.io/handycontrol"
       DataContext="{Binding Source={StaticResource Locator},Path=DeviceDebug}"
+      d:DataContext="{d:DesignInstance vm:DesignDeviceDebugVM, IsDesignTimeCreatable=True}"
       mc:Ignorable="d">
     <UserControl.Resources>
     </UserControl.Resources>
@@ -24,19 +25,46 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <!--TODO 预设指令-->
             <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="5,5,5,5">
-                <TextBlock Text="设备" Margin="10,0,10,0" VerticalAlignment="Center"/>
-                <ComboBox ItemsSource="{Binding Context.Devices.Info}" SelectedItem="{Binding SelectedDevice}" DisplayMemberPath="Name" Margin="10,0,10,0" MinWidth="200"/>
-                <Button Content="手动读取" IsEnabled="False" Margin="10,0,10,0"/>
+                <TextBlock Text="设备" Margin="10,0" VerticalAlignment="Center"/>
+                <ComboBox ItemsSource="{Binding Context.Devices.Info}" SelectedItem="{Binding SelectedDevice}" DisplayMemberPath="Name" Margin="10,0" MinWidth="200"/>
+                <Button Content="手动读取" IsEnabled="False" Margin="10,0"/>
             </StackPanel>
-            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="10,10,10,10">
-                <TextBlock Text="指令" VerticalAlignment="Center" Margin="10,0,10,0"/>
-                <TextBox Text="{Binding CommandPacketText}" MinWidth="200" Margin="10,0,10,0"/>
-                <Button Content="发送" Command="{Binding SendCommandPacketCommand}" Margin="10,0,10,0"/>
+            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="5,5,5,5">
+                <TextBlock Text="指令" VerticalAlignment="Center" Margin="10,0"/>
+                <TextBox Text="{Binding DebugCommandText}" MinWidth="200" Margin="10,0"/>
+                <Button Content="发送" Command="{Binding SendPresetCommand}" CommandParameter="{Binding DebugCommandText}" Margin="10,0"/>
             </StackPanel>
-            <Grid Grid.Row="2" IsEnabled="False" ShowGridLines="True" Margin="10,10,10,10">
+            <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="5,5,5,0">
+                <TextBlock Text="预设命令" Margin="5,0" VerticalAlignment="Center"/>
+                <Button Content="+" Command="{Binding AddPresetCommand}" FontWeight="Bold" Style="{StaticResource ButtonDashed.Small}" Margin="5,0"/>
+                <Button Content="..." Command="{Binding LoadPresetsCommand}" FontWeight="Bold" Style="{StaticResource ButtonDashed.Small}" Margin="5,0"/>
+                <Button Content="💾" Command="{Binding SavePresetsCommand}" Style="{StaticResource ButtonDashed.Small}" Margin="5,0"/>
+            </StackPanel>
+            <ItemsControl Grid.Row="3" ItemsSource="{Binding Presets}" Margin="5" MinHeight="300" BorderBrush="Gray" BorderThickness="0.5">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal" Margin="5,2">
+                            <TextBox Text="{Binding Text,UpdateSourceTrigger=PropertyChanged}" Width="400" VerticalContentAlignment="Center"/>
+                            <Button Content="发送" Command="{Binding DataContext.SendPresetCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Margin="5,0"/>
+                            <Button Content="-" Command="{Binding DataContext.RemovePresetCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" FontWeight="Bold" Margin="5,0" Style="{StaticResource ButtonDashed.Small}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+                <ItemsControl.Template>
+                    <ControlTemplate TargetType="ItemsControl">
+                        <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="2,5">
+                            <ScrollViewer Padding="{TemplateBinding Padding}">
+                                <ItemsPresenter/>
+                            </ScrollViewer>
+                        </Border>
+                    </ControlTemplate>
+                </ItemsControl.Template>
+            </ItemsControl>
+            <!--<Grid Grid.Row="2" IsEnabled="False" ShowGridLines="True" Margin="10,10,10,10">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="80"/>
                     <ColumnDefinition Width="80"/>
@@ -66,7 +94,7 @@
                 <TextBox Grid.Row="3" Grid.Column="1" Text="*" Margin="5,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
                 <TextBox Grid.Row="3" Grid.Column="2" Text="*" Margin="5,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
                 <Button Grid.Row="3" Grid.Column="4" Content="发送" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-            </Grid>
+            </Grid>-->
         </Grid>
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>

@@ -47,7 +47,6 @@ namespace MeasureApp.ViewModel
             {
                 OpenFileDialog ofd = new OpenFileDialog()
                 {
-                    InitialDirectory = Environment.CurrentDirectory,
                 };
                 if (ofd.ShowDialog() == true)
                 {

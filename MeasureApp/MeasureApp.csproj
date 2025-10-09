@@ -9,8 +9,8 @@
 		<SatelliteResourceLanguages>zh-Hans</SatelliteResourceLanguages>
 		<ApplicationIcon>Icon\AppIcon.ico</ApplicationIcon>
 		<PlatformTarget>AnyCPU</PlatformTarget>
-		<AssemblyVersion>2.0.274.0</AssemblyVersion>
-		<FileVersion>2.0.274.0</FileVersion>
+		<AssemblyVersion>2.0.296.0</AssemblyVersion>
+		<FileVersion>2.0.296.0</FileVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -155,10 +155,6 @@
 	  <Page Update="View\Pages\TempControlPage.xaml">
 	    <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
 	  </Page>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Services\Script\Commands\" />
 	</ItemGroup>
 
 </Project>
