@@ -37,19 +37,6 @@ jobs:
     - name: Test
       run: dotnet test MeasureApp/MeasureApp --no-build --verbosity normal --configuration Release
 
-    - name: Publish App Files
-      run: |
-        dotnet publish MeasureApp/MeasureApp/MeasureApp.csproj `
-        -c Release `
-        -o ${{ github.workspace }}/Publish `
-        -r win-x64
-
-    - name: List App Files
-      run: |
-        $publishDir = Join-Path -Path $env:GITHUB_WORKSPACE -ChildPath "Publish"
-        Write-Host "--- Listing contents of Publish directory: $publishDir ---"
-        Get-ChildItem -Path $publishDir -Recurse 
-        
     - name: Extract Project Version
       id: extract_version 
       shell: pwsh 
@@ -69,6 +56,31 @@ jobs:
         Write-Host "✅ Successfully extracted project version: $version"
         echo "project_version=$version" >> $env:GITHUB_OUTPUT
 
+    - name: Publish App Files
+      run: |
+        dotnet publish MeasureApp/MeasureApp/MeasureApp.csproj `
+        -c Release `
+        -o ${{ github.workspace }}/Publish `
+        -r win-x64
+        
+    - name: Archive Published Files to ZIP
+      shell: pwsh
+      run: |
+          $version = "${{ steps.extract_version.outputs.project_version }}"
+          $zipFileName = "MeasureApp-v$version-win-x64.zip"
+          $publishDir = Join-Path -Path $env:GITHUB_WORKSPACE -ChildPath "Publish"
+          $outputZipPath = Join-Path -Path $env:GITHUB_WORKSPACE -ChildPath $zipFileName
+          
+          Write-Host "Zipping contents of $publishDir to $outputZipPath"
+          Compress-Archive -Path "$publishDir\*" -DestinationPath $outputZipPath
+          Write-Host "✅ ZIP file created successfully: $outputZipPath"
+        
+    # - name: List App Files
+    #   run: |
+    #     $publishDir = Join-Path -Path $env:GITHUB_WORKSPACE -ChildPath "Publish"
+    #     Write-Host "--- Listing contents of Publish directory: $publishDir ---"
+    #     Get-ChildItem -Path $publishDir -Recurse 
+        
     - name: Create GitHub Release
       if: github.event_name == 'push' && github.ref == 'refs/heads/master'
       uses: softprops/action-gh-release@v2
@@ -79,4 +91,4 @@ jobs:
         name: Release V${{ steps.extract_version.outputs.project_version }}
         draft: false
         prerelease: false
-        files: ${{ github.workspace }}/Publish/MeasureApp.exe # only for test
+        files: ${{ github.workspace }}/*.zip
