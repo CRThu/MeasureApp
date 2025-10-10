@@ -49,6 +49,7 @@ jobs:
       shell: pwsh 
       run: |
         $version = (Select-Xml -Path "MeasureApp/MeasureApp/MeasureApp.csproj" -XPath "//AssemblyVersion").Node | Select-Object -First 1
+        $version = $node.InnerText.Trim()
         if (-not $version) {
             $version = "0.0.0-CI"
             Write-Host "⚠️ Warning: AssemblyVersion not found. Using fallback version: $version"
