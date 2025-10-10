@@ -39,7 +39,7 @@ jobs:
 
     - name: Publish App Files
       run: |
-        dotnet publish MeasureApp/MeasureApp.csproj `
+        dotnet publish MeasureApp/MeasureApp `
         -c Release `
         -o ${{ github.workspace }}/Publish `
         --no-build 
