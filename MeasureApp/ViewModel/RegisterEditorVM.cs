@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CarrotLink.Core.Utility;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using DryIoc;
@@ -22,6 +23,73 @@ using System.Windows;
 
 namespace MeasureApp.ViewModel
 {
+    public partial class DesignRegisterEditorVM : BaseVM
+    {
+        [ObservableProperty]
+        private ObservableCollection<RegFile> regFiles = new ObservableCollection<RegFile>()
+        {
+            new RegFile()
+            {
+                Name = "<RF0>",
+                Registers = new ObservableCollection<Register>()
+                {
+                    new Register()
+                    {
+                        Name = "<REG0>" ,
+                        Address = 0x00,
+                        BitWidth = 8,
+                        BitFields = new ObservableCollection<BitsField>()
+                        {
+                            new BitsField() { Name = "<FIELD0>", StartBit = 0, EndBit = 3, Desc = "<[3:0]:FIELD0>" },
+                            new BitsField() { Name = "<FIELD1>", StartBit = 4, EndBit = 7, Desc = "<[7:4]:FIELD1>" }
+                        }
+                    },
+                    new Register()
+                    {
+                        Name = "<REG1>" ,
+                        Address = 0x01,
+                        BitWidth = 8,
+                        BitFields = new ObservableCollection<BitsField>()
+                        {
+                            new BitsField() { Name = "<FIELD0>", StartBit = 0, EndBit = 0, Desc = "<[0:0]:FIELD0>" },
+                            new BitsField() { Name = "<FIELD1>", StartBit = 1, EndBit = 1, Desc = "<[1:1]:FIELD1>" },
+                            new BitsField() { Name = "<FIELD2>", StartBit = 2, EndBit = 2, Desc = "<[2:2]:FIELD2>" },
+                            new BitsField() { Name = "<FIELD3>", StartBit = 3, EndBit = 3, Desc = "<[3:3]:FIELD3>" },
+                            new BitsField() { Name = "<FIELD4>", StartBit = 4, EndBit = 4, Desc = "<[4:4]:FIELD4>" },
+                            new BitsField() { Name = "<FIELD5>", StartBit = 5, EndBit = 5, Desc = "<[5:5]:FIELD5>" },
+                            new BitsField() { Name = "<FIELD6>", StartBit = 6, EndBit = 6, Desc = "<[6:6]:FIELD6>" },
+                            new BitsField() { Name = "<FIELD7>", StartBit = 7, EndBit = 7, Desc = "<[7:7]:FIELD7>" }
+                        }
+                    },
+                },
+            },
+            new RegFile()
+            {
+                Name = "<RF1>",
+                Registers = new ObservableCollection<Register>()
+                {
+                    new Register()
+                    {
+                        Name = "<REG0>" ,
+                        Address = 0x00,
+                        BitWidth = 8,
+                        BitFields = new ObservableCollection<BitsField>()
+                        {
+                            new BitsField() { Name = "<FIELD0>", StartBit = 0, EndBit = 0, Desc = "<[0:0]:FIELD0>" },
+                            new BitsField() { Name = "<FIELD1>", StartBit = 1, EndBit = 1, Desc = "<[1:1]:FIELD1>" },
+                            new BitsField() { Name = "<FIELD2>", StartBit = 2, EndBit = 2, Desc = "<[2:2]:FIELD2>" },
+                            new BitsField() { Name = "<FIELD3>", StartBit = 3, EndBit = 3, Desc = "<[3:3]:FIELD3>" },
+                            new BitsField() { Name = "<FIELD4>", StartBit = 4, EndBit = 4, Desc = "<[4:4]:FIELD4>" },
+                            new BitsField() { Name = "<FIELD5>", StartBit = 5, EndBit = 5, Desc = "<[5:5]:FIELD5>" },
+                            new BitsField() { Name = "<FIELD6>", StartBit = 6, EndBit = 6, Desc = "<[6:6]:FIELD6>" },
+                            new BitsField() { Name = "<FIELD7>", StartBit = 7, EndBit = 7, Desc = "<[7:7]:FIELD7>" }
+                        }
+                    },
+                },
+            }
+        };
+    }
+
     public partial class RegisterEditorVM : BaseVM
     {
         private readonly AppContextManager _context;
@@ -29,10 +97,6 @@ namespace MeasureApp.ViewModel
 
         [ObservableProperty]
         private ObservableCollection<RegFile> regFiles = new();
-
-        [ObservableProperty]
-        private RegFile selectedRegFile;
-
 
 
         public RegisterEditorVM(AppContextManager context)
@@ -96,8 +160,59 @@ namespace MeasureApp.ViewModel
                             });
                         }
                     }
+                }
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
+            }
+        }
 
-                    SelectedRegFile = RegFiles.FirstOrDefault();
+
+        [RelayCommand]
+        public void ReadRouter(object parameter)
+        {
+            try
+            {
+                if (parameter is RegFile regFile)
+                {
+                    MessageBox.Show($"READ REGFILE: {regFile.Name}");
+                }
+                else if (parameter is Register reg)
+                {
+                    MessageBox.Show($"READ REGISTER: {reg.Name}");
+                }
+                else if (parameter is BitsField bitsField)
+                {
+                    MessageBox.Show($"READ BITSFIELD: {bitsField.Name}");
+                }
+                else
+                {
+                    throw new ArgumentException($"无法解析参数: {parameter}");
+                }
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
+            }
+        }
+
+        [RelayCommand]
+        public void WriteRouter(object parameter)
+        {
+            try
+            {
+                if (parameter is Register reg)
+                {
+                    MessageBox.Show($"WRITE REGISTER: {reg.Name}");
+                }
+                else if (parameter is BitsField bitsField)
+                {
+                    MessageBox.Show($"WRITE BITSFIELD: {bitsField.Name}");
+                }
+                else
+                {
+                    throw new ArgumentException($"无法解析参数: {parameter}");
                 }
             }
             catch (Exception ex)

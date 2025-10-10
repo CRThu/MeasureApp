@@ -36,7 +36,7 @@ namespace MeasureApp.Model.RegisterMap
         /// 位段的值
         /// </summary>
         [ObservableProperty]
-        private uint value;
+        private uint? value;
 
         /// <summary>
         /// 功能描述

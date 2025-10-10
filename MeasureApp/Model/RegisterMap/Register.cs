@@ -36,7 +36,7 @@ namespace MeasureApp.Model.RegisterMap
         /// 寄存器的完整数值
         /// </summary>
         [ObservableProperty]
-        private uint value;
+        private uint? value;
 
         /// <summary>
         /// 寄存器包含的位段列表
