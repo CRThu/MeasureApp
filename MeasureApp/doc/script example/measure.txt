@@ -1,0 +1,5 @@
+#<env key="Env::Default::Measure" value="USB0::0x0699::0x0413::C012473::INSTR"/>
+<measure cmd="*IDN?"/>
+<measure cmd="MEASU:MEAS1:VAL?"/>
+<measure cmd="MEASU:MEAS1:VAL?" key="FREQ"/>
+<measure cmd="SOUR:CURR -200E-9" mode="write"/>

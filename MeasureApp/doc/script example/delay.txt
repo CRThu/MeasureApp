@@ -1,0 +1,7 @@
+<delay time="5000"/>
+<delay time="5000"/>
+<delay time="5000"/>
+<delay time="5000"/>
+<delay time="5000"/>
+<delay time="5000"/>
+<delay time="5000"/>

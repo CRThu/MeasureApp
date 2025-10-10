@@ -1,0 +1,9 @@
+<env key="j" value="5"/>
+<env key="ifj" value="3"/>
+START;
+<if condition="{j==ifj}"/>
+    j=={ifj} is true;
+<else/>
+    j=={ifj} is false;
+<endif/>
+END;

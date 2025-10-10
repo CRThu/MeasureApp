@@ -1,0 +1,7 @@
+START;
+<for var="i" begin="1" end="2" step="1"/>
+    <for var="j" begin="1" end="3" step="1"/>
+        REGW;{i:X};{j:D};
+    <endfor/>
+<endfor/>
+END;

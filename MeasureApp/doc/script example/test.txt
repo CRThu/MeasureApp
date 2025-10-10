@@ -1,0 +1,28 @@
+# 设置变量
+<env key="i" value="10"/>
+<env key="j" value="5"/>
+
+# 发送解析后的原始命令
+# 将会发送: REGW;A;5;
+REGW;{i:X};{j:D};
+
+# 发送包含计算的命令
+# 将会发送: SOME_CMD;15;
+SOME_CMD;{i+j};
+
+# 使用带格式的表达式
+# 将会发送: VOLTAGE;1.235;
+VOLTAGE;{10 / 8.1:F3};
+
+# IF 语句现在可以使用表达式
+# 假设 i=10, j=5
+<if condition="{i > j and i < 20}"/>
+    <delay time="{ (i - j) * 100 }"/>
+    DELAY;{ (i - j) * 100 };
+</if>
+
+# FOR 循环也可以使用变量
+<env key="LoopEnd" value="3"/>
+<for var="k" begin="1" end="{LoopEnd}"/>
+	FOR.LOOP;{k:D};
+<endfor/>
