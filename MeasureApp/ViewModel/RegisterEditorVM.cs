@@ -22,7 +22,7 @@ using System.Windows;
 
 namespace MeasureApp.ViewModel
 {
-    public partial class RegisterMapVM : BaseVM
+    public partial class RegisterEditorVM : BaseVM
     {
         private readonly AppContextManager _context;
         public AppContextManager Context => _context;
@@ -35,7 +35,7 @@ namespace MeasureApp.ViewModel
 
 
 
-        public RegisterMapVM(AppContextManager context)
+        public RegisterEditorVM(AppContextManager context)
         {
             _context = context;
         }

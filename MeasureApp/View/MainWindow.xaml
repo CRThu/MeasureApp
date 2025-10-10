@@ -89,9 +89,9 @@
                                     <v:ScriptRunnerView Margin="10,10,10,10"/>
                                 </ad:LayoutAnchorable.Content>
                             </ad:LayoutAnchorable>
-                            <ad:LayoutAnchorable Title="寄存器可视化" CanHide="False">
+                            <ad:LayoutAnchorable Title="寄存器编辑器" CanHide="False">
                                 <ad:LayoutAnchorable.Content>
-                                    <v:RegisterMapView Margin="10,10,10,10"/>
+                                    <v:RegisterEditorView Margin="10,10,10,10"/>
                                 </ad:LayoutAnchorable.Content>
                             </ad:LayoutAnchorable>
                             <ad:LayoutAnchorable Title="关于" CanHide="False">

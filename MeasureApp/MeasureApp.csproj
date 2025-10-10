@@ -9,8 +9,8 @@
 		<SatelliteResourceLanguages>zh-Hans</SatelliteResourceLanguages>
 		<ApplicationIcon>Icon\AppIcon.ico</ApplicationIcon>
 		<PlatformTarget>AnyCPU</PlatformTarget>
-		<AssemblyVersion>2.0.315.0</AssemblyVersion>
-		<FileVersion>2.0.315.0</FileVersion>
+		<AssemblyVersion>2.0.317.0</AssemblyVersion>
+		<FileVersion>2.0.317.0</FileVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -110,7 +110,7 @@
 		<Compile Update="View\AppLogView.xaml.cs">
 		  <SubType>Code</SubType>
 		</Compile>
-		<Compile Update="View\RegisterMapView.xaml.cs">
+		<Compile Update="View\RegisterEditorView.xaml.cs">
 		  <SubType>Code</SubType>
 		</Compile>
 		<Compile Update="View\AboutAppView.xaml.cs">

@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace MeasureApp.View
 {
     /// <summary>
-    /// RegisterMapView.xaml 的交互逻辑
+    /// RegisterEditorView.xaml 的交互逻辑
     /// </summary>
-    public partial class RegisterMapView : UserControl
+    public partial class RegisterEditorView : UserControl
     {
-        public RegisterMapView()
+        public RegisterEditorView()
         {
             InitializeComponent();
         }

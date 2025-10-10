@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="MeasureApp.View.RegisterMapView"
+﻿<UserControl x:Class="MeasureApp.View.RegisterEditorView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -10,7 +10,7 @@
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:hc="https://handyorg.github.io/handycontrol"
              xmlns:ScottPlot="clr-namespace:ScottPlot.WPF;assembly=ScottPlot.WPF" xmlns:behaviors="clr-namespace:MeasureApp.Behaviors"
-             DataContext="{Binding Source={StaticResource Locator},Path=RegisterMap}"
+             DataContext="{Binding Source={StaticResource Locator},Path=RegisterEditor}"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="800">
     <UserControl.Resources>
