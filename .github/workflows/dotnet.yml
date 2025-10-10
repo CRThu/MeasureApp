@@ -48,11 +48,17 @@ jobs:
       id: extract_version 
       shell: pwsh 
       run: |
-        $version = (Select-Xml -Path "MeasureApp/MeasureApp/MeasureApp.csproj" -XPath "//AssemblyVersion").Node | Select-Object -First 1
-        $version = $node.InnerText.Trim()
-        if (-not $version) {
-            $version = "0.0.0-CI"
-            Write-Host "⚠️ Warning: AssemblyVersion not found. Using fallback version: $version"
+        $projectPath = Join-Path -Path $env:GITHUB_WORKSPACE -ChildPath "MeasureApp/MeasureApp/MeasureApp.csproj"
+        $node = (Select-Xml -Path $projectPath -XPath "//AssemblyVersion").Node | Select-Object -First 1
+        if ($node) {
+            $version = $node.InnerText.Trim()
+        } else {
+            $version = "0.0.0-CI-Fallback"
+            Write-Host "🔴 ERROR: AssemblyVersion node NOT found in $projectPath. Using fallback version: $version"
+        }
+        if ([string]::IsNullOrEmpty($version)) {
+            $version = "0.0.0-CI-Fallback-Empty"
+            Write-Host "⚠️ Warning: Extracted version was empty. Using fallback version: $version"
         }
         Write-Host "✅ Successfully extracted project version: $version"
         echo "project_version=$version" >> $env:GITHUB_OUTPUT
