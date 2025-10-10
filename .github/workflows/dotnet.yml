@@ -15,13 +15,13 @@ jobs:
     - name: Checkout Repo
       uses: actions/checkout@v4
       with:
-        path: .
+        path: MeasureApp
 
     - name: Checkout Dependency Repo
       uses: actions/checkout@v4
       with:
         repository: crthu/carrotlink.net
-        path: ..\CarrotLink.NET\CarrotLink.Core   
+        path: CarrotLink.NET\CarrotLink.Core   
 
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
@@ -29,10 +29,10 @@ jobs:
         dotnet-version: 8.0.x
 
     - name: Restore dependencies
-      run: dotnet restore MeasureApp
+      run: dotnet restore MeasureApp/MeasureApp
     
     - name: Build
-      run: dotnet build MeasureApp --no-restore
+      run: dotnet build MeasureApp/MeasureApp --no-restore
       
     - name: Test
-      run: dotnet test MeasureApp --no-build --verbosity normal
+      run: dotnet test MeasureApp/MeasureApp --no-build --verbosity normal
