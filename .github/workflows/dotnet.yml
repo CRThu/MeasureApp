@@ -43,6 +43,12 @@ jobs:
         -c Release `
         -o ${{ github.workspace }}/Publish `
         --no-build 
+
+    - name: List App Files
+      run: |
+        $publishDir = Join-Path -Path $env:GITHUB_WORKSPACE -ChildPath "Publish"
+        Write-Host "--- Listing contents of Publish directory: $publishDir ---"
+        Get-ChildItem -Path $publishDir -Recurse 
         
     - name: Extract Project Version
       id: extract_version 
