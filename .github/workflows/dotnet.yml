@@ -39,9 +39,9 @@ jobs:
 
     - name: Publish App Files
       run: |
-        dotnet publish MeasureApp/MeasureApp.csproj \
-        -c Release \
-        -o ${{ github.workspace }}/Publish \
+        dotnet publish MeasureApp/MeasureApp.csproj `
+        -c Release `
+        -o ${{ github.workspace }}/Publish `
         --no-build 
         
     - name: Extract Project Version
