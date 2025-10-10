@@ -36,3 +36,23 @@ jobs:
       
     - name: Test
       run: dotnet test MeasureApp/MeasureApp --no-build --verbosity normal --configuration Release
+
+    - name: Publish App Files
+      run: |
+        dotnet publish MeasureApp/MeasureApp.csproj \
+        -c Release \
+        -o ${{ github.workspace }}/Publish \
+        --no-build 
+        
+    - name: Extract Project Version
+      id: extract_version 
+      shell: pwsh 
+      run: |
+        $version = (Select-Xml -Path "MeasureApp/MeasureApp.csproj" -XPath "//AssemblyVersion").Node | Select-Object -First 1
+        if (-not $version) {
+            $version = "0.0.0-CI"
+            Write-Host "⚠️ Warning: AssemblyVersion not found. Using fallback version: $version"
+        }
+        Write-Host "✅ Successfully extracted project version: $version"
+        echo "project_version=$version" >> $env:GITHUB_OUTPUT
+        
