@@ -21,7 +21,7 @@ jobs:
       uses: actions/checkout@v4
       with:
         repository: crthu/carrotlink.net
-        path: CarrotLink.NET\CarrotLink.Core   
+        path: CarrotLink.NET
 
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
