@@ -32,7 +32,7 @@ jobs:
       run: dotnet restore MeasureApp/MeasureApp
     
     - name: Build
-      run: dotnet build MeasureApp/MeasureApp --no-restore
+      run: dotnet build MeasureApp/MeasureApp --no-restore --configuration Release
       
     - name: Test
       run: dotnet test MeasureApp/MeasureApp --no-build --verbosity normal
