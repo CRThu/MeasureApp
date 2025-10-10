@@ -35,4 +35,4 @@ jobs:
       run: dotnet build MeasureApp/MeasureApp --no-restore --configuration Release
       
     - name: Test
-      run: dotnet test MeasureApp/MeasureApp --no-build --verbosity normal
+      run: dotnet test MeasureApp/MeasureApp --no-build --verbosity normal --configuration Release
