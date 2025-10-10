@@ -32,7 +32,7 @@ jobs:
       run: dotnet restore MeasureApp/MeasureApp
     
     - name: Build
-      run: dotnet build MeasureApp/MeasureApp --no-restore --configuration Release -r win-x64
+      run: dotnet build MeasureApp/MeasureApp --no-restore --configuration Release
       
     - name: Test
       run: dotnet test MeasureApp/MeasureApp --no-build --verbosity normal --configuration Release
@@ -42,7 +42,7 @@ jobs:
         dotnet publish MeasureApp/MeasureApp/MeasureApp.csproj `
         -c Release `
         -o ${{ github.workspace }}/Publish `
-        -r win-x64 --no-build
+        -r win-x64
 
     - name: List App Files
       run: |
