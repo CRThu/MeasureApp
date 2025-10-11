@@ -26,7 +26,9 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <hc:SimpleStackPanel Grid.Row="0" Orientation="Horizontal" Margin="5">
-                <Button Content="导入" Width="80" Margin="20,0" Command="{Binding ImportRegisterMapCommand}"/>
+                <Button Content="导入寄存器表" Margin="10,0" Command="{Binding ImportRegisterMapCommand}"/>
+                <TextBlock Text="通信设备" Margin="10,0" VerticalAlignment="Center"/>
+                <ComboBox ItemsSource="{Binding Context.Devices.Info}" SelectedItem="{Binding SelectedDevice}" DisplayMemberPath="Name" Margin="5,0" MinWidth="200"/>
             </hc:SimpleStackPanel>
             <TabControl Grid.Row="1" ItemsSource="{Binding RegFiles}" Margin="0,10,0,0" Style="{StaticResource TabControlCapsule}">
                 <TabControl.ItemTemplate>
@@ -48,8 +50,8 @@
                                                 <hc:SimpleStackPanel Orientation="Horizontal">
                                                     <TextBlock Text="{Binding Name}" FontFamily="Consolas" FontWeight="Bold" FontSize="14" Foreground="DarkSlateGray" VerticalAlignment="Center"/>
                                                     <TextBlock Text="{Binding Address, StringFormat='(Address: 0x{0:X8})'}" Margin="10,0" Foreground="LightSlateGray" VerticalAlignment="Center"/>
-                                                    <hc:TextBox Grid.Column="2" Text="{Binding Value, StringFormat=X, UpdateSourceTrigger=PropertyChanged}" 
-                                                                hc:InfoElement.Placeholder="Hex" VerticalContentAlignment="Center" Margin="5,0" Width="100"/>
+                                                    <hc:TextBox Grid.Column="2" Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}" 
+                                                                hc:InfoElement.Placeholder="DEC" VerticalContentAlignment="Center" Margin="5,0" Width="100"/>
                                                     <Button Content="R" Command="{Binding DataContext.ReadRouterCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Style="{StaticResource ButtonDashedInfo.Small}" Margin="5,0"/>
                                                     <Button Content="W" Command="{Binding DataContext.WriteRouterCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Style="{StaticResource ButtonDashedInfo.Small}" Margin="5,0"/>
                                                 </hc:SimpleStackPanel>
@@ -77,8 +79,8 @@
                                                                     <Run Text="]"/>
                                                                 </TextBlock>
                                                                 <TextBlock Grid.Column="1" Text="{Binding Name}" FontFamily="Consolas" TextWrapping="Wrap" VerticalAlignment="Center" Margin="8,0"/>
-                                                                <hc:TextBox Grid.Column="2" Text="{Binding Value, StringFormat=X, UpdateSourceTrigger=PropertyChanged}" 
-                                                                            hc:InfoElement.Placeholder="Hex" VerticalContentAlignment="Center" Margin="5,2"/>
+                                                                <hc:TextBox Grid.Column="2" Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}" 
+                                                                            hc:InfoElement.Placeholder="DEC" VerticalContentAlignment="Center" Margin="5,2"/>
                                                                 <hc:SimpleStackPanel Grid.Column="3" Orientation="Horizontal">
                                                                     <Button Content="R" Command="{Binding DataContext.ReadRouterCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Style="{StaticResource ButtonDashedInfo.Small}" Margin="5,0"/>
                                                                     <Button Content="W" Command="{Binding DataContext.WriteRouterCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Style="{StaticResource ButtonDashedInfo.Small}" Margin="5,0"/>

@@ -1,4 +1,5 @@
-﻿using CarrotLink.Core.Utility;
+﻿using CarrotLink.Core.Protocols.Configuration;
+using CarrotLink.Core.Utility;
 using MeasureApp.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -14,11 +15,34 @@ namespace MeasureApp.Services
         public IEnumerable<PresetCommandItem> PresetCommands { get; set; }
     }
 
+    public class CarrotLinkConfig
+    {
+        public string Version { get; set; } = "1";
+
+        public CarrotAsciiProtocolConfiguration CarrotAsciiProtocolConfiguration { get; set; } = new()
+        {
+            RegfilesCommands = new CarrotAsciiProtocolRegfileCommands[]
+            {
+                new CarrotAsciiProtocolRegfileCommands()
+                {
+                    Name = "<regfile>",
+                    WriteRegCommand = "REG.W",
+                    ReadRegCommand = "REG.R",
+                    WriteBitsCommand = "REG.BW",
+                    ReadBitsCommand = "REG.BR"
+                }
+            }
+        };
+    }
+
+
     public class ConfigManager
     {
         private static readonly string appConfigPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appconfig.json");
+        private static readonly string carrotLinkConfigPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "carrotlinkconfig.json");
 
         public AppConfig AppConfig { get; set; }
+        public CarrotLinkConfig CarrotLinkConfig { get; set; }
 
         public ConfigManager()
         {
@@ -41,6 +65,24 @@ namespace MeasureApp.Services
                     AppConfig = new AppConfig();
                     Update();
                 }
+
+                if (File.Exists(carrotLinkConfigPath))
+                {
+                    try
+                    {
+                        CarrotLinkConfig = SerializationHelper.DeserializeFromFile<CarrotLinkConfig>(carrotLinkConfigPath);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"获取默认carrotlink配置失败, 请检查配置文件:{carrotLinkConfigPath}\r\n{ex}");
+                        File.Move(carrotLinkConfigPath, carrotLinkConfigPath + ".old", overwrite: true);
+                    }
+                }
+                if (CarrotLinkConfig == null)
+                {
+                    CarrotLinkConfig = new CarrotLinkConfig();
+                    Update();
+                }
             }
             catch (Exception ex)
             {
@@ -57,6 +99,14 @@ namespace MeasureApp.Services
             catch (Exception ex)
             {
                 MessageBox.Show($"保存默认app配置失败\r\n{ex}");
+            }
+            try
+            {
+                SerializationHelper.SerializeToFile(CarrotLinkConfig, carrotLinkConfigPath);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"保存默认carrotlink配置失败\r\n{ex}");
             }
         }
     }

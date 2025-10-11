@@ -1,4 +1,6 @@
-﻿using CarrotLink.Core.Utility;
+﻿using CarrotLink.Core.Protocols.Models;
+using CarrotLink.Core.Session;
+using CarrotLink.Core.Utility;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
@@ -94,6 +96,9 @@ namespace MeasureApp.ViewModel
     {
         private readonly AppContextManager _context;
         public AppContextManager Context => _context;
+
+        [ObservableProperty]
+        private ConnectionInfo selectedDevice;
 
         [ObservableProperty]
         private ObservableCollection<RegFile> regFiles = new();
@@ -204,11 +209,21 @@ namespace MeasureApp.ViewModel
             {
                 if (parameter is Register reg)
                 {
-                    MessageBox.Show($"WRITE REGISTER: {reg.Name}");
+                    Context.Devices[SelectedDevice.Name].SendRegister(
+                        RegisterOperation.Write,
+                        0/*TODO*/,
+                        reg.Address,
+                        reg.Value ?? 0);
                 }
                 else if (parameter is BitsField bitsField)
                 {
-                    MessageBox.Show($"WRITE BITSFIELD: {bitsField.Name}");
+                    Context.Devices[SelectedDevice.Name].SendRegister(
+                        RegisterOperation.BitsWrite,
+                        0/*TODO*/,
+                        0/*TODO*/,
+                        bitsField.StartBit,
+                        bitsField.EndBit,
+                        bitsField.Value ?? 0);
                 }
                 else
                 {

@@ -6,6 +6,7 @@ using CarrotLink.Core.Discovery;
 using CarrotLink.Core.Discovery.Models;
 using CarrotLink.Core.Logging;
 using CarrotLink.Core.Protocols;
+using CarrotLink.Core.Protocols.Configuration;
 using CarrotLink.Core.Protocols.Impl;
 using CarrotLink.Core.Protocols.Models;
 using CarrotLink.Core.Session;
@@ -199,7 +200,15 @@ namespace MeasureApp.ViewModel
             dev.Connect();
 
             // todo protocol config
-            IProtocol protocol = ProtocolFactory.Create(SelectedProtocol, null);
+            ProtocolConfigBase pcfg = null;
+            switch (SelectedProtocol)
+            {
+                case ProtocolType.CarrotAscii:
+                    pcfg = _context.Configs.CarrotLinkConfig.CarrotAsciiProtocolConfiguration;
+                    break;
+            }
+
+            IProtocol protocol = ProtocolFactory.Create(SelectedProtocol, pcfg);
 
             var session = DeviceSession.Create()
                 .WithDevice(dev)
