@@ -7,13 +7,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MeasureApp.Model.RegisterMap
+namespace MeasureApp.Services.RegisterMap
 {
     /// <summary>
     /// 位段
     /// </summary>
     public partial class BitsField : ObservableObject
     {
+        /// <summary>
+        /// 所属寄存器
+        /// </summary>
+        public Register Parent { get; init; }
+
         /// <summary>
         /// 位段名称
         /// </summary>
