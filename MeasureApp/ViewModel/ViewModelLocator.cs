@@ -36,6 +36,7 @@ namespace MeasureApp.ViewModel
             container.Register<AppLogService>(Reuse.Singleton);
             container.Register<CommandLogService>(Reuse.Singleton);
             container.Register<DataLogService>(Reuse.Singleton);
+            container.Register<RegisterLogService>(Reuse.Singleton);
         }
 
         public AppContextManager Context => container.Resolve<AppContextManager>();

@@ -215,6 +215,7 @@ namespace MeasureApp.ViewModel
                 .WithProtocol(protocol)
                 .WithLogger(Context.CommandLogger)
                 .WithLogger(Context.DataLogger)
+                .WithLogger(Context.RegisterLogger)
                 .WithRuntimeLogger(Context.AppLogger)
                 .WithPolling(IsAutoPollingEnabled)
                 .Build();

@@ -132,6 +132,24 @@ namespace MeasureApp.ViewModel
             }
         }
 
+        private void RegisterLogger_OnRegisterUpdate(IRegisterPacket packet, string sender)
+        {
+            // TODO check sender
+            // TODO check range
+            var rf = RegFiles.First(r => r.Index == packet.Regfile);
+            var reg = rf.Registers.First(r => r.Address == packet.Address);
+            if (packet.Operation == RegisterOperation.ReadResult)
+            {
+                reg.Value = packet.Value;
+            }
+            else
+            {
+                var bits = reg.BitFields.First(r => r.StartBit == packet.StartBit && r.EndBit == packet.EndBit);
+                bits.Value = packet.Value;
+            }
+
+            Context.RegisterLogger.OnRegisterUpdate -= RegisterLogger_OnRegisterUpdate;
+        }
 
         [RelayCommand]
         public void ReadRouter(object parameter)
@@ -140,10 +158,13 @@ namespace MeasureApp.ViewModel
             {
                 if (parameter is RegFile regFile)
                 {
+                    // TODO
                     MessageBox.Show($"READ REGFILE: {regFile.Name}");
                 }
                 else if (parameter is Register reg)
                 {
+                    Context.RegisterLogger.OnRegisterUpdate += RegisterLogger_OnRegisterUpdate;
+
                     Context.Devices[SelectedDevice.Name].SendRegister(
                         RegisterOperation.ReadRequest,
                         reg.Parent.Index,
@@ -151,7 +172,10 @@ namespace MeasureApp.ViewModel
                         reg.Value ?? 0).GetAwaiter().GetResult();
 
                     // TODO result proc
-                    MessageBox.Show($"READ REGISTER: {reg.Name}");
+                    // TODO timeout
+
+                    //Context.RegisterLogger.OnRegisterUpdate -= RegisterLogger_OnRegisterUpdate;
+
                 }
                 else if (parameter is BitsField bitsField)
                 {
@@ -164,7 +188,6 @@ namespace MeasureApp.ViewModel
                         bitsField.Value ?? 0).GetAwaiter().GetResult();
 
                     // TODO result proc
-                    MessageBox.Show($"READ BITSFIELD: {bitsField.Name}");
                 }
                 else
                 {
