@@ -1,6 +1,5 @@
 ﻿using CarrotLink.Core.Protocols.Models;
 using CarrotLink.Core.Session;
-using CarrotLink.Core.Utility;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
@@ -22,6 +21,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Xml.Linq;
 
 namespace MeasureApp.ViewModel
 {
@@ -72,6 +72,8 @@ namespace MeasureApp.ViewModel
         [ObservableProperty]
         private ObservableCollection<RegFile> regFiles = new();
 
+        private readonly SemaphoreSlim _commLock = new SemaphoreSlim(1, 1);
+        private readonly int timeout = 5000;
 
         public RegisterEditorVM(AppContextManager context)
         {
@@ -132,62 +134,28 @@ namespace MeasureApp.ViewModel
             }
         }
 
-        private void RegisterLogger_OnRegisterUpdate(IRegisterPacket packet, string sender)
-        {
-            // TODO check sender
-            // TODO check range
-            var rf = RegFiles.First(r => r.Index == packet.Regfile);
-            var reg = rf.Registers.First(r => r.Address == packet.Address);
-            if (packet.Operation == RegisterOperation.ReadResult)
-            {
-                reg.Value = packet.Value;
-            }
-            else
-            {
-                var bits = reg.BitFields.First(r => r.StartBit == packet.StartBit && r.EndBit == packet.EndBit);
-                bits.Value = packet.Value;
-            }
-
-            Context.RegisterLogger.OnRegisterUpdate -= RegisterLogger_OnRegisterUpdate;
-        }
-
         [RelayCommand]
-        public void ReadRouter(object parameter)
+        public async Task ReadRouter(object parameter)
         {
+            // 获取异步等待锁
+            await _commLock.WaitAsync();
+
             try
             {
                 if (parameter is RegFile regFile)
                 {
-                    // TODO
-                    MessageBox.Show($"READ REGFILE: {regFile.Name}");
+                    foreach (var reg in regFile.Registers)
+                    {
+                        await ExecuteReadRegisterOperationAsync(reg);
+                    }
                 }
                 else if (parameter is Register reg)
                 {
-                    Context.RegisterLogger.OnRegisterUpdate += RegisterLogger_OnRegisterUpdate;
-
-                    Context.Devices[SelectedDevice.Name].SendRegister(
-                        RegisterOperation.ReadRequest,
-                        reg.Parent.Index,
-                        reg.Address,
-                        reg.Value ?? 0).GetAwaiter().GetResult();
-
-                    // TODO result proc
-                    // TODO timeout
-
-                    //Context.RegisterLogger.OnRegisterUpdate -= RegisterLogger_OnRegisterUpdate;
-
+                    await ExecuteReadRegisterOperationAsync(reg);
                 }
                 else if (parameter is BitsField bitsField)
                 {
-                    Context.Devices[SelectedDevice.Name].SendRegister(
-                        RegisterOperation.BitsReadRequest,
-                        bitsField.Parent.Parent.Index,
-                        bitsField.Parent.Address,
-                        bitsField.StartBit,
-                        bitsField.EndBit,
-                        bitsField.Value ?? 0).GetAwaiter().GetResult();
-
-                    // TODO result proc
+                    await ExecuteReadBitFieldsOperationAsync(bitsField);
                 }
                 else
                 {
@@ -198,30 +166,125 @@ namespace MeasureApp.ViewModel
             {
                 _ = MessageBox.Show(ex.ToString());
             }
+            finally
+            {
+                _commLock.Release();
+            }
+        }
+
+        private async Task ExecuteReadRegisterOperationAsync(Register reg)
+        {
+            TaskCompletionSource<IRegisterPacket> tcs = new TaskCompletionSource<IRegisterPacket>();
+
+            void handler(IRegisterPacket packet, string sender)
+            {
+                if (//sender == SelectedDevice.Name && 
+                    packet.Operation == RegisterOperation.ReadResult
+                    && packet.Regfile == reg.Parent.Index
+                    && packet.Address == reg.Address)
+                {
+                    tcs?.TrySetResult(packet);
+                }
+            }
+
+            Context.RegisterLogger.OnRegisterUpdate += handler;
+
+            try
+            {
+                // send request
+                await Context.Devices[SelectedDevice.Name].SendRegister(
+                    RegisterOperation.ReadRequest,
+                    reg.Parent.Index,
+                    reg.Address);
+
+                // wait for result
+                if (await Task.WhenAny(tcs.Task, Task.Delay(timeout)) == tcs.Task)
+                {
+                    var resultPacket = await tcs.Task;
+                    reg.Value = resultPacket.Value;
+                }
+                else
+                {
+                    throw new TimeoutException($"读取寄存器(({reg.Parent.Name}::{reg.Name:X})超时");
+                }
+            }
+            finally
+            {
+                Context.RegisterLogger.OnRegisterUpdate -= handler;
+            }
+        }
+
+        private async Task ExecuteReadBitFieldsOperationAsync(BitsField bitsField)
+        {
+            TaskCompletionSource<IRegisterPacket> tcs = new TaskCompletionSource<IRegisterPacket>();
+
+            void handler(IRegisterPacket packet, string sender)
+            {
+                if (//sender == SelectedDevice.Name && 
+                    packet.Operation == RegisterOperation.BitsReadResult
+                    && packet.Regfile == bitsField.Parent.Parent.Index
+                    && packet.Address == bitsField.Parent.Address
+                    && packet.StartBit == bitsField.StartBit
+                    && packet.EndBit == bitsField.EndBit)
+                {
+                    tcs?.TrySetResult(packet);
+                }
+            }
+
+            Context.RegisterLogger.OnRegisterUpdate += handler;
+
+            try
+            {
+                // send request
+                await Context.Devices[SelectedDevice.Name].SendRegister(
+                RegisterOperation.BitsReadRequest,
+                bitsField.Parent.Parent.Index,
+                bitsField.Parent.Address,
+                bitsField.StartBit,
+                bitsField.EndBit);
+
+                // wait for result
+                if (await Task.WhenAny(tcs.Task, Task.Delay(timeout)) == tcs.Task)
+                {
+                    var resultPacket = await tcs.Task;
+                    bitsField.Value = resultPacket.Value;
+                }
+                else
+                {
+                    throw new TimeoutException($"读取寄存器位段({bitsField.Parent.Parent.Name}::{bitsField.Parent.Name:X}::{bitsField.Name})超时");
+                }
+            }
+            finally
+            {
+                Context.RegisterLogger.OnRegisterUpdate -= handler;
+            }
         }
 
         [RelayCommand]
-        public void WriteRouter(object parameter)
+        public async Task WriteRouter(object parameter)
         {
+            // 获取异步等待锁
+            await _commLock.WaitAsync();
+
             try
             {
                 if (parameter is Register reg)
                 {
-                    Context.Devices[SelectedDevice.Name].SendRegister(
+                    await Context.Devices[SelectedDevice.Name].SendRegister(
                         RegisterOperation.Write,
                         reg.Parent.Index,
                         reg.Address,
-                        reg.Value ?? 0).GetAwaiter().GetResult();
+                        reg.Value ?? 0);
                 }
                 else if (parameter is BitsField bitsField)
                 {
-                    Context.Devices[SelectedDevice.Name].SendRegister(
+                    await Context.Devices[SelectedDevice.Name].SendRegister(
                         RegisterOperation.BitsWrite,
                         bitsField.Parent.Parent.Index,
                         bitsField.Parent.Address,
                         bitsField.StartBit,
                         bitsField.EndBit,
-                        bitsField.Value ?? 0).GetAwaiter().GetResult();
+                        bitsField.Value ?? 0);
                 }
                 else
                 {
@@ -231,6 +294,10 @@ namespace MeasureApp.ViewModel
             catch (Exception ex)
             {
                 _ = MessageBox.Show(ex.ToString());
+            }
+            finally
+            {
+                _commLock.Release();
             }
         }
     }
