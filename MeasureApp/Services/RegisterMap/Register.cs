@@ -22,26 +22,37 @@ namespace MeasureApp.Services.RegisterMap
         /// <summary>
         /// 寄存器名称
         /// </summary>
-        [ObservableProperty]
-        private string name;
+        public string Name { get; init; }
 
         /// <summary>
         /// 寄存器地址
         /// </summary>
-        [ObservableProperty]
-        private uint address;
+        public uint Address { get; init; }
 
         /// <summary>
         /// 位宽
         /// </summary>
-        [ObservableProperty]
-        private uint bitWidth;
+        public uint BitWidth { get; init; }
 
         /// <summary>
         /// 寄存器的完整数值
         /// </summary>
-        [ObservableProperty]
-        private uint? value;
+        private uint? _value;
+        public uint? Value
+        {
+            get
+            {
+                return _value;
+            }
+            set
+            {
+                if (_value != value)
+                {
+                    SetProperty(ref _value, value);
+                    UpdateToBitFields(value);
+                }
+            }
+        }
 
         /// <summary>
         /// 寄存器包含的位段列表
@@ -69,17 +80,38 @@ namespace MeasureApp.Services.RegisterMap
         /// <returns></returns>
         public Register AddBits(string name, uint startBit, uint endBit, string desc)
         {
-            var bf = new BitsField()
-            {
-                Parent = this,
-                Name = name,
-                StartBit = startBit,
-                EndBit = endBit,
-                Desc = desc,
-                Value = null
-            };
+            var bf = new BitsField(this, name, startBit, endBit, desc, null);
+            bf.OnValueUpdate += UpdateFromBitFields;
             BitFields.Add(bf);
             return this;
+        }
+
+        private void UpdateFromBitFields(BitsField _)
+        {
+            if (BitFields.All(bf => bf.Value.HasValue))
+            {
+                uint val = 0;
+                foreach (BitsField bf in BitFields)
+                {
+                    BitsHelper.SetBitsUInt32(ref val, (int)bf.StartBit, (int)bf.EndBit, bf.Value.Value);
+                }
+                Value = val;
+            }
+        }
+
+        private void UpdateToBitFields(uint? value)
+        {
+            if (value.HasValue)
+            {
+                foreach (BitsField bf in BitFields)
+                {
+                    uint newBfVal = BitsHelper.GetBitsUInt32(value.Value, (int)bf.StartBit, (int)bf.EndBit);
+                    if (!bf.Value.HasValue || bf.Value != newBfVal)
+                    {
+                        bf.Value = newBfVal;
+                    }
+                }
+            }
         }
     }
 }

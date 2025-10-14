@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CarrotLink.Core.Protocols.Models;
+using CommunityToolkit.Mvvm.ComponentModel;
 using MeasureApp.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,9 @@ namespace MeasureApp.Services.RegisterMap
     /// </summary>
     public partial class BitsField : ObservableObject
     {
+        public delegate void ValueUpdateHandler(BitsField bf);
+        public event ValueUpdateHandler OnValueUpdate;
+
         /// <summary>
         /// 所属寄存器
         /// </summary>
@@ -22,31 +26,51 @@ namespace MeasureApp.Services.RegisterMap
         /// <summary>
         /// 位段名称
         /// </summary>
-        [ObservableProperty]
-        private string name;
+        public string Name { get; init; }
 
         /// <summary>
         /// 起始位
         /// </summary>
-        [ObservableProperty]
-        private uint startBit;
+        public uint StartBit { get; init; }
 
         /// <summary>
         /// 结束位
         /// </summary>
-        [ObservableProperty]
-        private uint endBit;
-
-        /// <summary>
-        /// 位段的值
-        /// </summary>
-        [ObservableProperty]
-        private uint? value;
+        public uint EndBit { get; init; }
 
         /// <summary>
         /// 功能描述
         /// </summary>
-        [ObservableProperty]
-        private string desc;
+        public string Desc { get; init; }
+
+        /// <summary>
+        /// 位段的值
+        /// </summary>
+        private uint? _value;
+        public uint? Value
+        {
+            get
+            {
+                return _value;
+            }
+            set
+            {
+                if (_value != value)
+                {
+                    SetProperty(ref _value, value);
+                    OnValueUpdate?.Invoke(this);
+                }
+            }
+        }
+
+        public BitsField(Register parent, string name, uint startBit, uint endBit, string desc, uint? value = null)
+        {
+            Parent = parent;
+            Name = name;
+            StartBit = startBit;
+            EndBit = endBit;
+            Desc = desc;
+            Value = value;
+        }
     }
 }
