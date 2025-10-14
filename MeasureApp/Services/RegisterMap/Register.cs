@@ -60,6 +60,9 @@ namespace MeasureApp.Services.RegisterMap
         [ObservableProperty]
         private ObservableCollection<BitsField> bitFields = new();
 
+        private bool _isRegValUpdating = false;
+        private bool _isBitsValUpdating = false;
+
         public Register(RegFile parent, string name, uint address, uint bitWidth, uint? value = null)
         {
             Parent = parent;
@@ -97,6 +100,10 @@ namespace MeasureApp.Services.RegisterMap
 
         private void UpdateFromBitFields(BitsField _)
         {
+            if (_isRegValUpdating)
+                return;
+
+            _isBitsValUpdating = true;
             if (BitFields.All(bf => bf.Value.HasValue))
             {
                 uint val = 0;
@@ -106,10 +113,15 @@ namespace MeasureApp.Services.RegisterMap
                 }
                 Value = val;
             }
+            _isBitsValUpdating = false;
         }
 
         private void UpdateToBitFields(uint? value)
         {
+            if (_isBitsValUpdating)
+                return;
+
+            _isRegValUpdating = true;
             if (value.HasValue)
             {
                 foreach (BitsField bf in BitFields)
@@ -121,6 +133,7 @@ namespace MeasureApp.Services.RegisterMap
                     }
                 }
             }
+            _isRegValUpdating = false;
         }
     }
 }
