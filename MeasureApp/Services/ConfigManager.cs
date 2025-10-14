@@ -13,6 +13,10 @@ namespace MeasureApp.Services
         public string Version { get; set; } = "1";
 
         public IEnumerable<PresetCommandItem> PresetCommands { get; set; }
+
+        public int RegisterRequestTimeout { get; set; } = 1000;
+
+        public string RegisterMapFilePath { get; set; }
     }
 
     public class CarrotLinkConfig
