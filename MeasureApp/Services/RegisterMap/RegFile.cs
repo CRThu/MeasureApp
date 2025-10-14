@@ -17,20 +17,25 @@ namespace MeasureApp.Services.RegisterMap
         /// <summary>
         /// 寄存器文件索引
         /// </summary>
-        [ObservableProperty]
-        private uint index;
+        public uint Index { get; init; }
 
         /// <summary>
         /// 寄存器文件名称
         /// </summary>
-        [ObservableProperty]
-        private string name;
+        public string Name { get; init; }
 
         /// <summary>
         /// 寄存器文件包含的寄存器列表
         /// </summary>
         [ObservableProperty]
         private ObservableCollection<Register> registers = new();
+
+
+        public RegFile(uint index, string name)
+        {
+            Index = index;
+            Name = name;
+        }
 
         /// <summary>
         /// 链式添加寄存器
@@ -41,14 +46,7 @@ namespace MeasureApp.Services.RegisterMap
         /// <returns></returns>
         public Register AddReg(string name, uint address, uint bitWidth)
         {
-            var reg = new Register()
-            {
-                Parent = this,
-                Name = name,
-                Address = address,
-                BitWidth = bitWidth,
-                Value = null
-            };
+            var reg = new Register(this, name, address, bitWidth);
             Registers.Add(reg);
             return reg;
         }

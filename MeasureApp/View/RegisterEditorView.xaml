@@ -49,7 +49,12 @@
                                             <GroupBox.Header>
                                                 <hc:SimpleStackPanel Orientation="Horizontal">
                                                     <TextBlock Text="{Binding Name}" FontFamily="Consolas" FontWeight="Bold" FontSize="14" Foreground="DarkSlateGray" VerticalAlignment="Center"/>
-                                                    <TextBlock Text="{Binding Address, StringFormat='(Address: 0x{0:X8})'}" Margin="10,0" Foreground="LightSlateGray" VerticalAlignment="Center"/>
+                                                    <TextBlock Margin="10,0" Foreground="LightSlateGray" VerticalAlignment="Center">
+                                                        <Run Text="ADDR"/>
+                                                        <Run Text="{Binding Address, StringFormat='0x{0:X4}'}"/>
+                                                        <Run Text=":"/>
+                                                        <Run Text="{Binding BitWidth}"/><Run Text="b"/>
+                                                    </TextBlock>
                                                     <hc:TextBox Grid.Column="2" Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}" 
                                                                 hc:InfoElement.Placeholder="DEC" VerticalContentAlignment="Center" Margin="5,0" Width="100"/>
                                                     <Button Content="R" Command="{Binding DataContext.ReadRouterCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Style="{StaticResource ButtonDashedInfo.Small}" Margin="5,0"/>

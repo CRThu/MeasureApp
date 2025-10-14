@@ -33,7 +33,7 @@ namespace MeasureApp.ViewModel
         public DesignRegisterEditorVM()
         {
             RegFiles = new ObservableCollection<RegFile>();
-            var rf0 = new RegFile() { Index = 0, Name = "<RF0>" };
+            var rf0 = new RegFile(0, "<RF0>");
             rf0.AddReg("<REG0>", 0x00, 8)
                 .AddBits("<FIELD0>", 0, 3, "<[3:0]:FIELD0>")
                 .AddBits("<FIELD1>", 4, 7, "<[7:4]:FIELD1>")
@@ -47,7 +47,7 @@ namespace MeasureApp.ViewModel
                 .AddBits("<FIELD6>", 6, 6, "<[6:6]:FIELD6>")
                 .AddBits("<FIELD7>", 7, 7, "<[7:7]:FIELD7>");
             RegFiles.Add(rf0);
-            var rf1 = new RegFile() { Index = 1, Name = "<RF1>" };
+            var rf1 = new RegFile(1, "<RF1>");
             rf1.AddReg("<REG0>", 0x00, 8)
                 .AddBits("<FIELD0>", 0, 0, "<[0:0]:FIELD0>")
                 .AddBits("<FIELD1>", 1, 1, "<[1:1]:FIELD1>")
@@ -98,11 +98,7 @@ namespace MeasureApp.ViewModel
                     {
                         if (regInfo[0] == "+RF")
                         {
-                            regfile = new RegFile()
-                            {
-                                Index = (uint)RegFiles.Count,
-                                Name = regInfo[1],
-                            };
+                            regfile = new RegFile((uint)RegFiles.Count, regInfo[1]);
                             RegFiles.Add(regfile);
                         }
                         else if (regInfo[0] == "+REG")

@@ -60,6 +60,15 @@ namespace MeasureApp.Services.RegisterMap
         [ObservableProperty]
         private ObservableCollection<BitsField> bitFields = new();
 
+        public Register(RegFile parent, string name, uint address, uint bitWidth, uint? value = null)
+        {
+            Parent = parent;
+            Name = name;
+            Address = address;
+            BitWidth = bitWidth;
+            Value = value;
+        }
+
         /// <summary>
         /// 链式添加寄存器
         /// </summary>
