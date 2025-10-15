@@ -52,7 +52,6 @@
                                                 <hc:SimpleStackPanel Orientation="Horizontal">
                                                     <TextBlock Text="{Binding Name}" FontFamily="Consolas" FontWeight="Bold" FontSize="14" Foreground="DarkSlateGray" VerticalAlignment="Center"/>
                                                     <TextBlock Margin="10,0" Foreground="LightSlateGray" VerticalAlignment="Center">
-                                                        <Run Text="ADDR"/>
                                                         <Run Text="{Binding Address, StringFormat='0x{0:X4}'}"/>
                                                         <Run Text=":"/>
                                                         <Run Text="{Binding BitWidth}"/><Run Text="b"/>
@@ -67,30 +66,32 @@
                                                 <ItemsControl ItemsSource="{Binding BitFields}" ScrollViewer.CanContentScroll="False">
                                                     <ItemsControl.ItemTemplate>
                                                         <DataTemplate>
-                                                            <Grid MinHeight="32">
-                                                                <Grid.ColumnDefinitions>
-                                                                    <ColumnDefinition Width="1*"/>
-                                                                    <ColumnDefinition Width="1.5*"/>
-                                                                    <ColumnDefinition Width="1.5*"/>
-                                                                    <ColumnDefinition Width="Auto"/>
-                                                                    <ColumnDefinition Width="3*"/>
-                                                                </Grid.ColumnDefinitions>
-                                                                <TextBlock Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                            <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0.5">
+                                                                <Grid MinHeight="32">
+                                                                    <Grid.ColumnDefinitions>
+                                                                        <ColumnDefinition Width="1*"/>
+                                                                        <ColumnDefinition Width="1.5*"/>
+                                                                        <ColumnDefinition Width="1.5*"/>
+                                                                        <ColumnDefinition Width="Auto"/>
+                                                                        <ColumnDefinition Width="3*"/>
+                                                                    </Grid.ColumnDefinitions>
+                                                                    <TextBlock Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">
                                                                     <Run Text="["/>
                                                                     <Run Text="{Binding EndBit}"/>
                                                                     <Run Text=":"/>
                                                                     <Run Text="{Binding StartBit}"/>
                                                                     <Run Text="]"/>
-                                                                </TextBlock>
-                                                                <TextBlock Grid.Column="1" Text="{Binding Name}" FontFamily="Consolas" TextWrapping="Wrap" VerticalAlignment="Center" Margin="8,0"/>
-                                                                <!--<hc:TextBox Grid.Column="2" Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}" hc:InfoElement.Placeholder="DEC" VerticalContentAlignment="Center" Margin="5,2"/>-->
-                                                                <control:NumericTextBox Grid.Column="2" Value="{Binding Value, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" Margin="5,2"/>
-                                                                <hc:SimpleStackPanel Grid.Column="3" Orientation="Horizontal">
-                                                                    <Button Content="R" Command="{Binding DataContext.ReadRouterCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Style="{StaticResource ButtonDashedInfo.Small}" Margin="5,0"/>
-                                                                    <Button Content="W" Command="{Binding DataContext.WriteRouterCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Style="{StaticResource ButtonDashedInfo.Small}" Margin="5,0"/>
-                                                                </hc:SimpleStackPanel>
-                                                                <TextBlock Grid.Column="4" Text="{Binding Desc}" FontFamily="Consolas" TextWrapping="WrapWithOverflow" VerticalAlignment="Center" Margin="8,0"/>
-                                                            </Grid>
+                                                                    </TextBlock>
+                                                                    <TextBlock Grid.Column="1" Text="{Binding Name}" FontFamily="Consolas" TextWrapping="Wrap" VerticalAlignment="Center" Margin="8,0"/>
+                                                                    <!--<hc:TextBox Grid.Column="2" Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}" hc:InfoElement.Placeholder="DEC" VerticalContentAlignment="Center" Margin="5,2"/>-->
+                                                                    <control:NumericTextBox Grid.Column="2" Value="{Binding Value, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" Margin="5,2"/>
+                                                                    <hc:SimpleStackPanel Grid.Column="3" Orientation="Horizontal">
+                                                                        <Button Content="R" Command="{Binding DataContext.ReadRouterCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Style="{StaticResource ButtonDashedInfo.Small}" Margin="5,0"/>
+                                                                        <Button Content="W" Command="{Binding DataContext.WriteRouterCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Style="{StaticResource ButtonDashedInfo.Small}" Margin="5,0"/>
+                                                                    </hc:SimpleStackPanel>
+                                                                    <TextBlock Grid.Column="4" Text="{Binding Desc}" FontFamily="Microsoft YaHei UI" TextWrapping="WrapWithOverflow" VerticalAlignment="Center" Padding="8,2"/>
+                                                                </Grid>
+                                                            </Border>
                                                         </DataTemplate>
                                                     </ItemsControl.ItemTemplate>
                                                 </ItemsControl>

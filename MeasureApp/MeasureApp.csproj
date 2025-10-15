@@ -9,8 +9,8 @@
 		<SatelliteResourceLanguages>zh-Hans</SatelliteResourceLanguages>
 		<ApplicationIcon>Icon\AppIcon.ico</ApplicationIcon>
 		<PlatformTarget>AnyCPU</PlatformTarget>
-		<AssemblyVersion>2.0.385.0</AssemblyVersion>
-		<FileVersion>2.0.385.0</FileVersion>
+		<AssemblyVersion>2.0.392.0</AssemblyVersion>
+		<FileVersion>2.0.392.0</FileVersion>
 		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup>
 
@@ -82,6 +82,8 @@
 		<PackageReference Include="Dirkster.AvalonDock" Version="4.72.0" />
 		<PackageReference Include="Dirkster.AvalonDock.Themes.VS2013" Version="4.72.0" />
 		<PackageReference Include="DryIoc.dll" Version="5.4.3" />
+		<PackageReference Include="ExcelDataReader" Version="3.8.0" />
+		<PackageReference Include="ExcelDataReader.DataSet" Version="3.8.0" />
 		<PackageReference Include="Extended.Wpf.Toolkit" Version="4.2.0" />
 		<PackageReference Include="HandyControl" Version="3.4.0" />
 		<PackageReference Include="MahApps.Metro" Version="2.4.9" />
@@ -133,6 +135,12 @@
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
 		<None Update="Config\Device.json">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="doc\register editor example\test.map.xlsx">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="doc\register editor example\test.reg.txt">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
 		<None Update="Properties\Settings.settings">

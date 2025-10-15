@@ -89,7 +89,7 @@ namespace MeasureApp.ViewModel
                 {
                     try
                     {
-                        ImportRegisterMapFile(_context.Configs.AppConfig.RegisterMapFilePath);
+                        ImportFromFile(_context.Configs.AppConfig.RegisterMapFilePath);
                     }
                     catch (Exception ex)
                     {
@@ -99,39 +99,22 @@ namespace MeasureApp.ViewModel
             }
         }
 
-        private void ImportRegisterMapFile(string filePath)
+        private void ImportFromFile(string filePath)
         {
-            string[][] regInfos = File.ReadAllLines(filePath).Select(l => l.Split(',')).ToArray();
+            string ext = Path.GetExtension(filePath);
+            List<RegFile> parsedRegFiles;
+
+            if (ext == ".xls" || ext == ".xlsx")
+                parsedRegFiles = Parser.ParseFromExcel(new string[] { filePath });
+            else if (ext == ".txt")
+                parsedRegFiles = Parser.ParseFromTxt(new string[] { filePath });
+            else
+                throw new NotImplementedException($"不支持的拓展名:{ext}");
 
             RegFiles.Clear();
-            RegFile regfile = null;
-            foreach (var regInfo in regInfos)
+            foreach (var regFile in parsedRegFiles)
             {
-                if (regInfo[0] == "+RF")
-                {
-                    regfile = new RegFile((uint)RegFiles.Count, regInfo[1]);
-                    RegFiles.Add(regfile);
-                }
-                else if (regInfo[0] == "+REG")
-                {
-                    if (regfile == null)
-                        throw new Exception("未初始化REGFILE");
-                    uint addr = Convert.ToUInt32(regInfo[1], 16);
-                    uint bitWidth = Convert.ToUInt32(regInfo[2], 16);
-                    regfile.AddReg(regInfo[3], addr, bitWidth);
-                }
-                else
-                {
-                    uint addr = Convert.ToUInt32(regInfo[0], 16);
-                    uint endBit = Convert.ToUInt32(regInfo[1], 16);
-                    uint startBit = Convert.ToUInt32(regInfo[2], 16);
-                    string name = regInfo[3];
-                    string desc = regInfo.Length >= 5 ? regInfo[4] : "<DESC>";
-                    var reg = regfile?.Registers.Where(r => r.Address == addr).FirstOrDefault();
-                    if (reg == null)
-                        throw new Exception("未初始化REG");
-                    reg.AddBits(name, startBit, endBit, desc);
-                }
+                RegFiles.Add(regFile);
             }
         }
 
@@ -142,12 +125,15 @@ namespace MeasureApp.ViewModel
             {
                 OpenFileDialog ofd = new OpenFileDialog()
                 {
+                    Title = "选择寄存器表或定义文件",
+                    Filter = "寄存器表文件 (*.xlsx;*.xls;*.txt)|*.xlsx;*.xls;*.txt|所有文件 (*.*)|*.*",
                 };
-                if (ofd.ShowDialog() == true)
-                {
-                    ImportRegisterMapFile(ofd.FileName);
-                    _context.Configs.AppConfig.RegisterMapFilePath = ofd.FileName;
-                }
+
+                if (ofd.ShowDialog() != true)
+                    return;
+
+                ImportFromFile(ofd.FileName);
+                _context.Configs.AppConfig.RegisterMapFilePath = ofd.FileName;
             }
             catch (Exception ex)
             {
