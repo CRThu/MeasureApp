@@ -22,9 +22,39 @@ namespace MeasureApp.ViewModel
         private readonly AppContextManager _context;
         public AppContextManager Context => _context;
 
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(Plot))]
+        private string selectedDataXKey;
+
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(Plot))]
+        private string selectedDataYKey;
+
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(Plot))]
+        private bool isCustomDataXUsed = false;
+
+        [ObservableProperty]
+        private bool isAutoUpdateEnabled = true;
+
+        [ObservableProperty]
+        private Plot plot;
+
         public DataPlotVM(AppContextManager context)
         {
             _context = context;
+        }
+
+        [RelayCommand]
+        public void ManualRefresh()
+        {
+            try
+            {
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
+            }
         }
     }
 }

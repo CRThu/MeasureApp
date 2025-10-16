@@ -118,6 +118,7 @@
                           SelectedItem="{Binding SelectedProtocol}"
                           MinWidth="180"/>
                 <CheckBox Content="自动轮询" IsChecked="{Binding IsAutoPollingEnabled}" Margin="15,0,15,0"/>
+                <TextBlock Text="*SCPI设备需取消勾选此项" VerticalAlignment="Center"/>
             </StackPanel>
         </StackPanel>
 

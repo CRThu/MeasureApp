@@ -8,7 +8,7 @@
       xmlns:vmc="clr-namespace:MeasureApp.ViewModel.Common"
       xmlns:view="clr-namespace:MeasureApp.View.Control"
       xmlns:viewmodel="clr-namespace:MeasureApp.ViewModel"
-      xmlns:b="clr-namespace:MeasureApp.View.Behavior"
+      xmlns:b="clr-namespace:MeasureApp.View.Behaviors"
       mc:Ignorable="d"
       Title="SerialPortInstructionPage">
     <Page.Resources>

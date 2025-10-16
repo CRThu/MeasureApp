@@ -11,7 +11,7 @@
         xmlns:ad="https://github.com/Dirkster99/AvalonDock"
         DataContext="{Binding Source={StaticResource Locator},Path=MainWindow}"
         mc:Ignorable="d"
-        Title="MeasureApp" Height="650" Width="1200">
+        Title="{Binding AppName}" Height="650" Width="1200">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding MainWindowLoadedCommand}"/>
@@ -27,7 +27,7 @@
         <vm:SecondsToTimeFormatConverter x:Key="SecondsToTimeFormatConverter"/>
     </Window.Resources>
     <DockPanel>
-        <StatusBar DockPanel.Dock="Bottom" MaxHeight="20" VerticalAlignment="Bottom">
+        <StatusBar DockPanel.Dock="Bottom" VerticalAlignment="Bottom">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="500"/>
@@ -35,10 +35,10 @@
                     <ColumnDefinition Width="160"/>
                     <ColumnDefinition Width="60"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Margin="5,0,5,0" Text="{Binding StatusBarText}"></TextBlock>
-                <TextBlock Grid.Column="1" Margin="3,0,3,0" HorizontalAlignment="Right" Text="{Binding TaskProgressInstance.TaskProgressElapsedTime, Converter={StaticResource SecondsToTimeFormatConverter}}"></TextBlock>
+                <TextBlock Grid.Column="0" Margin="5,0,5,0" Text="{Binding StatusBarText}" VerticalAlignment="Center"/>
+                <!--<TextBlock Grid.Column="1" Margin="3,0,3,0" HorizontalAlignment="Right" Text="{Binding TaskProgressInstance.TaskProgressElapsedTime, Converter={StaticResource SecondsToTimeFormatConverter}}" VerticalAlignment="Center"/>
                 <ProgressBar Grid.Column="2" Margin="5,0,5,0" Minimum="{Binding TaskProgressInstance.TaskProgressStart}" Maximum="{Binding TaskProgressInstance.TaskProgressEnd}" Value="{Binding TaskProgressInstance.TaskProgressValue}"/>
-                <TextBlock Grid.Column="3" Margin="3,0,3,0" HorizontalAlignment="Left" Text="{Binding TaskProgressInstance.TaskProgressETATime, Converter={StaticResource SecondsToTimeFormatConverter}}"></TextBlock>
+                <TextBlock Grid.Column="3" Margin="3,0,3,0" HorizontalAlignment="Left" Text="{Binding TaskProgressInstance.TaskProgressETATime, Converter={StaticResource SecondsToTimeFormatConverter}}" VerticalAlignment="Center"/>-->
             </Grid>
         </StatusBar>
         <ad:DockingManager>
@@ -74,16 +74,16 @@
                                     <v:DataMonitorView Margin="10,10,10,10"/>
                                 </ad:LayoutAnchorable.Content>
                             </ad:LayoutAnchorable>
-                            <!--<ad:LayoutAnchorable Title="数据可视化" CanHide="False">
+                            <ad:LayoutAnchorable Title="数据可视化" CanHide="False">
                                 <ad:LayoutAnchorable.Content>
                                     <v:DataPlotView Margin="10,10,10,10"/>
                                 </ad:LayoutAnchorable.Content>
-                            </ad:LayoutAnchorable>-->
-                            <ad:LayoutAnchorable Title="数据处理" CanHide="False">
+                            </ad:LayoutAnchorable>
+                            <!--<ad:LayoutAnchorable Title="数据处理" CanHide="False">
                                 <ad:LayoutAnchorable.Content>
                                     <v:DataProcView Margin="10,10,10,10"/>
                                 </ad:LayoutAnchorable.Content>
-                            </ad:LayoutAnchorable>
+                            </ad:LayoutAnchorable>-->
                             <ad:LayoutAnchorable Title="脚本运行" CanHide="False">
                                 <ad:LayoutAnchorable.Content>
                                     <v:ScriptRunnerView Margin="10,10,10,10"/>

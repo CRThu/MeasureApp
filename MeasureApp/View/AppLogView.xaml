@@ -9,7 +9,7 @@
              xmlns:c="clr-namespace:MeasureApp.View.Converter"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:hc="https://handyorg.github.io/handycontrol"
-             xmlns:ScottPlot="clr-namespace:ScottPlot.WPF;assembly=ScottPlot.WPF" xmlns:behaviors="clr-namespace:MeasureApp.Behaviors"
+             xmlns:ScottPlot="clr-namespace:ScottPlot.WPF;assembly=ScottPlot.WPF"
              DataContext="{Binding Source={StaticResource Locator},Path=AppLog}"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="800">

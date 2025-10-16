@@ -9,15 +9,34 @@
              xmlns:c="clr-namespace:MeasureApp.View.Converter"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:hc="https://handyorg.github.io/handycontrol"
-             xmlns:ScottPlot="clr-namespace:ScottPlot.WPF;assembly=ScottPlot.WPF" xmlns:behaviors="clr-namespace:MeasureApp.Behaviors"
+             xmlns:ScottPlot="clr-namespace:ScottPlot.WPF;assembly=ScottPlot.WPF"
              DataContext="{Binding Source={StaticResource Locator},Path=AboutApp}"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="800">
     <UserControl.Resources>
     </UserControl.Resources>
     <Grid>
-        <Border BorderBrush="Gray" BorderThickness="0.5" CornerRadius="3" Margin="420,10,10,10">
-            <TextBlock Text="{Binding VersionText}" Margin="5,5,5,5" TextWrapping="Wrap"/>
-        </Border>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+        <hc:SimpleStackPanel Grid.Column="0" Orientation="Vertical" Margin="10">
+            <hc:SimpleStackPanel Orientation="Horizontal">
+                <TextBlock Text="App Version:" Width="100"/>
+                <TextBlock Text="{Binding AppVersion}"/>
+            </hc:SimpleStackPanel>
+            <hc:SimpleStackPanel Orientation="Horizontal">
+                <TextBlock Text="Build Mode:" Width="100"/>
+                <TextBlock Text="{Binding AppBuildMode}"/>
+            </hc:SimpleStackPanel>
+            <hc:SimpleStackPanel Orientation="Horizontal">
+                <TextBlock Text="Build Time:" Width="100"/>
+                <TextBlock Text="{Binding AppBuildTime}"/>
+            </hc:SimpleStackPanel>
+            <hc:SimpleStackPanel Orientation="Horizontal">
+                <TextBlock Text=".NET Version:" Width="100"/>
+                <TextBlock Text="{Binding DotnetVersion}"/>
+            </hc:SimpleStackPanel>
+        </hc:SimpleStackPanel>
     </Grid>
 </UserControl>

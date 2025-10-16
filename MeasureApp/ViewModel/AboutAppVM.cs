@@ -27,38 +27,71 @@ namespace MeasureApp.ViewModel
         public AppContextManager Context => _context;
 
         [ObservableProperty]
-        private StringBuilder versionText = GetVersion();
+        private string appVersion = GetAppVersion();
+
+        [ObservableProperty]
+        private string appBuildMode = GetAppBuildMode();
+
+        [ObservableProperty]
+        private string appBuildTime = GetAppBuildTime();
+
+        [ObservableProperty]
+        private string dotnetVersion = GetDotnetVersion();
 
         public AboutAppVM(AppContextManager context)
         {
             _context = context;
         }
 
-        public static StringBuilder GetVersion()
+        public static string GetAppVersion()
         {
-            StringBuilder stringBuilder = new();
+            string appVersion = "<unknown>";
             try
             {
-                var assembly = Assembly.GetEntryAssembly();
-                if (assembly == null)
-                    assembly = new StackTrace().GetFrames().Last().GetMethod().Module.Assembly;
-                var debuggableAttribute = assembly.GetCustomAttribute<DebuggableAttribute>();
-                bool isDebugMode = debuggableAttribute.DebuggingFlags.HasFlag(DebuggableAttribute.DebuggingModes.EnableEditAndContinue);
-
-                stringBuilder.AppendLine($"App Version:\t{assembly.GetName().Version}");
-                stringBuilder.AppendLine($"Build Time:\t{File.GetLastWriteTime(assembly.Location)}");
-                stringBuilder.AppendLine($"Build Mode:\t{(isDebugMode ? "Debug" : "Release")}");
-                stringBuilder.AppendLine($".NET Version:\t{Environment.Version}");
-
-                //stringBuilder.AppendLine();
-                //stringBuilder.Append($"COM Device:\t");
-                //stringBuilder.AppendJoin("\n\t\t", HardwareInfoUtil.GetSerialPortFullName());
+                appVersion = Assembly.GetEntryAssembly().GetName().Version.ToString();
             }
             catch (Exception ex)
             {
                 _ = MessageBox.Show(ex.ToString());
             }
-            return stringBuilder;
+            return appVersion;
+        }
+
+        public static string GetAppBuildMode()
+        {
+            string buildMode = "<unknown>";
+            try
+            {
+                var assembly = Assembly.GetEntryAssembly();
+                var debuggableAttribute = assembly.GetCustomAttribute<DebuggableAttribute>();
+                bool isDebugMode = debuggableAttribute.DebuggingFlags.HasFlag(DebuggableAttribute.DebuggingModes.EnableEditAndContinue);
+                buildMode = (isDebugMode ? "Debug" : "Release");
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
+            }
+            return buildMode;
+        }
+
+        public static string GetAppBuildTime()
+        {
+            string buildTime = "<unknown>";
+            try
+            {
+                var assembly = Assembly.GetEntryAssembly();
+                buildTime = File.GetLastWriteTime(assembly.Location).ToString();
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
+            }
+            return buildTime;
+        }
+
+        public static string GetDotnetVersion()
+        {
+            return Environment.Version.ToString();
         }
     }
 }

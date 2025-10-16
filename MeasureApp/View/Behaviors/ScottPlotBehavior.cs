@@ -12,7 +12,7 @@ using System.Windows.Threading;
 using System.Windows;
 using Microsoft.Xaml.Behaviors;
 
-namespace MeasureApp.Behaviors
+namespace MeasureApp.View.Behaviors
 {
     public class ScottPlotBehavior : Behavior<WpfPlot>
         , IRecipient<PlotDataRefreshMessage>
@@ -68,7 +68,7 @@ namespace MeasureApp.Behaviors
             base.OnAttached();
             if (AssociatedObject != null)
             {
-                this.Plot = AssociatedObject.Plot;
+                Plot = AssociatedObject.Plot;
                 WeakReferenceMessenger.Default.Register<PlotDataRefreshMessage>(this);
                 WeakReferenceMessenger.Default.Register<PlotResetMessage>(this);
             }
@@ -78,7 +78,7 @@ namespace MeasureApp.Behaviors
         {
             _renderTimer.Stop();
             WeakReferenceMessenger.Default.UnregisterAll(this);
-            this.Plot = null;
+            Plot = null;
             base.OnDetaching();
         }
 

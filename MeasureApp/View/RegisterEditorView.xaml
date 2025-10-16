@@ -11,7 +11,6 @@
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:hc="https://handyorg.github.io/handycontrol"
              xmlns:ScottPlot="clr-namespace:ScottPlot.WPF;assembly=ScottPlot.WPF"
-             xmlns:behaviors="clr-namespace:MeasureApp.Behaviors"
              xmlns:ikriv="clr-namespace:IKriv.Windows.Controls.Behaviors"
              DataContext="{Binding Source={StaticResource Locator},Path=RegisterEditor}"
              d:DataContext="{d:DesignInstance vm:DesignRegisterEditorVM, IsDesignTimeCreatable=True}"

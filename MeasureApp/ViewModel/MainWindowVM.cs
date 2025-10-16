@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -16,6 +17,8 @@ namespace MeasureApp.ViewModel
     public partial class MainWindowVM : BaseVM
     {
         private readonly AppContextManager _context;
+
+        public string AppName => $"MeasureApp {Assembly.GetEntryAssembly().GetName().Version}";
 
         [ObservableProperty]
         private string statusBarText = "Text from MainWindowVM";
