@@ -43,6 +43,7 @@
         <hc:SimpleStackPanel Grid.Row="1" Orientation="Horizontal" Margin="5">
             <CheckBox Content="自动刷新" Margin="5,0" IsChecked="{Binding IsAutoUpdateEnabled}"/>
             <Button Content="手动刷新" Margin="5,0" Style="{StaticResource ButtonDefault.Small}" Command="{Binding ManualRefreshCommand}"/>
+            <Button Content="测试数据" Margin="5,0" Style="{StaticResource ButtonDefault.Small}" Command="{Binding AddTestDataCommand}"/>
         </hc:SimpleStackPanel>
         <ScottPlot:WpfPlot Grid.Row="2">
             <i:Interaction.Behaviors>

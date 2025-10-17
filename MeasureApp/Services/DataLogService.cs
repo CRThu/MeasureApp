@@ -332,6 +332,18 @@ namespace MeasureApp.Services
             return logs[key];
         }
 
+
+        public bool TryGetValue(string key, out DataLogList dataLogList)
+        {
+            if (key == null)
+            {
+                dataLogList = null;
+                return false;
+            }
+
+            return logs.TryGetValue(key, out dataLogList);
+        }
+
         public void RemoveKey(string key)
         {
             lock (_keysLock)

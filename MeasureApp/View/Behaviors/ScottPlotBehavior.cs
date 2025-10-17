@@ -27,7 +27,14 @@ namespace MeasureApp.View.Behaviors
             _renderTimer.Tick += (s, e) =>
             {
                 _renderTimer.Stop();
-                AssociatedObject?.Refresh();
+                try
+                {
+                    AssociatedObject?.Refresh();
+                }
+                catch (Exception ex)
+                {
+                    _ = MessageBox.Show(ex.ToString());
+                }
             };
         }
 
@@ -103,7 +110,14 @@ namespace MeasureApp.View.Behaviors
             // Perform an immediate refresh on the UI thread.
             AssociatedObject?.Dispatcher.Invoke(() =>
             {
-                AssociatedObject?.Refresh();
+                try
+                {
+                    AssociatedObject?.Refresh();
+                }
+                catch (Exception ex)
+                {
+                    _ = MessageBox.Show(ex.ToString());
+                }
             });
         }
     }
