@@ -39,6 +39,13 @@ namespace MeasureApp.ViewModel
         [ObservableProperty]
         private Plot plot;
 
+        List<double> _plotXData;
+        List<double> _plotYData;
+
+        int testDataCnt1 = 0;
+        int testDataCnt2 = 0;
+
+
         public DataPlotVM(AppContextManager context)
         {
             _context = context;
@@ -95,7 +102,46 @@ namespace MeasureApp.ViewModel
         {
             try
             {
-                throw new NotImplementedException();
+                bool dataWasUpdated = false;
+                if (_plotYData != null)
+                {
+                    if (!Context.DataLogger.TryGetValue(SelectedDataYKey, out DataLogList dataYLog))
+                        return;
+
+                    var dataYSnapshot = dataYLog.GetSnapshot();
+                    int newItemsCount = dataYSnapshot.Length - _plotYData.Count;
+
+                    if (newItemsCount <= 0)
+                        return;
+
+                    dataWasUpdated = true;
+                    var newPoints = dataYSnapshot
+                        .Skip(_plotYData.Count)
+                        .Select(v => v.Type == DataLogValue.ValueType.Double ? v.Double : Convert.ToDouble(v.Int64));
+                    _plotYData.AddRange(newPoints);
+                }
+                if (IsCustomDataXUsed && _plotXData != null)
+                {
+                    if (!Context.DataLogger.TryGetValue(SelectedDataXKey, out DataLogList dataXLog))
+                        return;
+
+                    var dataXSnapshot = dataXLog.GetSnapshot();
+                    int newItemsCount = dataXSnapshot.Length - _plotXData.Count;
+
+                    if (newItemsCount <= 0)
+                        return;
+
+                    dataWasUpdated = true;
+                    var newPoints = dataXSnapshot
+                        .Skip(_plotXData.Count)
+                        .Select(v => v.Type == DataLogValue.ValueType.Double ? v.Double : Convert.ToDouble(v.Int64));
+                    _plotXData.AddRange(newPoints);
+                }
+                if (dataWasUpdated)
+                {
+                    // 此消息用于防抖的增量更新。
+                    WeakReferenceMessenger.Default.Send(PlotDataRefreshMessage.Instance);
+                }
             }
             catch (Exception ex)
             {
@@ -116,7 +162,7 @@ namespace MeasureApp.ViewModel
                     return;
 
                 var dataYSnapshot = dataYLog.GetSnapshot();
-                List<double> _plotYData = dataYSnapshot
+                _plotYData = dataYSnapshot
                     .Select(v => v.Type == DataLogValue.ValueType.Double ? v.Double : Convert.ToDouble(v.Int64))
                     .ToList();
 
@@ -125,19 +171,19 @@ namespace MeasureApp.ViewModel
                     && Context.DataLogger.TryGetValue(SelectedDataXKey, out DataLogList dataXLog))
                 {
                     var dataXSnapshot = dataXLog.GetSnapshot();
-                    List<double> _plotXData = dataXSnapshot
+                    _plotXData = dataXSnapshot
                         .Select(v => v.Type == DataLogValue.ValueType.Double ? v.Double : Convert.ToDouble(v.Int64))
                         .ToList();
 
                     // sort性能优化
-                    var sortedData = _plotXData.Zip(_plotYData, (x, y) => new { X = x, Y = y })
-                        .OrderBy(item => item.X)
-                        .ToList();
+                    //var sortedData = _plotXData.Zip(_plotYData, (x, y) => new { X = x, Y = y })
+                    //    .OrderBy(item => item.X)
+                    //    .ToList();
 
-                    sig = Plot.Add.SignalXY(sortedData.Select(s=>s.X).ToArray()
-                        , sortedData.Select(s => s.Y).ToArray());
+                    //sig = Plot.Add.SignalXY(sortedData.Select(s=>s.X).ToArray()
+                    //    , sortedData.Select(s => s.Y).ToArray());
 
-                    //sig = Plot.Add.Signal(_plotXData, _plotYData);
+                    sig = Plot.Add.ScatterLine(_plotXData, _plotYData);
                 }
                 else
                 {
@@ -175,18 +221,48 @@ namespace MeasureApp.ViewModel
         }
 
         [RelayCommand]
+        public void GenTestData()
+        {
+            try
+            {
+                Random random = new Random();
+
+                Context.DataLogger.Clear();
+                Context.DataLogger.AddRange("X1", new double[] { 1, 4, 9, 16, 25, 36, 49, 64, 81, 100 });
+                Context.DataLogger.AddRange("X2", new double[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
+                Context.DataLogger.AddRange("Y1", new double[] { 1, 0, 1, 0, 1, 0, 1, 0, 1, 0 });
+                Context.DataLogger.AddRange("Y2", new double[] { 1, 4, 9, 16, 25, 36, 49, 64, 81, 100 });
+                Context.DataLogger.AddRange("Y3", Enumerable.Range(1, 10).Select((_) => random.NextDouble()));
+                Context.DataLogger.AddRange("XL1", Enumerable.Range(1, 100000));
+                Context.DataLogger.AddRange("YL1", Enumerable.Range(1, 100000));
+                Context.DataLogger.AddRange("YL2", Enumerable.Range(1, 100000).Select((_) => random.NextDouble()));
+                testDataCnt1 = 10;
+                testDataCnt2 = 100000;
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
+            }
+        }
+
+
+        [RelayCommand]
         public void AddTestData()
         {
             try
             {
-                Context.DataLogger.Clear();
-                Context.DataLogger.AddRange("X1", new int[] { 1, 2, 4, 9, 16, 25, 36, 49, 64, 81 });
-                Context.DataLogger.AddRange("X2", new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
-                Context.DataLogger.AddRange("Y1", new int[] { 1, 0, 1, 0, 1, 0, 1, 0, 1, 0 });
-                Context.DataLogger.AddRange("Y2", new double[] { 1, 2, 4, 9, 16, 25, 36, 49, 64, 81 });
+                testDataCnt1++;
+                testDataCnt2++;
                 Random random = new Random();
-                for (int i = 0; i < 10; i++)
-                    Context.DataLogger.Add("Y3", random.Next());
+                Context.DataLogger.Add("X1", testDataCnt1 * testDataCnt1);
+                Context.DataLogger.Add("X2", testDataCnt1);
+                Context.DataLogger.Add("Y1", testDataCnt1 % 2 == 0 ? 1 : 0);
+                Context.DataLogger.Add("Y2", testDataCnt1 * testDataCnt1);
+                Context.DataLogger.Add("Y3", random.NextDouble());
+                Context.DataLogger.Add("XL1", testDataCnt2);
+                Context.DataLogger.Add("YL1", testDataCnt2);
+                Context.DataLogger.Add("YL2", random.NextDouble());
+
             }
             catch (Exception ex)
             {
