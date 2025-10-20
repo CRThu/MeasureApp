@@ -48,7 +48,7 @@
         </hc:SimpleStackPanel>
         <ScottPlot:WpfPlot Grid.Row="2">
             <i:Interaction.Behaviors>
-                <b:ScottPlotBehavior Plot="{Binding Plot, Mode=OneWayToSource}"/>
+                <b:ScottPlotBehavior Plot="{Binding Plot, Mode=OneWayToSource}" IsAutoUpdateEnabled="{Binding IsAutoUpdateEnabled}"/>
             </i:Interaction.Behaviors>
         </ScottPlot:WpfPlot>
     </Grid>

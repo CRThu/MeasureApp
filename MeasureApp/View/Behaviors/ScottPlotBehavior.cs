@@ -19,7 +19,8 @@ namespace MeasureApp.View.Behaviors
         , IRecipient<PlotResetMessage>
     {
         private readonly DispatcherTimer _renderTimer;
-        private string _dataSourceToken;
+        //private string _dataSourceToken;
+        private bool _isAutoUpdateEnabled = true;
 
         public ScottPlotBehavior()
         {
@@ -50,22 +51,42 @@ namespace MeasureApp.View.Behaviors
                 new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
         #endregion
 
-        #region DataSourceToken Dependency Property
-        public string DataSourceToken
+        //#region DataSourceToken Dependency Property
+        //public string DataSourceToken
+        //{
+        //    get => (string)GetValue(DataSourceTokenProperty);
+        //    set => SetValue(DataSourceTokenProperty, value);
+        //}
+
+        //public static readonly DependencyProperty DataSourceTokenProperty =
+        //    DependencyProperty.Register(nameof(DataSourceToken), typeof(string), typeof(ScottPlotBehavior),
+        //    new PropertyMetadata(null, OnDataSourceTokenChanged)); // Add a callback
+
+        //private static void OnDataSourceTokenChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        //{
+        //    if (d is ScottPlotBehavior behavior)
+        //    {
+        //        behavior._dataSourceToken = e.NewValue as string;
+        //    }
+        //}
+        //#endregion
+
+        #region IsAutoUpdateEnabled Dependency Property
+        public bool IsAutoUpdateEnabled
         {
-            get => (string)GetValue(DataSourceTokenProperty);
-            set => SetValue(DataSourceTokenProperty, value);
+            get => (bool)GetValue(IsAutoUpdateEnabledProperty);
+            set => SetValue(IsAutoUpdateEnabledProperty, value);
         }
 
-        public static readonly DependencyProperty DataSourceTokenProperty =
-            DependencyProperty.Register(nameof(DataSourceToken), typeof(string), typeof(ScottPlotBehavior),
-            new PropertyMetadata(null, OnDataSourceTokenChanged)); // Add a callback
+        public static readonly DependencyProperty IsAutoUpdateEnabledProperty =
+            DependencyProperty.Register(nameof(IsAutoUpdateEnabled), typeof(bool), typeof(ScottPlotBehavior),
+            new PropertyMetadata(true, OnIsAutoUpdateEnabledChanged)); // Add a callback
 
-        private static void OnDataSourceTokenChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void OnIsAutoUpdateEnabledChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is ScottPlotBehavior behavior)
             {
-                behavior._dataSourceToken = e.NewValue as string;
+                behavior._isAutoUpdateEnabled = (bool)e.NewValue;
             }
         }
         #endregion
@@ -96,7 +117,9 @@ namespace MeasureApp.View.Behaviors
         {
             // Debounce the render call by restarting the timer.
             _renderTimer.Stop();
-            _renderTimer.Start();
+
+            if (_isAutoUpdateEnabled)
+                _renderTimer.Start();
         }
 
         /// <summary>
