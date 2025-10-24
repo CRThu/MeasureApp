@@ -24,7 +24,6 @@
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <Window.Resources>
-        <vm:SecondsToTimeFormatConverter x:Key="SecondsToTimeFormatConverter"/>
     </Window.Resources>
     <DockPanel>
         <StatusBar DockPanel.Dock="Bottom" VerticalAlignment="Bottom">
@@ -99,56 +98,6 @@
                                     <v:AboutAppView Margin="10,10,10,10"/>
                                 </ad:LayoutAnchorable.Content>
                             </ad:LayoutAnchorable>
-                            <!--<ad:LayoutAnchorable Title="3458A万用表控制" CanHide="False">
-                                <ad:LayoutAnchorable.Content>
-                                    <Frame Content="{Binding Pages.Multimeter3458AControlPage}"/>
-                                </ad:LayoutAnchorable.Content>
-                            </ad:LayoutAnchorable>
-                            <ad:LayoutAnchorable Title="温度控制" CanHide="False">
-                                <ad:LayoutAnchorable.Content>
-                                    <Frame Content="{Binding Pages.TempControlPage}"/>
-                                </ad:LayoutAnchorable.Content>
-                            </ad:LayoutAnchorable>
-                            <ad:LayoutAnchorable Title="串口指令通信" CanHide="False">
-                                <ad:LayoutAnchorable.Content>
-                                    <Frame Content="{Binding Pages.SerialPortInstructionPage}"/>
-                                </ad:LayoutAnchorable.Content>
-                            </ad:LayoutAnchorable>
-                            <ad:LayoutAnchorable Title="串口数据包通信" CanHide="False">
-                                <ad:LayoutAnchorable.Content>
-                                    <Frame Content="{Binding Pages.SerialPortPacketPage}"/>
-                                </ad:LayoutAnchorable.Content>
-                            </ad:LayoutAnchorable>
-                            <ad:LayoutAnchorable Title="自动化" CanHide="False">
-                                <ad:LayoutAnchorable.Content>
-                                    <Frame Content="{Binding Pages.AutomationPage}"/>
-                                </ad:LayoutAnchorable.Content>
-                            </ad:LayoutAnchorable>
-                            <ad:LayoutAnchorable Title="任务集运行" CanHide="False">
-                                <ad:LayoutAnchorable.Content>
-                                    <Frame Content="{Binding Pages.RunTasksPage}"/>
-                                </ad:LayoutAnchorable.Content>
-                            </ad:LayoutAnchorable>
-                            <ad:LayoutAnchorable Title="FFT分析" CanHide="False">
-                                <ad:LayoutAnchorable.Content>
-                                    <Frame Content="{Binding Pages.FftAnalysisPage}"/>
-                                </ad:LayoutAnchorable.Content>
-                            </ad:LayoutAnchorable>
-                            <ad:LayoutAnchorable Title="实用工具" CanHide="False">
-                                <ad:LayoutAnchorable.Content>
-                                    <Frame Content="{Binding Pages.UtilityPage}"/>
-                                </ad:LayoutAnchorable.Content>
-                            </ad:LayoutAnchorable>
-                            <ad:LayoutAnchorable Title="设置" CanHide="False">
-                                <ad:LayoutAnchorable.Content>
-                                    <Frame Content="{Binding Pages.SettingsPage}"/>
-                                </ad:LayoutAnchorable.Content>
-                            </ad:LayoutAnchorable>
-                            <ad:LayoutAnchorable Title="开发测试页" CanHide="False">
-                                <ad:LayoutAnchorable.Content>
-                                    <Frame Content="{Binding Pages.TestPage}"/>
-                                </ad:LayoutAnchorable.Content>
-                            </ad:LayoutAnchorable>-->
                         </ad:LayoutDocumentPane>
                     </ad:LayoutDocumentPaneGroup>
                 </ad:LayoutPanel>

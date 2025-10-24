@@ -4,7 +4,6 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using DryIoc;
 using MeasureApp.Messages;
-using MeasureApp.Model.Common;
 using MeasureApp.Services;
 using ScottPlot;
 using System;

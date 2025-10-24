@@ -6,7 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace MeasureApp.Model.SerialPortScript
+namespace MeasureApp.Services.Script
 {
     public static class XmlTag
     {

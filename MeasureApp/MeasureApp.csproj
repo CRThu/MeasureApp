@@ -9,8 +9,8 @@
 		<SatelliteResourceLanguages>zh-Hans</SatelliteResourceLanguages>
 		<ApplicationIcon>Icon\AppIcon.ico</ApplicationIcon>
 		<PlatformTarget>AnyCPU</PlatformTarget>
-		<AssemblyVersion>2.0.459.0</AssemblyVersion>
-		<FileVersion>2.0.459.0</FileVersion>
+		<AssemblyVersion>2.0.473.0</AssemblyVersion>
+		<FileVersion>2.0.473.0</FileVersion>
 		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup>
 
@@ -38,27 +38,29 @@
 
 	<ItemGroup>
 	  <Compile Remove="Example\**" />
+	  <Compile Remove="Model\V1\**" />
+	  <Compile Remove="V1\**" />
+	  <Compile Remove="ViewModel\V1\**" />
+	  <Compile Remove="View\V1\**" />
 	  <Compile Remove="View\Web\**" />
 	  <EmbeddedResource Remove="Example\**" />
+	  <EmbeddedResource Remove="Model\V1\**" />
+	  <EmbeddedResource Remove="V1\**" />
+	  <EmbeddedResource Remove="ViewModel\V1\**" />
+	  <EmbeddedResource Remove="View\V1\**" />
 	  <EmbeddedResource Remove="View\Web\**" />
 	  <None Remove="Example\**" />
+	  <None Remove="Model\V1\**" />
+	  <None Remove="V1\**" />
+	  <None Remove="ViewModel\V1\**" />
+	  <None Remove="View\V1\**" />
 	  <None Remove="View\Web\**" />
 	  <Page Remove="Example\**" />
+	  <Page Remove="Model\V1\**" />
+	  <Page Remove="V1\**" />
+	  <Page Remove="ViewModel\V1\**" />
+	  <Page Remove="View\V1\**" />
 	  <Page Remove="View\Web\**" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Compile Remove="AutomationExample.cs" />
-		<Compile Remove="Model\TaskRunClassDemo.cs" />
-		<Compile Remove="PlotViewExample.cs" />
-		<Compile Remove="StatusBarProgressBarExample.cs" />
-		<Compile Remove="V1\Example\AD7124IoutTest.cs" />
-		<Compile Remove="V1\Example\AutomationExample.cs" />
-		<Compile Remove="V1\Example\AutomationExample2.cs" />
-		<Compile Remove="V1\Example\AutomationTemplate.cs" />
-		<Compile Remove="V1\Example\PlotViewExample.cs" />
-		<Compile Remove="V1\Example\StatusBarProgressBarExample.cs" />
-		<Compile Remove="V1\Example\TaskRunStaticClassDemo.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -66,34 +68,16 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Include="V1\Example\AD7124IoutTest.cs" />
-	  <None Include="V1\Example\AutomationExample.cs" />
-	  <None Include="V1\Example\AutomationExample2.cs" />
-	  <None Include="V1\Example\AutomationTemplate.cs" />
-	  <None Include="V1\Example\PlotViewExample.cs" />
-	  <None Include="V1\Example\StatusBarProgressBarExample.cs" />
-	  <None Include="V1\Example\TaskRunStaticClassDemo.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<PackageReference Include="AvalonEdit" Version="6.1.3.50" />
-		<PackageReference Include="CodingSeb.ExpressionEvaluator" Version="1.4.38" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
 		<PackageReference Include="Dirkster.AvalonDock" Version="4.72.0" />
 		<PackageReference Include="Dirkster.AvalonDock.Themes.VS2013" Version="4.72.0" />
 		<PackageReference Include="DryIoc.dll" Version="5.4.3" />
 		<PackageReference Include="ExcelDataReader" Version="3.8.0" />
 		<PackageReference Include="ExcelDataReader.DataSet" Version="3.8.0" />
-		<PackageReference Include="Extended.Wpf.Toolkit" Version="4.2.0" />
 		<PackageReference Include="HandyControl" Version="3.4.0" />
-		<PackageReference Include="MahApps.Metro" Version="2.4.9" />
-		<PackageReference Include="MathNet.Numerics" Version="5.0.0" />
-		<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3351.48" />
 		<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.135" />
 		<PackageReference Include="NCalcSync" Version="5.6.0" />
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="NWaves" Version="0.9.6" />
-		<PackageReference Include="RoslynPad.Editor.Windows" Version="1.2.0" />
 		<PackageReference Include="ScottPlot.WPF" Version="5.1.57" />
 		<PackageReference Include="System.IO.Ports" Version="8.0.0" />
 		<PackageReference Include="System.Management" Version="8.0.0" />
@@ -147,17 +131,6 @@
 			<Generator>SettingsSingleFileGenerator</Generator>
 			<LastGenOutput>Settings.Designer.cs</LastGenOutput>
 		</None>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Reference Include="NationalInstruments.Common">
-	    <HintPath>..\DLL\NationalInstruments\NationalInstruments.Common.dll</HintPath>
-	    <Private>True</Private>
-	  </Reference>
-	  <Reference Include="NationalInstruments.VisaNS">
-	    <HintPath>..\DLL\NationalInstruments\NationalInstruments.VisaNS.dll</HintPath>
-	    <Private>True</Private>
-	  </Reference>
 	</ItemGroup>
 
 	<ItemGroup>

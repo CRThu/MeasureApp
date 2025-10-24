@@ -3,7 +3,6 @@ using CarrotLink.Core.Utility;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DryIoc;
-using MeasureApp.Model.Common;
 using MeasureApp.Services;
 using Microsoft.Win32;
 using System;

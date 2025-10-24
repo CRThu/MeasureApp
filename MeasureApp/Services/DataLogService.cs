@@ -185,7 +185,7 @@ namespace MeasureApp.Services
 
                     // Notify UI on the correct thread.
                     // 在正确的线程上通知UI。
-                    Application.Current.Dispatcher.BeginInvoke(() =>
+                    _ = Application.Current.Dispatcher.BeginInvoke(() =>
                     {
                         OnPropertyChanged(nameof(Items));
                     });

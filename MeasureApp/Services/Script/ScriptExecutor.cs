@@ -1,8 +1,6 @@
 ﻿using CarrotLink.Core.Session;
 using CommunityToolkit.Mvvm.ComponentModel;
 using MeasureApp.Model.Script;
-using MeasureApp.Model.SerialPortScript;
-using MeasureApp.Services.ScriptLibrary;
 using NCalc;
 using System;
 using System.Collections.Generic;

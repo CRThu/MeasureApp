@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DryIoc;
-using MeasureApp.Model.Common;
 using MeasureApp.Services;
 using System;
 using System.Collections.Generic;

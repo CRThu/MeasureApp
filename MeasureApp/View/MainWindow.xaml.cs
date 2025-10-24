@@ -1,9 +1,6 @@
 ﻿using MeasureApp.Model;
-using MeasureApp.Model.Common;
 using MeasureApp.ViewModel;
 using Microsoft.Xaml.Behaviors;
-using RoslynPad.Editor;
-using RoslynPad.Roslyn;
 using System;
 using System.Collections.ObjectModel;
 using System.IO;

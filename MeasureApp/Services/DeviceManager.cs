@@ -86,7 +86,7 @@ namespace MeasureApp.Services
                                 infoItem.HasError = !session.IsAutoPollingTaskRunning;
                                 infoItem.ErrorDesc = session.ErrorDesc;
                             }
-                            catch (Exception ex)
+                            catch
                             {
                                 // TODO
                             }
