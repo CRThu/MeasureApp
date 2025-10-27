@@ -1,5 +1,6 @@
 ﻿using CarrotLink.Core.Logging;
 using CommunityToolkit.Mvvm.ComponentModel;
+using MeasureApp.Model.Log;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -12,18 +13,6 @@ using System.Windows.Threading;
 
 namespace MeasureApp.Services
 {
-    public record AppLogEntry
-    {
-        public DateTime TimeStamp { get; init; }
-        public LogLevel LogLevel { get; init; }
-        public string Message { get; init; }
-
-        public override string ToString()
-        {
-            return $"[{TimeStamp:yyyy-MM-dd hh:mm:ss.fff}] {LogLevel.ToString().ToUpper()}: {Message}";
-        }
-    }
-
     public partial class AppLogService : ObservableObject, IRuntimeLogger
     {
         [ObservableProperty]

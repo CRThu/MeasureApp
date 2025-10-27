@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace MeasureApp.Model.Common
+namespace MeasureApp.Utility
 {
     /// <summary> 
     /// Represents a dynamic data collection that provides notifications when items get added, removed, or when the whole list is refreshed. 
@@ -17,9 +20,11 @@ namespace MeasureApp.Model.Common
         /// </summary> 
         public void AddRange(IEnumerable<T> collection)
         {
-            if (collection == null) throw new ArgumentNullException(nameof(collection));
+            if (collection == null)
+                throw new ArgumentNullException(nameof(collection));
 
-            foreach (var i in collection) Items.Add(i);
+            foreach (var i in collection)
+                Items.Add(i);
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
@@ -28,9 +33,11 @@ namespace MeasureApp.Model.Common
         /// </summary> 
         public void RemoveRange(IEnumerable<T> collection)
         {
-            if (collection == null) throw new ArgumentNullException(nameof(collection));
+            if (collection == null)
+                throw new ArgumentNullException(nameof(collection));
 
-            foreach (var i in collection) Items.Remove(i);
+            foreach (var i in collection)
+                Items.Remove(i);
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
@@ -47,10 +54,12 @@ namespace MeasureApp.Model.Common
         /// </summary> 
         public void ReplaceRange(IEnumerable<T> collection)
         {
-            if (collection == null) throw new ArgumentNullException(nameof(collection));
+            if (collection == null)
+                throw new ArgumentNullException(nameof(collection));
 
             Items.Clear();
-            foreach (var i in collection) Items.Add(i);
+            foreach (var i in collection)
+                Items.Add(i);
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
