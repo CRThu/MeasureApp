@@ -24,7 +24,6 @@ namespace MeasureApp.Services.RegisterMap
             // 确保在读取Excel文件前注册编码提供程序
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
 
-            uint regFileIndex = 0;
             foreach (var filePath in filePaths)
             {
                 using var stream = File.Open(filePath, FileMode.Open, FileAccess.Read);
@@ -41,7 +40,7 @@ namespace MeasureApp.Services.RegisterMap
                 {
                     try
                     {
-                        var regFile = new RegFile(regFileIndex++, sheet.TableName);
+                        var regFile = new RegFile((uint)regFiles.Count, sheet.TableName);
                         ParseSheet(sheet, regFile);
                         if (regFile.Registers.Any())
                         {
