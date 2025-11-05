@@ -9,8 +9,8 @@
 		<SatelliteResourceLanguages>zh-Hans</SatelliteResourceLanguages>
 		<ApplicationIcon>Icon\AppIcon.ico</ApplicationIcon>
 		<PlatformTarget>AnyCPU</PlatformTarget>
-		<AssemblyVersion>2.0.487.0</AssemblyVersion>
-		<FileVersion>2.0.487.0</FileVersion>
+		<AssemblyVersion>2.0.489.0</AssemblyVersion>
+		<FileVersion>2.0.489.0</FileVersion>
 		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup>
 

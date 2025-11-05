@@ -182,7 +182,7 @@ namespace MeasureApp.ViewModel
         {
             TaskCompletionSource<IRegisterPacket> tcs = new TaskCompletionSource<IRegisterPacket>();
 
-            void handler(IRegisterPacket packet, string sender)
+            void handler(IRegisterPacket packet, string from, string to)
             {
                 if (//sender == SelectedDevice.Name && 
                     packet.Operation == RegisterOperation.ReadResult
@@ -224,7 +224,7 @@ namespace MeasureApp.ViewModel
         {
             TaskCompletionSource<IRegisterPacket> tcs = new TaskCompletionSource<IRegisterPacket>();
 
-            void handler(IRegisterPacket packet, string sender)
+            void handler(IRegisterPacket packet, string from, string to)
             {
                 if (//sender == SelectedDevice.Name && 
                     packet.Operation == RegisterOperation.BitsReadResult

@@ -326,7 +326,7 @@ namespace MeasureApp.Services
             GetOrAddKey(key).AddRange<T>(value);
         }
 
-        public void HandlePacket(IPacket packet, string sender)
+        public void HandlePacket(IPacket packet, string from, string to)
         {
             if (packet.PacketType == PacketType.Data)
             {
@@ -334,7 +334,7 @@ namespace MeasureApp.Services
                 foreach (var key in pkt.Keys)
                 {
                     // and key with sender
-                    var list = GetOrAddKey(sender + "." + key);
+                    var list = GetOrAddKey($"{from}->{to}" + "." + key);
 
                     // TODO channel
                     switch ((pkt.Type, pkt.Encoding))

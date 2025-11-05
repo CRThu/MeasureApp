@@ -18,7 +18,7 @@ namespace MeasureApp.Services
     /// </summary>
     public class RegisterLogService : IPacketLogger
     {
-        public delegate void RegisterPacketHandler(IRegisterPacket packet, string sender);
+        public delegate void RegisterPacketHandler(IRegisterPacket packet, string from, string to);
         public event RegisterPacketHandler OnRegisterUpdate;
 
         public void Dispose()
@@ -26,11 +26,11 @@ namespace MeasureApp.Services
 
         }
 
-        public void HandlePacket(IPacket packet, string sender)
+        public void HandlePacket(IPacket packet, string from, string to)
         {
             if (packet is IRegisterPacket regPacket)
             {
-                OnRegisterUpdate?.Invoke(regPacket, sender);
+                OnRegisterUpdate?.Invoke(regPacket, from, to);
             }
         }
     }

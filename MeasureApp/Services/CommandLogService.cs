@@ -79,7 +79,7 @@ namespace MeasureApp.Services
             }
         }
 
-        public void HandlePacket(IPacket packet, string sender)
+        public void HandlePacket(IPacket packet, string from, string to)
         {
             if (_cts.IsCancellationRequested)
                 return;
@@ -87,7 +87,7 @@ namespace MeasureApp.Services
             CommandLogEntry logEntry = new CommandLogEntry()
             {
                 TimeStamp = DateTime.Now,
-                Sender = sender ?? "<sender>",
+                Sender = $"{from}->{to}",
                 Message = packet.ToString()
             };
 
