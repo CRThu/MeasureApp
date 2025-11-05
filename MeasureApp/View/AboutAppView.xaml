@@ -22,19 +22,23 @@
         </Grid.ColumnDefinitions>
         <hc:SimpleStackPanel Grid.Column="0" Orientation="Vertical" Margin="10">
             <hc:SimpleStackPanel Orientation="Horizontal">
-                <TextBlock Text="App Version:" Width="100"/>
+                <TextBlock Text="MeasureApp Version:" Width="150"/>
                 <TextBlock Text="{Binding AppVersion}"/>
             </hc:SimpleStackPanel>
             <hc:SimpleStackPanel Orientation="Horizontal">
-                <TextBlock Text="Build Mode:" Width="100"/>
+                <TextBlock Text="CarrotLink Version:" Width="150"/>
+                <TextBlock Text="{Binding CarrotlinkVersion}"/>
+            </hc:SimpleStackPanel>
+            <hc:SimpleStackPanel Orientation="Horizontal">
+                <TextBlock Text="Build Mode:" Width="150"/>
                 <TextBlock Text="{Binding AppBuildMode}"/>
             </hc:SimpleStackPanel>
             <hc:SimpleStackPanel Orientation="Horizontal">
-                <TextBlock Text="Build Time:" Width="100"/>
+                <TextBlock Text="Build Time:" Width="150"/>
                 <TextBlock Text="{Binding AppBuildTime}"/>
             </hc:SimpleStackPanel>
             <hc:SimpleStackPanel Orientation="Horizontal">
-                <TextBlock Text=".NET Version:" Width="100"/>
+                <TextBlock Text=".NET Version:" Width="150"/>
                 <TextBlock Text="{Binding DotnetVersion}"/>
             </hc:SimpleStackPanel>
         </hc:SimpleStackPanel>

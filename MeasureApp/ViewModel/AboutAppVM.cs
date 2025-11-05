@@ -16,6 +16,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Xml.Linq;
 
 namespace MeasureApp.ViewModel
 {
@@ -25,7 +26,10 @@ namespace MeasureApp.ViewModel
         public AppContextManager Context => _context;
 
         [ObservableProperty]
-        private string appVersion = GetAppVersion();
+        private string appVersion = GetMeasureAppVersion();
+
+        [ObservableProperty]
+        private string carrotlinkVersion = GetCarrotLinkVersion();
 
         [ObservableProperty]
         private string appBuildMode = GetAppBuildMode();
@@ -41,18 +45,40 @@ namespace MeasureApp.ViewModel
             _context = context;
         }
 
-        public static string GetAppVersion()
+        public static string GetMeasureAppVersion()
         {
             string appVersion = "<unknown>";
             try
             {
-                appVersion = Assembly.GetEntryAssembly().GetName().Version.ToString();
+                var measureAppAssembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.GetName().Name == "MeasureApp");
+                if (measureAppAssembly != null)
+                {
+                    appVersion = measureAppAssembly.GetName().Version.ToString();
+                }
             }
             catch (Exception ex)
             {
                 _ = MessageBox.Show(ex.ToString());
             }
             return appVersion;
+        }
+
+        public static string GetCarrotLinkVersion()
+        {
+            string carrotLinkVersion = "<unknown>";
+            try
+            {
+                var carrotLinkAssembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.GetName().Name == "CarrotLink.Core");
+                if (carrotLinkAssembly != null)
+                {
+                    carrotLinkVersion = carrotLinkAssembly.GetName().Version.ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
+            }
+            return carrotLinkVersion;
         }
 
         public static string GetAppBuildMode()
