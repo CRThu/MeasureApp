@@ -2,15 +2,17 @@
 
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
-		<TargetFramework>net8.0-windows</TargetFramework>
-		<UseWPF>true</UseWPF>
+        <TargetFramework>net8.0-windows</TargetFramework>
+        <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+        <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+        <UseWPF>true</UseWPF>
 		<StartupObject>MeasureApp.App</StartupObject>
 		<Deterministic>false</Deterministic>
 		<SatelliteResourceLanguages>zh-Hans</SatelliteResourceLanguages>
 		<ApplicationIcon>Icon\AppIcon.ico</ApplicationIcon>
 		<PlatformTarget>AnyCPU</PlatformTarget>
-		<AssemblyVersion>2.0.518.0</AssemblyVersion>
-		<FileVersion>2.0.518.0</FileVersion>
+		<AssemblyVersion>2.0.522.0</AssemblyVersion>
+		<FileVersion>2.0.522.0</FileVersion>
 		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup>
 
