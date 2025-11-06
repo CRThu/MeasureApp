@@ -45,8 +45,8 @@
                 </ListView.ItemContainerStyle>-->
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="时间" DisplayMemberBinding="{Binding TimeStamp, StringFormat='{}{0:yyyy-MM-dd HH:mm:ss.fff}'}" Width="160"/>
-                    <GridViewColumn Header="发送方" DisplayMemberBinding="{Binding Sender}" Width="100"/>
+                    <GridViewColumn Header="时间" DisplayMemberBinding="{Binding TimeStamp, StringFormat='{}{0:HH:mm:ss.fff}'}" Width="Auto"/>
+                    <GridViewColumn Header="发送方" DisplayMemberBinding="{Binding Sender}" Width="Auto"/>
                     <GridViewColumn Header="消息" DisplayMemberBinding="{Binding FriendlyMessage}" Width="300"/>
                 </GridView>
             </ListView.View>

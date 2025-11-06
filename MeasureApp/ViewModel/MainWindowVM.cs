@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using DryIoc;
+using MeasureApp.Messages;
 using MeasureApp.Services;
 using System;
 using System.Collections.Generic;
@@ -73,7 +75,7 @@ namespace MeasureApp.ViewModel
         {
             try
             {
-
+                WeakReferenceMessenger.Default.Send(SaveLayoutMessage.Instance);
             }
             catch (Exception ex)
             {
@@ -86,7 +88,7 @@ namespace MeasureApp.ViewModel
         {
             try
             {
-
+                WeakReferenceMessenger.Default.Send(RestoreLayoutMessage.Instance);
             }
             catch (Exception ex)
             {
