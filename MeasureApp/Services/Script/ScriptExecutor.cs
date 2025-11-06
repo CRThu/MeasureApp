@@ -28,7 +28,7 @@ namespace MeasureApp.Services.Script
         private readonly Stack<ControlFlowState> _controlFlow = new();
 
         [ObservableProperty]
-        private int interval = 500;
+        private int interval = 100;
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(ScriptLines))]

@@ -47,9 +47,6 @@ namespace MeasureApp.ViewModel
         private ObservableCollection<PresetCommandItem> presets;
 
         [ObservableProperty]
-        private bool isLogAutoScroll = true;
-
-        [ObservableProperty]
         private string debugCommandText = "OPEN;";
 
         public DeviceDebugVM(AppContextManager context)
@@ -176,32 +173,6 @@ namespace MeasureApp.ViewModel
                 {
                     SerializationHelper.SerializeToFile(Presets, sfd.FileName);
                 }
-            }
-            catch (Exception ex)
-            {
-                _ = MessageBox.Show(ex.ToString());
-            }
-        }
-
-        [RelayCommand]
-        public void CleanLog()
-        {
-            try
-            {
-                // TODO
-            }
-            catch (Exception ex)
-            {
-                _ = MessageBox.Show(ex.ToString());
-            }
-        }
-
-        [RelayCommand]
-        public void SaveLog()
-        {
-            try
-            {
-                // TODO
             }
             catch (Exception ex)
             {

@@ -11,8 +11,7 @@
       xmlns:c="clr-namespace:MeasureApp.View.Converter"
       xmlns:hc="https://handyorg.github.io/handycontrol"
       DataContext="{Binding Source={StaticResource Locator},Path=ScriptRunner}"
-      mc:Ignorable="d"
-      d:DesignHeight="450" d:DesignWidth="800">
+      mc:Ignorable="d" d:DesignHeight="400" d:DesignWidth="600">
     <UserControl.Resources>
         <c:BoolToStringConverter x:Key="BoolToStringConverter"/>
     </UserControl.Resources>
@@ -27,20 +26,26 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <StackPanel Grid.Row="0" Orientation="Horizontal">
-                <TextBlock Text="脚本管理" Margin="5,5,5,5" VerticalAlignment="Center"/>
-                <Button Content="加载..." Margin="5,5,5,5" Command="{Binding OpenScriptFileCommand}"/>
-                <TextBlock Text="{Binding ScriptPath}" VerticalAlignment="Center"/>
-            </StackPanel>
-            <StackPanel Grid.Row="1" Orientation="Horizontal">
-                <TextBlock Text="默认IO" Margin="10,0,10,0" VerticalAlignment="Center"/>
-                <ComboBox ItemsSource="{Binding Context.Devices.Info}" SelectedItem="{Binding DefaultIO}" DisplayMemberPath="Name" Margin="10,0,10,0" Height="30" MinWidth="200"/>
-                <TextBlock Text="默认采集" Margin="10,0,10,0" VerticalAlignment="Center"/>
-                <ComboBox ItemsSource="{Binding Context.Devices.Info}" SelectedItem="{Binding DefaultMeasure}" DisplayMemberPath="Name" Margin="10,0,10,0" Height="30" MinWidth="200"/>
-            </StackPanel>
+            <hc:SimpleStackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,5">
+                <TextBlock Text="脚本管理" Margin="5,0,5,0" VerticalAlignment="Center"/>
+                <Button Content="加载..." Margin="5,0,5,0" Command="{Binding OpenScriptFileCommand}"/>
+                <TextBlock Text="{Binding ScriptPath}" Margin="5,0,5,0" VerticalAlignment="Center"/>
+            </hc:SimpleStackPanel>
+            <Grid Grid.Row="1" Margin="0,5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="默认IO" Margin="5,0,5,0" VerticalAlignment="Center"/>
+                <ComboBox Grid.Column="1" ItemsSource="{Binding Context.Devices.Info}" SelectedItem="{Binding DefaultIO}" DisplayMemberPath="Name" Margin="5,0,5,0" Height="30"/>
+                <TextBlock Grid.Column="2" Text="默认采集" Margin="5,0,5,0" VerticalAlignment="Center"/>
+                <ComboBox Grid.Column="3" ItemsSource="{Binding Context.Devices.Info}" SelectedItem="{Binding DefaultMeasure}" DisplayMemberPath="Name" Margin="5,0,5,0" Height="30"/>
+            </Grid>
             <vc:BindableAvalonEditor Grid.Row="2"
                                        Text="{Binding Exec.ScriptCode}"
-                                       Margin="3,3,138,3"
+                                       Margin="3,3,3,3"
                                        ShowLineNumbers="True"
                                        FontFamily="Consolas" FontSize="10pt"
                                        SyntaxHighlighting="XML"/>
@@ -74,43 +79,43 @@
                 </hc:TabControl.ContentTemplate>
             </hc:TabControl>-->
         </Grid>
-        <Grid Grid.Column="1" Width="200">
+        <Grid Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <StackPanel Grid.Row="0" Orientation="Horizontal">
-                <TextBlock Text="间隔" VerticalAlignment="Center" Margin="5,5,5,5"/>
-                <TextBox Text="{Binding Exec.Interval}" Width="50" Margin="5,5,5,5"/>
-                <TextBlock Text="毫秒" VerticalAlignment="Center" Margin="5,5,5,5"/>
-            </StackPanel>
-            <StackPanel Grid.Row="1" Orientation="Horizontal">
-                <TextBlock Text="当前" VerticalAlignment="Center" Margin="5,5,5,5"/>
-                <TextBox Text="{Binding Exec.CurrentLine}" Width="50" Margin="5,5,5,5"/>
-                <TextBlock VerticalAlignment="Center" Margin="5,5,5,5">
+            <hc:SimpleStackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,5">
+                <TextBlock Text="间隔" VerticalAlignment="Center" Margin="5,0"/>
+                <TextBox Text="{Binding Exec.Interval}" Width="50" Margin="5,0"/>
+                <TextBlock Text="毫秒" VerticalAlignment="Center" Margin="5,0"/>
+            </hc:SimpleStackPanel>
+            <hc:SimpleStackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,5">
+                <TextBlock Text="当前" VerticalAlignment="Center" Margin="5,0"/>
+                <TextBox Text="{Binding Exec.CurrentLine}" Width="50" Margin="5,0"/>
+                <TextBlock VerticalAlignment="Center" Margin="5,0">
                     <Run Text="/ "/>
                     <Run Text="{Binding Exec.ScriptLines.Length,Mode=OneWay}"/>
                     <Run Text=" 行"/>
                 </TextBlock>
-            </StackPanel>
-            <StackPanel Grid.Row="2" Orientation="Horizontal">
+            </hc:SimpleStackPanel>
+            <hc:SimpleStackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,5">
                 <Button Content="{Binding Exec.IsRunning,
                     Converter={StaticResource BoolToStringConverter},
                     ConverterParameter='停止|运行'}"
                     Command="{Binding ScriptRunCommand}"
-                    Width="50" Margin="5,5,5,5"/>
+                    Margin="5,0"/>
                 <Button Content="单步"
                     Command="{Binding ScriptRunStepCommand}"
-                    Width="50" Margin="5,5,5,5"/>
+                    Margin="5,0"/>
                 <Button Content="重置"
                     Command="{Binding ScriptResetCommand}"
-                    Width="50" Margin="5,5,5,5"/>
-            </StackPanel>
-            <StackPanel Grid.Row="3" Orientation="Horizontal">
+                    Margin="5,0"/>
+            </hc:SimpleStackPanel>
+            <Grid Grid.Row="3" Margin="0,5">
                 
-            </StackPanel>
+            </Grid>
         </Grid>
     </Grid>
 </UserControl>

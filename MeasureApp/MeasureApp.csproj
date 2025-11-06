@@ -9,8 +9,8 @@
 		<SatelliteResourceLanguages>zh-Hans</SatelliteResourceLanguages>
 		<ApplicationIcon>Icon\AppIcon.ico</ApplicationIcon>
 		<PlatformTarget>AnyCPU</PlatformTarget>
-		<AssemblyVersion>2.0.510.0</AssemblyVersion>
-		<FileVersion>2.0.510.0</FileVersion>
+		<AssemblyVersion>2.0.514.0</AssemblyVersion>
+		<FileVersion>2.0.514.0</FileVersion>
 		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup>
 
@@ -93,6 +93,9 @@
 			<DesignTimeSharedInput>True</DesignTimeSharedInput>
 			<AutoGen>True</AutoGen>
 			<DependentUpon>Settings.settings</DependentUpon>
+		</Compile>
+		<Compile Update="View\DeviceLogView.xaml.cs">
+		  <SubType>Code</SubType>
 		</Compile>
 		<Compile Update="View\AppLogView.xaml.cs">
 		  <SubType>Code</SubType>

@@ -22,14 +22,15 @@ namespace MeasureApp.ViewModel
             container.Register<DeviceStatusVM>(Reuse.Singleton);
             container.Register<DeviceConnectionVM>(Reuse.Singleton);
             container.Register<DeviceDebugVM>(Reuse.Singleton);
+            container.Register<DeviceLogVM>(Reuse.Singleton);
             container.Register<DataMonitorVM>(Reuse.Singleton);
             container.Register<DataPlotVM>(Reuse.Singleton);
             container.Register<ScriptRunnerVM>(Reuse.Singleton);
             container.Register<RegisterEditorVM>(Reuse.Singleton);
             container.Register<AboutAppVM>(Reuse.Singleton);
+            container.Register<AppLogVM>(Reuse.Singleton);
             // todo
             container.Register<DataProcVM>(Reuse.Singleton);
-            container.Register<AppLogVM>(Reuse.Singleton);
 
             container.Register<AppContextManager>(Reuse.Singleton);
             container.Register<DeviceManager>(Reuse.Singleton);
@@ -47,14 +48,15 @@ namespace MeasureApp.ViewModel
         public DeviceStatusVM DeviceStatus => container.Resolve<DeviceStatusVM>();
         public DeviceConnectionVM DeviceConnection => container.Resolve<DeviceConnectionVM>();
         public DeviceDebugVM DeviceDebug => container.Resolve<DeviceDebugVM>();
+        public DeviceLogVM DeviceLog => container.Resolve<DeviceLogVM>();
         public DataMonitorVM DataMonitor => container.Resolve<DataMonitorVM>();
-        public DataProcVM DataProc => container.Resolve<DataProcVM>();
-        public ScriptRunnerVM ScriptRunner => container.Resolve<ScriptRunnerVM>();
-
-        public AppLogVM AppLog => container.Resolve<AppLogVM>();
         public DataPlotVM DataPlot => container.Resolve<DataPlotVM>();
-
-        public AboutAppVM AboutApp => container.Resolve<AboutAppVM>();
+        public ScriptRunnerVM ScriptRunner => container.Resolve<ScriptRunnerVM>();
         public RegisterEditorVM RegisterEditor => container.Resolve<RegisterEditorVM>();
+        public AboutAppVM AboutApp => container.Resolve<AboutAppVM>();
+        public AppLogVM AppLog => container.Resolve<AppLogVM>();
+
+        public DataProcVM DataProc => container.Resolve<DataProcVM>();
+
     }
 }
