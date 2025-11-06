@@ -19,16 +19,17 @@ namespace MeasureApp.ViewModel
 
             // Register
             container.Register<MainWindowVM>(Reuse.Singleton);
+            container.Register<DeviceStatusVM>(Reuse.Singleton);
             container.Register<DeviceConnectionVM>(Reuse.Singleton);
             container.Register<DeviceDebugVM>(Reuse.Singleton);
             container.Register<DataMonitorVM>(Reuse.Singleton);
-            container.Register<DataProcVM>(Reuse.Singleton);
-            container.Register<ScriptRunnerVM>(Reuse.Singleton);
-            // todo
-            container.Register<AppLogVM>(Reuse.Singleton);
             container.Register<DataPlotVM>(Reuse.Singleton);
-            container.Register<AboutAppVM>(Reuse.Singleton);
+            container.Register<ScriptRunnerVM>(Reuse.Singleton);
             container.Register<RegisterEditorVM>(Reuse.Singleton);
+            container.Register<AboutAppVM>(Reuse.Singleton);
+            // todo
+            container.Register<DataProcVM>(Reuse.Singleton);
+            container.Register<AppLogVM>(Reuse.Singleton);
 
             container.Register<AppContextManager>(Reuse.Singleton);
             container.Register<DeviceManager>(Reuse.Singleton);
@@ -43,6 +44,7 @@ namespace MeasureApp.ViewModel
 
 
         public MainWindowVM MainWindow => container.Resolve<MainWindowVM>();
+        public DeviceStatusVM DeviceStatus => container.Resolve<DeviceStatusVM>();
         public DeviceConnectionVM DeviceConnection => container.Resolve<DeviceConnectionVM>();
         public DeviceDebugVM DeviceDebug => container.Resolve<DeviceDebugVM>();
         public DataMonitorVM DataMonitor => container.Resolve<DataMonitorVM>();

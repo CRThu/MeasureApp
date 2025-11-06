@@ -68,5 +68,31 @@ namespace MeasureApp.ViewModel
             }
         }
 
+        [RelayCommand]
+        public void SaveLayout()
+        {
+            try
+            {
+
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
+            }
+        }
+
+        [RelayCommand]
+        public void RestoreLayout()
+        {
+            try
+            {
+
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(ex.ToString());
+            }
+        }
+
     }
 }

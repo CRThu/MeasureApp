@@ -16,11 +16,7 @@
     <UserControl.Resources>
     </UserControl.Resources>
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1*"/>
-            <ColumnDefinition Width="1*"/>
-        </Grid.ColumnDefinitions>
-        <hc:SimpleStackPanel Grid.Column="0" Orientation="Vertical" Margin="10">
+        <hc:SimpleStackPanel Orientation="Vertical" Margin="10">
             <hc:SimpleStackPanel Orientation="Horizontal">
                 <TextBlock Text="MeasureApp Version:" Width="150"/>
                 <TextBlock Text="{Binding AppVersion}"/>

@@ -1,0 +1,48 @@
+﻿<UserControl x:Class="MeasureApp.View.DeviceStatusView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+      xmlns:local="clr-namespace:MeasureApp.View"
+      xmlns:vm="clr-namespace:MeasureApp.ViewModel"
+      xmlns:v="clr-namespace:MeasureApp.View"
+      xmlns:c="clr-namespace:MeasureApp.View.Converter"
+      xmlns:hc="https://handyorg.github.io/handycontrol"
+      DataContext="{Binding Source={StaticResource Locator},Path=DeviceStatus}"
+      mc:Ignorable="d">
+    <UserControl.Resources>
+        <c:BoolToStringConverter x:Key="BoolToStringConverter"/>
+        <c:ErrorColorConverter x:Key="ErrorColorConverter"/>
+    </UserControl.Resources>
+    <Grid>
+        <DataGrid ItemsSource="{Binding Context.Devices.Info}"
+                  hc:DataGridAttach.ShowRowNumber="True" RowHeaderWidth="60"
+                  SelectionMode="Single" IsReadOnly="True" AutoGenerateColumns="False" CanUserAddRows="False"
+                  Style="{StaticResource DataGrid.Small}" Margin="5" MinColumnWidth="50" MinHeight="100"
+                  ScrollViewer.VerticalScrollBarVisibility="Auto"
+                  ScrollViewer.HorizontalScrollBarVisibility="Auto">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="驱动类型" Binding="{Binding Driver}" Width="120"/>
+                <DataGridTextColumn Header="接口类型" Binding="{Binding Intf}" Width="120"/>
+                <DataGridTextColumn Header="设备名称" Binding="{Binding Name}" Width="120"/>
+                <DataGridTextColumn Header="协议类型" Binding="{Binding Protocol}" Width="120"/>
+                <DataGridTextColumn Header="设备配置" Binding="{Binding Config}" Width="150"/>
+                <DataGridTextColumn Header="接收" Binding="{Binding BytesReceived}" Width="100"/>
+                <DataGridTextColumn Header="发送" Binding="{Binding BytesSent}" Width="100"/>
+                <DataGridTemplateColumn Header="错误" Width="*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Ellipse Width="12" Height="12" Margin="0,0,5,0"
+                                         Fill="{Binding HasError,Converter={StaticResource ErrorColorConverter}}"/>
+                                <TextBlock Text="{Binding ErrorDesc}"
+                                               Foreground="{Binding HasError,Converter={StaticResource ErrorColorConverter}}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>
