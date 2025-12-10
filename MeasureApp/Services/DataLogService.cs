@@ -20,49 +20,40 @@ namespace MeasureApp.Services
 
     public partial class DataLogList : ObservableObject, IDisposable
     {
-        // Use BlockingCollection as a thread-safe producer-consumer queue.
         // 使用 BlockingCollection 作为线程安全的生产者-消费者队列。
+        // TODO CHANNEL
         private readonly BlockingCollection<IEnumerable<DataLogValue>> _queue = new BlockingCollection<IEnumerable<DataLogValue>>(new ConcurrentQueue<IEnumerable<DataLogValue>>());
 
-        // The internal, mutable list. Access MUST be synchronized.
         // 内部的可变列表。访问必须同步。
         private readonly List<DataLogValue> _items = new List<DataLogValue>();
 
-        // A lock object dedicated to protecting the _items list.
         // 一个专用于保护 _items 列表的锁对象。
         private readonly object _itemsLock = new object();
 
-        // Cancellation token to gracefully shut down the background processing task.
-        // 用于优雅地关闭后台处理任务的取消令牌。
+        // 关闭后台处理任务的取消令牌。
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
         private readonly Task _consumerTask;
         private bool _disposed = false;
 
-        // Public property returns a read-only wrapper for safe data binding.
         // 公共属性返回一个只读包装器，用于安全的数据绑定。
         public IReadOnlyList<DataLogValue> Items => _items.AsReadOnly();
 
         public DataLogList()
         {
-            // Start the long-running consumer task in the background.
-            // 在后台启动长期运行的消费者任务。
             _consumerTask = Task.Run(() => ProcessQueue(_cts.Token));
         }
 
         /// <summary>
-        /// The main loop for the consumer task. It waits for data and processes it in batches.
         /// 消费者任务的主循环。它会等待数据并分批处理。
         /// </summary>
         private async Task ProcessQueue(CancellationToken token)
         {
             try
             {
-                // This loop will run until cancellation is requested.
                 while (!token.IsCancellationRequested)
                 {
-                    // Block and wait for the first item to arrive. This is very CPU efficient.
-                    // 阻塞等待第一个项目的到达。这是非常高效的CPU使用方式。
                     var batch = _queue.Take(token);
+
                     var batchAsList = batch as List<DataLogValue> ?? batch.ToList();
                     if (batchAsList.Count == 0)
                         continue;
@@ -74,38 +65,26 @@ namespace MeasureApp.Services
                         _items.AddRange(batchAsList);
                     }
 
-                    // Notify UI on the correct thread.
-                    // 在正确的线程上通知UI。
-                    _ = Application.Current.Dispatcher.BeginInvoke(() =>
+                    Application.Current.Dispatcher.Invoke(() =>
                     {
                         OnPropertyChanged(nameof(Items));
                     });
 
-                    // Optional: Add a small delay to control the maximum UI update frequency.
-                    // For example, await Task.Delay(50, token); to update at most 20 times per second.
-                    // If you remove this, UI will be updated as fast as batches are formed.
-                    // 可选：添加一个小的延迟来控制UI更新的最大频率。
-                    // 例如 `await Task.Delay(50, token);` 来实现最多每秒更新20次。
-                    // 如果移除这行，UI会以批次形成的最快速度更新。
-                    await Task.Delay(50, token);
+                    //await Task.Delay(50, token);
+                    await Task.Yield();
+
                 }
             }
             catch (OperationCanceledException)
             {
-                // This is expected when Dispose is called. Gracefully exit the loop.
-                // 当 Dispose 被调用时，这是预期的异常。优雅地退出循环。
             }
             catch (Exception ex)
             {
-                // Log any unexpected errors from the background task.
-                // 记录后台任务的任何意外错误。
                 Debug.WriteLine($"Error in DataLogList consumer task: {ex}");
             }
         }
 
         /// <summary>
-        /// Provides a thread-safe snapshot of the current data.
-        /// This is the correct way to access the collection for enumeration from a background thread.
         /// 提供当前数据的线程安全快照。
         /// 这是从后台线程访问集合以进行枚举的正确方法。
         /// </summary>
@@ -117,7 +96,6 @@ namespace MeasureApp.Services
             }
         }
 
-        // The Add methods are now the "Producers". They just add to the queue and return immediately.
         // Add 方法现在是“生产者”。它们只负责将数据添加到队列中并立即返回。
         public void Add<T>(T value)
         {
