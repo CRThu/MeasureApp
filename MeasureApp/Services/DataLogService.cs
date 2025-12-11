@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
@@ -20,59 +21,84 @@ namespace MeasureApp.Services
 
     public partial class DataLogList : ObservableObject, IDisposable
     {
-        // 使用 BlockingCollection 作为线程安全的生产者-消费者队列。
-        // TODO CHANNEL
-        private readonly BlockingCollection<IEnumerable<DataLogValue>> _queue = new BlockingCollection<IEnumerable<DataLogValue>>(new ConcurrentQueue<IEnumerable<DataLogValue>>());
+        private readonly Channel<DataLogValue> _channel;
 
-        // 内部的可变列表。访问必须同步。
+        // 内部存储数据
         private readonly List<DataLogValue> _items = new List<DataLogValue>();
-
-        // 一个专用于保护 _items 列表的锁对象。
         private readonly object _itemsLock = new object();
 
-        // 关闭后台处理任务的取消令牌。
-        private readonly CancellationTokenSource _cts = new CancellationTokenSource();
+        // 消费者任务
         private readonly Task _consumerTask;
+        private readonly CancellationTokenSource _cts = new CancellationTokenSource();
         private bool _disposed = false;
 
-        // 公共属性返回一个只读包装器，用于安全的数据绑定。
-        public IReadOnlyList<DataLogValue> Items => _items.AsReadOnly();
+        // UI 刷新间隔 (毫秒)
+        private const int UpdateIntervalMs = 50;
+
+        public IReadOnlyList<DataLogValue> Items
+        {
+            get
+            {
+                lock (_itemsLock)
+                {
+                    // 返回只读包装，注意：WPF绑定时如果列表变化，需要通知
+                    return _items.AsReadOnly();
+                }
+            }
+        }
 
         public DataLogList()
         {
-            _consumerTask = Task.Run(() => ProcessQueue(_cts.Token));
+            // 配置无界 Channel，单消费者模式优化性能
+            var options = new UnboundedChannelOptions
+            {
+                SingleReader = true,
+                SingleWriter = false, // 允许多个线程写入
+                AllowSynchronousContinuations = false
+            };
+            _channel = Channel.CreateUnbounded<DataLogValue>(options);
+
+            _consumerTask = Task.Run(() => ProcessQueueAsync(_cts.Token));
         }
 
         /// <summary>
-        /// 消费者任务的主循环。它会等待数据并分批处理。
+        /// 消费者循环：从 Channel 读取数据 -> 缓冲 -> 定时批量更新 UI
         /// </summary>
-        private async Task ProcessQueue(CancellationToken token)
+        private async Task ProcessQueueAsync(CancellationToken token)
         {
+            var buffer = new List<DataLogValue>();
+            var reader = _channel.Reader;
+
             try
             {
-                while (!token.IsCancellationRequested)
+                while (await reader.WaitToReadAsync(token))
                 {
-                    var batch = _queue.Take(token);
-
-                    var batchAsList = batch as List<DataLogValue> ?? batch.ToList();
-                    if (batchAsList.Count == 0)
-                        continue;
-
-                    // If we have items, update the collection and notify the UI.
-                    lock (_itemsLock)
+                    // 1. 尽可能多地从 Channel 读取数据到临时 buffer
+                    while (reader.TryRead(out var item))
                     {
-                        _items.EnsureCapacity(_items.Count + batchAsList.Count);
-                        _items.AddRange(batchAsList);
+                        buffer.Add(item);
                     }
 
-                    Application.Current.Dispatcher.Invoke(() =>
+                    if (buffer.Count > 0)
                     {
-                        OnPropertyChanged(nameof(Items));
-                    });
+                        // 2. 将数据拷贝并在ui线程更新
+                        var batchData = buffer.ToArray();
+                        buffer.Clear();
 
-                    //await Task.Delay(50, token);
-                    await Task.Yield();
+                        // 3. 通知 UI 更新
+                        Application.Current?.Dispatcher.InvokeAsync(() =>
+                        {
+                            lock (_itemsLock)
+                            {
+                                _items.AddRange(batchData);
+                            }
 
+                            OnPropertyChanged(nameof(Items));
+                        }, DispatcherPriority.Background);
+                    }
+
+                    // 4. 节流：强制等待一段时间，避免 UI 刷新过于频繁
+                    await Task.Delay(UpdateIntervalMs, token);
                 }
             }
             catch (OperationCanceledException)
@@ -84,9 +110,30 @@ namespace MeasureApp.Services
             }
         }
 
+        // Add 方法现在是“生产者”。它们只负责将数据添加到队列中并立即返回。
+        public void Add<T>(T value)
+        {
+            _channel.Writer.TryWrite(DataLogValue.From(value));
+        }
+
+        public void AddRange<T>(IEnumerable<T> values)
+        {
+            foreach (var v in values)
+            {
+                _channel.Writer.TryWrite(DataLogValue.From(v));
+            }
+        }
+
+        public void AddRange<T>(ReadOnlySpan<T> values)
+        {
+            foreach (var v in values)
+            {
+                _channel.Writer.TryWrite(DataLogValue.From(v));
+            }
+        }
+
         /// <summary>
         /// 提供当前数据的线程安全快照。
-        /// 这是从后台线程访问集合以进行枚举的正确方法。
         /// </summary>
         public DataLogValue[] GetSnapshot()
         {
@@ -94,32 +141,6 @@ namespace MeasureApp.Services
             {
                 return _items.ToArray();
             }
-        }
-
-        // Add 方法现在是“生产者”。它们只负责将数据添加到队列中并立即返回。
-        public void Add<T>(T value)
-        {
-            _queue.Add(new DataLogValue[] { DataLogValue.From<T>(value) });
-        }
-
-        public void AddRange<T>(IEnumerable<T> values)
-        {
-            var list = values.Select(DataLogValue.From<T>).ToList();
-            if (list.Count > 0)
-                _queue.Add(list);
-        }
-
-        public void AddRange<T>(ReadOnlySpan<T> values)
-        {
-            if (values.IsEmpty)
-                return;
-
-            var list = new List<DataLogValue>(values.Length);
-            foreach (var value in values)
-            {
-                list.Add(DataLogValue.From<T>(value));
-            }
-            _queue.Add(list);
         }
 
         public void Dispose()
@@ -135,25 +156,14 @@ namespace MeasureApp.Services
 
             if (disposing)
             {
-                // Signal the background task to stop.
-                // 通知后台任务停止。
                 _cts.Cancel();
-
-                // Wait for the task to complete its final processing.
-                // A timeout is good practice to prevent deadlocks.
-                // 等待任务完成其最终处理。设置超时是防止死锁的好习惯。
+                _channel.Writer.TryComplete();
                 try
-                {
-                    _consumerTask.Wait(500);
-                }
-                catch (AggregateException) { /* Can be ignored here */ }
-
-                // Dispose managed resources.
-                // 释放托管资源。
+                { _consumerTask.Wait(500); }
+                catch
+                { }
                 _cts.Dispose();
-                _queue.Dispose();
             }
-
             _disposed = true;
         }
 
