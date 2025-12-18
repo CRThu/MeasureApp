@@ -1,5 +1,6 @@
 ﻿using CarrotLink.Core.Logging;
 using CarrotLink.Core.Protocols.Models;
+using CommunityToolkit.HighPerformance.Buffers;
 using CommunityToolkit.Mvvm.ComponentModel;
 using MeasureApp.Model.Log;
 using MeasureApp.Utility;
@@ -84,7 +85,7 @@ namespace MeasureApp.Services
             CommandLogEntry logEntry = new CommandLogEntry()
             {
                 TimeStamp = DateTime.Now,
-                Sender = $"{from}->{to}",
+                Sender = StringPool.Shared.GetOrAdd($"{from}->{to}"),
                 Message = packet.ToString()
             };
 
