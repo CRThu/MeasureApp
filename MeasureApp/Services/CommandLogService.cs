@@ -44,25 +44,22 @@ namespace MeasureApp.Services
             {
                 var batch = new List<CommandLogEntry>();
 
-                // GetConsumingEnumerable 会高效地阻塞线程，直到有新项或任务被取消
+                // 阻塞线程，直到有新项或任务被取消
                 foreach (var item in _logBuffer.GetConsumingEnumerable(token))
                 {
                     batch.Add(item);
 
-                    // 贪婪地获取当前队列中的所有其他项，以形成一个更大的批次
+                    // 获取当前队列中的所有其他项，以形成一个更大的批次
                     while (_logBuffer.TryTake(out var nextItem))
                     {
                         batch.Add(nextItem);
                     }
 
                     // 将收集到的整个批次调度到UI线程进行一次性更新
-                    Application.Current.Dispatcher.Invoke(() =>
+                    lock (_logsLock)
                     {
-                        lock (_logsLock)
-                        {
-                            Logs.AddRange(batch);
-                        }
-                    });
+                        Logs.AddRange(batch);
+                    }
 
                     // 清空批处理列表以备下次使用
                     batch.Clear();
@@ -92,6 +89,14 @@ namespace MeasureApp.Services
             };
 
             _logBuffer.Add(logEntry);
+        }
+
+        public void Clear()
+        {
+            lock (_logsLock)
+            {
+                Logs.Clear();
+            }
         }
 
         public void Dispose()
