@@ -106,7 +106,7 @@
                                 <ad:LayoutAnchorable Title="通信日志" ContentId="DeviceLog" CanHide="False">
                                     <v:DeviceLogView Margin="2"/>
                                 </ad:LayoutAnchorable>
-                                <ad:LayoutAnchorable Title="数据监视器" ContentId="DataMonitorView" CanHide="False">
+                                <ad:LayoutAnchorable Title="数据监视器" ContentId="DataMonitor" CanHide="False">
                                     <v:DataMonitorView Margin="2"/>
                                 </ad:LayoutAnchorable>
                                 <ad:LayoutAnchorable Title="数据可视化" ContentId="DataPlot" CanHide="False">

@@ -41,6 +41,8 @@ namespace MeasureApp.ViewModel
 
         public DataMonitorVM(AppContextManager context)
         {
+            Title = "数据监视器";
+            ContentId = "DataMonitor";
             _context = context;
         }
 

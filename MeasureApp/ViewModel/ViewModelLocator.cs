@@ -19,19 +19,19 @@ namespace MeasureApp.ViewModel
 
             // Register
             container.Register<MainWindowVM>(Reuse.Singleton);
-            container.Register<DeviceStatusVM>(Reuse.Singleton);
-            container.Register<DeviceConnectionVM>(Reuse.Singleton);
-            container.Register<DeviceDebugVM>(Reuse.Singleton);
-            container.Register<DeviceLogVM>(Reuse.Singleton);
-            container.Register<DataMonitorVM>(Reuse.Singleton);
-            container.Register<DataPlotVM>(Reuse.Singleton);
-            container.Register<ScriptRunnerVM>(Reuse.Singleton);
-            container.Register<RegisterEditorVM>(Reuse.Singleton);
-            container.Register<AboutAppVM>(Reuse.Singleton);
-            container.Register<AppLogVM>(Reuse.Singleton);
-            // todo
-            container.Register<DataProcVM>(Reuse.Singleton);
+            container.RegisterMany<DeviceStatusVM>(Reuse.Singleton);
+            container.RegisterMany<DeviceConnectionVM>(Reuse.Singleton);
+            container.RegisterMany<DeviceDebugVM>(Reuse.Singleton);
+            container.RegisterMany<DeviceLogVM>(Reuse.Singleton);
+            container.RegisterMany<DataMonitorVM>(Reuse.Singleton);
+            container.RegisterMany<DataPlotVM>(Reuse.Singleton);
+            container.RegisterMany<ScriptRunnerVM>(Reuse.Singleton);
+            container.RegisterMany<RegisterEditorVM>(Reuse.Singleton);
+            container.RegisterMany<AboutAppVM>(Reuse.Singleton);
+            container.RegisterMany<AppLogVM>(Reuse.Singleton);
+            container.RegisterMany<DataProcVM>(Reuse.Singleton);
 
+            container.Register<LayoutService>(Reuse.Singleton);
             container.Register<AppContextManager>(Reuse.Singleton);
             container.Register<DeviceManager>(Reuse.Singleton);
             container.Register<ConfigManager>(Reuse.Singleton);
@@ -45,6 +45,7 @@ namespace MeasureApp.ViewModel
 
 
         public MainWindowVM MainWindow => container.Resolve<MainWindowVM>();
+        public LayoutService Layout => container.Resolve<LayoutService>();
         public DeviceStatusVM DeviceStatus => container.Resolve<DeviceStatusVM>();
         public DeviceConnectionVM DeviceConnection => container.Resolve<DeviceConnectionVM>();
         public DeviceDebugVM DeviceDebug => container.Resolve<DeviceDebugVM>();

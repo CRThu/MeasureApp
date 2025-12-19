@@ -40,6 +40,8 @@ namespace MeasureApp.ViewModel
 
         public ScriptRunnerVM(AppContextManager context)
         {
+            Title = "脚本运行";
+            ContentId = "ScriptRunner";
             _context = context;
             Exec = new ScriptExecutor(_context);
         }

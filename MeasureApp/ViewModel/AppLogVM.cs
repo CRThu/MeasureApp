@@ -23,6 +23,8 @@ namespace MeasureApp.ViewModel
 
         public AppLogVM(AppContextManager context)
         {
+            Title = "应用程序日志";
+            ContentId = "AppLog";
             _context = context;
         }
     }

@@ -15,7 +15,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Markup;
 
 namespace MeasureApp.ViewModel
 {
@@ -48,6 +47,8 @@ namespace MeasureApp.ViewModel
 
         public DataPlotVM(AppContextManager context)
         {
+            Title = "数据可视化";
+            ContentId = "DataPlot";
             _context = context;
         }
 

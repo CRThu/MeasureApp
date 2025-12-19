@@ -23,6 +23,8 @@ namespace MeasureApp.ViewModel
 
         public DeviceStatusVM(AppContextManager context)
         {
+            Title = "设备状态";
+            ContentId = "DeviceStatus";
             _context = context;
         }
     }

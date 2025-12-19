@@ -10,6 +10,11 @@ namespace MeasureApp.ViewModel
 {
     public partial class BaseVM : ObservableObject
     {
+        [ObservableProperty]
+        private bool isVisible = true;
+
+        [ObservableProperty]
+        private string contentId;
 
         [ObservableProperty]
         private bool isClosed;

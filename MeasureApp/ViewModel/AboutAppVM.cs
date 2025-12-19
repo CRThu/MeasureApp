@@ -16,7 +16,6 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Xml.Linq;
 
 namespace MeasureApp.ViewModel
 {
@@ -42,6 +41,8 @@ namespace MeasureApp.ViewModel
 
         public AboutAppVM(AppContextManager context)
         {
+            Title = "关于";
+            ContentId = "AboutApp";
             _context = context;
         }
 

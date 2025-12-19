@@ -23,6 +23,8 @@ namespace MeasureApp.ViewModel
 
         public DataProcVM(AppContextManager context)
         {
+            Title = "数据处理";
+            ContentId = "DataProc";
             _context = context;
         }
     }

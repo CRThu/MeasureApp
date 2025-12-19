@@ -18,15 +18,21 @@ namespace MeasureApp.ViewModel
     public partial class MainWindowVM : BaseVM
     {
         private readonly AppContextManager _context;
+        private LayoutService _layoutService;
 
         public string AppName => $"MeasureApp {Assembly.GetEntryAssembly().GetName().Version}";
 
         [ObservableProperty]
         private string statusBarText = "Text from MainWindowVM";
 
-        public MainWindowVM(AppContextManager context)
+        // TODO
+        public ObservableCollection<IToolViewModel> Anchorables => _layoutService.Tools;
+        public ObservableCollection<IToolViewModel> Documents => _layoutService.Tools;
+
+        public MainWindowVM(AppContextManager context, LayoutService layoutService)
         {
             _context = context;
+            _layoutService = layoutService;
         }
 
         [RelayCommand]

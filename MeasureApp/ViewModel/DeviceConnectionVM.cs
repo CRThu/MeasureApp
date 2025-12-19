@@ -81,6 +81,8 @@ namespace MeasureApp.ViewModel
 
         public DeviceConnectionVM(AppContextManager context)
         {
+            Title = "设备连接";
+            ContentId = "DeviceConnection";
             _context = context;
             _context.Devices.Info.CollectionChanged += (s, e) => OnPropertyChanged(nameof(IsSelectedDeviceConnected));
         }

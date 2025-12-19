@@ -51,6 +51,8 @@ namespace MeasureApp.ViewModel
 
         public DeviceDebugVM(AppContextManager context)
         {
+            Title = "设备调试";
+            ContentId = "DeviceDebug";
             _context = context;
 
             Presets = new ObservableCollection<PresetCommandItem>();

@@ -20,7 +20,6 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Xml.Linq;
 
 namespace MeasureApp.ViewModel
 {
@@ -76,6 +75,8 @@ namespace MeasureApp.ViewModel
 
         public RegisterEditorVM(AppContextManager context)
         {
+            Title = "寄存器编辑器";
+            ContentId = "RegisterEditor";
             _context = context;
 
             timeout = _context.Configs.AppConfig.RegisterRequestTimeout;
