@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeasureAppConsole", "Measur
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarrotLink.Core", "..\CarrotLink.NET\CarrotLink.Core\CarrotLink.Core.csproj", "{446495DC-5ABF-9329-CB22-7CB4F75DE463}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeasureApp.PluginDemo", "MeasureApp.PluginDemo\MeasureApp.PluginDemo.csproj", "{77BC875C-8D56-FC79-E085-E6D8552AE939}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,18 @@ Global
 		{446495DC-5ABF-9329-CB22-7CB4F75DE463}.Release|x64.Build.0 = Release|Any CPU
 		{446495DC-5ABF-9329-CB22-7CB4F75DE463}.Release|x86.ActiveCfg = Release|Any CPU
 		{446495DC-5ABF-9329-CB22-7CB4F75DE463}.Release|x86.Build.0 = Release|Any CPU
+		{77BC875C-8D56-FC79-E085-E6D8552AE939}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{77BC875C-8D56-FC79-E085-E6D8552AE939}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77BC875C-8D56-FC79-E085-E6D8552AE939}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{77BC875C-8D56-FC79-E085-E6D8552AE939}.Debug|x64.Build.0 = Debug|Any CPU
+		{77BC875C-8D56-FC79-E085-E6D8552AE939}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{77BC875C-8D56-FC79-E085-E6D8552AE939}.Debug|x86.Build.0 = Debug|Any CPU
+		{77BC875C-8D56-FC79-E085-E6D8552AE939}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{77BC875C-8D56-FC79-E085-E6D8552AE939}.Release|Any CPU.Build.0 = Release|Any CPU
+		{77BC875C-8D56-FC79-E085-E6D8552AE939}.Release|x64.ActiveCfg = Release|Any CPU
+		{77BC875C-8D56-FC79-E085-E6D8552AE939}.Release|x64.Build.0 = Release|Any CPU
+		{77BC875C-8D56-FC79-E085-E6D8552AE939}.Release|x86.ActiveCfg = Release|Any CPU
+		{77BC875C-8D56-FC79-E085-E6D8552AE939}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

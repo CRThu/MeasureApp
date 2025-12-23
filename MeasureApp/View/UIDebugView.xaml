@@ -15,7 +15,7 @@
     <UserControl.Resources>
     </UserControl.Resources>
     <hc:SimpleStackPanel Orientation="Horizontal">
-        <ListView ItemsSource="{Binding Source={StaticResource Locator},Path=Layout.Anchorables}" SelectedItem="{Binding SelectedTool}" DisplayMemberPath="Title" Style="{StaticResource BaseStyle}" Width="200" Height="300" VerticalAlignment="Top"/>
+        <ListView ItemsSource="{Binding Source={StaticResource Locator},Path=.}" SelectedItem="{Binding SelectedTool}" DisplayMemberPath="Title" Style="{StaticResource BaseStyle}" Width="200" Height="300" VerticalAlignment="Top"/>
         <Button Content="UIUpdateDocument" Command="{Binding UpdateDocumentCommand}" VerticalAlignment="Top"/>
         <Button Content="UIUpdateAnchorable" Command="{Binding UpdateAnchorableCommand}" VerticalAlignment="Top"/>
     </hc:SimpleStackPanel>

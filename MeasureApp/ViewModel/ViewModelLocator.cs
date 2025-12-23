@@ -12,6 +12,7 @@ namespace MeasureApp.ViewModel
     public class ViewModelLocator
     {
         private readonly Container container;
+        public Container Container => container;
 
         public ViewModelLocator()
         {
@@ -31,6 +32,7 @@ namespace MeasureApp.ViewModel
             container.RegisterMany<AppLogVM>(Reuse.Singleton);
             container.RegisterMany<DataProcVM>(Reuse.Singleton);
             container.RegisterMany<UIDebugVM>(Reuse.Singleton);
+            container.RegisterMany<PluginVM>(Reuse.Singleton);
 
             container.Register<AppContextManager>(Reuse.Singleton);
             container.Register<DeviceManager>(Reuse.Singleton);
@@ -39,9 +41,12 @@ namespace MeasureApp.ViewModel
             container.Register<CommandLogService>(Reuse.Singleton);
             container.Register<DataLogService>(Reuse.Singleton);
             container.Register<RegisterLogService>(Reuse.Singleton);
+            container.Register<PluginService>(Reuse.Singleton);
         }
 
         public AppContextManager Context => container.Resolve<AppContextManager>();
+
+        public PluginService PluginSrv => container.Resolve<PluginService>();
 
 
         public MainWindowVM MainWindow => container.Resolve<MainWindowVM>();
@@ -58,6 +63,8 @@ namespace MeasureApp.ViewModel
 
         public DataProcVM DataProc => container.Resolve<DataProcVM>();
         public UIDebugVM UIDebug => container.Resolve<UIDebugVM>();
+
+        public PluginVM PluginUI => container.Resolve<PluginVM>();
 
     }
 }
