@@ -127,6 +127,15 @@
             <i:Interaction.Behaviors>
                 <b:DockingManagerLayoutBehavior/>
             </i:Interaction.Behaviors>
+            <ad:DockingManager.LayoutItemContainerStyle>
+                <Style TargetType="{x:Type ad:LayoutItem}">
+                    <Setter Property="Title" Value="{Binding Model.DataContext.Title}"/>
+                    <Setter Property="ContentId" Value="{Binding Model.DataContext.ContentId}"/>
+                    <Setter Property="Visibility" Value="{Binding Model.DataContext.IsVisible, Mode=TwoWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                    <Setter Property="CanClose" Value="{Binding Model.DataContext.CanClose}"/>
+                    <Setter Property="CloseCommand" Value="{Binding Model.DataContext.CloseCommand}"/>
+                </Style>
+            </ad:DockingManager.LayoutItemContainerStyle>
         </ad:DockingManager>
     </DockPanel>
 </Window>
