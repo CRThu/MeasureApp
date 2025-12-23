@@ -8,16 +8,13 @@ using System.Threading.Tasks;
 
 namespace MeasureApp.ViewModel
 {
-    public partial class BaseVM : ObservableObject
+    public partial class BaseVM : ObservableObject, IToolViewModel
     {
         [ObservableProperty]
         private bool isVisible = true;
 
         [ObservableProperty]
         private string contentId;
-
-        [ObservableProperty]
-        private bool isClosed;
 
         [ObservableProperty]
         private bool canClose;
@@ -29,13 +26,13 @@ namespace MeasureApp.ViewModel
         public BaseVM()
         {
             CanClose = true;
-            IsClosed = false;
+            IsVisible = true;
         }
 
         [RelayCommand]
         public void Close()
         {
-            IsClosed = true;
+            IsVisible = false;
         }
     }
 }

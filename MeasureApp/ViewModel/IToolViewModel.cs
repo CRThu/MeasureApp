@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CommunityToolkit.Mvvm.Input;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,6 +14,6 @@ namespace MeasureApp.ViewModel
         public string ContentId { get; set; }
         public bool IsVisible { get; set; }
         public bool CanClose { get; set; }
-        public ICommand CloseCommand { get; set; }
+        public IRelayCommand CloseCommand { get; }
     }
 }

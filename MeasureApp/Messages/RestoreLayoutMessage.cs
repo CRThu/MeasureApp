@@ -9,10 +9,12 @@ namespace MeasureApp.Messages
 {
     public class RestoreLayoutMessage
     {
-        public static RestoreLayoutMessage Instance { get; } = new RestoreLayoutMessage();
+        //public static RestoreLayoutMessage Instance { get; } = new RestoreLayoutMessage();
+        public string FileName { get; }
 
-        public RestoreLayoutMessage()
+        public RestoreLayoutMessage(string fileName = "layout.xml")
         {
+            FileName = fileName;
         }
     }
 }

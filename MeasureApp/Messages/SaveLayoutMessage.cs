@@ -9,10 +9,12 @@ namespace MeasureApp.Messages
 {
     public class SaveLayoutMessage
     {
-        public static SaveLayoutMessage Instance { get; } = new SaveLayoutMessage();
+        // public static SaveLayoutMessage Instance { get; } = new SaveLayoutMessage();
+        public string FileName { get; }
 
-        public SaveLayoutMessage()
+        public SaveLayoutMessage(string fileName = "layout.xml")
         {
+            FileName = fileName;
         }
     }
 }

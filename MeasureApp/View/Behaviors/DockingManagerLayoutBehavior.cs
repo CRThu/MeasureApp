@@ -27,9 +27,7 @@ namespace MeasureApp.View.Behaviors
         protected override void OnAttached()
         {
             base.OnAttached();
-            // 注册以接收消息
-            WeakReferenceMessenger.Default.Register<SaveLayoutMessage>(this);
-            WeakReferenceMessenger.Default.Register<RestoreLayoutMessage>(this);
+            WeakReferenceMessenger.Default.RegisterAll(this);
         }
 
         /// <summary>
@@ -37,9 +35,8 @@ namespace MeasureApp.View.Behaviors
         /// </summary>
         protected override void OnDetaching()
         {
-            base.OnDetaching();
-            // 注销所有消息，防止内存泄漏
             WeakReferenceMessenger.Default.UnregisterAll(this);
+            base.OnDetaching();
         }
 
         /// <summary>
@@ -49,7 +46,7 @@ namespace MeasureApp.View.Behaviors
         {
             if (AssociatedObject == null)
                 return;
-            SaveLayout(AssociatedObject);
+            SaveLayout(AssociatedObject, message.FileName);
         }
 
         /// <summary>
@@ -59,7 +56,7 @@ namespace MeasureApp.View.Behaviors
         {
             if (AssociatedObject == null)
                 return;
-            RestoreLayout(AssociatedObject);
+            RestoreLayout(AssociatedObject, message.FileName);
         }
 
 
@@ -67,27 +64,16 @@ namespace MeasureApp.View.Behaviors
         /// 保存布局
         /// </summary>
         /// <param name="dockingManager">DockingManager实例</param>
-        private void SaveLayout(DockingManager dockingManager)
+        private void SaveLayout(DockingManager dockingManager, string fileName)
         {
-            SaveFileDialog saveFileDialog = new SaveFileDialog
+            try
             {
-                Filter = "Layout Files (*.xml)|*.xml|All files (*.*)|*.*",
-                Title = "保存布局文件",
-                FileName = "layout.xml"
-            };
-
-            if (saveFileDialog.ShowDialog() == true)
+                var serializer = new XmlLayoutSerializer(dockingManager);
+                serializer.Serialize(fileName);
+            }
+            catch (Exception ex)
             {
-                try
-                {
-                    var serializer = new XmlLayoutSerializer(dockingManager);
-                    using var stream = new StreamWriter(saveFileDialog.FileName);
-                    serializer.Serialize(stream);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"保存布局失败: {ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+                MessageBox.Show($"保存布局失败: {ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -95,32 +81,16 @@ namespace MeasureApp.View.Behaviors
         /// 还原布局
         /// </summary>
         /// <param name="dockingManager">DockingManager实例</param>
-        private void RestoreLayout(DockingManager dockingManager)
+        private void RestoreLayout(DockingManager dockingManager, string fileName)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog
+            try
             {
-                Filter = "Layout Files (*.xml)|*.xml|All files (*.*)|*.*",
-                Title = "加载布局文件"
-            };
-
-            if (openFileDialog.ShowDialog() == true)
+                var serializer = new XmlLayoutSerializer(dockingManager);
+                serializer.Deserialize(fileName);
+            }
+            catch (Exception ex)
             {
-                if (!File.Exists(openFileDialog.FileName))
-                {
-                    MessageBox.Show("布局文件不存在。", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return;
-                }
-
-                try
-                {
-                    var serializer = new XmlLayoutSerializer(dockingManager);
-                    using var stream = new StreamReader(openFileDialog.FileName);
-                    serializer.Deserialize(stream);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"还原布局失败: {ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+                MessageBox.Show($"还原布局失败: {ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
     }

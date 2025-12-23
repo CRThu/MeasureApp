@@ -25,6 +25,7 @@
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </Window.Resources>
     <DockPanel>
         <Menu DockPanel.Dock="Top">
@@ -52,9 +53,6 @@
             </Grid>
         </StatusBar>
         <ad:DockingManager>
-            <i:Interaction.Behaviors>
-                <b:DockingManagerLayoutBehavior/>
-            </i:Interaction.Behaviors>
             <ad:DockingManager.Theme>
                 <!--<ad:Vs2013DarkTheme/>-->
                 <ad:Vs2013LightTheme/>
@@ -62,74 +60,80 @@
             <ad:LayoutRoot>
                 <ad:LayoutPanel Orientation="Vertical">
                     <ad:LayoutPanel Orientation="Horizontal">
-                        <!-- 左侧工具栏：设备连接 -->
-                        <ad:LayoutAnchorablePaneGroup DockWidth="200" FloatingWidth="250" DockMinWidth="200">
-                            <ad:LayoutAnchorablePane>
-                                <ad:LayoutAnchorable Title="设备连接" ContentId="DeviceConnection" AutoHideMinWidth="200" CanHide="False">
-                                    <v:DeviceConnectionView Margin="2"/>
-                                </ad:LayoutAnchorable>
-                            </ad:LayoutAnchorablePane>
-                        </ad:LayoutAnchorablePaneGroup>
+                    <!-- 左侧工具栏：设备连接 -->
+                    <ad:LayoutAnchorablePaneGroup DockWidth="200" FloatingWidth="250" DockMinWidth="200">
+                        <ad:LayoutAnchorablePane>
+                            <ad:LayoutAnchorable Title="设备连接" ContentId="DeviceConnection" AutoHideMinWidth="200" CanHide="False">
+                                <v:DeviceConnectionView Margin="2"/>
+                            </ad:LayoutAnchorable>
+                        </ad:LayoutAnchorablePane>
+                    </ad:LayoutAnchorablePaneGroup>
 
-                        <!-- 中间主文档区域 -->
-                        <ad:LayoutDocumentPaneGroup DockHeight="Auto" DockWidth="Auto">
-                            <ad:LayoutDocumentPane DockHeight="*" DockWidth="*">
-                                <ad:LayoutAnchorable Title="设备通信调试" ContentId="DeviceDebug" CanHide="False">
-                                    <v:DeviceDebugView Margin="2"/>
-                                </ad:LayoutAnchorable>
-                                <!--<ad:LayoutAnchorable Title="数据处理" ContentId="DataProc" CanHide="False">
+                    <!-- 中间主文档区域 -->
+                    <ad:LayoutDocumentPaneGroup DockHeight="Auto" DockWidth="Auto">
+                        <ad:LayoutDocumentPane DockHeight="*" DockWidth="*">
+                            <ad:LayoutAnchorable Title="设备通信调试" ContentId="DeviceDebug" CanHide="False">
+                                <v:DeviceDebugView Margin="2"/>
+                            </ad:LayoutAnchorable>
+                            <!--<ad:LayoutAnchorable Title="数据处理" ContentId="DataProc" CanHide="False">
                                 <ad:LayoutAnchorable.Content>
                                     <v:DataProcView Margin="2"/>
                                 </ad:LayoutAnchorable.Content>
                             </ad:LayoutAnchorable>-->
-                                <ad:LayoutAnchorable Title="脚本运行" ContentId="ScriptRunner" CanHide="False">
-                                    <ad:LayoutAnchorable.Content>
-                                        <v:ScriptRunnerView Margin="2"/>
-                                    </ad:LayoutAnchorable.Content>
-                                </ad:LayoutAnchorable>
-                                <ad:LayoutAnchorable Title="寄存器编辑器" ContentId="RegisterEditor" CanHide="False">
-                                    <ad:LayoutAnchorable.Content>
-                                        <v:RegisterEditorView Margin="2"/>
-                                    </ad:LayoutAnchorable.Content>
-                                </ad:LayoutAnchorable>
-                                <ad:LayoutAnchorable Title="关于" ContentId="AboutApp" CanHide="False">
-                                    <ad:LayoutAnchorable.Content>
-                                        <v:AboutAppView Margin="2"/>
-                                    </ad:LayoutAnchorable.Content>
-                                </ad:LayoutAnchorable>
-                            </ad:LayoutDocumentPane>
-                        </ad:LayoutDocumentPaneGroup>
-
-                        <!-- 右侧工具栏：日志、数据监视、可视化 -->
-                        <ad:LayoutAnchorablePaneGroup DockWidth="450">
-                            <ad:LayoutAnchorablePane>
-                                <ad:LayoutAnchorable Title="通信日志" ContentId="DeviceLog" CanHide="False">
-                                    <v:DeviceLogView Margin="2"/>
-                                </ad:LayoutAnchorable>
-                                <ad:LayoutAnchorable Title="数据监视器" ContentId="DataMonitor" CanHide="False">
-                                    <v:DataMonitorView Margin="2"/>
-                                </ad:LayoutAnchorable>
-                                <ad:LayoutAnchorable Title="数据可视化" ContentId="DataPlot" CanHide="False">
-                                    <ad:LayoutAnchorable.Content>
-                                        <v:DataPlotView Margin="2"/>
-                                    </ad:LayoutAnchorable.Content>
-                                </ad:LayoutAnchorable>
-                            </ad:LayoutAnchorablePane>
-                        </ad:LayoutAnchorablePaneGroup>
-                    </ad:LayoutPanel>
-                    <!-- 底部输出窗口 -->
-                    <ad:LayoutAnchorablePaneGroup DockHeight="180">
-                        <ad:LayoutAnchorablePane>
-                            <ad:LayoutAnchorable Title="设备状态" ContentId="DeviceStatus" CanHide="False">
-                                <v:DeviceStatusView Margin="2"/>
+                            <ad:LayoutAnchorable Title="脚本运行" ContentId="ScriptRunner" CanHide="False">
+                                <ad:LayoutAnchorable.Content>
+                                    <v:ScriptRunnerView Margin="2"/>
+                                </ad:LayoutAnchorable.Content>
                             </ad:LayoutAnchorable>
-                            <ad:LayoutAnchorable Title="AppLog" ContentId="AppLog" CanHide="False">
-                                <v:AppLogView Margin="2"/>
+                            <ad:LayoutAnchorable Title="寄存器编辑器" ContentId="RegisterEditor" CanHide="False">
+                                <ad:LayoutAnchorable.Content>
+                                    <v:RegisterEditorView Margin="2"/>
+                                </ad:LayoutAnchorable.Content>
+                            </ad:LayoutAnchorable>
+                            <ad:LayoutAnchorable Title="关于" ContentId="AboutApp" CanHide="False">
+                                <ad:LayoutAnchorable.Content>
+                                    <v:AboutAppView Margin="2"/>
+                                </ad:LayoutAnchorable.Content>
+                            </ad:LayoutAnchorable>
+                        </ad:LayoutDocumentPane>
+                    </ad:LayoutDocumentPaneGroup>
+
+                    <!-- 右侧工具栏：日志、数据监视、可视化 -->
+                    <ad:LayoutAnchorablePaneGroup DockWidth="450">
+                        <ad:LayoutAnchorablePane>
+                            <ad:LayoutAnchorable Title="通信日志" ContentId="DeviceLog" CanHide="False">
+                                <v:DeviceLogView Margin="2"/>
+                            </ad:LayoutAnchorable>
+                            <ad:LayoutAnchorable Title="数据监视器" ContentId="DataMonitor" CanHide="False">
+                                <v:DataMonitorView Margin="2"/>
+                            </ad:LayoutAnchorable>
+                            <ad:LayoutAnchorable Title="数据可视化" ContentId="DataPlot" CanHide="False">
+                                <ad:LayoutAnchorable.Content>
+                                    <v:DataPlotView Margin="2"/>
+                                </ad:LayoutAnchorable.Content>
                             </ad:LayoutAnchorable>
                         </ad:LayoutAnchorablePane>
                     </ad:LayoutAnchorablePaneGroup>
                 </ad:LayoutPanel>
+                <!-- 底部输出窗口 -->
+                <ad:LayoutAnchorablePaneGroup DockHeight="180">
+                    <ad:LayoutAnchorablePane>
+                        <ad:LayoutAnchorable Title="设备状态" ContentId="DeviceStatus" CanHide="False">
+                            <v:DeviceStatusView Margin="2"/>
+                            </ad:LayoutAnchorable>
+                            <ad:LayoutAnchorable Title="AppLog" ContentId="AppLog" CanHide="False">
+                                <v:AppLogView Margin="2"/>
+                            </ad:LayoutAnchorable>
+                            <ad:LayoutAnchorable Title="UIDebug" ContentId="UIDebug" CanHide="False">
+                                <v:UIDebugView Margin="2"/>
+                            </ad:LayoutAnchorable>
+                        </ad:LayoutAnchorablePane>
+                </ad:LayoutAnchorablePaneGroup>
+                </ad:LayoutPanel>
             </ad:LayoutRoot>
+            <i:Interaction.Behaviors>
+                <b:DockingManagerLayoutBehavior/>
+            </i:Interaction.Behaviors>
         </ad:DockingManager>
     </DockPanel>
 </Window>

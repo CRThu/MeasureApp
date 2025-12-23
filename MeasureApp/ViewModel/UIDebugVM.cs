@@ -1,0 +1,45 @@
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using DryIoc;
+using MeasureApp.Messages;
+using MeasureApp.Services;
+using ScottPlot;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+
+namespace MeasureApp.ViewModel
+{
+    public partial class UIDebugVM : BaseVM
+    {
+        private readonly AppContextManager _context;
+        public AppContextManager Context => _context;
+
+        [ObservableProperty]
+        private IToolViewModel selectedTool;
+
+        public UIDebugVM(AppContextManager context)
+        {
+            Title = "UI调试";
+            ContentId = "UIDebug";
+            _context = context;
+        }
+
+        [RelayCommand]
+        private void UpdateDocument()
+        {
+        }
+
+        [RelayCommand]
+        private void UpdateAnchorable()
+        {
+        }
+    }
+}

@@ -30,8 +30,8 @@ namespace MeasureApp.ViewModel
             container.RegisterMany<AboutAppVM>(Reuse.Singleton);
             container.RegisterMany<AppLogVM>(Reuse.Singleton);
             container.RegisterMany<DataProcVM>(Reuse.Singleton);
+            container.RegisterMany<UIDebugVM>(Reuse.Singleton);
 
-            container.Register<LayoutService>(Reuse.Singleton);
             container.Register<AppContextManager>(Reuse.Singleton);
             container.Register<DeviceManager>(Reuse.Singleton);
             container.Register<ConfigManager>(Reuse.Singleton);
@@ -45,7 +45,6 @@ namespace MeasureApp.ViewModel
 
 
         public MainWindowVM MainWindow => container.Resolve<MainWindowVM>();
-        public LayoutService Layout => container.Resolve<LayoutService>();
         public DeviceStatusVM DeviceStatus => container.Resolve<DeviceStatusVM>();
         public DeviceConnectionVM DeviceConnection => container.Resolve<DeviceConnectionVM>();
         public DeviceDebugVM DeviceDebug => container.Resolve<DeviceDebugVM>();
@@ -58,6 +57,7 @@ namespace MeasureApp.ViewModel
         public AppLogVM AppLog => container.Resolve<AppLogVM>();
 
         public DataProcVM DataProc => container.Resolve<DataProcVM>();
+        public UIDebugVM UIDebug => container.Resolve<UIDebugVM>();
 
     }
 }
