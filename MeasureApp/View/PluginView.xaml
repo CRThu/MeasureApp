@@ -20,10 +20,10 @@
         <hc:SimpleStackPanel Orientation="Vertical">
             <Button Content="OpenPlugin" Command="{Binding OpenCommand}" HorizontalAlignment="Left"/>
         </hc:SimpleStackPanel>
-        <hc:TabControl ItemsSource="{Binding Source={StaticResource Locator},Path=PluginSrv.Plugins}" ikriv:TabContent.IsCached="True">
+        <hc:TabControl ItemsSource="{Binding Source={StaticResource Locator},Path=PluginSrv.Plugins}" SelectedItem="{Binding SelectedPlugin}" ikriv:TabContent.IsCached="True">
             <hc:TabControl.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock Text="{Binding Title}"/>
+                    <TextBlock Text="{Binding Name}"/>
                 </DataTemplate>
             </hc:TabControl.ItemTemplate>
             <ikriv:TabContent.Template>

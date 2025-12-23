@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using DryIoc;
 using MeasureApp.Messages;
+using MeasureApp.Plugins.Interfaces;
 using MeasureApp.Services;
 using ScottPlot;
 using System;
@@ -20,10 +21,17 @@ namespace MeasureApp.ViewModel
 {
     public partial class PluginVM : BaseVM
     {
+        private readonly PluginService _pluginService;
+
+        [ObservableProperty]
+        public IMeasureAppPlugin selectedPlugin;
+
         public PluginVM()
         {
             Title = "Plugin";
             ContentId = "PluginVM";
+
+            _pluginService = App.Locator.PluginSrv;
         }
 
         [RelayCommand]
@@ -31,8 +39,12 @@ namespace MeasureApp.ViewModel
         {
             try
             {
-                App.Locator.PluginSrv.LoadPlugins(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Plugins"));
+                _pluginService.LoadPlugins(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Plugins"));
 
+                if (SelectedPlugin == null)
+                {
+                    SelectedPlugin = _pluginService.Plugins.FirstOrDefault();
+                }
             }
             catch (Exception ex)
             {

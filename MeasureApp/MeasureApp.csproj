@@ -11,8 +11,8 @@
 		<SatelliteResourceLanguages>zh-Hans</SatelliteResourceLanguages>
 		<ApplicationIcon>Icon\AppIcon.ico</ApplicationIcon>
 		<PlatformTarget>AnyCPU</PlatformTarget>
-		<AssemblyVersion>2.0.629.0</AssemblyVersion>
-		<FileVersion>2.0.629.0</FileVersion>
+		<AssemblyVersion>2.0.634.0</AssemblyVersion>
+		<FileVersion>2.0.634.0</FileVersion>
 		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup>
 
@@ -89,6 +89,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\..\CarrotLink.NET\CarrotLink.Core\CarrotLink.Core.csproj" />
+	  <ProjectReference Include="..\MeasureApp.Plugins.Interfaces\MeasureApp.Plugins.Interfaces.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

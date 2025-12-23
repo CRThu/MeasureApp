@@ -6,13 +6,11 @@
              xmlns:local="clr-namespace:MeasureApp.PluginDemo"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <UserControl.DataContext>
-        <local:PluginViewModel/>
-    </UserControl.DataContext>
     <Grid>
         <StackPanel>
             <TextBlock Text="{Binding Title}"/>
             <TextBlock Text="{Binding Hello}"/>
+            <Button Content="运行" Command="{Binding RunCommand}"/>
         </StackPanel>
     </Grid>
 </UserControl>

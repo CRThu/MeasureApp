@@ -34,6 +34,7 @@ namespace MeasureApp.ViewModel
             container.RegisterMany<UIDebugVM>(Reuse.Singleton);
             container.RegisterMany<PluginVM>(Reuse.Singleton);
 
+            container.Register<MeasureAppService>(Reuse.Singleton);
             container.Register<AppContextManager>(Reuse.Singleton);
             container.Register<DeviceManager>(Reuse.Singleton);
             container.Register<ConfigManager>(Reuse.Singleton);
@@ -42,8 +43,10 @@ namespace MeasureApp.ViewModel
             container.Register<DataLogService>(Reuse.Singleton);
             container.Register<RegisterLogService>(Reuse.Singleton);
             container.Register<PluginService>(Reuse.Singleton);
+
         }
 
+        public MeasureAppService MeasureApp => container.Resolve<MeasureAppService>();
         public AppContextManager Context => container.Resolve<AppContextManager>();
 
         public PluginService PluginSrv => container.Resolve<PluginService>();

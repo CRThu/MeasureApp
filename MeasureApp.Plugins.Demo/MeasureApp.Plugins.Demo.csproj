@@ -6,8 +6,8 @@
     <Nullable>enable</Nullable>
     <OutputType>Library</OutputType>
     <UseWPF>True</UseWPF>
-    <AssemblyVersion>1.0.2.0</AssemblyVersion>
-    <FileVersion>1.0.2.0</FileVersion>
+    <AssemblyVersion>1.0.3.0</AssemblyVersion>
+    <FileVersion>1.0.3.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MeasureApp\MeasureApp.csproj" />
+    <ProjectReference Include="..\MeasureApp.Plugins.Interfaces\MeasureApp.Plugins.Interfaces.csproj" />
   </ItemGroup>
 
 </Project>

@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MeasureApp.Services.Plugin
+namespace MeasureApp.Plugins.Interfaces
 {
-    public interface IPlugin
+    public interface IMeasureAppService
     {
-        public string Title { get; }
-        object View { get; }
+        void Send(string msg);
     }
 }

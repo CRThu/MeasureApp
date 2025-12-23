@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using DryIoc;
-using MeasureApp.Services.Plugin;
+using MeasureApp.Plugins.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -9,13 +9,14 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace MeasureApp.Services
 {
     public partial class PluginService : ObservableObject
     {
         [ObservableProperty]
-        private ObservableCollection<IPlugin> plugins = new();
+        private ObservableCollection<IMeasureAppPlugin> plugins = new();
 
         public PluginService()
         {
@@ -33,13 +34,15 @@ namespace MeasureApp.Services
             {
                 var assembly = Assembly.LoadFrom(dll);
 
-                var pluginTypes = assembly.GetTypes().Where(t => typeof(IPlugin).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract);
+                var factoryTypes = assembly.GetTypes().Where(t => typeof(IMeasureAppPluginFactory).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract);
 
-                foreach (var type in pluginTypes)
+                foreach (var factoryType in factoryTypes)
                 {
-                    App.Locator.Container.Register(typeof(IPlugin), type, serviceKey: type.FullName);
+                    App.Locator.Container.Register(typeof(IMeasureAppPluginFactory), factoryType, serviceKey: factoryType.FullName);
 
-                    var plugin = (IPlugin)App.Locator.Container.Resolve(typeof(IPlugin), serviceKey: type.FullName);
+                    var factory = (IMeasureAppPluginFactory)App.Locator.Container.Resolve(typeof(IMeasureAppPluginFactory), serviceKey: factoryType.FullName);
+
+                    var plugin = factory.CreatePluginView(App.Locator.MeasureApp);
                     Plugins.Add(plugin);
                 }
             }
