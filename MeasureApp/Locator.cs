@@ -1,20 +1,21 @@
 ﻿using DryIoc;
 using MeasureApp.Services;
 using MeasureApp.View;
+using MeasureApp.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MeasureApp.ViewModel
+namespace MeasureApp
 {
-    public class ViewModelLocator
+    public class Locator
     {
         private readonly Container container;
         public Container Container => container;
 
-        public ViewModelLocator()
+        public Locator()
         {
             container = new Container();
 
