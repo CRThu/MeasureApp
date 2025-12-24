@@ -9,14 +9,15 @@
       xmlns:v="clr-namespace:MeasureApp.View"
       xmlns:c="clr-namespace:MeasureApp.View.Converter"
       xmlns:hc="https://handyorg.github.io/handycontrol"
-      DataContext="{Binding Source={StaticResource Locator},Path=DeviceStatus}"
+      d:DataContext="{Binding Source={StaticResource Locator},Path=DeviceStatusVM}"
+      DataContext="{Binding Source={StaticResource Locator},Path=DeviceStatusVM}"
       mc:Ignorable="d">
     <UserControl.Resources>
         <c:BoolToStringConverter x:Key="BoolToStringConverter"/>
         <c:ErrorColorConverter x:Key="ErrorColorConverter"/>
     </UserControl.Resources>
     <Grid>
-        <DataGrid ItemsSource="{Binding Context.Devices.Info}"
+        <DataGrid ItemsSource="{Binding Source={StaticResource Locator},Path=DeviceManager.Info}"
                   hc:DataGridAttach.ShowRowNumber="True" RowHeaderWidth="60"
                   SelectionMode="Single" IsReadOnly="True" AutoGenerateColumns="False" CanUserAddRows="False"
                   Style="{StaticResource DataGrid.Small}" Margin="5" MinColumnWidth="50" MinHeight="100"

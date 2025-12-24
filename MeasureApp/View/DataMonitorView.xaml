@@ -11,8 +11,8 @@
              xmlns:hc="https://handyorg.github.io/handycontrol"
              xmlns:ScottPlot="clr-namespace:ScottPlot.WPF;assembly=ScottPlot.WPF"
              xmlns:b="clr-namespace:MeasureApp.View.Behaviors"
-             DataContext="{Binding Source={StaticResource Locator},Path=DataMonitor}"
-             d:DataContext="{Binding Source={StaticResource Locator},Path=DataMonitor}"
+             d:DataContext="{Binding Source={StaticResource Locator},Path=DataMonitorVM}"
+             DataContext="{Binding Source={StaticResource Locator},Path=DataMonitorVM}"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="800">
     <UserControl.Resources>
@@ -33,11 +33,11 @@
             </Grid.RowDefinitions>
             <TextBlock Grid.Row="0" Margin="10,5,10,5">
                 <Run Text="数据键列表("/>
-                <Run Text="{Binding Context.DataLogger.Keys.Count,Mode=OneWay}"/>
+                <Run Text="{Binding Source={StaticResource Locator},Path=DataLogger.Keys.Count,Mode=OneWay}"/>
                 <Run Text="项)"/>
             </TextBlock>
             <ListBox Grid.Row="1"
-                     ItemsSource="{Binding Context.DataLogger.Keys}"
+                     ItemsSource="{Binding Source={StaticResource Locator},Path=DataLogger.Keys}"
                      SelectedItem="{Binding SelectedKey}"
                      Style="{StaticResource ListBox.Small}"
                      Height="350" Margin="10,0,10,0"

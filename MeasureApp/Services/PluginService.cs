@@ -42,7 +42,7 @@ namespace MeasureApp.Services
 
                     var factory = (IMeasureAppPluginFactory)App.Locator.Container.Resolve(typeof(IMeasureAppPluginFactory), serviceKey: factoryType.FullName);
 
-                    var plugin = factory.CreatePluginView(App.Locator.MeasureApp);
+                    var plugin = factory.CreatePluginView(App.Locator.AppSvc);
                     Plugins.Add(plugin);
                 }
             }

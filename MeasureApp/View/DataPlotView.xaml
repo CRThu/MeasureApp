@@ -11,8 +11,8 @@
              xmlns:hc="https://handyorg.github.io/handycontrol"
              xmlns:ScottPlot="clr-namespace:ScottPlot.WPF;assembly=ScottPlot.WPF"
              xmlns:b="clr-namespace:MeasureApp.View.Behaviors"
-             DataContext="{Binding Source={StaticResource Locator},Path=DataPlot}"
-             d:DataContext="{Binding Source={StaticResource Locator},Path=DataPlot}"
+             d:DataContext="{Binding Source={StaticResource Locator},Path=DataPlotVM}"
+             DataContext="{Binding Source={StaticResource Locator},Path=DataPlotVM}"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="800">
     <UserControl.Resources>
@@ -35,10 +35,10 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Row="0" Grid.Column="1" Text="Data Y: " VerticalAlignment="Center" Margin="5,0"/>
-            <hc:ComboBox Grid.Row="0" Grid.Column="2" ItemsSource="{Binding Context.DataLogger.Keys}" SelectedItem="{Binding SelectedDataYKey}" Width="200" Margin="5,2"/>
+            <hc:ComboBox Grid.Row="0" Grid.Column="2" ItemsSource="{Binding Source={StaticResource Locator},Path=DataLogger.Keys}" SelectedItem="{Binding SelectedDataYKey}" Width="200" Margin="5,2"/>
             <TextBlock Grid.Row="1" Grid.Column="1" Text="Data X: " VerticalAlignment="Center" Margin="5,0"/>
             <CheckBox Grid.Row="1" Grid.Column="0" IsChecked="{Binding IsCustomDataXUsed}" VerticalAlignment="Center" Margin="5,0"/>
-            <hc:ComboBox Grid.Row="1" Grid.Column="2" ItemsSource="{Binding Context.DataLogger.Keys}" SelectedItem="{Binding SelectedDataXKey}" Width="200" Margin="5,2" IsEnabled="{Binding IsCustomDataXUsed}"/>
+            <hc:ComboBox Grid.Row="1" Grid.Column="2" ItemsSource="{Binding Source={StaticResource Locator},Path=DataLogger.Keys}" SelectedItem="{Binding SelectedDataXKey}" Width="200" Margin="5,2" IsEnabled="{Binding IsCustomDataXUsed}"/>
         </Grid>
         <hc:SimpleStackPanel Grid.Row="1" Orientation="Horizontal" Margin="5">
             <CheckBox Content="自动刷新" Margin="5,0" IsChecked="{Binding IsAutoUpdateEnabled}"/>

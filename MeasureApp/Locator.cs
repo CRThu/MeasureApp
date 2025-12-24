@@ -47,28 +47,32 @@ namespace MeasureApp
 
         }
 
-        public MeasureAppService MeasureApp => container.Resolve<MeasureAppService>();
-        public AppContextManager Context => container.Resolve<AppContextManager>();
+        public DeviceManager DeviceManager => container.Resolve<DeviceManager>();
+        public ConfigManager ConfigManager => container.Resolve<ConfigManager>();
+        public PluginService PluginSvc => container.Resolve<PluginService>();
+        public MeasureAppService AppSvc => container.Resolve<MeasureAppService>();
+        public AppLogService AppLogger => container.Resolve<AppLogService>();
+        public CommandLogService CommandLogger => container.Resolve<CommandLogService>();
+        public DataLogService DataLogger => container.Resolve<DataLogService>();
+        public RegisterLogService RegisterLogger => container.Resolve<RegisterLogService>();
 
-        public PluginService PluginSrv => container.Resolve<PluginService>();
 
 
-        public MainWindowVM MainWindow => container.Resolve<MainWindowVM>();
-        public DeviceStatusVM DeviceStatus => container.Resolve<DeviceStatusVM>();
-        public DeviceConnectionVM DeviceConnection => container.Resolve<DeviceConnectionVM>();
-        public DeviceDebugVM DeviceDebug => container.Resolve<DeviceDebugVM>();
-        public DeviceLogVM DeviceLog => container.Resolve<DeviceLogVM>();
-        public DataMonitorVM DataMonitor => container.Resolve<DataMonitorVM>();
-        public DataPlotVM DataPlot => container.Resolve<DataPlotVM>();
-        public ScriptRunnerVM ScriptRunner => container.Resolve<ScriptRunnerVM>();
-        public RegisterEditorVM RegisterEditor => container.Resolve<RegisterEditorVM>();
-        public AboutAppVM AboutApp => container.Resolve<AboutAppVM>();
-        public AppLogVM AppLog => container.Resolve<AppLogVM>();
+        public MainWindowVM MainWindowVM => container.Resolve<MainWindowVM>();
+        public DeviceStatusVM DeviceStatusVM => container.Resolve<DeviceStatusVM>();
+        public DeviceConnectionVM DeviceConnectionVM => container.Resolve<DeviceConnectionVM>();
+        public DeviceDebugVM DeviceDebugVM => container.Resolve<DeviceDebugVM>();
+        public DeviceLogVM DeviceLogVM => container.Resolve<DeviceLogVM>();
+        public DataMonitorVM DataMonitorVM => container.Resolve<DataMonitorVM>();
+        public DataPlotVM DataPlotVM => container.Resolve<DataPlotVM>();
+        public ScriptRunnerVM ScriptRunnerVM => container.Resolve<ScriptRunnerVM>();
+        public RegisterEditorVM RegisterEditorVM => container.Resolve<RegisterEditorVM>();
+        public AboutAppVM AboutAppVM => container.Resolve<AboutAppVM>();
+        public AppLogVM AppLogVM => container.Resolve<AppLogVM>();
 
-        public DataProcVM DataProc => container.Resolve<DataProcVM>();
-        public UIDebugVM UIDebug => container.Resolve<UIDebugVM>();
+        public DataProcVM DataProcVM => container.Resolve<DataProcVM>();
+        public UIDebugVM UIDebugVM => container.Resolve<UIDebugVM>();
 
-        public PluginVM PluginUI => container.Resolve<PluginVM>();
-
+        public PluginVM PluginVM => container.Resolve<PluginVM>();
     }
 }

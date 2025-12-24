@@ -10,7 +10,8 @@
         xmlns:b="clr-namespace:MeasureApp.View.Behaviors"
         xmlns:hc="https://handyorg.github.io/handycontrol"
         xmlns:ad="https://github.com/Dirkster99/AvalonDock"
-        DataContext="{Binding Source={StaticResource Locator},Path=MainWindow}"
+        d:DataContext="{Binding Source={StaticResource Locator},Path=MainWindowVM}"
+        DataContext="{Binding Source={StaticResource Locator},Path=MainWindowVM}"
         mc:Ignorable="d"
         Title="{Binding AppName}" Height="750" Width="1150" WindowStartupLocation="CenterScreen">
     <i:Interaction.Triggers>

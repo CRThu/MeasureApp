@@ -10,7 +10,8 @@
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:hc="https://handyorg.github.io/handycontrol"
              xmlns:ScottPlot="clr-namespace:ScottPlot.WPF;assembly=ScottPlot.WPF"
-             DataContext="{Binding Source={StaticResource Locator},Path=AboutApp}"
+             d:DataContext="{Binding Source={StaticResource Locator},Path=AboutAppVM}"
+             DataContext="{Binding Source={StaticResource Locator},Path=AboutAppVM}"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="800">
     <UserControl.Resources>

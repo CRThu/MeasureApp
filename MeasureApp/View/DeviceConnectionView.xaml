@@ -9,7 +9,8 @@
       xmlns:v="clr-namespace:MeasureApp.View"
       xmlns:c="clr-namespace:MeasureApp.View.Converter"
       xmlns:hc="https://handyorg.github.io/handycontrol"
-      DataContext="{Binding Source={StaticResource Locator},Path=DeviceConnection}"
+      d:DataContext="{Binding Source={StaticResource Locator},Path=DeviceConnectionVM}"
+      DataContext="{Binding Source={StaticResource Locator},Path=DeviceConnectionVM}"
       mc:Ignorable="d">
     <UserControl.Resources>
         <DataTemplate x:Key="NullTemplate">

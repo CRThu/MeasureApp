@@ -50,7 +50,7 @@ namespace MeasureApp.ViewModel
         {
             try
             {
-                ConfigManager.AppConfig.PresetCommands = App.Locator.DeviceDebug.Presets;
+                ConfigManager.AppConfig.PresetCommands = App.Locator.DeviceDebugVM.Presets;
                 ConfigManager.Update();
             }
             catch (Exception ex)

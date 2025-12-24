@@ -10,8 +10,8 @@
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:hc="https://handyorg.github.io/handycontrol"
              xmlns:ikriv="clr-namespace:IKriv.Windows.Controls.Behaviors"
-             d:DataContext="{Binding Source={StaticResource Locator},Path=PluginUI}"
-             DataContext="{Binding Source={StaticResource Locator},Path=PluginUI}"
+             d:DataContext="{Binding Source={StaticResource Locator},Path=PluginVM}"
+             DataContext="{Binding Source={StaticResource Locator},Path=PluginVM}"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="800">
     <UserControl.Resources>
@@ -20,7 +20,7 @@
         <hc:SimpleStackPanel Orientation="Vertical">
             <Button Content="OpenPlugin" Command="{Binding OpenCommand}" HorizontalAlignment="Left"/>
         </hc:SimpleStackPanel>
-        <hc:TabControl ItemsSource="{Binding Source={StaticResource Locator},Path=PluginSrv.Plugins}" SelectedItem="{Binding SelectedPlugin}" ikriv:TabContent.IsCached="True">
+        <hc:TabControl ItemsSource="{Binding Source={StaticResource Locator},Path=PluginSvc.Plugins}" SelectedItem="{Binding SelectedPlugin}" ikriv:TabContent.IsCached="True">
             <hc:TabControl.ItemTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding Name}"/>

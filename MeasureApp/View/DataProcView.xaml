@@ -10,7 +10,8 @@
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:hc="https://handyorg.github.io/handycontrol"
              xmlns:ScottPlot="clr-namespace:ScottPlot.WPF;assembly=ScottPlot.WPF"
-             DataContext="{Binding Source={StaticResource Locator},Path=DataProc}"
+             d:DataContext="{Binding Source={StaticResource Locator},Path=DataProcVM}"
+             DataContext="{Binding Source={StaticResource Locator},Path=DataProcVM}"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="800">
     <UserControl.Resources>
@@ -31,9 +32,9 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Column="0" Text="INL.SRC.X" Margin="5,0,5,0" VerticalAlignment="Center"/>
-            <ComboBox Grid.Column="1" ItemsSource="{Binding Context.DataLogger.Keys}" Width="150" Margin="5,0,5,0"/>
+            <ComboBox Grid.Column="1" ItemsSource="{Binding Source={StaticResource Locator},Path=DataLogger.Keys}" Width="150" Margin="5,0,5,0"/>
             <TextBlock Grid.Column="2" Text="INL.SRC.Y" Margin="5,0,5,0" VerticalAlignment="Center"/>
-            <ComboBox Grid.Column="3" ItemsSource="{Binding Context.DataLogger.Keys}" Width="150" Margin="5,0,5,0"/>
+            <ComboBox Grid.Column="3" ItemsSource="{Binding Source={StaticResource Locator},Path=DataLogger.Keys}" Width="150" Margin="5,0,5,0"/>
             <TextBlock Grid.Column="4" Text="INL.DST.Y" Margin="5,0,5,0" VerticalAlignment="Center"/>
             <TextBox Grid.Column="5" Width="150" Margin="5,0,5,0"/>
             <Button Grid.Column="6" Content="运算" Width="60" Margin="5,0,5,0"/>

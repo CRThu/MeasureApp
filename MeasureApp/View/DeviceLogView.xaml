@@ -11,7 +11,8 @@
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:hc="https://handyorg.github.io/handycontrol"
              xmlns:ScottPlot="clr-namespace:ScottPlot.WPF;assembly=ScottPlot.WPF"
-             DataContext="{Binding Source={StaticResource Locator},Path=DeviceLog}"
+             d:DataContext="{Binding Source={StaticResource Locator},Path=DeviceLogVM}"
+             DataContext="{Binding Source={StaticResource Locator},Path=DeviceLogVM}"
              mc:Ignorable="d" d:DesignHeight="400" d:DesignWidth="400">
     <UserControl.Resources>
     </UserControl.Resources>
@@ -37,7 +38,7 @@
                     <DataGridTextColumn Header="消息" Binding="{Binding Message}" Width="*"/>
                 </DataGrid.Columns>
             </DataGrid>-->
-        <ListView Grid.Row="1" ItemsSource="{Binding Context.CommandLogger.Logs}" Style="{StaticResource ListView.Small}">
+        <ListView Grid.Row="1" ItemsSource="{Binding Source={StaticResource Locator},Path=CommandLogger.Logs}" Style="{StaticResource ListView.Small}">
             <!--<ListView.ItemContainerStyle>
                     <Style TargetType="{x:Type ListViewItem}">
                         <Setter Property="Foreground" Value="{Binding Color}"/>

@@ -10,8 +10,8 @@
       xmlns:c="clr-namespace:MeasureApp.View.Converter"
       xmlns:b="clr-namespace:MeasureApp.View.Behaviors"
       xmlns:hc="https://handyorg.github.io/handycontrol"
-      DataContext="{Binding Source={StaticResource Locator},Path=DeviceDebug}"
       d:DataContext="{d:DesignInstance vm:DesignDeviceDebugVM, IsDesignTimeCreatable=True}"
+      DataContext="{Binding Source={StaticResource Locator},Path=DeviceDebugVM}"
       mc:Ignorable="d">
     <UserControl.Resources>
     </UserControl.Resources>
@@ -24,7 +24,7 @@
         </Grid.RowDefinitions>
         <hc:SimpleStackPanel Grid.Row="0" Orientation="Horizontal" Margin="5,5,5,5">
             <TextBlock Text="设备" Margin="10,0" VerticalAlignment="Center"/>
-            <ComboBox ItemsSource="{Binding Context.Devices.Info}" SelectedItem="{Binding SelectedDevice}" DisplayMemberPath="Name" Margin="10,0" MinWidth="200"/>
+            <ComboBox ItemsSource="{Binding Source={StaticResource Locator},Path=DeviceManager.Info}" SelectedItem="{Binding SelectedDevice}" DisplayMemberPath="Name" Margin="10,0" MinWidth="200"/>
             <Button Content="手动读取" IsEnabled="False" Margin="10,0"/>
         </hc:SimpleStackPanel>
         <hc:SimpleStackPanel Grid.Row="1" Orientation="Horizontal" Margin="5,5,5,5">
