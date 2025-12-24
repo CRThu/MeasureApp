@@ -91,7 +91,7 @@
         <!-- 设备与协议选择 -->
         <hc:SimpleStackPanel Grid.Row="0" Margin="0,5" Orientation="Vertical">
             <TextBlock Text="设备" VerticalAlignment="Center"/>
-            <ComboBox ItemsSource="{Binding AvailableDevices}" 
+            <ComboBox ItemsSource="{Binding Source={StaticResource Locator},Path=DeviceManager.AvailableDevices}" 
                           SelectedItem="{Binding SelectedDevice}"
                           MinWidth="100">
                 <ComboBox.ItemTemplate>

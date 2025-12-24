@@ -53,6 +53,12 @@ namespace MeasureApp.Services
         [ObservableProperty]
         private ObservableCollection<ConnectionInfo> connections = new ObservableCollection<ConnectionInfo>();
 
+        [ObservableProperty]
+        private DeviceInfo[] availableDevices = Array.Empty<DeviceInfo>();
+
+        public event EventHandler AvailableDevicesChanged;
+        public event EventHandler ConnectionDevicesChanged;
+
         private readonly System.Threading.Timer _backgroundTimer;
         private readonly object _updateLock = new object();
         private bool _disposed;
@@ -66,13 +72,13 @@ namespace MeasureApp.Services
             _appLogger = appLogger;
             _packetLoggers = packetLoggers;
             _backgroundTimer = new System.Threading.Timer(
-                callback: _ => UpdateConnectionStats(),
+                callback: _ => UpdateStats(),
                 state: null,
                 dueTime: 100,
                 period: 100);
         }
 
-        private void UpdateConnectionStats()
+        private void UpdateStats()
         {
             if (_disposed)
                 return;
@@ -143,6 +149,7 @@ namespace MeasureApp.Services
             if (_sessions.TryAdd(deviceInfo.Name, session))
             {
                 Application.Current.Dispatcher.Invoke(() => Connections.Add(connectionInfo));
+                ConnectionDevicesChanged?.Invoke(this, EventArgs.Empty);
             }
             else
             {
@@ -172,26 +179,29 @@ namespace MeasureApp.Services
                 if (itemToRemove != null)
                 {
                     Application.Current.Dispatcher.Invoke(() => Connections.Remove(itemToRemove));
+                    ConnectionDevicesChanged?.Invoke(this, EventArgs.Empty);
                 }
             }
             else
             {
-                 // Not found or already removed
+                // Not found or already removed
             }
         }
 
 
 
-        public DeviceInfo[] DiscoverDevices()
+        public void Discover()
         {
             var factory = new DeviceSearcherFactory();
             var service = new DeviceDiscoveryService(factory);
             var allDevices = service.DiscoverAll();
 
-            return allDevices
+            AvailableDevices = allDevices
                 .OrderBy(d => d.Interface)
                 .ThenBy(d => d.Name)
                 .ToArray();
+
+            AvailableDevicesChanged?.Invoke(this, EventArgs.Empty);
         }
 
         public void Dispose()

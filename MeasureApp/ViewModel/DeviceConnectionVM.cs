@@ -30,12 +30,9 @@ namespace MeasureApp.ViewModel
         public IRuntimeLogger AppLogger => _appLogger;
 
         [ObservableProperty]
-        private DeviceInfo[] availableDevices = Array.Empty<DeviceInfo>();
-
-        [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(IsSelectedDeviceConnected))]
         [NotifyPropertyChangedFor(nameof(CurrentConnectionType))]
-        private DeviceInfo selectedDevice = default;
+        private DeviceInfo? selectedDevice = default;
 
         public bool IsSelectedDeviceConnected =>
             DeviceManager.Connections.Any(dev => dev.Name == SelectedDevice.Name);
@@ -87,7 +84,16 @@ namespace MeasureApp.ViewModel
             _configManager = configManager;
             _appLogger = appLogger;
 
-            DeviceManager.Connections.CollectionChanged += (s, e) => OnPropertyChanged(nameof(IsSelectedDeviceConnected));
+            DeviceManager.ConnectionDevicesChanged += (s, e) =>
+            {
+                OnPropertyChanged(propertyName: nameof(IsSelectedDeviceConnected));
+            };
+
+            DeviceManager.AvailableDevicesChanged += (s, e) =>
+            {
+                if (!DeviceManager.AvailableDevices.Contains(SelectedDevice))
+                    SelectedDevice = DeviceManager.AvailableDevices.FirstOrDefault();
+            };
         }
 
         [RelayCommand]
@@ -95,10 +101,7 @@ namespace MeasureApp.ViewModel
         {
             try
             {
-                AvailableDevices = DeviceManager.DiscoverDevices();
-
-                if (!AvailableDevices.Contains(SelectedDevice))
-                    SelectedDevice = AvailableDevices.FirstOrDefault();
+                DeviceManager.Discover();
             }
             catch (Exception ex)
             {
