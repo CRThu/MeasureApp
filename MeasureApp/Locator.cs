@@ -44,6 +44,8 @@ namespace MeasureApp
             container.RegisterMany<CommandLogService>(Reuse.Singleton);
             container.RegisterMany<DataLogService>(Reuse.Singleton);
             container.RegisterMany<RegisterLogService>(Reuse.Singleton);
+            
+            container.Register<AppDiagnosticsService>(Reuse.Singleton);
 
         }
 
@@ -55,6 +57,7 @@ namespace MeasureApp
         public CommandLogService CommandLogger => container.Resolve<CommandLogService>();
         public DataLogService DataLogger => container.Resolve<DataLogService>();
         public RegisterLogService RegisterLogger => container.Resolve<RegisterLogService>();
+        public AppDiagnosticsService AppDiagSvc => container.Resolve<AppDiagnosticsService>();
 
 
 
