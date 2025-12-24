@@ -61,8 +61,12 @@ namespace MeasureApp.ViewModel
 
     public partial class RegisterEditorVM : BaseVM
     {
-        private readonly AppContextManager _context;
-        public AppContextManager Context => _context;
+        private readonly DeviceManager _deviceManager;
+        private readonly RegisterLogService _regLogger;
+        private readonly ConfigManager _configManager;
+        public DeviceManager DeviceManager => _deviceManager;
+        public RegisterLogService RegLogger => _regLogger;
+        public ConfigManager ConfigManager => _configManager;
 
         [ObservableProperty]
         private ConnectionInfo selectedDevice;
@@ -73,27 +77,29 @@ namespace MeasureApp.ViewModel
         private readonly SemaphoreSlim _commLock = new SemaphoreSlim(1, 1);
         private readonly int timeout = 5000;
 
-        public RegisterEditorVM(AppContextManager context)
+        public RegisterEditorVM(DeviceManager deviceManager, RegisterLogService regLogger, ConfigManager configManager)
         {
             Title = "寄存器编辑器";
             ContentId = "RegisterEditor";
-            _context = context;
+            _deviceManager = deviceManager;
+            _regLogger = regLogger;
+            _configManager = configManager;
 
-            timeout = _context.Configs.AppConfig.RegisterRequestTimeout;
+            timeout = ConfigManager.AppConfig.RegisterRequestTimeout;
 
-            if (_context.Configs.AppConfig.RegisterMapFilePath != null)
+            if (ConfigManager.AppConfig.RegisterMapFilePath != null)
             {
-                if (!File.Exists(_context.Configs.AppConfig.RegisterMapFilePath))
-                    _context.Configs.AppConfig.RegisterMapFilePath = null;
+                if (!File.Exists(ConfigManager.AppConfig.RegisterMapFilePath))
+                    ConfigManager.AppConfig.RegisterMapFilePath = null;
                 else
                 {
                     try
                     {
-                        ImportFromFile(_context.Configs.AppConfig.RegisterMapFilePath);
+                        ImportFromFile(ConfigManager.AppConfig.RegisterMapFilePath);
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show($"寄存器映射文件({_context.Configs.AppConfig.RegisterMapFilePath})导入失败\n{ex}");
+                        MessageBox.Show($"寄存器映射文件({ConfigManager.AppConfig.RegisterMapFilePath})导入失败\n{ex}");
                     }
                 }
             }
@@ -133,7 +139,7 @@ namespace MeasureApp.ViewModel
                     return;
 
                 ImportFromFile(ofd.FileName);
-                _context.Configs.AppConfig.RegisterMapFilePath = ofd.FileName;
+                ConfigManager.AppConfig.RegisterMapFilePath = ofd.FileName;
             }
             catch (Exception ex)
             {
@@ -194,12 +200,12 @@ namespace MeasureApp.ViewModel
                 }
             }
 
-            Context.RegisterLogger.OnRegisterUpdate += handler;
+            RegLogger.OnRegisterUpdate += handler;
 
             try
             {
                 // send request
-                await Context.Devices[SelectedDevice.Name].SendRegister(
+                await DeviceManager[SelectedDevice.Name].SendRegister(
                     RegisterOperation.ReadRequest,
                     reg.Parent.Index,
                     reg.Address);
@@ -217,7 +223,7 @@ namespace MeasureApp.ViewModel
             }
             finally
             {
-                Context.RegisterLogger.OnRegisterUpdate -= handler;
+                RegLogger.OnRegisterUpdate -= handler;
             }
         }
 
@@ -238,12 +244,12 @@ namespace MeasureApp.ViewModel
                 }
             }
 
-            Context.RegisterLogger.OnRegisterUpdate += handler;
+            RegLogger.OnRegisterUpdate += handler;
 
             try
             {
                 // send request
-                await Context.Devices[SelectedDevice.Name].SendRegister(
+                await DeviceManager[SelectedDevice.Name].SendRegister(
                 RegisterOperation.BitsReadRequest,
                 bitsField.Parent.Parent.Index,
                 bitsField.Parent.Address,
@@ -263,7 +269,7 @@ namespace MeasureApp.ViewModel
             }
             finally
             {
-                Context.RegisterLogger.OnRegisterUpdate -= handler;
+                RegLogger.OnRegisterUpdate -= handler;
             }
         }
 
@@ -277,7 +283,7 @@ namespace MeasureApp.ViewModel
             {
                 if (parameter is Register reg)
                 {
-                    await Context.Devices[SelectedDevice.Name].SendRegister(
+                    await DeviceManager[SelectedDevice.Name].SendRegister(
                         RegisterOperation.Write,
                         reg.Parent.Index,
                         reg.Address,
@@ -285,7 +291,7 @@ namespace MeasureApp.ViewModel
                 }
                 else if (parameter is BitsField bitsField)
                 {
-                    await Context.Devices[SelectedDevice.Name].SendRegister(
+                    await DeviceManager[SelectedDevice.Name].SendRegister(
                         RegisterOperation.BitsWrite,
                         bitsField.Parent.Parent.Index,
                         bitsField.Parent.Address,

@@ -18,14 +18,10 @@ namespace MeasureApp.ViewModel
 {
     public partial class AppLogVM : BaseVM
     {
-        private readonly AppContextManager _context;
-        public AppContextManager Context => _context;
-
-        public AppLogVM(AppContextManager context)
+        public AppLogVM()
         {
             Title = "应用程序日志";
             ContentId = "AppLog";
-            _context = context;
         }
     }
 }

@@ -20,8 +20,8 @@ namespace MeasureApp.ViewModel
 {
     public partial class DataPlotVM : BaseVM
     {
-        private readonly AppContextManager _context;
-        public AppContextManager Context => _context;
+        private readonly DataLogService _dataLogger;
+        public DataLogService DataLogger => _dataLogger;
 
         [ObservableProperty]
         private string selectedDataXKey;
@@ -45,25 +45,25 @@ namespace MeasureApp.ViewModel
         int testDataCnt2 = 0;
 
 
-        public DataPlotVM(AppContextManager context)
+        public DataPlotVM(DataLogService dataLogger)
         {
             Title = "数据可视化";
             ContentId = "DataPlot";
-            _context = context;
+            _dataLogger = dataLogger;
         }
 
         partial void OnIsCustomDataXUsedChanged(bool value)
         {
             if (value)
             {
-                if (Context.DataLogger.TryGetValue(SelectedDataXKey, out var xDataLog))
+                if (DataLogger.TryGetValue(SelectedDataXKey, out var xDataLog))
                 {
                     xDataLog.PropertyChanged += (_, _) => PlotDataUpdate();
                 }
             }
             else
             {
-                if (Context.DataLogger.TryGetValue(SelectedDataXKey, out var xDataLog))
+                if (DataLogger.TryGetValue(SelectedDataXKey, out var xDataLog))
                 {
                     xDataLog.PropertyChanged -= (_, _) => PlotDataUpdate();
                 }
@@ -72,13 +72,13 @@ namespace MeasureApp.ViewModel
 
         partial void OnSelectedDataXKeyChanged(string oldValue, string newValue)
         {
-            if (Context.DataLogger.TryGetValue(oldValue, out var oldDataLog))
+            if (DataLogger.TryGetValue(oldValue, out var oldDataLog))
             {
                 oldDataLog.PropertyChanged -= (_, _) => PlotDataUpdate();
             }
             if (IsCustomDataXUsed)
             {
-                if (Context.DataLogger.TryGetValue(newValue, out var newDataLog))
+                if (DataLogger.TryGetValue(newValue, out var newDataLog))
                 {
                     newDataLog.PropertyChanged += (_, _) => PlotDataUpdate();
                 }
@@ -88,11 +88,11 @@ namespace MeasureApp.ViewModel
 
         partial void OnSelectedDataYKeyChanged(string oldValue, string newValue)
         {
-            if (Context.DataLogger.TryGetValue(oldValue, out var oldDataLog))
+            if (DataLogger.TryGetValue(oldValue, out var oldDataLog))
             {
                 oldDataLog.PropertyChanged -= (_, _) => PlotDataUpdate();
             }
-            if (Context.DataLogger.TryGetValue(newValue, out var newDataLog))
+            if (DataLogger.TryGetValue(newValue, out var newDataLog))
             {
                 newDataLog.PropertyChanged += (_, _) => PlotDataUpdate();
             }
@@ -106,7 +106,7 @@ namespace MeasureApp.ViewModel
                 bool dataWasUpdated = false;
                 if (_plotYData != null)
                 {
-                    if (!Context.DataLogger.TryGetValue(SelectedDataYKey, out DataLogList dataYLog))
+                    if (!DataLogger.TryGetValue(SelectedDataYKey, out DataLogList dataYLog))
                         return;
 
                     var dataYSnapshot = dataYLog.GetSnapshot();
@@ -123,7 +123,7 @@ namespace MeasureApp.ViewModel
                 }
                 if (IsCustomDataXUsed && _plotXData != null)
                 {
-                    if (!Context.DataLogger.TryGetValue(SelectedDataXKey, out DataLogList dataXLog))
+                    if (!DataLogger.TryGetValue(SelectedDataXKey, out DataLogList dataXLog))
                         return;
 
                     var dataXSnapshot = dataXLog.GetSnapshot();
@@ -159,7 +159,7 @@ namespace MeasureApp.ViewModel
                     return;
 
                 Plot.Clear();
-                if (!Context.DataLogger.TryGetValue(SelectedDataYKey, out DataLogList dataYLog))
+                if (!DataLogger.TryGetValue(SelectedDataYKey, out DataLogList dataYLog))
                     return;
 
                 var dataYSnapshot = dataYLog.GetSnapshot();
@@ -169,7 +169,7 @@ namespace MeasureApp.ViewModel
 
                 IHasLegendText sig;
                 if (IsCustomDataXUsed
-                    && Context.DataLogger.TryGetValue(SelectedDataXKey, out DataLogList dataXLog))
+                    && DataLogger.TryGetValue(SelectedDataXKey, out DataLogList dataXLog))
                 {
                     var dataXSnapshot = dataXLog.GetSnapshot();
                     _plotXData = dataXSnapshot
@@ -228,15 +228,15 @@ namespace MeasureApp.ViewModel
             {
                 Random random = new Random();
 
-                Context.DataLogger.Clear();
-                Context.DataLogger.AddRange("X1", new double[] { 1, 4, 9, 16, 25, 36, 49, 64, 81, 100 });
-                Context.DataLogger.AddRange("X2", new double[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
-                Context.DataLogger.AddRange("Y1", new double[] { 1, 0, 1, 0, 1, 0, 1, 0, 1, 0 });
-                Context.DataLogger.AddRange("Y2", new double[] { 1, 4, 9, 16, 25, 36, 49, 64, 81, 100 });
-                Context.DataLogger.AddRange("Y3", Enumerable.Range(1, 10).Select((_) => random.NextDouble()));
-                Context.DataLogger.AddRange("XL1", Enumerable.Range(1, 100000));
-                Context.DataLogger.AddRange("YL1", Enumerable.Range(1, 100000));
-                Context.DataLogger.AddRange("YL2", Enumerable.Range(1, 100000).Select((_) => random.NextDouble()));
+                DataLogger.Clear();
+                DataLogger.AddRange("X1", new double[] { 1, 4, 9, 16, 25, 36, 49, 64, 81, 100 });
+                DataLogger.AddRange("X2", new double[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
+                DataLogger.AddRange("Y1", new double[] { 1, 0, 1, 0, 1, 0, 1, 0, 1, 0 });
+                DataLogger.AddRange("Y2", new double[] { 1, 4, 9, 16, 25, 36, 49, 64, 81, 100 });
+                DataLogger.AddRange("Y3", Enumerable.Range(1, 10).Select((_) => random.NextDouble()));
+                DataLogger.AddRange("XL1", Enumerable.Range(1, 100000));
+                DataLogger.AddRange("YL1", Enumerable.Range(1, 100000));
+                DataLogger.AddRange("YL2", Enumerable.Range(1, 100000).Select((_) => random.NextDouble()));
                 testDataCnt1 = 10;
                 testDataCnt2 = 100000;
             }
@@ -255,14 +255,14 @@ namespace MeasureApp.ViewModel
                 testDataCnt1++;
                 testDataCnt2++;
                 Random random = new Random();
-                Context.DataLogger.Add("X1", testDataCnt1 * testDataCnt1);
-                Context.DataLogger.Add("X2", testDataCnt1);
-                Context.DataLogger.Add("Y1", testDataCnt1 % 2 == 0 ? 1 : 0);
-                Context.DataLogger.Add("Y2", testDataCnt1 * testDataCnt1);
-                Context.DataLogger.Add("Y3", random.NextDouble());
-                Context.DataLogger.Add("XL1", testDataCnt2);
-                Context.DataLogger.Add("YL1", testDataCnt2);
-                Context.DataLogger.Add("YL2", random.NextDouble());
+                DataLogger.Add("X1", testDataCnt1 * testDataCnt1);
+                DataLogger.Add("X2", testDataCnt1);
+                DataLogger.Add("Y1", testDataCnt1 % 2 == 0 ? 1 : 0);
+                DataLogger.Add("Y2", testDataCnt1 * testDataCnt1);
+                DataLogger.Add("Y3", random.NextDouble());
+                DataLogger.Add("XL1", testDataCnt2);
+                DataLogger.Add("YL1", testDataCnt2);
+                DataLogger.Add("YL2", random.NextDouble());
 
             }
             catch (Exception ex)

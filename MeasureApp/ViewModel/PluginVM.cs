@@ -21,17 +21,19 @@ namespace MeasureApp.ViewModel
 {
     public partial class PluginVM : BaseVM
     {
-        private readonly PluginService _pluginService;
+        private readonly PluginService _pluginSvc;
+        public PluginService PluginSvc => _pluginSvc;
+
 
         [ObservableProperty]
         public IMeasureAppPlugin selectedPlugin;
 
-        public PluginVM()
+        public PluginVM(PluginService pluginSvc)
         {
             Title = "Plugin";
             ContentId = "PluginVM";
 
-            _pluginService = App.Locator.PluginSrv;
+            _pluginSvc = pluginSvc;
         }
 
         [RelayCommand]
@@ -39,11 +41,11 @@ namespace MeasureApp.ViewModel
         {
             try
             {
-                _pluginService.LoadPlugins(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Plugins"));
+                PluginSvc.LoadPlugins(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Plugins"));
 
                 if (SelectedPlugin == null)
                 {
-                    SelectedPlugin = _pluginService.Plugins.FirstOrDefault();
+                    SelectedPlugin = PluginSvc.Plugins.FirstOrDefault();
                 }
             }
             catch (Exception ex)

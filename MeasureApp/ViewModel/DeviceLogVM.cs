@@ -20,17 +20,17 @@ namespace MeasureApp.ViewModel
 {
     public partial class DeviceLogVM : BaseVM
     {
-        private readonly AppContextManager _context;
-        public AppContextManager Context => _context;
+        private readonly CommandLogService _commandLogger;
+        public CommandLogService CommandLogger => _commandLogger;
 
         [ObservableProperty]
         private bool isLogAutoScroll = true;
 
-        public DeviceLogVM(AppContextManager context)
+        public DeviceLogVM(CommandLogService commandLogger)
         {
             Title = "通信日志";
             ContentId = "DeviceLog";
-            _context = context;
+            _commandLogger = commandLogger;
         }
 
         [RelayCommand]
@@ -38,7 +38,7 @@ namespace MeasureApp.ViewModel
         {
             try
             {
-                Context.CommandLogger.Clear();
+                CommandLogger.Clear();
             }
             catch (Exception ex)
             {
@@ -61,7 +61,7 @@ namespace MeasureApp.ViewModel
 
                 if (sfd.ShowDialog() == true)
                 {
-                    var logs = Context.CommandLogger.Logs.ToList();
+                    var logs = CommandLogger.Logs.ToList();
                     using (StreamWriter sw = new StreamWriter(sfd.FileName))
                     {
                         foreach (var log in logs)

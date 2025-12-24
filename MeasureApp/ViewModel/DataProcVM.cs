@@ -18,14 +18,14 @@ namespace MeasureApp.ViewModel
 {
     public partial class DataProcVM : BaseVM
     {
-        private readonly AppContextManager _context;
-        public AppContextManager Context => _context;
+        private readonly DataLogService _dataLogger;
+        public DataLogService DataLogger => _dataLogger;
 
-        public DataProcVM(AppContextManager context)
+        public DataProcVM(DataLogService dataLogger)
         {
             Title = "数据处理";
             ContentId = "DataProc";
-            _context = context;
+            _dataLogger = dataLogger;
         }
     }
 }

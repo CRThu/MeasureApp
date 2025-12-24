@@ -11,9 +11,10 @@
 		<SatelliteResourceLanguages>zh-Hans</SatelliteResourceLanguages>
 		<ApplicationIcon>Icon\AppIcon.ico</ApplicationIcon>
 		<PlatformTarget>AnyCPU</PlatformTarget>
-		<AssemblyVersion>2.0.639.0</AssemblyVersion>
-		<FileVersion>2.0.639.0</FileVersion>
+		<AssemblyVersion>2.0.642.0</AssemblyVersion>
+		<FileVersion>2.0.642.0</FileVersion>
 		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

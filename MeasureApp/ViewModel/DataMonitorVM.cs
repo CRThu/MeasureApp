@@ -20,8 +20,8 @@ namespace MeasureApp.ViewModel
 {
     public partial class DataMonitorVM : BaseVM
     {
-        private readonly AppContextManager _context;
-        public AppContextManager Context => _context;
+        private readonly DataLogService _dataLogger;
+        public DataLogService DataLogger => _dataLogger;
 
         [ObservableProperty]
         private string selectedKey;
@@ -39,11 +39,11 @@ namespace MeasureApp.ViewModel
         private int _lastProcessedCount = 0;
         private readonly object _dataLock = new object();
 
-        public DataMonitorVM(AppContextManager context)
+        public DataMonitorVM(DataLogService dataLogger)
         {
             Title = "数据监视器";
             ContentId = "DataMonitor";
-            _context = context;
+            _dataLogger = dataLogger;
         }
 
         partial void OnPlotChanged(Plot value)
@@ -78,9 +78,9 @@ namespace MeasureApp.ViewModel
 
         private DataLogList GetSelectedData()
         {
-            if (SelectedKey != null && Context.DataLogger.Contains(SelectedKey))
+            if (SelectedKey != null && DataLogger.Contains(SelectedKey))
             {
-                return Context.DataLogger[SelectedKey];
+                return DataLogger[SelectedKey];
             }
             return null;
         }
@@ -185,9 +185,9 @@ namespace MeasureApp.ViewModel
         {
             try
             {
-                Context.DataLogger.GetOrAddKey(AddKeyText);
+                DataLogger.GetOrAddKey(AddKeyText);
                 if (SelectedKey == null)
-                    SelectedKey = Context.DataLogger.Keys.FirstOrDefault();
+                    SelectedKey = DataLogger.Keys.FirstOrDefault();
             }
             catch (Exception ex)
             {
@@ -200,11 +200,11 @@ namespace MeasureApp.ViewModel
         {
             try
             {
-                if (SelectedKey != null && Context.DataLogger.Contains(SelectedKey))
+                if (SelectedKey != null && DataLogger.Contains(SelectedKey))
                 {
-                    Context.DataLogger.RemoveKey(SelectedKey);
+                    DataLogger.RemoveKey(SelectedKey);
                 }
-                SelectedKey = Context.DataLogger.Keys.FirstOrDefault();
+                SelectedKey = DataLogger.Keys.FirstOrDefault();
             }
             catch (Exception ex)
             {
@@ -217,7 +217,7 @@ namespace MeasureApp.ViewModel
         {
             try
             {
-                Context.DataLogger.Clear();
+                DataLogger.Clear();
                 SelectedKey = null;
             }
             catch (Exception ex)
@@ -231,9 +231,9 @@ namespace MeasureApp.ViewModel
         {
             try
             {
-                if (SelectedKey != null && Context.DataLogger.Contains(SelectedKey))
+                if (SelectedKey != null && DataLogger.Contains(SelectedKey))
                 {
-                    Context.DataLogger.CopyToClipboard(SelectedKey);
+                    DataLogger.CopyToClipboard(SelectedKey);
                 }
             }
             catch (Exception ex)
@@ -256,7 +256,7 @@ namespace MeasureApp.ViewModel
                         {
                             if (SelectedKey != null)
                             {
-                                Context.DataLogger.Add(SelectedKey, random.NextDouble());
+                                DataLogger.Add(SelectedKey, random.NextDouble());
                             }
                         });
                         break;
@@ -270,7 +270,7 @@ namespace MeasureApp.ViewModel
                                     Int64[] ints = new Int64[10000];
                                     for (int i = 0; i < ints.Length; i++)
                                         ints[i] = random.NextInt64();
-                                    Context.DataLogger.AddRange(SelectedKey, ints);
+                                    DataLogger.AddRange(SelectedKey, ints);
                                 }
                             });
                         }
@@ -278,7 +278,7 @@ namespace MeasureApp.ViewModel
                     case "K+1":
                         Task.Run(() =>
                         {
-                            Context.DataLogger.GetOrAddKey(random.NextInt64().ToString());
+                            DataLogger.GetOrAddKey(random.NextInt64().ToString());
                         });
                         break;
                     case "K+1K":
@@ -288,7 +288,7 @@ namespace MeasureApp.ViewModel
                             {
                                 for (int i = 0; i < 100; i++)
                                 {
-                                    Context.DataLogger.GetOrAddKey(random.NextInt64().ToString());
+                                    DataLogger.GetOrAddKey(random.NextInt64().ToString());
                                 }
                             });
                         }

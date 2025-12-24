@@ -19,18 +19,17 @@ namespace MeasureApp.ViewModel
 {
     public partial class MainWindowVM : BaseVM
     {
-        private readonly AppContextManager _context;
-
-        public AppContextManager Context => _context;
+        private readonly ConfigManager _configManager;
+        public ConfigManager ConfigManager => _configManager;
 
         public string AppName => $"MeasureApp {Assembly.GetEntryAssembly().GetName().Version}";
 
         [ObservableProperty]
         private string statusBarText = "Text from MainWindowVM";
 
-        public MainWindowVM(AppContextManager context)
+        public MainWindowVM(ConfigManager configManager)
         {
-            _context = context;
+            _configManager = configManager;
         }
 
         [RelayCommand]
@@ -51,8 +50,8 @@ namespace MeasureApp.ViewModel
         {
             try
             {
-                _context.Configs.AppConfig.PresetCommands = App.Locator.DeviceDebug.Presets;
-                _context.Configs.Update();
+                ConfigManager.AppConfig.PresetCommands = App.Locator.DeviceDebug.Presets;
+                ConfigManager.Update();
             }
             catch (Exception ex)
             {
@@ -65,7 +64,6 @@ namespace MeasureApp.ViewModel
         {
             try
             {
-                _context?.Dispose();
                 //MessageBox.Show("MainWindowClosed");
             }
             catch (Exception ex)

@@ -21,9 +21,6 @@ namespace MeasureApp.ViewModel
 {
     public partial class AboutAppVM : BaseVM
     {
-        private readonly AppContextManager _context;
-        public AppContextManager Context => _context;
-
         [ObservableProperty]
         private string appVersion = GetMeasureAppVersion();
 
@@ -39,11 +36,10 @@ namespace MeasureApp.ViewModel
         [ObservableProperty]
         private string dotnetVersion = GetDotnetVersion();
 
-        public AboutAppVM(AppContextManager context)
+        public AboutAppVM()
         {
             Title = "关于";
             ContentId = "AboutApp";
-            _context = context;
         }
 
         public static string GetMeasureAppVersion()

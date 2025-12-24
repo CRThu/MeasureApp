@@ -26,8 +26,14 @@ namespace MeasureApp.ViewModel
 {
     public partial class DeviceConnectionVM : BaseVM
     {
-        private readonly AppContextManager _context;
-        public AppContextManager Context => _context;
+        private readonly DeviceManager _deviceManager;
+        private readonly ConfigManager _configManager;
+        private readonly IRuntimeLogger _appLogger;
+        private readonly IEnumerable<IPacketLogger> _packetLoggers;
+        public DeviceManager DeviceManager => _deviceManager;
+        public ConfigManager ConfigManager => _configManager;
+        public IRuntimeLogger AppLogger => _appLogger;
+        public IEnumerable<IPacketLogger> PacketLoggers => _packetLoggers;
 
         [ObservableProperty]
         private DeviceInfo[] availableDevices = Array.Empty<DeviceInfo>();
@@ -38,7 +44,7 @@ namespace MeasureApp.ViewModel
         private DeviceInfo selectedDevice = default;
 
         public bool IsSelectedDeviceConnected =>
-            _context.Devices.Info.Any(dev => dev.Name == SelectedDevice.Name);
+            DeviceManager.Info.Any(dev => dev.Name == SelectedDevice.Name);
 
         [ObservableProperty]
         private ProtocolType[] availableProtocols = Enum.GetValues<ProtocolType>();
@@ -79,12 +85,16 @@ namespace MeasureApp.ViewModel
         [ObservableProperty]
         private SerialStopBits selectedSerialPortStopBit = SerialStopBits.One;
 
-        public DeviceConnectionVM(AppContextManager context)
+        public DeviceConnectionVM(DeviceManager deviceManager, ConfigManager configManager, IRuntimeLogger appLogger, IEnumerable<IPacketLogger> packetLoggers)
         {
             Title = "设备连接";
             ContentId = "DeviceConnection";
-            _context = context;
-            _context.Devices.Info.CollectionChanged += (s, e) => OnPropertyChanged(nameof(IsSelectedDeviceConnected));
+            _deviceManager = deviceManager;
+            _configManager = configManager;
+            _appLogger = appLogger;
+            _packetLoggers = packetLoggers;
+
+            DeviceManager.Info.CollectionChanged += (s, e) => OnPropertyChanged(nameof(IsSelectedDeviceConnected));
         }
 
         [RelayCommand]
@@ -107,7 +117,7 @@ namespace MeasureApp.ViewModel
             catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
-                _context.AppLogger.Log(ex.Message, LogLevel.Error);
+                AppLogger.HandleRuntime(ex.Message, LogLevel.Error);
             }
         }
 
@@ -156,7 +166,7 @@ namespace MeasureApp.ViewModel
             catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
-                _context.AppLogger.Log(ex.Message, LogLevel.Error);
+                AppLogger.HandleRuntime(ex.Message, LogLevel.Error);
             }
         }
 
@@ -195,7 +205,7 @@ namespace MeasureApp.ViewModel
                     dev = DeviceFactory.Create(InterfaceType.Ftdi, config);
                     break;
                 default:
-                    _context.AppLogger.Log($"Unsupported device type: {CurrentConnectionType}", LogLevel.Error);
+                    AppLogger.HandleRuntime($"Unsupported device type: {CurrentConnectionType}", LogLevel.Error);
                     return;
                     //throw new NotSupportedException($"Unsupported device type: {CurrentConnectionType}");
             }
@@ -206,7 +216,7 @@ namespace MeasureApp.ViewModel
             switch (SelectedProtocol)
             {
                 case ProtocolType.CarrotAscii:
-                    pcfg = _context.Configs.CarrotLinkConfig.CarrotAsciiProtocolConfiguration;
+                    pcfg = ConfigManager.CarrotLinkConfig.CarrotAsciiProtocolConfiguration;
                     break;
             }
 
@@ -215,14 +225,12 @@ namespace MeasureApp.ViewModel
             var session = DeviceSession.Create()
                 .WithDevice(dev)
                 .WithProtocol(protocol)
-                .WithLogger(Context.CommandLogger)
-                .WithLogger(Context.DataLogger)
-                .WithLogger(Context.RegisterLogger)
-                .WithRuntimeLogger(Context.AppLogger)
+                .WithLoggers(PacketLoggers)
+                .WithRuntimeLogger(AppLogger)
                 .WithPolling(IsAutoPollingEnabled)
                 .Build();
 
-            _context.Devices.AddService(
+            DeviceManager.AddService(
                 SelectedDevice.Driver,
                 SelectedDevice.Interface,
                 SelectedDevice.Name,
@@ -234,9 +242,9 @@ namespace MeasureApp.ViewModel
         private void DisonnectDevice()
         {
             string key = SelectedDevice.Name;
-            _context.Devices[key].Device.Disconnect();
-            _context.Devices[key].Device.Dispose();
-            _context.Devices.RemoveService(key);
+            DeviceManager[key].Device.Disconnect();
+            DeviceManager[key].Device.Dispose();
+            DeviceManager.RemoveService(key);
         }
     }
 }

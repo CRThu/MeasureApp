@@ -19,17 +19,13 @@ namespace MeasureApp.ViewModel
 {
     public partial class UIDebugVM : BaseVM
     {
-        private readonly AppContextManager _context;
-        public AppContextManager Context => _context;
-
         [ObservableProperty]
         private IToolViewModel selectedTool;
 
-        public UIDebugVM(AppContextManager context)
+        public UIDebugVM()
         {
             Title = "UI调试";
             ContentId = "UIDebug";
-            _context = context;
         }
 
         [RelayCommand]

@@ -37,8 +37,10 @@ namespace MeasureApp.ViewModel
 
     public partial class DeviceDebugVM : BaseVM
     {
-        private readonly AppContextManager _context;
-        public AppContextManager Context => _context;
+        private readonly DeviceManager _deviceManager;
+        private readonly ConfigManager _configManager;
+        public DeviceManager DeviceManager => _deviceManager;
+        public ConfigManager ConfigManager => _configManager;
 
         [ObservableProperty]
         private ConnectionInfo selectedDevice;
@@ -49,17 +51,18 @@ namespace MeasureApp.ViewModel
         [ObservableProperty]
         private string debugCommandText = "OPEN;";
 
-        public DeviceDebugVM(AppContextManager context)
+        public DeviceDebugVM(DeviceManager deviceManager, ConfigManager configManager)
         {
             Title = "设备调试";
             ContentId = "DeviceDebug";
-            _context = context;
+            _deviceManager = deviceManager;
+            _configManager = configManager;
 
             Presets = new ObservableCollection<PresetCommandItem>();
             // 读取默认appconfig保存的预设
-            if (Context.Configs.AppConfig.PresetCommands != null)
+            if (ConfigManager.AppConfig.PresetCommands != null)
             {
-                foreach (var item in Context.Configs.AppConfig.PresetCommands)
+                foreach (var item in ConfigManager.AppConfig.PresetCommands)
                 {
                     Presets.Add(item);
                 }
@@ -77,7 +80,7 @@ namespace MeasureApp.ViewModel
                 {
                     if (SelectedDevice != null)
                     {
-                        Context.Devices[SelectedDevice.Name].SendAscii(cmd + "\n");
+                        DeviceManager[SelectedDevice.Name].SendAscii(cmd + "\n");
                     }
                     else
                     {
