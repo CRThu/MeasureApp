@@ -17,7 +17,7 @@
         <c:ErrorColorConverter x:Key="ErrorColorConverter"/>
     </UserControl.Resources>
     <Grid>
-        <DataGrid ItemsSource="{Binding Source={StaticResource Locator},Path=DeviceManager.Info}"
+        <DataGrid ItemsSource="{Binding Source={StaticResource Locator},Path=DeviceManager.Connections}"
                   hc:DataGridAttach.ShowRowNumber="True" RowHeaderWidth="60"
                   SelectionMode="Single" IsReadOnly="True" AutoGenerateColumns="False" CanUserAddRows="False"
                   Style="{StaticResource DataGrid.Small}" Margin="5" MinColumnWidth="50" MinHeight="100"

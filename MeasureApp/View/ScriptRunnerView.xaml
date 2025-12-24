@@ -40,9 +40,9 @@
                     <ColumnDefinition Width="1*"/>
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Column="0" Text="默认IO" Margin="5,0,5,0" VerticalAlignment="Center"/>
-                <ComboBox Grid.Column="1" ItemsSource="{Binding Source={StaticResource Locator},Path=DeviceManager.Info}" SelectedItem="{Binding DefaultIO}" DisplayMemberPath="Name" Margin="5,0,5,0" Height="30"/>
+                <ComboBox Grid.Column="1" ItemsSource="{Binding Source={StaticResource Locator},Path=DeviceManager.Connections}" SelectedItem="{Binding DefaultIO}" DisplayMemberPath="Name" Margin="5,0,5,0" Height="30"/>
                 <TextBlock Grid.Column="2" Text="默认采集" Margin="5,0,5,0" VerticalAlignment="Center"/>
-                <ComboBox Grid.Column="3" ItemsSource="{Binding Source={StaticResource Locator},Path=DeviceManager.Info}" SelectedItem="{Binding DefaultMeasure}" DisplayMemberPath="Name" Margin="5,0,5,0" Height="30"/>
+                <ComboBox Grid.Column="3" ItemsSource="{Binding Source={StaticResource Locator},Path=DeviceManager.Connections}" SelectedItem="{Binding DefaultMeasure}" DisplayMemberPath="Name" Margin="5,0,5,0" Height="30"/>
             </Grid>
             <vc:BindableAvalonEditor Grid.Row="2"
                                        Text="{Binding Exec.ScriptCode}"

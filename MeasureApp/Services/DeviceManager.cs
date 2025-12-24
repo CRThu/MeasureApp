@@ -1,9 +1,11 @@
 ﻿using CarrotLink.Core.Devices;
+using CarrotLink.Core.Devices.Configuration;
+using CarrotLink.Core.Discovery;
 using CarrotLink.Core.Discovery.Models;
+using CarrotLink.Core.Logging;
 using CarrotLink.Core.Protocols;
 using CarrotLink.Core.Session;
 using CommunityToolkit.Mvvm.ComponentModel;
-using MeasureApp.ViewModel;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
@@ -46,27 +48,31 @@ namespace MeasureApp.Services
 
     public partial class DeviceManager : ObservableObject, IDisposable
     {
-        public readonly ConcurrentDictionary<string, DeviceSession> _sessions = new ConcurrentDictionary<string, DeviceSession>();
+        private readonly ConcurrentDictionary<string, DeviceSession> _sessions = new ConcurrentDictionary<string, DeviceSession>();
 
         [ObservableProperty]
-        private ObservableCollection<ConnectionInfo> info = new ObservableCollection<ConnectionInfo>();
+        private ObservableCollection<ConnectionInfo> connections = new ObservableCollection<ConnectionInfo>();
 
         private readonly System.Threading.Timer _backgroundTimer;
         private readonly object _updateLock = new object();
         private bool _disposed;
+        private readonly IRuntimeLogger _appLogger;
+        private readonly IEnumerable<IPacketLogger> _packetLoggers;
 
         public DeviceSession this[string key] => _sessions[key];
 
-        public DeviceManager()
+        public DeviceManager(IRuntimeLogger appLogger, IEnumerable<IPacketLogger> packetLoggers)
         {
+            _appLogger = appLogger;
+            _packetLoggers = packetLoggers;
             _backgroundTimer = new System.Threading.Timer(
-                callback: _ => UpdateUI(),
+                callback: _ => UpdateConnectionStats(),
                 state: null,
                 dueTime: 100,
                 period: 100);
         }
 
-        private void UpdateUI()
+        private void UpdateConnectionStats()
         {
             if (_disposed)
                 return;
@@ -75,16 +81,16 @@ namespace MeasureApp.Services
             {
                 Application.Current?.Dispatcher.BeginInvoke(() =>
                 {
-                    foreach (var infoItem in Info)
+                    foreach (var connection in Connections)
                     {
-                        if (_sessions.TryGetValue(infoItem.Name, out var session))
+                        if (_sessions.TryGetValue(connection.Name, out var session))
                         {
                             try
                             {
-                                infoItem.BytesSent = session.TotalWriteBytes;
-                                infoItem.BytesReceived = session.TotalReadBytes;
-                                infoItem.HasError = !session.IsAutoPollingTaskRunning;
-                                infoItem.ErrorDesc = session.ErrorDesc;
+                                connection.BytesSent = session.TotalWriteBytes;
+                                connection.BytesReceived = session.TotalReadBytes;
+                                connection.HasError = !session.IsAutoPollingTaskRunning;
+                                connection.ErrorDesc = session.ErrorDesc;
                             }
                             catch
                             {
@@ -100,49 +106,92 @@ namespace MeasureApp.Services
             }
         }
 
-        public void AddService(DriverType driver, InterfaceType intf, string name, ProtocolType protocol, string config, DeviceSession session)
+        public void Connect(
+            DeviceInfo deviceInfo,
+            DeviceConfigurationBase deviceConfig,
+            ProtocolType protocolType,
+            ProtocolConfigBase protocolConfig,
+            bool isAutoPollingEnabled,
+            string jsonConfig)
         {
-            var info = new ConnectionInfo()
+            var dev = DeviceFactory.Create(deviceInfo.Interface, deviceConfig);
+            dev.Connect();
+
+            var protocol = ProtocolFactory.Create(protocolType, protocolConfig);
+
+            var session = DeviceSession.Create()
+                .WithDevice(dev)
+                .WithProtocol(protocol)
+                .WithLoggers(_packetLoggers)
+                .WithRuntimeLogger(_appLogger)
+                .WithPolling(isAutoPollingEnabled)
+                .Build();
+
+            var connectionInfo = new ConnectionInfo()
             {
-                Driver = driver,
-                Intf = intf,
-                Name = name,
-                Protocol = protocol,
-                Config = config,
+                Driver = deviceInfo.Driver,
+                Intf = deviceInfo.Interface,
+                Name = deviceInfo.Name,
+                Protocol = protocolType,
+                Config = jsonConfig,
                 BytesReceived = 0,
                 BytesSent = 0,
                 HasError = false,
                 ErrorDesc = ""
             };
 
-            if (_sessions.TryAdd(name, session))
+            if (_sessions.TryAdd(deviceInfo.Name, session))
             {
-                //Application.Current.Dispatcher.BeginInvoke(() => Info.Add(info));
-                Application.Current.Dispatcher.Invoke(() => Info.Add(info));
+                Application.Current.Dispatcher.Invoke(() => Connections.Add(connectionInfo));
             }
             else
             {
                 session.Dispose();
-                throw new InvalidOperationException($"A device with name '{name}' is already connected.");
+                throw new InvalidOperationException($"A device with name '{deviceInfo.Name}' is already connected.");
             }
         }
 
-        public void RemoveService(string key)
+        public void Disconnect(string deviceName)
         {
-            if (_sessions.TryRemove(key, out var session))
+            if (_sessions.TryRemove(deviceName, out var session))
             {
-                session.Dispose();
-                var itemToRemove = Info.FirstOrDefault(i => i.Name == key);
+                try
+                {
+                    session.Device.Disconnect();
+                }
+                catch
+                {
+                    // Ignore disconnect errors during removal
+                }
+                finally
+                {
+                    session.Dispose();
+                }
+
+                var itemToRemove = Connections.FirstOrDefault(i => i.Name == deviceName);
                 if (itemToRemove != null)
                 {
-                    //Application.Current.Dispatcher.BeginInvoke(() => Info.Remove(itemToRemove));
-                    Application.Current.Dispatcher.Invoke(() => Info.Remove(itemToRemove));
+                    Application.Current.Dispatcher.Invoke(() => Connections.Remove(itemToRemove));
                 }
             }
             else
             {
-                // TODO
+                 // Not found or already removed
             }
+        }
+
+
+
+        public DeviceInfo[] DiscoverDevices()
+        {
+            var factory = new DeviceSearcherFactory();
+            var service = new DeviceDiscoveryService(factory);
+            var allDevices = service.DiscoverAll();
+
+            return allDevices
+                .OrderBy(d => d.Interface)
+                .ThenBy(d => d.Name)
+                .ToArray();
         }
 
         public void Dispose()

@@ -30,7 +30,7 @@
             <hc:SimpleStackPanel Grid.Row="0" Orientation="Horizontal" Margin="5">
                 <Button Content="导入寄存器表" Margin="10,0" Command="{Binding ImportRegisterMapCommand}"/>
                 <TextBlock Text="通信设备" Margin="10,0" VerticalAlignment="Center"/>
-                <ComboBox ItemsSource="{Binding Source={StaticResource Locator},Path=DeviceManager.Info}" SelectedItem="{Binding SelectedDevice}" DisplayMemberPath="Name" Margin="5,0" MinWidth="200"/>
+                <ComboBox ItemsSource="{Binding Source={StaticResource Locator},Path=DeviceManager.Connections}" SelectedItem="{Binding SelectedDevice}" DisplayMemberPath="Name" Margin="5,0" MinWidth="200"/>
             </hc:SimpleStackPanel>
             <hc:TabControl Grid.Row="1" ItemsSource="{Binding RegFiles}" Margin="0,10,0,0" Style="{StaticResource TabControlCapsule}" ikriv:TabContent.IsCached="True">
                 <hc:TabControl.ItemTemplate>
