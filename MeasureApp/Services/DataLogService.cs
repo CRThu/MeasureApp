@@ -35,13 +35,36 @@ namespace MeasureApp.Services
         // UI 刷新间隔 (毫秒)
         private const int UpdateIntervalMs = 50;
 
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(Summary))]
+        private DataLogValue latestValue;
+
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(Summary))]
+        private int length;
+
+        public string Summary
+        {
+            get
+            {
+                if (LatestValue.Type == DataLogValue.ValueType.Null)
+                    return "<NULL>";
+                if (Length > 1)
+                {
+                    // 数组模式: [type](Length)
+                    return $"[{LatestValue.Type}]({Length})";
+                }
+                // 标量模式: [type] Value
+                return LatestValue.ToString();
+            }
+        }
+
         public IReadOnlyList<DataLogValue> Items
         {
             get
             {
                 lock (_itemsLock)
                 {
-                    // 返回只读包装，注意：WPF绑定时如果列表变化，需要通知
                     return _items.AsReadOnly();
                 }
             }
@@ -49,7 +72,6 @@ namespace MeasureApp.Services
 
         public DataLogList()
         {
-            // 配置无界 Channel，单消费者模式优化性能
             var options = new UnboundedChannelOptions
             {
                 SingleReader = true,
@@ -83,6 +105,7 @@ namespace MeasureApp.Services
                     {
                         // 2. 将数据拷贝并在ui线程更新
                         var batchData = buffer.ToArray();
+                        var lastItem = batchData[^1];
                         buffer.Clear();
 
                         // 3. 通知 UI 更新
@@ -91,13 +114,16 @@ namespace MeasureApp.Services
                             lock (_itemsLock)
                             {
                                 _items.AddRange(batchData);
+                                // 属性状态维护
+                                LatestValue = lastItem;
+                                Length = _items.Count;
                             }
 
                             OnPropertyChanged(nameof(Items));
-                        }, DispatcherPriority.Background);
+                        }, DispatcherPriority.Background, token);
                     }
 
-                    // 4. 节流：强制等待一段时间，避免 UI 刷新过于频繁
+                    // 4. 避免 UI 刷新过于频繁
                     await Task.Delay(UpdateIntervalMs, token);
                 }
             }
@@ -110,7 +136,6 @@ namespace MeasureApp.Services
             }
         }
 
-        // Add 方法现在是“生产者”。它们只负责将数据添加到队列中并立即返回。
         public void Add<T>(T value)
         {
             _channel.Writer.TryWrite(DataLogValue.From(value));
@@ -212,7 +237,7 @@ namespace MeasureApp.Services
         }
 
 
-        public bool TryGetValue(string key, out DataLogList dataLogList)
+        public bool TryGetValue(string key, out DataLogList? dataLogList)
         {
             if (key == null)
             {
@@ -253,52 +278,36 @@ namespace MeasureApp.Services
         }
 
         /// <summary>
-        /// Copies the data for a given key to the system clipboard.
-        /// Each data point is on a new line, suitable for pasting into Excel.
         /// 将指定key的数据复制到系统剪贴板。
-        /// 每个数据点占一行，适合粘贴到Excel。
         /// </summary>
-        /// <param name="key">The key of the data log to copy.</param>
+        /// <param name="key"></param>
         public void CopyToClipboard(string key)
         {
             if (string.IsNullOrEmpty(key) || !logs.TryGetValue(key, out var dataLogList))
-            {
-                // Optionally, provide feedback to the user that the key was not found.
-                // （可选）可以向用户提供反馈，告知未找到该key。
                 return;
-            }
 
-            // Get a thread-safe snapshot of the data to avoid locking during string building.
-            // 获取数据的线程安全快照，以避免在构建字符串时锁定集合。
             var dataSnapshot = dataLogList.GetSnapshot();
 
             if (dataSnapshot.Length == 0)
-            {
-                return; // Nothing to copy.
+            { 
+                // Nothing to copy.
+                return;
             }
 
-            // Use StringBuilder for efficient string concatenation.
-            // 使用 StringBuilder 高效拼接字符串。
             var sb = new StringBuilder();
             foreach (var value in dataSnapshot)
             {
                 sb.AppendLine(value.GetValueString());
             }
 
-            // Clipboard operations must be performed on the UI thread.
-            // 剪贴板操作必须在UI线程上执行。
             Application.Current.Dispatcher.Invoke(() =>
             {
                 try
                 {
                     Clipboard.SetText(sb.ToString());
-                    // Optionally, show a success message.
-                    // (可选) 显示成功信息。
                 }
                 catch (Exception ex)
                 {
-                    // Handle potential exceptions from clipboard access.
-                    // 处理访问剪贴板时可能发生的异常。
                     MessageBox.Show($"Error copying to clipboard: {ex}");
                 }
             });
