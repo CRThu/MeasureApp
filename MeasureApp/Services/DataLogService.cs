@@ -1,5 +1,6 @@
 ﻿using CarrotLink.Core.Logging;
 using CarrotLink.Core.Protocols.Models;
+using CommunityToolkit.HighPerformance.Buffers;
 using CommunityToolkit.Mvvm.ComponentModel;
 using MeasureApp.Model.Log;
 using System;
@@ -141,7 +142,7 @@ namespace MeasureApp.Services
             _channel.Writer.TryWrite(DataLogValue.From(value));
         }
 
-        public void AddRange<T>(IEnumerable<T> values)
+        public void AddRange<T>(IEnumerable<T> values) where T : unmanaged
         {
             foreach (var v in values)
             {
@@ -289,7 +290,7 @@ namespace MeasureApp.Services
             var dataSnapshot = dataLogList.GetSnapshot();
 
             if (dataSnapshot.Length == 0)
-            { 
+            {
                 // Nothing to copy.
                 return;
             }
@@ -313,12 +314,12 @@ namespace MeasureApp.Services
             });
         }
 
-        public void Add<T>(string key, T value)
+        public void Add<T>(string key, T value) where T : unmanaged
         {
             GetOrAddKey(key).Add<T>(value);
         }
 
-        public void AddRange<T>(string key, IEnumerable<T> value)
+        public void AddRange<T>(string key, IEnumerable<T> value) where T : unmanaged
         {
             GetOrAddKey(key).AddRange<T>(value);
         }
@@ -330,8 +331,7 @@ namespace MeasureApp.Services
                 var pkt = packet as IDataPacket;
                 foreach (var key in pkt.Keys)
                 {
-                    // and key with sender
-                    var list = GetOrAddKey($"{from}->{to}" + "." + key);
+                    var list = GetOrAddKey(StringPool.Shared.GetOrAdd($"{from}->{to}.{key}"));
 
                     // TODO channel
                     switch ((pkt.Type, pkt.Encoding))
