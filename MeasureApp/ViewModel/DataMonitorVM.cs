@@ -37,7 +37,7 @@ namespace MeasureApp.ViewModel
 
         private List<double> _plotData = new();
         private int _lastProcessedCount = 0;
-        private readonly object _dataLock = new object();
+        private readonly object _plotDataLock = new object();
 
         public DataMonitorVM(DataLogService dataLogger)
         {
@@ -54,35 +54,31 @@ namespace MeasureApp.ViewModel
             }
         }
 
-        partial void OnSelectedKeyChanged(string oldValue, string newValue)
+        private void OnDataAdded()
         {
-            // Unsubscribe from old data source's events
-            if (_selectedData != null)
-            {
-                ((INotifyPropertyChanged)_selectedData).PropertyChanged -= OnSelectedDataPropertyChanged;
-            }
-
-            // Update the selected data source
-            _selectedData = GetSelectedData();
-            OnPropertyChanged(nameof(SelectedData));
-
-            // Subscribe to new data source's events
-            if (_selectedData != null)
-            {
-                ((INotifyPropertyChanged)_selectedData).PropertyChanged += OnSelectedDataPropertyChanged;
-            }
-
-            // Re-initialize the plot for the new data source
-            InitializePlot();
+            UpdatePlotDataAndNotify();
         }
 
-        private DataLogList GetSelectedData()
+        partial void OnSelectedKeyChanged(string oldValue, string newValue)
         {
-            if (SelectedKey != null && DataLogger.Contains(SelectedKey))
+            DataLogger.TryGetValue(oldValue, out DataLogList? oldLogList);
+            DataLogger.TryGetValue(newValue, out DataLogList? newLogList);
+
+
+            if (oldLogList != null)
             {
-                return DataLogger[SelectedKey];
+                oldLogList.DataAdded -= OnDataAdded;
+                _selectedData = null;
+                OnPropertyChanged(nameof(SelectedData));
             }
-            return null;
+            if (newLogList != null)
+            {
+                newLogList.DataAdded += OnDataAdded;
+                _selectedData = newLogList;
+                OnPropertyChanged(nameof(SelectedData));
+            }
+
+            InitializePlot();
         }
 
         private void InitializePlot()
@@ -90,16 +86,14 @@ namespace MeasureApp.ViewModel
             if (Plot is null)
                 return;
 
-            lock (_dataLock)
+            lock (_plotDataLock)
             {
                 Plot.Clear();
                 _lastProcessedCount = 0;
 
-                if (SelectedData != null)
+                if (_selectedData != null)
                 {
-                    // Initial data load into the List<double>
-                    // 初始数据加载到 List<double>
-                    var dataSnapshot = SelectedData.GetSnapshot();
+                    var dataSnapshot = _selectedData.GetSnapshot();
                     _plotData = dataSnapshot
                         .Select(v => v.Type == DataLogValue.ValueType.Double ? v.Double : Convert.ToDouble(v.Int64))
                         .ToList();
@@ -130,23 +124,15 @@ namespace MeasureApp.ViewModel
             }
         }
 
-        private void OnSelectedDataPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(DataLogList.Items))
-            {
-                Task.Run(() => UpdatePlotDataAndNotify());
-            }
-        }
-
         private void UpdatePlotDataAndNotify()
         {
-            if (SelectedData is null || Plot is null)
+            if (_selectedData is null || Plot is null)
                 return;
 
-            var dataSnapshot = SelectedData.GetSnapshot();
+            var dataSnapshot = _selectedData.GetSnapshot();
             bool dataWasUpdated = false;
 
-            lock (_dataLock)
+            lock (_plotDataLock)
             {
                 int currentSourceCount = dataSnapshot.Length;
                 int newItemsCount = currentSourceCount - _lastProcessedCount;
@@ -166,17 +152,7 @@ namespace MeasureApp.ViewModel
 
             if (dataWasUpdated)
             {
-                // This message is for debounced, incremental updates.
-                // 此消息用于防抖的增量更新。
                 WeakReferenceMessenger.Default.Send(PlotDataRefreshMessage.Instance);
-            }
-        }
-
-        public void Dispose()
-        {
-            if (_selectedData != null)
-            {
-                ((INotifyPropertyChanged)_selectedData).PropertyChanged -= OnSelectedDataPropertyChanged;
             }
         }
 

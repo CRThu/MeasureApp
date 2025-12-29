@@ -25,7 +25,7 @@
         <Grid Grid.Column="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -40,7 +40,7 @@
                      ItemsSource="{Binding Source={StaticResource Locator},Path=DataLogger.Keys}"
                      SelectedItem="{Binding SelectedKey}"
                      Style="{StaticResource ListBox.Small}"
-                     Height="350" Margin="10,0,10,0"
+                     Margin="10,0,10,0"
                      VirtualizingPanel.IsVirtualizing="True"
                      VirtualizingPanel.VirtualizationMode="Recycling"
                      ScrollViewer.CanContentScroll="True"/>
@@ -58,7 +58,7 @@
                 <TextBlock Text="复制到剪切板" VerticalAlignment="Center" Margin="5,0,0,0"/>
                 <Button Content="选中键" Command="{Binding CopySelectedKeyToClipboardCommand}" Margin="5,0,0,0"/>
             </StackPanel>
-            <StackPanel Grid.Row="5" Visibility="Collapsed" Orientation="Horizontal" Margin="10,10,10,10">
+            <StackPanel Grid.Row="5" Visibility="Visible" Orientation="Horizontal" Margin="10,10,10,10">
                 <TextBlock Text="测试" VerticalAlignment="Center" Margin="10,0,10,0"/>
                 <Button Content="T:D+1" Command="{Binding DataTestCommand}" CommandParameter="D+1" Margin="5,0,0,0"/>
                 <Button Content="T:D+1M" Command="{Binding DataTestCommand}" CommandParameter="D+1M" Margin="5,0,0,0"/>
@@ -71,6 +71,7 @@
                 <RowDefinition Height="*" MinHeight="100"/>
                 <RowDefinition Height="5"/>
                 <RowDefinition Height="1*" MinHeight="150"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <DataGrid Grid.Row="0" ItemsSource="{Binding SelectedData.Items}"
                       hc:DataGridAttach.ShowRowNumber="True" RowHeaderWidth="60"
@@ -87,6 +88,10 @@
                     <b:ScottPlotBehavior Plot="{Binding Plot, Mode=OneWayToSource}"/>
                 </i:Interaction.Behaviors>
             </ScottPlot:WpfPlot>
+            <hc:SimpleStackPanel Grid.Row="3" Orientation="Horizontal">
+                <TextBlock Text="{Binding SelectedData.Summary}" Margin="0,0,10,0"/>
+                <TextBlock Text="{Binding SelectedData.LatestValue}"/>
+            </hc:SimpleStackPanel>
         </Grid>
     </Grid>
 </UserControl>
