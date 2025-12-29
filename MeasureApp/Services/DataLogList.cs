@@ -46,10 +46,8 @@ namespace MeasureApp.Services
                 var val = LatestValue;
                 int len = Count;
                 if (LatestValue.Type == DataLogValue.ValueType.Null)
-                    return "<NULL>";
-                if (len > 1)
-                    return $"[{val.Type}]({len})";
-                return val.ToString();
+                    return "[NULL](0)";
+                return $"[{val.Type}]({len})";
             }
         }
 

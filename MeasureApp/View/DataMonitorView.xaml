@@ -88,10 +88,12 @@
                     <b:ScottPlotBehavior Plot="{Binding Plot, Mode=OneWayToSource}"/>
                 </i:Interaction.Behaviors>
             </ScottPlot:WpfPlot>
-            <hc:SimpleStackPanel Grid.Row="3" Orientation="Horizontal">
-                <TextBlock Text="{Binding SelectedData.Summary}" Margin="0,0,10,0"/>
-                <TextBlock Text="{Binding SelectedData.LatestValue}"/>
-            </hc:SimpleStackPanel>
+            <TextBlock Grid.Row="3">
+                <Run Text="Summary: "/>
+                <Run Text="{Binding SelectedData.Summary, Mode=OneWay}"/>
+                <Run Text=" | Latest: "/>
+                <Run Text="{Binding SelectedData.LatestValue, Mode=OneWay}"/>
+            </TextBlock>
         </Grid>
     </Grid>
 </UserControl>
