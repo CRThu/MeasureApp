@@ -32,11 +32,14 @@
             <TextBox Text="{Binding DebugCommandText}" MinWidth="200" Margin="10,0"/>
             <Button Content="发送" Command="{Binding SendPresetCommand}" CommandParameter="{Binding DebugCommandText}" Margin="10,0"/>
         </hc:SimpleStackPanel>
-        <hc:SimpleStackPanel Grid.Row="2" Orientation="Horizontal" Margin="5,5,5,0">
+        <hc:SimpleStackPanel Grid.Row="2" Orientation="Horizontal" Margin="5,5,5,0" Height="30">
             <TextBlock Text="预设命令" Margin="5,0" VerticalAlignment="Center"/>
             <Button Content="+" Command="{Binding AddPresetCommand}" FontWeight="Bold" Style="{StaticResource ButtonDashed.Small}" Margin="5,0"/>
             <Button Content="..." Command="{Binding LoadPresetsCommand}" FontWeight="Bold" Style="{StaticResource ButtonDashed.Small}" Margin="5,0"/>
             <Button Content="💾" Command="{Binding SavePresetsCommand}" Style="{StaticResource ButtonDashed.Small}" Margin="5,0"/>
+            <CheckBox Content="周期轮询" IsChecked="{Binding IsPeriodicSendEnabled}" Margin="20,0,0,0" VerticalAlignment="Center"/>
+            <hc:NumericUpDown Value="{Binding PeriodIntervalMs}" Increment="25" Minimum="25" Style="{StaticResource NumericUpDown.Small}" Margin="5,2" Width="70"/>
+            <TextBlock Text="毫秒" VerticalAlignment="Center"/>
         </hc:SimpleStackPanel>
         <ItemsControl Grid.Row="3" ItemsSource="{Binding Presets}" Margin="5" BorderBrush="Gray" BorderThickness="0.5">
             <ItemsControl.ItemTemplate>
@@ -46,10 +49,12 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <TextBox Grid.Column="0" Text="{Binding Text,UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center"/>
-                        <Button Grid.Column="1" Content="发送" Command="{Binding DataContext.SendPresetCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Margin="5,0"/>
-                        <Button Grid.Column="2" Content="-" Command="{Binding DataContext.RemovePresetCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" FontWeight="Bold" Margin="5,0" Style="{StaticResource ButtonDashed.Small}"/>
+                        <CheckBox Grid.Column="1" IsChecked="{Binding IsPeriodicSendActive}" Margin="5,0,0,0" VerticalAlignment="Center"/>
+                        <Button Grid.Column="2" Content="发送" Command="{Binding DataContext.SendPresetCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Margin="5,0,0,0"/>
+                        <Button Grid.Column="3" Content="-" Command="{Binding DataContext.RemovePresetCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" FontWeight="Bold" Margin="5,0,0,0" Style="{StaticResource ButtonDashed.Small}"/>
                     </Grid>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
